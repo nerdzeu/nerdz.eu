@@ -1,0 +1,50 @@
+[user]Username[/user]
+[project]project name[/project]
+[url]http://www.nerdz.eu/[/url]
+[url=http://www.nerdz.eu/]Click here![/url] || [url="http://www.nerdz.eu/"]Click here![/url]
+[img]Image url[/img]
+[b]Strong text[/b]
+[cur]Italic text[/cur]
+[small]Small text[/small]
+[del]Deleted text[/del]
+[u]Underlined text[/u]
+[hr]Print an horizontal rule
+[code=language]code[/code]
+[gist]GistID[/gist]
+[youtube]http://www.youtube.com/watch?v=_ynuMmB91qM[/youtube]  
+[yt]http://www.youtube.com/watch?v=_ynuMmB91qM[/yt]
+[m] Inline math, latex syntax[/m]
+[math] Block of math, latex syntax[/math]
+[wiki=lang]Argument[/wiki] { Lang: 2 chars, like 'en', 'it' ..} 
+[quote]Citation[/quote]
+[quote=author]User said...[/quote]
+[spoiler]Hidden text[/spoiler]
+[spoiler=label]Hidden text[/spoiler]
+
+[list]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list type="a|A|i|I|1"]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list start="[0-9]+"]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list start="[0-9]+" type="a|A|i|I|1"]
+[*] 1 
+[*] 2
+[/list]
+
+[list type="a|A|i|I|1" start="[0-9]+"]
+[*] 1 
+[*] 2
+[/list]

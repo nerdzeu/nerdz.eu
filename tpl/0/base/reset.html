@@ -1,0 +1,50 @@
+<div id="main">
+	<br /><br />
+    <aside id="left_col">
+    <p>
+		{$resetdescr}
+    </p>
+    </aside>
+    <article id="center_col">
+		<form id="resfrm">
+			<table style="margin: auto; width: 60%">
+				<tr>
+					<td>{$email}:</td><td><input type="text" name="email" id="mait" /><br /></td>
+				</tr>
+				<tr>
+					<td>{$captcha}:</td>
+					<td>
+						<div><img alt="" id="captcha" style="border: 1px solid #FFF; width:90px; height:30px" />&nbsp;&nbsp;<span onclick="N.reloadCaptcha()" style="font-size:6pt; cursor: pointer">{$reloadcaptcha}</span></div>
+						<div><input type="text" name="captcha" /></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="submit" value="{$send}" />
+					</td>
+					<td>
+					</td>
+				</tr>
+			</table>
+		</form>
+    </article>
+    <aside id="right_col">
+		<div class="error" id="error"></div>
+    </aside>
+</div>
+<script type="application/javascript">
+	$(document).ready(function() {
+		$("#resfrm").submit(function(event) {
+			$("#error").html($("#loadtxt").data('loading'));
+			event.preventDefault();
+			N.json.resetPassword($(this).serialize(),function(d) {
+				$("#error").html(d.message);
+				N.reloadCaptcha();
+				if(d.status == 'ok')
+				{
+					$("#mait").val('');
+				}
+			});
+		});
+	});
+</script>

@@ -1,0 +1,50 @@
+[user]Nome utente[/user]
+[project]Nome progetto[/project]
+[url]http://www.nerdz.eu/[/url]
+[url=http://www.nerdz.eu/]Clicca qui![/url] || [url="http://www.nerdz.eu/"]Clicca qui![/url]
+[img]URL immagine[/img]
+[b]Testo in grassetto[/b]
+[cur]Testo in corsivo[/cur]
+[small]Testo in piccolo[/small]
+[del]Testo cancellato[/del]
+[u]Testo sottolineato[/u]
+[hr] Una riga orizzontale
+[code=linguaggio]codice sorgente[/code]
+[gist]GistID[/gist]
+[youtube]http://www.youtube.com/watch?v=_ynuMmB91qM[/youtube]  
+[yt]http://www.youtube.com/watch?v=_ynuMmB91qM[/yt]
+[m]Codice LaTeX per matematica inline[/m]
+[math] Codice Latex per blocco matematico[/math]
+[wiki=lingua]Argomento[/wiki] // La lingua, in due caratteri, come: it, en, de, ecc.
+[quote]Frase citata[/quote]
+[quote=autore]Frase citata dall'autore[/quote]
+[spoiler]Testo nascosto![/spoiler]
+[spoiler=label]Testo nascosto[/spoiler]
+
+[list]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list type="a|A|i|I|1"]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list start="[0-9]+"]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list start="[0-9]+" type="a|A|i|I|1"]
+[*] 1 
+[*] 2
+[/list]
+
+[list type="a|A|i|I|1" start="[0-9]+"]
+[*] 1 
+[*] 2
+[/list]

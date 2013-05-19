@@ -1,0 +1,13 @@
+tmp/*
+ssltmp/*
+pages/executables/*
+*.cssmin.css
+*.jsmin.js
+data/errlog.txt
+class/config/index.php
+utils/*
+google*
+mobile/*
+pages/cache/*
+BingSiteAuth.xml
+smapxml

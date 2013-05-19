@@ -1,0 +1,294 @@
+<div id="main">
+	<aside id="left_col">
+		<div>
+			<div style="text-align: center; margin-bottom:17px">
+{ignore} src="foto#" così facendo il parser di raintpl non sovrascrive l'url{/ignore}
+				<a href="/{$username4link_n}">
+				{if="empty($photo_n)"}
+					<img src="/images/noImage.jpg" alt="{$username}" style="max-width:100%; max-height:100%" width="180" height="180" />
+				{else}
+					{if="$gravatar_b"}
+						<img src="{$photo_n}&s=180#" alt="{$username}" style="max-width:100%; max-height:100%" onerror="this.src='{$onerrorimgurl_n}'" />
+					{else}
+					<img src="{$photo_n}#" alt="{$username}" style="max-width:100%; max-height:100%" onerror="this.src='{$onerrorimgurl_n}'" />
+					{/if}				
+{/if}
+				</a>
+			</div>
+			<table style="border-spacing:1px" class="small">
+			<tr>
+				<td style="width:50%">
+				{if="$online_b"}
+					<span style="float:left; margin-left:1px;color:#00FF00">{$online}</span>
+				{else}
+					<span style="float:left; margin-left:1px;color:#FF0000">{$offline}</span>
+				{/if}
+				</td>
+				<td>
+					<img src="/images/flags/{$lang_n}.png" alt="{$lang_n}" title="{$lang_n}" style="border: 1px solid #FFF; margin-left:10%" width="43" height="34" />
+				</td>
+				<td style="width:50%">
+					<div style="float:right;margin-right:-21%">
+						<div class="g-plusone" data-size="small" data-count="true" data-href="http://www.nerdz.eu/{$username4link_n}"></div>
+					</div>
+				</td>
+			</tr>
+			</table>
+			<div style="margin-top: -9px">
+				<hr />
+			</div>
+		{if="$canshowmenu_b"}
+			<table class="page">
+			<tr class="small">
+				<th id="profilepm">
+					{$pm}
+				</th>
+				{if="$canifollow_b"}
+					<th id="follow" data-id="{$id_n}">{$follow}</th>
+				{else}
+					<th id="unfollow" data-id="{$id_n}">{$unfollow}</th>
+				{/if}
+					{if="$caniblacklist_b"}
+					<th id="blacklist" data-id="{$id_n}">Blacklist</th>
+				{else}
+					<th id="unblacklist" data-id="{$id_n}">Unblacklist</th>
+				{/if}
+			</tr>
+			</table>
+			<hr />
+		{/if}
+			<div class="title">{$aboutme}</div><br />
+			<span class="light">{$username}:<br /></span>
+			<span id="username">{$username_n}</span><br /><br />
+			<span class="light">{$name}:<br /></span>
+			{$name_n}<br />
+			<span class="light">{$surname}:<br /></span>
+			{$surname_n}<br />
+			<span class="light">{$birthdate}:<br /></span>
+			{$birthdate_n}<br />
+			<span class="light">{$gender}:<br /></span>
+			{$gender_n}<br />
+			{if="!empty($website_n)"}
+				<br />
+				<span class="light">{$website}:<br /></span>
+				<span>
+					<a href="{$website4link_n}#" onclick="window.open(this.href); return false">{$website_n}</a>
+				<br />
+				</span>
+			{/if}
+			<br />
+			<span class="light">5tUp1d stUfF!1<br /></span>
+			<span class="bold">{$stupidstuffnow_n}</span> -{$stupidstuffless_n} =&gt; <span class="bold">{$stupidstuffnext_n}</span><br /><br />
+
+			<span class="light">{$id}:<br /></span>
+			{$id_n}<br />
+			<span class="light">{$comments}:<br /></span>
+			{$totalcomments_n}<br />
+			<span class="light">{$lastvisit}:<br /></span>
+			{$lastvisit_n}<br /><br />
+	
+			<span class="light">Browser:</span><br />{$useragent_a.name}<br />
+			<span class="light">Version:</span><br />{$useragent_a.version}<br />
+			<span class="light">Platform:</span><br />{$useragent_a.platform}<br />
+			{if="!empty($friends_a)"}
+				<span class="light"><br />
+					{$friends}	({$totalfriends_n})
+				</span><br />
+				<div style="max-height:250px; overflow: auto">
+				{loop="friends_a"}
+					<a href="/{$value.username4link_n}">{$value.username_n}</a><br />
+				{/loop}
+			</div>
+			{/if}
+			<br /><br />
+		</div>
+	</aside>
+	<article id="center_col" class="page">
+	{if="$canwrite_b"}
+		<div id="fast_nerdz">
+		    <div>
+		    	<form id="stdfrm" data-to="{$id_n}">
+					<textarea id="frmtxt" name="message" style="width: 99.5%; height: 130px"></textarea>
+					<input type="submit" value="{$nerdzit}" style="font-size: 120%; float: left; margin:5px" />
+					<button type="button" style="font-size: 120%; float:left; margin: 5px" class="preview" data-refto="#frmtxt">{$preview}</button>
+					<button type="button" style="font-size: 120%; float:left; margin:5px" onclick="window.open('/bbcode.php')">BBCode</button>
+					<div id="pmessage" class="error"></div>
+				</form>
+			</div>
+			<br /><br />
+		</div>
+	{/if}
+		<div id="postlist" data-type="profile" data-profileid="{$id_n}" data-location="profile" data-limit="0" data-mode="std">
+			{ignore} Data type == profile, è un profilo. e si parte da limit 0 a fare le richieste{/ignore}
+			{if="$singlepost_b"}
+				{$post_n}
+			{/if}
+		</div>
+		<br /><br />
+	</article>
+	<aside id="right_col" class="page">
+{ignore}
+		<div class="title">{$aboutme}</div>
+{/ignore}
+	{if="!empty($biography_n)"}
+		<div class="title">{$biography}</div>
+		<div class="box">
+			{$biography_n}
+		</div>
+		<br />
+	{/if}
+
+	{if="!empty($quotes_a)"}
+		<div class="title">{$quotes}</div>
+		<div class="box">
+			<ul>
+			{loop="quotes_a"}
+				<li>{$value}</li>
+			{/loop}
+			</ul>
+		</div>
+		<br />
+	{/if}
+
+	{if="!empty($interests_a)"}
+		<div class="title">{$interests}</div>
+		<div class="box">
+			<ul>
+			{loop="interests_a"}
+				<li>{$value}</li>
+			{/loop}
+			</ul>
+		</div>
+		<br />
+	{/if}
+
+	{if="!empty($ownerof_a)"}
+		<div class="title">{$ownerof}</div>
+		<div class="box">
+			<ul>
+			{loop="ownerof_a"}
+				<li><a href="/{$value.name4link_n}">{$value.name_n}</a></li>
+			{/loop}
+			</ul>
+		</div>
+		<br />
+	{/if}
+	{if="!empty($memberof_a)"}
+		<div class="title">{$memberof}</div>
+		<div class="box">
+			<ul>
+			{loop="memberof_a"}
+				<li><a href="/{$value.name4link_n}">{$value.name_n}</a></li>
+			{/loop}
+			</ul>
+		</div>
+		<br />
+	{/if}
+	{if="!empty($userof_a)"}
+		<div class="title">{$userof}</div>
+		<div class="box">
+			<ul>
+			{loop="userof_a"}
+				<li><a href="/{$value.name4link_n}">{$value.name_n}</a></li>
+			{/loop}
+			</ul>
+		</div>
+		<br />
+	{/if}
+	    {if="!empty($jabber_n) || !empty($yahoo_n) || !empty($skype_n) || !empty($steam_n) || !empty($facebook_n) || !empty($twitter_n)"}
+            <div class="title">{$contactinfo}</div>
+            <div class="box">
+            {if="!empty($jabber_n)"}
+                    <span class="light">{$jabber}:<br /></span>
+                            {$jabber_n}<br /><br />
+            {/if}
+            {if="!empty($yahoo_n)"}
+                    <span class="light">{$yahoo}:<br /></span>
+                            {$yahoo_n}<br /><br />
+            {/if}
+            {if="!empty($skype_n)"}
+                    <span class="light">{$skype}:<br /></span>
+                            {$skype_n}<br /><br />
+            {/if}
+            {if="!empty($facebook_n)"}
+                    <span class="light">{$facebook}:<br /></span>
+                            <a href="{$facebook_n}">{$facebook_n}</a><br /><br />
+            {/if}
+            {if="!empty($twitter_n)"}
+                    <span class="light">{$twitter}:<br /></span>
+                            <a href="{$twitter_n}">{$twitter_n}</a><br /><br />
+            {/if}
+            {if="!empty($steam_n)"}
+                    <span class="light">{$steam}:<br /></span>
+                            {$steam_n}<br /><br />
+            {/if}
+            </div>
+            <br />
+    {/if}
+		<div class="title">{$advertisement}</div>
+		<div class="box">
+			{$banners_a.120x600}
+		</div>
+	<br /><br />
+	</aside>
+	<div id="showpostlist" style="display:none"></div>
+{if="!$singlepost_b"}
+	<script type="application/javascript">
+		$(document).ready(function() {
+			var loading = $("#loadtxt").data('loading');
+			var plist = $("#postlist");
+			$("#showpostlist").on('click',function() {
+				plist.html(loading+'...');
+				N.html.profile.getPostList({id: plist.data('profileid'), limit: 0},function(data) {
+					plist.html(data);
+				});
+			});
+			
+			$("#showpostlist").click();
+			
+			/* Autoload vecchi post allo scrolldown */
+
+			var load = true;
+			$(window).scroll(function() {
+				if($(this).scrollTop()+200 >= ( $(document).height() - $(this).height() ) )
+				{
+					if(load)
+					{
+						load = false;
+						var limit = plist.data('limit')+10;
+						plist.append('<h3 id="mainloadtxt">'+loading+'...</h3>');
+						if(plist.data('mode') == 'std') {
+							N.html.profile.getPostList({id: plist.data('profileid'), limit: limit+',10'},function(data) {
+								$("#mainloadtxt").remove();
+								if(data.length > 0) {
+									plist.append(data);
+									plist.data('limit',limit);
+									load = true;
+								}
+							});
+						}
+						else
+						{
+							N.html.search.specificProfilePosts( { q: $("#footersearch input[name=q]").val(), limit: limit, id: plist.data('profileid') }, function(data) {
+								$("#mainloadtxt").remove();
+								if(data.length > 0) {
+									plist.append(data);
+									plist.data('limit',limit);
+									load = true;
+								}
+							});
+						}
+					}
+				}
+			});
+		});
+	</script>
+{else}
+	<script type="application/javascript">
+	$(document).ready(function() {
+			$(".showcomments").click();
+	});
+	</script>
+	{ignore} tanto se il post è singolo ne esiste solo uno di elemento con questa classe{/ignore}
+{/if}
+</div>

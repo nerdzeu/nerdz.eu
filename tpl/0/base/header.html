@@ -1,0 +1,79 @@
+<header id="site_title">
+	<div id="title_left">
+		<a href="/home.php" accesskey="h">NERDZ</a>
+	</div>
+	<div id="title_right">
+		<nav>
+{if="$logged_b"}
+		# <a href="/{$myusername4link_n}" accesskey="p">{$profile}</a>&nbsp;&nbsp;
+		# <a href="/preferences.php" accesskey="z">{$preferences}</a>&nbsp;&nbsp;
+		# <a href="/" id="logout" data-tok="{$tok_n}">{$logout}</a>
+		<br />
+    	<a href="/pm.php" accesskey="m" id="gotopm">
+			<span id="pmcounter" style="border-radius:3px; padding-left: 1px; padding-right: 1px" accesskey="q"></span>&nbsp;{$pm}</a>
+		<div style="margin-top: 5px; text-align:right;">{$welcome}, {$myusername_n}</div>
+{else}
+			<form id="loginfrm">
+			<table>
+				<tr>
+					<td>
+						<table style="width: 100%;" class="small">
+							<tr>
+								<th style="float: left">
+									<input type="checkbox" name="setcookie" id="remember" style="margin:0" checked="checked">
+								</th>
+								<th style="float: left">
+									<label for="remember">&nbsp;{$remember}</label>
+								</th>
+								<th style="float: left; margin-left:3px">
+									<input type="checkbox" name="offline" id="markoffline" style="margin:0">
+								</th>
+								<th style="float: left">
+									<label for="markoffline">&nbsp;{$hidestatus}</label>
+								</th>
+								<th style="float: right">
+									<a href="/reset.php">{$forgot}</a>
+								</th>
+							</tr>
+						</table>	
+						<input type="text" name="username" placeholder="{$username}" required autofocus />
+						<input type="password" name="password" placeholder="*******" required />
+					</td>
+					<td>
+						<br />
+						<input type="submit" value="{$login}" style="margin-top:13%" />
+						<input type="hidden" value="{$tok_n}" name="tok" />
+					</td>
+				</tr>
+			</table>
+			</form>
+{ignore} lo metto qui e non in un js esterno (che dovrebbe essere quello di default visto che c'è in tutte la pagine il form)
+		affinché gli utenti loggati non debbano avere nel js questo codice che non sarebbe mai usato{/ignore}
+			<script type="application/javascript">
+			$("#loginfrm").on('submit',function(event) {
+				event.preventDefault();
+				var t = $("#title_right");
+				N.json.login($("#loginfrm").serialize(), function(r) {
+					var tmp = t.html();
+					if(r.status == 'ok')
+					{
+						t.html(r.message);
+						setTimeout(function() {
+							document.location.reload();
+						},1500);
+					}
+					else
+					{
+						t.html('<h2 class="error">'+ r.message + '</h2>');
+						setTimeout(function() {
+							t.html(tmp);
+						},1500);
+					}
+				});
+			});
+		</script>
+{/if}
+		</nav>
+	</div>
+</header>
+<div id="loadtxt" data-loading="{$loading}"></div>

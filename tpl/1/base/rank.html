@@ -1,0 +1,45 @@
+<div id="main">
+	<div id="left_col">&nbsp;</div>
+	<article id="center_col">
+		<table class="page">
+			<tr>
+				<th>
+				{$position}
+				</th>
+				<th>
+				{$username}
+				</th>
+				<th>
+				{$comments}
+				</th>
+{if="!$monthly_b"}
+				<th>
+				{$stupidstuff}
+				</th>
+{/if}
+			</tr>
+			{loop="list_a"}
+			<tr>
+				<td>{$value.position_n}</td>
+				<td>
+					<a href="/{$value.username4link_n}">{$value.username_n}</a>
+				</td>
+				<td>
+					{$value.comments_n}
+				</td>
+{if="!$monthly_b"}
+				<td>
+					{$value.stupidstuff_n}
+				</td>
+{/if}
+			</tr>
+			{/loop}
+		</table>
+		<br />
+		<span style="font-style:italic">
+			{$lastupdate}: {$lastupdate_n}
+		</span>
+		<br /><br /><br />
+	</article>
+</div>
+

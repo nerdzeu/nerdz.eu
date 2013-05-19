@@ -1,0 +1,17 @@
+<div id="left_col">&nbsp;</div>
+<article id="center_col">
+	{loop="list_a"}
+		{if="$value.title_b"}
+			<div style="font-size: large; color: #2370B6;cursor:pointer" id="q{$counter}" onclick="location.hash='#q{$counter}'">
+				{$value.line_n}
+				<br /><br />
+			</div>
+		{else}
+			<div style="font-size: medium; color: #fff; font-weight: normal">
+				{$value.line_n}
+				<br /><br />
+			</div>
+		{/if}
+	{/loop}
+	<br />
+</article>

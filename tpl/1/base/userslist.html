@@ -1,0 +1,33 @@
+<div id="main">
+	<div id="left_col">&nbsp;</div>
+	<article id="center_col">
+
+		<table style="margin: auto" class="page">
+			<tr style="cursor: pointer">
+				<th style="width:5%" id="id">{$id}</th>
+				<th style="width:23%" id="username">{$username}</th>
+				<th style="width:23%" id="birthdate">{$birthdate}</th>
+			</tr>
+		{loop="list_a"}
+			<tr>
+				<td>{$value.id_n}</td>
+				<td><a href="/{$value.username4link_n}">{$value.username_n}</a></td>
+				<td>{$value.birthdate_n}</td>
+			</tr>
+		{/loop}
+		<form id="search" method="GET">
+			<tr>
+				<td>
+					<input type="text" name="id" />
+				</td>
+				<td>
+					<input type="text" name="username" />
+				</td>
+				<td>
+					<input type="text" name="birthdate" />
+				</td>
+			</tr>
+		</form>
+		</table>
+	</article>
+</div>

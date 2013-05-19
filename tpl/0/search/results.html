@@ -1,0 +1,17 @@
+{loop="list_a"}
+	<div class="nerdz_from">
+		<a href="/{$value.from4link_n}">{$value.from_n}</a>
+		{if="$value.fromid_n != $value.toid_n"}
+			&nbsp;=&gt; <a href="/{$value.to4link_n}">{$value.to_n}</a>
+		{else}
+		:
+		{/if}
+	</div>
+
+	<div class="nerdz_message" id="b{$value.pid_n}" style="margin-bottom:1%">
+		<span class="nerdz_date">#{$value.pid_n}</span>
+		<a href="{$value.url_n}" style="color:#FFF">
+			{$value.message_n}
+		</a>
+	</div>
+{/loop}

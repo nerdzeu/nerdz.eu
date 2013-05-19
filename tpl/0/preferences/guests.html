@@ -1,0 +1,32 @@
+<hr />
+<div>{$description}</div>
+<hr />
+<form id="gufrm" data-tok="{$tok_n}">
+	<table class="page">
+		<tr>
+			<td>
+				<input type="radio" name="check" value="public" {if="!$private_b"} checked {/if} />
+				{$publicprofile}
+				<br />
+				<input type="radio" name="check" value="private" {if="$private_b"} checked {/if} />
+				{$privateprofile}
+			</td>
+			<td>
+				<input type="submit" value="{$edit}" />
+				<div id="res"></div>
+			</td>
+		</tr>
+	</table>
+</form>
+<br /><br />
+<script type="application/javascript">
+	$(document).ready(function() {
+		$("#gufrm").submit(function(event) {
+			event.preventDefault();
+			var check = $("#gufrm input[name=check]:checked").val();
+			N.json.post('/pages/preferences/guests.html.json.php?action='+check, { tok: $(this).data('tok') }, function(data) {
+				$("#res").html(data.message);
+			});
+		})
+	});
+</script>

@@ -1,0 +1,60 @@
+Q: Cos'è NERDZ?
+A: NERDZ è un ibrido tra un social network ed un forum. Tenta di unire i lati migliori di entrambe le piattaforme (di unire quindi il nuovo al vecchio).
+Q: Mi sono appena registrato, ma non so cosa fare...
+A: Continua a leggere le FAQ prima di tutto! Dopo potrai iniziare a completare il tuo profilo, seguendo il link che trovi in cima ad ogni pagina, chiamato "Preferenze". In quella sezione potrai completare il tuo profilo con informazioni che gli altri utenti potranno visualizzare, impostare le regole di privacy e molto altro.
+Inoltre ti consiglio di fare il tuo primo post sul tuo profilo (post, detto anche nerdz) salutando la community.
+Per fare ciò, non devi fare altro che scrivere il messaggio o nel tuo profilo (il cui collegamento è in ogni pagina del sito, nella parte alta) o in homepage. Il messaggio sarà in ogni caso pubblicato nel tuo profilo, anche se scritto dalla homepage e sarà comunque visibile in homepage a te e a chi avrà impostato nelle preferenze filtri per poter vedere anche i messaggi dei nuovi utenti.
+Q: Un utente mi sta seguendo, cioè?
+A: Quando un utente inizia a seguirti, significa che vedrà dalla propria homepage quando tu sei online o meno.
+Se deciderai di seguirlo a tua volta (andando nel suo profilo e premendo sul pulsante "segui") in tal caso diventerete amici.
+Essere amici su nerdz non implica diritti o doveri particolari, altro non è se non una comodità per quanto riguarda il filtraggio dei messaggi in homepage (visualizzare solo quelli dei propri amici) e la rapidità di comunicazione tra di voi.
+Q: Cosa sono e a cosa servono i progetti?
+A: I progetti, che ogni utente può creare senza limitazione alcuna (ovviamente salvo quelle legali imposta dai termini e condizioni d'utlizzo) sono "posti virtuali", che possiamo considerare con dei "mini forum".
+Q: In che senso un progetto può essere considerato un "mini forum"?
+A: Nel senso che i progetti hanno una gerarchia interna, proprio come nei forum.
+Le figure che la caratterizzano sono:
+1 - Il proprietario: cioò colui che ha creato il progetto e che ha la possiblità di cancellare i commenti e i post e di editare quest'ultimi.
+2 - I membri: persone nominate dal proprietario che hanno la possibilità di editare i post per effettuare una moderazione sui contenuti e di cancellare i commenti.
+3 - I follower, cioè coloro che hanno iniziato a seguire il progetto (come si fa con un utente) e che ogni qual volta vi è un nuovo post sul progetto ricevono una notifica. (I membri anche non essendo follower, ricevono ovviamente una notifica).
+3 - Gli utenti esterni al progetto: gli altri utenti di nerdz che nel caso in cui il progetto lo permetta potranno dire la loro.
+Q: Ho sentito dire di progetti privati, aperti, chiusi, visibili e insibili, cosa sono?
+A: È una categorizzazione dei progetti in base a loro caratteristiche:
+1 - Aperti: progetti in cui qualunque utente può scrivere.
+2 - Chiusi: progetti in cui solo i membri possono aggiungere post.
+3 - Visibili: progetti i cui post appariranno nella homepage generale dei progetti.
+4 - Invisibili: progetti i cui post non appariranno nella homepage dei progetti; molto utili per poter fare un progetto tra poche persone e senza l'intervento di chi non è a conoscenza del progetto.
+5 - Privati: progetto non visibile agli utenti non registrati su nerdz. Non sarà indicizzato e non sarà possibile quandi trovare i contenuti tramite ricerche su motori di ricerca.
+Q: Come posso creare un progetto?
+A: Andando nelle preferenze, in progetti, e premendo su crea. Verrai portato in una pagina in cui ti verranno chieste informazioni di base del progetto, compila il form ed il gioco e fatto.
+Q: Come posso editare o eliminare un progetto?
+A: Sempre andando in preferenze, nella sezione progetti. Lì, avrai a disposizione gli strumenti necessari per gestire il tuo progetto.
+Q:In homepage, oltre alla lista di chi seguo, noto che ci sono altri link. A cosa servono?
+A: Allora:
+1 - NERDZ, visualizza i post fatti dagli utenti che soddisfano il tuo filtro di lingua e non mostra i post fatti dagli utenti che hai inserito in blacklist
+2 - Progetti, visualizza l'hompage per i progetti classica.
+3 - Lista utenti, è la lista completa degli utenti. Potrai ordinare in base alla colonna della tabella sui cui premerai (e ripremendo cambierai l'ordinamento da ascendente a dicendente e viceversa)
+4 - Lista progetti, è la lista completa dei progetti creati dagli utenti, anche in questo caso potrai fare ordinamenti
+5 - Top 100: è la classifica "di sempre" dei migliori commentatori. Aggiornata circa ogni ora.
+6 - Monthly 100: è la classifica mensile dei commentatori. Aggiornata circa ogni ora.
+7 - Ultimo utente: ti porta al profilo dell'utimo utente registrato. Salutalo!
+8 - Statistiche: Mostra statistiche riguardo l'intero sito web. Aggiornata ogni ora.
+9 - FAQ: questa pagina.
+Q: Nella parte bassa delle pagine, noto la scritta cerca, ma dove cerca?
+La barra di ricerca sempre presenta in ogni pagina del sito ricerca in base a dove ti trovi.
+Ad esempio: se ti trovi nella homepage (utenti/progetti) dove si trovano i post degli utenti, la tua ricerca ricercherà tra questi.
+Se ti trovi in un progetto, la tua ricerca cercherà tra i post del progetto.
+Se ti trovi nella lista degli utenti/progetti, cercherà in base all'ordinamento che hai scelto o, se non l'hai scelto, in base all'ordinamento di default.
+Q: Noto dei lucchetti in alcune discussioni, cosa sono?
+A: I lucchetti si trovano nelle discussioni a cui tu hai partecipato. Ti permettono di decidere se ricevere ancora notifiche riguardo a quella discussione oppure no.
+Lucchetto aperto significa che stai ricevendo notifiche per gli aggiornamenti alla discussione, lucchetto chiuso che non le riceverai più.
+Q: Ci sono gli stessi lucchetti anche in alcuni commenti, a che servono in questo caso?
+A: I lucchetti servono anche in questo caso per decidere di (non) ricevere notifiche, ma in questo caso specifico servono per non essere notificati quando l'utente "lucchettato" commenterà ancora in quella ddiscussione. I lucchetti si trovano solo accanto al nickname dell'utente che per la prima volta partecipa alla discussione.
+Q: Noto che in ogni post in cui non è presente il lucchetto è presente un occhio con accanto un "+", che cos'è?
+A: È la funzione Lurk che serve per ricevere notifiche riguardo ad una discussione anche se non si ha partecipato. Cioè, si può lurkare la discussione. Quando ci si stanca, si può semplicemente premere sullo stesso occhio, che ora ha accanto un "-" (meno) per smettere di ricevere notifiche.
+Q: NERDZ ha un sistema di messaggistica instantanea?
+A: Nerdz ha un sistema di posta interna, cioè i classici PM dei forum. Inviabili ad un destinatario andando nel suo profilo e cliccando sull'apposita voce, oppure compilando il form che si trova nella sezione "Scivi" dei PM (link che trovi in cima ad ogni pagina).
+Q: Se non piacesse una persona, con chi devo lamentarmi?
+A: Inizialmente il consiglio e di provare a recuperare i rapporti, se non sono recuperabili, hai a disposizione lo strumento della BLACKLIST.
+Andando sul profilo dell'utente (che per l'occazione chiameremo) cattivo, potrai, tramite l'apposito pulsante, metterlo in blacklist.
+Una volta premuto il pulsante, vi verrà chiesta la motivazione. Questa frase sarà ciò l'altro utente vedrà quando proverà ad entrare nel vostro profilo.
+Da quel momento in poi, la vostra presenza sul sito sarà invisibile per l'altro e viceversa.

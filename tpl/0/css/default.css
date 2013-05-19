@@ -1,0 +1,396 @@
+#site_title
+{
+    color: #000;
+    margin: 0 auto 1.5% auto;
+    width: 100%;
+    background-color: #AFAFAF;
+    display: block;
+    overflow: hidden;
+}
+
+#site_title a:visited, #site_title a:active, #site_title a:link, .nerdz_comments a:hover, .nerdz_comments a:visited, .nerdz_comments a:active, .nerdz_comments a:link, #footer_main a:visited, #footer_main a:active, #footer_main a:link
+{
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#title_left
+{
+    display: inline;
+    float: left;
+    font-size: 200%;
+    margin: 0.5%;
+}
+
+#title_right
+{
+    display: inline;
+    float: right;
+    margin: 0.5% 1% 0.1% 0.5%;
+}
+
+#left_col
+{
+    float: left;
+    width: 12.5%;
+    margin-right: 1%;
+    display: inline;
+    overflow-x: hidden;
+}
+
+#center_col
+{
+    width: 71%;
+    float:left;
+    display: inline;
+    padding-left: 0.5px;
+    padding-right: 0.5px;
+	font-size: 105%;
+}
+
+#right_col
+{
+    width: 12.5%;
+    float: left;
+    display: inline;
+	margin-left: 1%;
+}
+
+#left_col ul, #right_col ul
+{
+    list-style-type: square;
+    list-style-position: inside;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+#footer_main
+{
+    background-color: #AFAFAF;
+	text-align: center;
+    border-top: 1px #000 solid;
+    bottom: 0px;
+    clear: both;
+    display: block;
+    height: 24px;
+    overflow: hidden;
+    width: 100%;
+    position: fixed;
+}
+
+#footer_left
+{
+    position: fixed;
+    display: inline;
+    bottom: 2px;
+    left: 2px;
+    text-align: left;
+}
+
+#notify_list
+{
+    position: fixed;
+    display: block;
+    bottom: 24px;
+    right: 0px;
+    background-color: #000;
+    border: 1px solid #FFF;
+}
+
+#notifycounter,#share,#bug_bar
+{
+    position: fixed;
+    bottom:0px;
+    right: 0px;
+    background-color: #FFF;
+    padding-top: 4px;
+    padding-bottom: 1px;
+    color: #000;
+    margin: 0%;
+    border-left: solid 1.5px #000;
+    height: 19px;
+    width: 60px;
+    text-align:center;
+}
+
+#share
+{
+    right: 61px;
+    font-size: 90%;
+}
+
+#bug_bar
+{
+    left: 0px;
+    width: 30px;
+	border: 0px;
+}
+
+#main
+{
+    margin: auto;
+    width: 98%;
+	margin-right: 0.2%;
+	word-wrap: break-word;
+}
+
+#gotopm
+{
+	float:left;
+	margin-top: 5px;
+	cursor: pointer;
+	font-weight: bold;
+	font-style: italic;
+	width:20px;
+}
+
+#postlist
+{
+	margin-bottom: 4%;
+}
+
+#rightmenu
+{
+	overflow-y: auto;
+	overflow-x: hidden;
+	height:310px;
+}
+
+#leftmenu li, #rightmenu li
+{
+	margin-top: 5%;
+}
+
+#fast_nerdz
+{
+	margin-bottom: 15px;
+}
+
+a:hover, a:visited, a:active, a:link, .qu_user a:visited, .qu_user a:active, .qu_user a:link, .atilda
+{
+    color: #2370B6;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+label, .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang, .more, .bookmark, .unbookmark
+{
+    cursor: pointer;
+}
+
+input, option, select, textarea, button, .page th, .title
+{
+    border: 0.5px #000 solid;
+    text-align: left;
+    background-color: #FFF; 
+    color: #000;
+    border-radius: 2.5px;
+}
+
+button, input[type=submit], .page th, .title
+{
+	padding-left: 1%;
+	padding-right: 1%;
+    border: 0.5px #000 solid;
+	font-weight: bold;
+	white-space: nowrap;
+	word-wrap: normal;
+	vertical-align: middle;
+	cursor: pointer;
+	border-radius: 2px;
+}
+
+body
+{
+    background-color: #1D1B1B;
+    color: #FFF;
+    font-size: 80%;
+    font-family: "Lucida Grande", "Cantarell", Arial, Helvetica, Sans-serif;
+    font-weight: lighter;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    Z-index: 0;
+}
+
+img
+{
+	border: 0px none;
+}
+
+iframe
+{
+	margin: auto;
+	overflow: hidden;
+}
+
+html, #body
+{
+    width: 100%;
+    height: 100%;
+}
+
+.box
+{
+	border: 1px solid #2370B6;
+	margin-top:3px;
+	padding: 3px;
+    border-radius: 5.5px;
+}
+
+.more
+{
+	position: relative;
+	top: -12px;
+	text-align: center;
+}
+
+.nitem
+{
+	border-bottom: 1px solid #FFFFFF;
+}
+
+.qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .bookmark, .unbookmark
+{
+	margin-bottom: -4px;
+	margin-top: -7px;
+	margin-left: 3px;
+}
+
+.page
+{
+    width: 99%;
+    margin: auto;
+}
+
+.page table
+{
+    margin: auto;
+    width: 100%;
+}
+
+.page .intable
+{
+    margin-top: 3%;
+    width: 100%;
+    margin-bottom: 3%;
+}
+
+.title
+{
+	cursor: default;
+	text-align: center;
+}
+
+.page th
+{
+	width: 10%;
+	text-align: center;
+}
+
+.nerdz_message, .nerdz_comments, .news
+{
+    width: 99%;
+    background-color: #000;
+    border-radius: 2.5px;
+    font-size: 90%;
+    overflow: hidden;
+    padding: 2px;
+    border: 1px #FFFFFF solid;
+	word-wrap: break-word;
+	margin-bottom: 10px;
+}
+
+.news
+{
+	background-color: #FFF;
+    color: #000;
+	clear: left;
+}
+
+.nerdz_comments, .quote, .spoiler
+{
+    border-color: #000;
+    background-color: #BDBDBD;
+    color: #000;
+	margin-bottom: 8px;
+}
+
+.nerdz_comments br, .nerdz_message br
+{
+	clear: both;
+}
+
+.quote
+{
+	margin: auto;
+	background-color: #FFFDD0;
+	margin-top: 5px;
+	overflow: auto;
+}
+
+.nerdz_date
+{
+    float:right;
+    margin-right: 2px;
+	font-size: 85%;
+}
+
+.nerdz_from
+{
+    margin-bottom: 4px;
+}
+
+.nerdz_truncate
+{
+    background-color: #FFF;
+    text-align:center;
+    width:132px;
+    color:#000;
+    font-weight: bold;
+}
+
+.qu_main
+{
+    margin-left: 3%;
+    margin-right: 1%;
+    width: 95%;
+    border: solid #AFAFAF 1px;
+	overflow: hidden;
+}
+
+.error
+{
+    color: #FF0000;
+    font-size: 80%;
+    font-weight: bold;
+}
+
+.small
+{
+    font-size: 75%;
+}
+
+.light
+{
+    color: #777;
+    padding-bottom: 2px;
+}
+
+.bold
+{
+    font-weight:bold;
+}
+
+.curtext
+{
+    font-style: italic;
+}
+
+.qu_user
+{
+    background-color: #333;
+}

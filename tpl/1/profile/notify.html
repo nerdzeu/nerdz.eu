@@ -1,0 +1,17 @@
+	<div style="font-size: 120%; margin-bottom: 5px; background-color: #dedede" class="nerdz_comments">Notifiche:</div>
+{loop="list_a"}
+	<div class="nerdz_comments" style="margin-bottom: 1px">
+		<span class="small">{$value.datetime_n}:</span>&nbsp;
+	{if="$value.type_n == 'new_follower'"}
+		<a href="/{$value.from4link_n}">{$value.from_n} {$followingyou}</a>
+	{elseif="$value.type_n == 'profile_comments'"}
+		{$newcommentson} <a class="notref" href="/{$value.to4link_n}#last">{$value.to_n} [{$value.pid_n}]</a>
+	{elseif="$value.type_n == 'project_comments'"}
+		{$newcommentson} <a class="notref" href="/{$value.to4link_n}#last">{$value.to_n} [{$value.pid_n}]</a>
+	{elseif="$value.type_n == 'new_post_on_profile'"}
+		<a href="/{$value.to4link_n}">{$value.from_n} {$postedonyourboard}</a>
+	{elseif="$value.type_n == 'news_project'"}
+		<a href="/{$value.to4link_n}">{$newsonproject} - {$value.to_n}</a>
+	{/if}
+	</div>
+{/loop}

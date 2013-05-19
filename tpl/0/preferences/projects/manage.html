@@ -1,0 +1,166 @@
+<hr />
+<form id="edprofrm">
+<table class="intable">
+    <tr>
+		<td style="width: 50%; vertical-align: top">
+			{$members}:
+			<p class="small">
+				{$oneperline}
+			</p>
+		</td>
+		<td style="width: 50%">
+			<textarea name="members" rows="8" cols="26">
+				{loop="members_a"}
+					{$value}&#13;&#10;
+				{/loop}
+			</textarea>
+		</td>
+    </tr>
+    <tr>
+		<td style="vertical-align: top">
+			<br />
+			{$description}:
+		</td>
+		<td>
+			<br />
+			<textarea name="description" rows="8" cols="26">
+				{loop="description_a"}
+					{$value}&#13;&#10;
+				{/loop}
+			</textarea>
+		</td>
+    </tr>
+    <tr>
+		<td style="vertical-align: top">
+			<br />
+			{$goal}:
+		</td>
+		<td>
+			<br />
+			<textarea name="goal" rows="8" cols="26">
+				{loop="goal_a"}
+					{$value}&#13;&#10;
+				{/loop}
+			</textarea>
+		</td>
+    </tr>
+    <tr>
+		<td>
+			<br />
+			{$website}:
+		</td>
+		<td>
+			<br />
+			<input type="text" name="website" value="{$website_n}" />
+		</td>
+    </tr>
+    <tr>
+		<td>
+			<br />
+			{$photo}:
+			<br />
+			<p class="small">
+				{$inserturl}
+			</p>
+		</td>
+		<td>
+			<br />
+			<input type="text" name="photo" value="{$photo_n}" />
+		</td>
+    </tr>
+    <tr>
+		<td>
+			<br />
+			{$openproject}: [<a href="/faq.php#q19" onclick="window.open(this.href); return false;">?</a>]
+		</td>
+		<td>
+			<br />
+			<input type="checkbox" name="open" value="1" {if="$openproject_b"} checked {/if}/>
+		</td>
+    </tr>
+    <tr>
+		<td>
+			<br />
+			{$visibleproject}: [<a href="/faq.php#q19" onclick="window.open(this.href); return false;">?</a>]
+		</td>
+		<td>
+			<br />
+			<input type="checkbox" name="visible" value="1" {if="$visibleproject_b"} checked {/if}/>
+		</td>
+    </tr>
+    <tr>
+		<td>
+			<br />
+			{$privateproject}: [<a href="/faq.php#q19" onclick="window.open(this.href); return false;">?</a>]
+		</td>
+		<td>
+			<br />
+			<input type="checkbox" name="private" value="1" {if="$privateproject_b"} checked {/if}/>
+		</td>
+    </tr>
+	<tr>
+		<td>
+			<br />
+			<input type="submit" value="{$edit}" />
+			</td>
+		<td>
+			<div id="res"></div>
+		</td>
+	</tr>
+	</table>
+	<input type="hidden" name="tok" value="{$tok_n}" />
+	<input type="hidden" name="id" value="{$id_n}" />
+</form>
+<br />
+<hr />
+<form id="delfrm">
+	<input type="hidden" name="tok" value="{$tok_n}" />
+	<input type="hidden" name="id" value="{$id_n}" />
+	<table class="intable">
+		<tr>
+			<td style="width: 50%; vertical-align: top">{$captcha}:</td>
+			<td>
+				<div>
+					<img alt="" id="captcha" title="captcha" style="border: 1px solid #FFF" width="90" height="30" />
+					&nbsp;<span onclick="N.reloadCaptcha()" style="font-size:6pt; cursor: pointer">{$reloadcaptcha}</span>
+				</div>
+				<div>
+					<input type="text" id="cptxt" name="captcha" required />
+				</div>
+			</td>
+	    </tr>
+		   <tr>
+			<td>
+				<input type="submit" value="{$delete}" />
+			</td>
+			<td></td>
+		</tr>
+	</table>
+</form>
+<div id="res2"></div>
+<br /><br />
+<script type="application/javascript">
+	$(document).ready(function() {
+		$('#edprofrm').submit(function(event) {
+			event.preventDefault();
+			var r = $("#res");
+			r.html($("#loadtxt").data('loading'));
+			N.json.post('/pages/preferences/projects.html.html.json.php?action=update',$(this).serialize(), function(data) {
+				r.html(data.message);
+			});
+		});
+
+		$("#delfrm").submit(function(e) {
+			e.preventDefault();
+			var r = $("#res2");
+			r.html($("#loadtxt").data('loading'));
+			N.json.post('/pages/preferences/projects.html.html.json.php?action=del',$(this).serialize(), function(data) {
+				r.html(data.message);
+				if(data.status == 'ok') {
+					setTimeout(function() { location.reload(); },1500);
+				}
+			});
+
+		});
+	});
+</script>

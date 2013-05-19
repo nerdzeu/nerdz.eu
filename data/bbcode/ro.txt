@@ -1,0 +1,50 @@
+[user]Name de utilizatori[/user]
+[project]Denumirea proiectului[/project]
+[url]http://www.nerdz.eu/[/url]
+[url=http://www.nerdz.eu/]Clicca qui![/url] || [url="http://www.nerdz.eu/"]Clicca qui![/url]
+[img]URL imagine[/img]
+[b]textul bold[/b]
+[cur]Cursiv textul[/cur]
+[small]Text de mici dimensiuni[/small]
+[u]textul subliniat[/u]
+[del]eliminat textului[/del]
+[hr] Orizontală articolul
+[code=limbă]codul sursă[/code]
+[gist]GistID[/gist]
+[youtube]http://www.youtube.com/watch?v=_ynuMmB91qM[/youtube]  
+[yt]http://www.youtube.com/watch?v=_ynuMmB91qM[/yt]
+[m]LaTeX Codul de matematica linie[/m]
+[math]Codul de latex pentru blocul de matematica[/math]
+[wiki=limbă]subiect[/wiki] // Limba în două caractere, cum ar fi: it, en, de, ...
+[quote]citat[/quote]
+[quote=autor]citat[/quote]
+[spoiler]Ascuns de testare[/spoiler]
+[spoiler=label]Ascuns de testare[/spoiler]
+
+[list]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list type="a|A|i|I|1"]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list start="[0-9]+"]
+[*] 1 
+[*] 2
+...
+[/list]
+
+[list start="[0-9]+" type="a|A|i|I|1"]
+[*] 1 
+[*] 2
+[/list]
+
+[list type="a|A|i|I|1" start="[0-9]+"]
+[*] 1 
+[*] 2
+[/list]

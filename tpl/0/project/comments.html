@@ -1,0 +1,78 @@
+{if="$gravatar_b"}
+	{loop="list_a"}
+	<div id="{$value.uid_n}" data-hcid="{$value.hcid_n}">
+		<a href="/{$value.from4link_n}" style="vertical-align:top">
+			<img src="{$value.gravatarurl_n}&s=30#" alt="{$value.from_n}" height="30" width="30" onerror="this.src = '{$onerrorimgurl_n}'" style="float:left; padding-right:2px; padding-top: 3px" />
+		</a>
+		<div class="nerdz_from">
+			{if="$value.canshowlock_b"}
+			<span style="float: right">
+				{if="$value.lock_b"}
+					<img class="imglocked" width="16" height="16" data-hpid="{$value.hpid_n}" data-silent="{$value.fromid_n}" src="images/lock.png" alt="" title="{$receivenotifications}" onclick="" />
+				{else}
+					<img width="16" height="16" class="imgunlocked" data-hpid="{$value.hpid_n}" data-silent="{$value.fromid_n}" src="images/unlock.png" alt="" title="{$dontreceivenotifications}" onclick="" />
+				{/if}
+			</span>
+			{/if}
+			<a href="/{$value.from4link_n}" style="vertical-align:top">
+				{$value.from_n}
+			</a>
+			<span class="nerdz_date">
+				{$value.datetime_n}
+				<img width="16" height="16" src="images/quote.png" alt="quote" class="qu_ico" data-hcid="{$value.hcid_n}" data-type="u" data-refto="commentto{$value.hpid_n}" onclick="" />
+			</span>
+		</div>
+		<div class="nerdz_comments" style="width:auto">
+			{if="$value.canremove_b"}
+				<span style="float:right;cursor: pointer" class="delcomment" data-hcid="{$value.hcid_n}" data-refto="{$value.uid_n}">X</span>
+			{/if}
+			{$value.message_n}
+		</div>
+	</div>
+	{/loop}
+{else}
+	{loop="list_a"}
+	<div id="{$value.uid_n}" data-hcid="{$value.hcid_n}">
+		<div class="nerdz_from">
+			{if="$value.canshowlock_b"}
+			<span style="float: right">
+				{if="$value.lock_b"}
+					<img class="imglocked" width="16" height="16" data-hpid="{$value.hpid_n}" data-silent="{$value.fromid_n}" src="images/lock.png" alt="" title="{$receivenotifications}" onclick="" />
+				{else}
+					<img width="16" height="16" class="imgunlocked" data-hpid="{$value.hpid_n}" data-silent="{$value.fromid_n}" src="images/unlock.png" alt="" title="{$dontreceivenotifications}" onclick="" />
+				{/if}
+			</span>
+			{/if}
+			<a href="/{$value.from4link_n}" style="vertical-align:top">
+				{$value.from_n}
+			</a>
+			<span class="nerdz_date">
+				{$value.datetime_n}
+				<img width="16" height="16" src="images/quote.png" alt="quote" class="qu_ico" data-hcid="{$value.hcid_n}"  data-type="u" data-refto="commentto{$value.hpid_n}" onclick="" />
+			</span>
+		</div>
+		<div class="nerdz_comments">
+			{if="$value.canremove_b"}
+				<span style="float:right;cursor: pointer" class="delcomment" data-hcid="{$value.hcid_n}" data-refto="{$value.uid_n}">X</span>
+			{/if}
+			{$value.message_n}
+		</div>
+	</div>
+	{/loop}
+{/if}
+{ignore}Il form non viene caricato, quando si gettano i commenti dopo uno specifico hcid{/ignore}
+{if="$showform_b"}
+<div>
+	{if="$gravatar_b"}
+	<div style="width:30px; float:left">&nbsp;</div>
+	{/if}
+	<form style="overflow:hidden; width:auto" class="frmcomment" data-hpid="{$hpid_n}">
+		<textarea id="commentto{$hpid_n}" name="message" style="width: 99.5%; height: 60px"></textarea>
+		<input type="submit" value="{$nerdzit}" style="float: right;margin-top:5px" />
+		<button type="button" style="float:right; margin-top: 5px" class="preview" data-refto="#commentto{$hpid_n}">{$preview}</button>
+		<button type="button" style="float:left; margin-top:5px" onclick="window.open('/bbcode.php')">BBCode</button>
+	<div class="error"></div>
+	</form>
+</div>
+{/if}
+

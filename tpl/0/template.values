@@ -1,0 +1,23 @@
+# file structure
+# section:
+# 	page: value;
+#   page2: value;
+#   [...]
+# section2:
+#   page: value;
+# avaiable sections: css, javascript.
+
+css:
+	default: css/default.css; #un solo css per tutto il template
+	
+javascript:
+	default:	  js/default.js; #dove gestisco la parte comune a tutte le pagine
+	index:		  js/index.js;
+	home:		  js/home.js; #chiamate specifiche per la home
+	profile:	  js/profile.js;
+	project: 	  js/project.js;
+	pm:	 		  js/pm.js;
+	userslist:	  js/userslist.js;
+	projectslist: js/projectslist.js;
+	bookmarks:    js/bookmarks.js;
+	share:		  js/share.js;

@@ -1,0 +1,100 @@
+<div id="main">
+    	<p>{$presentation_n}</p>
+	</br>
+	<form id="regfrm">
+		<table style="width: 80%; margin: auto; font-size: 37px">
+			<tr>
+				<td style="width:5%;vertical-align: middle">
+					{$username}:
+				</td>
+				<td style="width:5%;vertical-align: middle">
+					<input type="text" name="username" required /><br />
+				</td>
+			</tr>
+		    <tr>
+			    <td>{$name}:</td>
+				<td>
+					<input type="text" name="name" required /><br />
+				</td>
+	    	</tr>
+	    	<tr>
+	    		<td>{$surname}:</td>
+				<td>
+					<input type="text" name="surname" required /><br />
+				</td>
+		    </tr>
+		    <tr>
+	    		<td>{$email}:</td>
+				<td>
+					<input type="text" name="email" required /><br />
+				</td>
+		    </tr>
+		    <tr>
+		    	<td>{$password}:</td>
+				<td>
+					<input type="password" name="password" required /><br />
+				</td>
+		    </tr>
+		    <tr>
+		    	<td>{$gender}:</td>
+				<td>
+			    	<select name="gender">
+					    <option value="1">{$male}</option>
+					    <option value="2">{$female}</option>
+				    </select>
+				</td>
+		    </tr>
+	    	<tr>
+			    <td>{$birthdate}:</td>
+				<td>
+				    <select name="birth_day">
+					    <option value="-1">{$day}</option>
+						{loop="days_a"}
+							<option value="{$value}">{$value}</option>
+						{/loop}
+					</select>
+					<select name="birth_month">
+						<option value="-1">{$month}</option>
+						{loop="months_a"}
+							<option value="{$value}">{$value}</option>
+						{/loop}
+				    </select>
+					<select name="birth_year">
+						<option value="-1">{$year}</option>
+						{loop="years_a"}
+							<option value="{$value}">{$value}</option>
+						{/loop}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>{$timezone}:</td>
+				<td>
+					<select name="timezone">
+					{loop="timezones_a"}
+						<option value="{$value}">{$value}</option>
+					{/loop}
+					</select>
+			</tr>
+		    <tr>
+			    <td>{$captcha}:</td>
+				<td>
+					<div>
+						<img src="{$captchaurl_n}#" alt="" id="captcha" title="captcha" style="border: 1px solid #FFF" width="90" height="30" />
+						&nbsp;<span onclick="N.reloadCaptcha()" style="font-size:30px; cursor: pointer">{$reloadcaptcha}</span>
+					</div>
+					<div>
+						<input type="text" id="cptxt" name="captcha" required />
+					</div>
+				</td>
+	    	</tr>
+		    <tr>
+				<td>
+					<input style="height: 70px" type="submit" value="{$register}" />
+				</td>
+				<td></td>
+		    </tr>
+	    </table>
+	</form>
+
+</div>
