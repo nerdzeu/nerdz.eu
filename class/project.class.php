@@ -186,13 +186,7 @@ class project extends messages
 
 	public function canRemoveProjectPost($post,$own)
 	{
-		if(parent::isLogged())
-			if($_SESSION['nerdz_id'] == $post['from'])
-				return true;
-			else
-				if($_SESSION['nerdz_id'] == $own)
-					return true;
-		return false;
+		return (parent::isLogged() && ($_SESSION['nerdz_id'] == $post['from'] || $_SESSION['nerdz_id'] == $own));
 	}
 
 	public function canShowLockForProjectPost($post)
