@@ -240,9 +240,11 @@ class comments extends project
 		while(preg_match($pattern,$message) && (++$i < 11))
 			$message = preg_replace_callback($pattern,function($m) {
 					$username = comments::getUserNameFromProjectCid($m[1]);
-					return '<div class="qu_main bluser'.parent::getUserId($username).'"><div class="qu_user"><a href="/'.phpCore::userLink($username).'>'.$username.'</a>:</div>'
+					return $username ? 
+							'<div class="qu_main bluser'.parent::getUserId($username).'"><div class="qu_user"><a href="/'.phpCore::userLink($username).'">'.$username.'</a>:</div>'
 								.str_replace(']','&#93',str_replace("\n",'',comments::getProjectComment($m[1]))).
-							'</div>';
+							'</div>' :
+							'';
 					},$message,1);
 
 		if($i == 11)
@@ -253,12 +255,11 @@ class comments extends project
 		while(preg_match($pattern,$message) && (++$i < 11))
 			$message = preg_replace_callback($pattern,function($m) {
 					$username = comments::getUserNameFromCid($m[1]);
-					$id = parent::getUserId($username);
-					return '<div class="qu_main bluser'.parent::getUserId($username).'"><div class="qu_user"><a href="/'.phpCore::userLink($username).'">'
-									.$username.
-									'</a>:</div>'
+					return $username ? 
+							'<div class="qu_main bluser'.parent::getUserId($username).'"><div class="qu_user"><a href="/'.phpCore::userLink($username).'">'.$username.'</a>:</div>'
 								.str_replace(']','&#93',str_replace("\n",'',comments::getComment($m[1]))).
-							'</div>';
+							'</div>' :
+							'';
 					},$message,1);
 
 		if($i == 11)
@@ -394,14 +395,14 @@ class comments extends project
 	private function getUserNameFromProjectCid($hcid)
 	{
 		if(!($o = parent::query(array('SELECT `from` FROM `groups_comments` WHERE `hcid` = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
-			return '(null)';
+			return false;
 		return parent::getUserName($o->from);
 	}
 
 	private function getUserNameFromCid($hcid)
 	{
 		if(!($o = parent::query(array('SELECT `from` FROM `comments` WHERE `hcid` = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
-			return '(null)';
+			return false;
 		return parent::getUserName($o->from);
 	}
 
