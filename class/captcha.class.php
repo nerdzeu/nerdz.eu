@@ -13,7 +13,9 @@ final class Captcha
 
     public function show()
     {
-		ob_clean();
+		if (count(ob_list_handlers()) > 0) {
+ 			ob_clean();
+		}
 		header('Content-Type: image/png');
 		$this->generate();
 		$red = rand(200,255);
