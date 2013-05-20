@@ -11,8 +11,7 @@ if($logged && ($blist = $core->getBlacklist()))
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';
-$uag = new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
-$uagdata = $uag->getArray();
+$uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
 // da includere in ogni pagine, nell'header, dopo aver creato $core  e creato la variabile $headers
 $tno = $core->getTemplate();
 if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //se ssl è attivo uso l'url senza static, dato che non ho il certificato per quel sottodominio

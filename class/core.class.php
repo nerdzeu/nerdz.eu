@@ -521,7 +521,7 @@ class phpCore
 
     public function refererControl()
     {
-		 return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],array(SITE_HOST,'nerdz.eu','mobile.nerdz.eu','n2.n2.n2'));
+		 return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],array(SITE_HOST,'nerdz.eu','mobile.nerdz.eu'));
     }
 
 	public function getCsrfToken($n = '')

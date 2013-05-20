@@ -1,10 +1,7 @@
 <?php
 //TEMPLATE: sistemabile
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';//ok qui
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';//ok qui
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';//ok qui
-
-$uag = new Browser($info->http_user_agent);
 
 $vals = array();
 $vals['logged_b'] = $core->isLogged();
@@ -126,8 +123,9 @@ else
 		$vals['preview'] = $core->lang('PREVIEW');
 		$vals['whoami'] = $core->lang('WHO_AM_I');
 		$vals['board'] = $core->lang('NERDZ_BOARD');
-
-		$vals['useragent_a'] = $uag->getArray();
+		
+		require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';//ok qui
+		$vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
 		$vals['friends'] =  $core->lang('FRIENDS');
 
 		$f = $core->getFollow($info->counter);
