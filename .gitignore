@@ -11,3 +11,4 @@ mobile/*
 pages/cache/*
 BingSiteAuth.xml
 smapxml
+.DS_Store
