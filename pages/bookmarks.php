@@ -63,17 +63,15 @@ $vals['when'] = $core->lang('WHEN');
 if(($r = $core->query($query,db::FETCH_STMT)))
 {
     $i = 0;
-
-    $getaname = ($prj) ? $core->getProjectName($o->to) : $core->getUserName($o->to);
-
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['list_a'][$i]['datetime_n'] = $core->getDateTime($o->time);
         $vals['list_a'][$i]['pid_n'] = $o->pid;
         $vals['list_a'][$i]['hpid_n'] = $o->hpid;
-        $vals['list_a'][$i]['name_n'] = $getaname;
+        $vals['list_a'][$i]['name_n'] = ($prj) ? $core->getProjectName($o->to) : $core->getUserName($o->to);
         $vals['list_a'][$i]['preview_n'] = $core->bbcode(htmlentities(substr(html_entity_decode($o->message,ENT_QUOTES,'UTF-8'),0,256),ENT_QUOTES,'UTF-8').'...',true);
         $vals['list_a'][$i]['link_n'] = ($prj) ? '/'.phpCore::projectLink($vals['list_a'][$i]['name_n']).$o->pid : '/'.phpCore::userLink($vals['list_a'][$i]['name_n']).$o->pid;
+
         ++$i;
     }
 }
