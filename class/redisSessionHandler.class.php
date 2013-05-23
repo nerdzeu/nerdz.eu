@@ -23,7 +23,7 @@ Predis\Autoloader::register();
  */
 class redisSessionHandler implements SessionHandlerInterface
 {
-    private $host = "127.0.0.1";
+    private $host = '127.0.0.1';
     private $port = 6379;
     private $lifetime = 0;
     private $redis = null;
@@ -31,20 +31,22 @@ class redisSessionHandler implements SessionHandlerInterface
     /**
      * Constructor
     */
-    public function __construct(){
+    public function __construct()
+	{
         $this->redis = new Predis\Client(array(
-            "scheme" => "tcp",
-            "host" => $this->host,
-            "port" => $this->port
+            'scheme' => 'tcp',
+            'host' => $this->host,
+            'port' => $this->port
         ));
         session_set_save_handler($this,true);
-		  session_start();
+		session_start();
     }
  
     /**
      * Destructor
     */
-    public function __destruct(){
+    public function __destruct()
+	{
         session_write_close();
         $this->redis->disconnect();
     }
@@ -53,7 +55,8 @@ class redisSessionHandler implements SessionHandlerInterface
      * Open the session handler, set the lifetime ot session.gc_maxlifetime
      * @return boolean True if everything succeed
     */
-    public function open($savePath, $sessionName){ //variabili inutili ai nostri fini, ma indispensabili per implementare l'interfaccia
+    public function open($savePath, $sessionName) //parameters required by implemented interface
+	{
         $this->lifetime = ini_get('session.gc_maxlifetime');
         return true;
     }
@@ -63,16 +66,20 @@ class redisSessionHandler implements SessionHandlerInterface
      * @param string $id The SESSID to search for
      * @return string The session saved previously
     */
-    public function read($id){
+    public function read($id)
+	{
         $tmp = $_SESSION;
         $_SESSION = json_decode($this->redis->get("sessions/{$id}"), true);
-        if(isset($_SESSION) && !empty($_SESSION) && $_SESSION != null){
+
+        if(isset($_SESSION) && !empty($_SESSION) && $_SESSION != null)
+		{
             $new_data = session_encode();
             $_SESSION = $tmp;
             return $new_data;
-        }else{
-            return "";
         }
+		else
+			return '';
+        
     }
  
     /**
@@ -81,7 +88,8 @@ class redisSessionHandler implements SessionHandlerInterface
      * @param string $data The data to store, already serialized by PHP
      * @return boolean True if redis was able to write the session data
     */
-    public function write($id, $data){
+    public function write($id, $data)
+	{
         $tmp = $_SESSION;
         session_decode($data);
         $new_data = $_SESSION;
@@ -97,7 +105,8 @@ class redisSessionHandler implements SessionHandlerInterface
      * @param string $id The SESSID to delete
      * @return boolean True if redis was able delete session data
     */
-    public function destroy($id){
+    public function destroy($id)
+	{
         return $this->redis->del("sessions/{$id}");
     }
  
@@ -105,7 +114,8 @@ class redisSessionHandler implements SessionHandlerInterface
      * Close gc
      * @return boolean Always true
     */
-    public function gc($maxlifetime){ //parametro inutile, ma indispensabile per implementare l'interfaccia
+    public function gc($maxlifetime) //parameters required by implemented interface
+	{
         return true;
     }
  
@@ -113,7 +123,8 @@ class redisSessionHandler implements SessionHandlerInterface
      * Close session
      * @return boolean Always true
     */
-    public function close(){
+    public function close()
+	{
         return true;
     }
 }
