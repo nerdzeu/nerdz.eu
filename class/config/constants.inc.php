@@ -31,7 +31,6 @@ define('SMTP_PASS',$class->smtp_pass);
 
 # redis options
 define('REDIS_ENABLED', $class->redis_enabled);
-define('REDIS_USE_OLD_API', $class->redis_old_api);
 
 #special profiles
 define('USERS_NEWS',1643);
