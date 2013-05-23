@@ -16,23 +16,13 @@ final class banners
 		   $this->banners = unserialize(apc_fetch($cache));
 		else
 		{	
-			if(($txt = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/data/banner.list')))
+			if(($arr = file ($_SERVER['DOCUMENT_ROOT'].'/data/banner.list', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)))
 			{
-				$a = explode("\n",$txt);
-				$tot = count($a);
-				$tmp = array();
-				for($i=0;$i<$tot;++$i)
+				foreach ($arr as $line)
 				{
-					if(empty($a[$i]))
-						continue;
-
-					$tmp = preg_split('#([a-z0-9\.]+) =(.+?)#',$a[$i],null,PREG_SPLIT_DELIM_CAPTURE);
-
-					list($fornitore, $formato) = explode('.',$tmp[1]);
-					$banner = $tmp[3];
-					$this->banners[] = array($fornitore,$formato,$banner);
+					$elms = explode ('.', $line, 3);
+					$this->banners[] = array ($elms[0], $elms[1], $elms[2]);
 				}
-				
 				apc_store($cache,serialize($this->banners),7200);
 			}
 		}

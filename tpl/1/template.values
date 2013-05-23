@@ -1,22 +1,24 @@
-# file structure
-# section:
-# 	page: value;
-#   page2: value;
-#   [...]
-# section2:
-#   page: value;
-# avaiable sections: css, javascript.
-
-css:
-	default: css/default.css;
-	
-javascript:
-	default:		 js/default.js;
-	home:			 js/home.js;
-	profile:		 js/profile.js;
-	project: 		 js/project.js;
-	pm:	 			 js/pm.js;
-	search: 		 js/search.js;
-	userslist:		 js/userslist.js;
-	projectslist:	 js/projectslist.js;
-	bookmarks:    	 js/bookmarks.js;
+{
+	/*
+	 * template.values - define here the corrispective JS/CSS files for your template
+	 * This is just plain JSON (with the support of comments).
+	 * Available sections: CSS, JS
+	 */
+	// CSS section
+	"css": {
+		"default": "css/default.css"
+	},
+	// JS section
+	"js": {
+		"default": "js/default.js",
+		"index": "js/index.js",
+		"home": "js/home.js",
+		"profile": "js/profile.js",
+		"project": "js/project.js",
+		"pm": "js/pm.js",
+		"userslist": "js/userslist.js",
+		"projectslist": "js/projectslist.js",
+		"bookmarks": "js/bookmarks.js",
+		"share": "js/share.js"
+	}
+}

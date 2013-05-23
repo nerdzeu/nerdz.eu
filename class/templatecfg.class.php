@@ -59,93 +59,11 @@ final class templateCfg extends phpCore
 		{
 			if(!($txt = file_get_contents($templatepath)))
 				return array();
-
-			$a = explode("\n",$txt);
-			$tot = count($a);
-
-			$ret = array();
-			$i = 0;
-			$sections = array(self::JS_SECTION,self::CSS_SECTION);
-
-			while(!in_array($a[$i],$sections) && $i++ < $tot)
-				;
-
-			if($i == $tot)
-				return array();
-
-			$js = $css = array();
-
-			if($a[$i] == self::JS_SECTION)
-			{
-				while($i < $tot && $a[$i] != self::CSS_SECTION)
-				{
-					++$i;
-					if(!empty($a[$i]) && $a[$i][0] != '#')
-						$js[] = $a[$i];
-					else
-						++$i;
-				}
-				
-				while($i < $tot)
-				{
-					++$i;
-					if(!empty($a[$i]) && $a[$i][0] != '#')
-						$css[] = $a[$i];
-					else
-						++$i;
-				}
-			}
-
-			if($a[$i] == self::CSS_SECTION)
-			{
-				
-				while($i<$tot && $a[$i] != self::JS_SECTION)
-				{
-					++$i;
-					if(!empty($a[$i]) && $a[$i][0] != '#')
-						$css[] = $a[$i];
-					else
-						++$i;
-				}
-				
-				while($i<$tot)
-				{
-					++$i;
-					if(!empty($a[$i]) && $a[$i][0] != '#')
-						$js[] = $a[$i];
-					else
-						++$i;
-				}
-			}
-
-			$list = array($js,$css);
-			foreach($list as $type)
-			{
-				$id = $type == $js ? 'js' : 'css';
-
-				foreach($type as $j)
-				{
-					$tmp = explode(':',trim($j),2);
-					foreach($tmp as &$val)
-						$val = trim($val);
-					
-					if(empty($tmp[1]))
-						continue;
-		
-					$c = 0;
-					while(isset($tmp[1][$c]) && ($tmp[1][$c] != ';'))
-						++$c;
-		
-					if($c == (strlen($tmp[1])-1))
-						$ret[$id][$tmp[0]] = substr($tmp[1],0,$c);
-					else
-						if(isset($tmp[1][$c]) && ($tmp[1][$c] == ';'))
-							$ret[$id][$tmp[0]] = substr($tmp[1],0,$c);
-				}
-			}
-
+			// thanks for the following regexp to 1franck (http://là.pw/pb)
+			$ret = json_decode (preg_replace ('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);
+			if (!is_array ($ret))
+				$ret = array ( 'js' => array(), 'css' => array() );
 			apc_store($cachename,serialize($ret),3600); //1h
-
 		}
 
 		if($page != null)
