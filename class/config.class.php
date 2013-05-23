@@ -19,7 +19,6 @@ final class confClass
     public $smtp_port;
     public $static_domain;
     public $redis_enabled = true;
-    public $redis_old_api = true;
     
     public function __construct()
     {
@@ -45,8 +44,8 @@ final class confClass
 					$this->smtp_user = $Rsmtp_user;
 					$this->smtp_pass = $Rsmtp_pass;
 					$this->static_domain = $Rstatic_domain;
-					if (isset ($Rredis_enabled)) $this->redis_enabled = $Rredis_enabled;
-					if (isset ($Rredis_old_api)) $this->redis_old_api = $Rredis_old_api;
+					if(isset ($Rredis_enabled))
+						$this->redis_enabled = $Rredis_enabled;
 					return;
 				}
 			}

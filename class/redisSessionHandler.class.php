@@ -1,8 +1,6 @@
 <?php
 //First we load the Predis autoloader
-// - since we are included by core.class AFTER the load of constants, we can
-//   check if the old API is enabled or not
-require_once REDIS_USE_OLD_API ? 'Predis/autoload.php' : 'Predis/Autoloader.php';
+require_once 'Predis/Autoloader.php';
 //Registering Predis system
 Predis\Autoloader::register();
 
