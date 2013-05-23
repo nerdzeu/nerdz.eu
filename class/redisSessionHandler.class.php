@@ -1,7 +1,11 @@
 <?php
-
 //First we load the Predis autoloader
-require_once 'Predis/autoload.php'; //si trova in /usr/share/pear
+// - since we are included by core.class AFTER the load of constants, we can
+//   check if the old API is enabled or not
+if (REDIS_USE_OLD_API)
+    require_once 'Predis/autoload.php'; //si trova in /usr/share/pear
+else
+    require_once 'Predis/Autoloader.php';
 //Registering Predis system
 Predis\Autoloader::register();
  

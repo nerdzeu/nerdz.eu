@@ -16,5 +16,7 @@ $Rsmtp_port = 465;
 $Rsmtp_user = 'mail user';
 $Rsmtp_pass = 'mail pass';
 $Rstatic_domain = 'http://static.dominio/';
+$Rredis_enabled = true;
+$Rredis_old_api = true;
 ?>
 

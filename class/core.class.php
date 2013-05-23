@@ -2,13 +2,15 @@
 if(isset($_COOKIE['SEXYID']) && !preg_match('#^[a-z0-9\-,]{32}$#i',$_COOKIE['SEXYID']))
 	unset($_COOKIE['SEXYID']);
 
-//Per la condivisione delle sessioni (tramite redis) con node.js. L'inclusione ha session_start();
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/redisSessionHandler.class.php';
-
 if(isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu')
 	$_SESSION['nerdz_template'] = '1'; //mobile
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/db.class.php';
+//Per la condivisione delle sessioni (tramite redis) con node.js. L'inclusione ha session_start();
+if (REDIS_ENABLED)
+	require_once $_SERVER['DOCUMENT_ROOT'].'/class/redisSessionHandler.class.php';
+else
+	session_start();
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
 
 if(isset($_GET['id']) && !is_numeric($_GET['id']) && !is_array($_GET['id']))
