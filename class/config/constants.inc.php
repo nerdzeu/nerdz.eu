@@ -32,6 +32,11 @@ define('SMTP_PASS',$class->smtp_pass);
 # redis options
 define('REDIS_ENABLED', $class->redis_enabled);
 
+# minification options
+define('MINIFICATION_ENABLED', $class->do_minification);
+define('MINIFICATION_JS_CMD',  $class->js_min_cmd);
+define('MINIFICATION_CSS_CMD', $class->css_min_cmd);
+
 #special profiles
 define('USERS_NEWS',1643);
 define('DELETED_USERS',1644);

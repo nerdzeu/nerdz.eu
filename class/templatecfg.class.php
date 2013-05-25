@@ -13,10 +13,6 @@ final class templateCfg extends phpCore
 {
 	private $tpl_no;
 
-	//template values, not mandatory constants (sections)
-	const CSS_SECTION = 'css:';
-	const JS_SECTION  = 'javascript:';
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -85,39 +81,26 @@ final class templateCfg extends phpCore
 			foreach($arr as &$path)
 				if(!parent::isValidURL($path))
 				{
-					$userfile = $_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/{$path}";
+					$userfile = "{$_SERVER['DOCUMENT_ROOT']}/tpl/{$this->tpl_no}/{$path}";
 					if(!file_exists($userfile))
 					{
 						unset($path);
 						continue;
 					}
+					if (!MINIFICATION_ENABLED)
+						continue;
 					
 					$userfiletime = $_SERVER['DOCUMENT_ROOT'].'/tmp/'.md5($path).$this->tpl_no.$id;
 					$ext = "min.{$id}";
-			
-					if(!file_exists($userfiletime))
+
+					if(!file_exists ($userfiletime) || // intval won't get called if the file doesn't exist
+					   intval(file_get_contents($userfiletime)) < filemtime($userfile))
 					{
-						require_once $_SERVER['DOCUMENT_ROOT'].'/class/javascript.class.php';
-						require_once $_SERVER['DOCUMENT_ROOT'].'/class/css.class.php';
-						file_put_contents($userfiletime,filemtime($userfile));
-						chmod($userfiletime,0775);
-						$realfile = $userfile.$ext;
-						file_put_contents($realfile,$id == 'js' ? Javascript::optimize($userfile) : Css::optimize($userfile));
-						chmod($realfile,0775);
+						require_once $_SERVER['DOCUMENT_ROOT'].'/class/minification.class.php';
+						Minification::minifyTemplateFile ($userfiletime, $userfile, $userfile . $ext, $id);
 					}
-					else
-						if(intval(file_get_contents($userfiletime)) < filemtime($userfile))
-						{
-							require_once $_SERVER['DOCUMENT_ROOT'].'/class/javascript.class.php';
-							require_once $_SERVER['DOCUMENT_ROOT'].'/class/css.class.php';
-							$realfile = $userfile.$ext;
-							file_put_contents($realfile,$id == 'js' ? Javascript::optimize($userfile) : Css::optimize($userfile));
-							chmod($realfile,0775);
-							file_put_contents($userfiletime,filemtime($userfile));
-							chmod($userfiletime,0775);
-						}
 					
-					$path.=$ext;
+					$path.=$ext; // append min.ext to file path
 				}
 		return $ret;
 	}

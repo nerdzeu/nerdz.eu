@@ -5,6 +5,7 @@
  */
 final class confClass
 {
+    // TODO: migrate to an array-based configuration ($cfg['option'])
     public $mysql_user;
     public $mysql_pass;
     public $mysql_host;
@@ -18,7 +19,14 @@ final class confClass
     public $SMTP;
     public $smtp_port;
     public $static_domain;
+    // The following variables are set to a default of
+    // true to allow the original NERDZ to run without
+    // any additional config options.
     public $redis_enabled = true;
+    public $do_minification = true;
+    public $js_min_cmd = 'uglifyjs %path% -c unused=false';
+    // TODO: wrap to 80 columns this huge thing
+    public $css_min_cmd = 'csstidy %path% --allow_html_in_templates=false --compress_colors=true --compress_font-weight=true --remove_last_\;=true --remove_bslash=true --template=highest --preserve_css=true --silent=true';
     
     public function __construct()
     {
@@ -44,8 +52,16 @@ final class confClass
 					$this->smtp_user = $Rsmtp_user;
 					$this->smtp_pass = $Rsmtp_pass;
 					$this->static_domain = $Rstatic_domain;
+                    // optional config options
+                    // TODO: find a best approach than 10k issets (arrays?)
 					if(isset ($Rredis_enabled))
 						$this->redis_enabled = $Rredis_enabled;
+                    if(isset ($Rdo_minification))
+                        $this->do_minification = $Rdo_minification;
+                    if(isset ($Rjs_minify_cmd))
+                        $this->js_min_cmd = $Rjs_minify_cmd;
+                    if(isset ($Rcss_minify_cmd))
+                        $this->css_min_cmd = $Rcss_minify_cmd;
 					return;
 				}
 			}
