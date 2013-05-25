@@ -30,43 +30,43 @@ final class confClass
     
     public function __construct()
     {
-		require_once $_SERVER['DOCUMENT_ROOT'].'class/config/index.php';
-		if(isset($Rmysql_user, $Rmysql_host, $Rmysql_pass, $Rmysql_db,$Rsite_host))
-		{
-			$this->mysql_user = $Rmysql_user;
-			$this->mysql_pass = $Rmysql_pass;
-			$this->mysql_host = $Rmysql_host;
-			$this->mysql_db   = $Rmysql_db;
-			$this->site_host  = $Rsite_host;
-			if(isset($Rcaptcha_level, $Rlength_user, $Rlength_pass, $Rlength_name, $Rlength_surname))
-			{
-				$this->captcha_level  = $Rcaptcha_level;
-				$this->length_user    = $Rlength_user;
-				$this->length_pass    = $Rlength_pass;
-				$this->length_name    = $Rlength_name;
-				$this->length_surname = $Rlength_surname;
-				if(isset($Rsmtp, $Rsmtp_port, $Rsmtp_user, $Rsmtp_pass, $Rstatic_domain))
-				{
-					$this->SMTP = $Rsmtp;
-					$this->smtp_port = $Rsmtp_port;
-					$this->smtp_user = $Rsmtp_user;
-					$this->smtp_pass = $Rsmtp_pass;
-					$this->static_domain = $Rstatic_domain;
+        require_once $_SERVER['DOCUMENT_ROOT'].'class/config/index.php';
+        if(isset($Rmysql_user, $Rmysql_host, $Rmysql_pass, $Rmysql_db,$Rsite_host))
+        {
+            $this->mysql_user = $Rmysql_user;
+            $this->mysql_pass = $Rmysql_pass;
+            $this->mysql_host = $Rmysql_host;
+            $this->mysql_db   = $Rmysql_db;
+            $this->site_host  = $Rsite_host;
+            if(isset($Rcaptcha_level, $Rlength_user, $Rlength_pass, $Rlength_name, $Rlength_surname))
+            {
+                $this->captcha_level  = $Rcaptcha_level;
+                $this->length_user    = $Rlength_user;
+                $this->length_pass    = $Rlength_pass;
+                $this->length_name    = $Rlength_name;
+                $this->length_surname = $Rlength_surname;
+                if(isset($Rsmtp, $Rsmtp_port, $Rsmtp_user, $Rsmtp_pass, $Rstatic_domain))
+                {
+                    $this->SMTP = $Rsmtp;
+                    $this->smtp_port = $Rsmtp_port;
+                    $this->smtp_user = $Rsmtp_user;
+                    $this->smtp_pass = $Rsmtp_pass;
+                    $this->static_domain = $Rstatic_domain;
                     // optional config options
                     // TODO: find a best approach than 10k issets (arrays?)
-					if(isset ($Rredis_enabled))
-						$this->redis_enabled = $Rredis_enabled;
+                    if(isset ($Rredis_enabled))
+                        $this->redis_enabled = $Rredis_enabled;
                     if(isset ($Rdo_minification))
                         $this->do_minification = $Rdo_minification;
                     if(isset ($Rjs_minify_cmd))
                         $this->js_min_cmd = $Rjs_minify_cmd;
                     if(isset ($Rcss_minify_cmd))
                         $this->css_min_cmd = $Rcss_minify_cmd;
-					return;
-				}
-			}
-		}
-		die('SYSTEM ERROR');
-	}
+                    return;
+                }
+            }
+        }
+        die('SYSTEM ERROR');
+    }
 }
 ?>
