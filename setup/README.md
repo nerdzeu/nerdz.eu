@@ -82,12 +82,12 @@ This means that if your server doesn't put a trailing slash in `$_SERVER['DOCUME
 Two fixes are available for this.
 
 - First fix: put this on the head of your class/core.class.php:
-    ```php
+    ```
     $_SERVER['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT'] . ( substr ($_SERVER['DOCUMENT_ROOT'], -1) != '/' ? '/' : '' );
     ```
 - The second fix requires nginx, but it works everywhere (the first fix may need to be applied to more than on one file).
   Open your fastcgi_params file, find the line which starts with `fastcgi_param DOCUMENT_ROOT` and change it like this:
-    ```nginx
+    ```
     fastcgi_param  DOCUMENT_ROOT      $document_root/;
     ```
   Restart nginx and you're done.
