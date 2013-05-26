@@ -18,7 +18,7 @@
 		<title>NERDZ <?php $core->lang('ERROR');?></title>
 <?php
 	$headers = $tplcfg->getTemplateVars('error');
-	require_once $_SERVER['DOCUMENT_ROOT'].'pages/common/jscssheaders.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 	ob_flush();
 ?>
 	</head>

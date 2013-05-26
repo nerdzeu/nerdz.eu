@@ -62,36 +62,6 @@ Instead of NERDZ you got a 'KABOOM' page? We're here for you.
 
 Please, get out of Iran and try again.
 
-### I got lots of include errors, what the hell is happening?
-
-Heh, this is again nessuno's fault. In his code he includes stuff like this:
-
-```php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/something';
-```
-
-Which is right, and like this:
-
-```php
-require_once $_SERVER['DOCUMENT_ROOT'] . 'something';
-```
-
-which is cancer.
-This means that if your server doesn't put a trailing slash in `$_SERVER['DOCUMENT_ROOT']`, you're fucked up.
-
-Two fixes are available for this.
-
-- First fix: put this on the head of your class/core.class.php:
-    ```
-    $_SERVER['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT'] . ( substr ($_SERVER['DOCUMENT_ROOT'], -1) != '/' ? '/' : '' );
-    ```
-- The second fix requires nginx, but it works everywhere (the first fix may need to be applied to more than on one file).
-  Open your fastcgi_params file, find the line which starts with `fastcgi_param DOCUMENT_ROOT` and change it like this:
-    ```
-    fastcgi_param  DOCUMENT_ROOT      $document_root/;
-    ```
-  Restart nginx and you're done.
-
 ### All I see is text without a style / In my tpl/0/js/ dir there are some *.jsmin.js empty files
 
 Disable minification from the config, or install uglifyjs and csstidy.

@@ -20,7 +20,7 @@
     <title>NERDZ - Bookmarks </title>
 <?php
 	$headers = $tplcfg->getTemplateVars('bookmarks');
-	require_once $_SERVER['DOCUMENT_ROOT'].'pages/common/jscssheaders.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
 </head>
 <?php ob_flush(); ?>

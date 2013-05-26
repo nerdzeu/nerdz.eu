@@ -2,7 +2,7 @@
 /*
  * Classe per la gestione degli intervalli di flooding tra i posts e i commenti
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'class/core.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
 class flood extends phpCore
 {

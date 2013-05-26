@@ -45,7 +45,7 @@ else
 		$vals['gravatar_b'] = $vals['logged_b'] && $core->hasGravatarEnabled($_SESSION['nerdz_id']);
 		if($vals['gravatar_b'])
 		{
-			require_once $_SERVER['DOCUMENT_ROOT'].'class/gravatar.class.php';
+			require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
 			$vals['photo_n'] = (new gravatar())->getURL($info->counter);
 		}
 		else

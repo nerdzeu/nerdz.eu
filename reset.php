@@ -18,7 +18,7 @@
     <title>NERDZ =&gt; Password</title>
 <?php
 	$headers = $tplcfg->getTemplateVars('reset');
-	require_once $_SERVER['DOCUMENT_ROOT'].'pages/common/jscssheaders.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
 </head>
 <?php ob_flush(); ?>

@@ -35,8 +35,8 @@ class phpCore
 		}
 		catch(PDOException $e)
 		{
-			require_once $_SERVER['DOCUMENT_ROOT'].'data/databaseError.html';
-			$path = $_SERVER['DOCUMENT_ROOT'].'data/errlog.txt';
+			require_once $_SERVER['DOCUMENT_ROOT'].'/data/databaseError.html';
+			$path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
 			file_put_contents($path,$e->getMessage());
 			chmod($path,0775);
 			die();
@@ -46,7 +46,7 @@ class phpCore
 
 		if($this->isLogged() && (($motivation = $this->isInBanList($_SESSION['nerdz_id']))))
 		{
-			require_once $_SERVER['DOCUMENT_ROOT'].'data/bannedUser.php';
+			require_once $_SERVER['DOCUMENT_ROOT'].'/data/bannedUser.php';
 			die();
 		}
 

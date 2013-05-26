@@ -84,7 +84,7 @@
 		<link rel="alternate" type="application/atom+xml" title="<?php echo $username; ?>" href="http://<?php echo SITE_HOST; ?>/feed.php?id=<?php echo $id; ?>" />
 <?php
 	$headers = $tplcfg->getTemplateVars('profile');
-	require_once $_SERVER['DOCUMENT_ROOT'].'pages/common/jscssheaders.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
 </head>
 <?php ob_flush(); ?>

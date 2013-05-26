@@ -30,7 +30,7 @@ final class confClass
     
     public function __construct()
     {
-        require_once $_SERVER['DOCUMENT_ROOT'].'class/config/index.php';
+        require_once $_SERVER['DOCUMENT_ROOT'].'/class/config/index.php';
         if(isset($Rmysql_user, $Rmysql_host, $Rmysql_pass, $Rmysql_db,$Rsite_host))
         {
             $this->mysql_user = $Rmysql_user;

@@ -107,12 +107,12 @@ final class RainTPL
 	{
 		if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //ssl
 		{
-			$this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'ssltmp/';
+			$this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/ssltmp/';
 			$this->base_url = 'https://'.SITE_HOST;
 		}
 		else
 		{
-			$this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'tmp/';
+			$this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/tmp/';
 			$this->base_url = STATIC_DOMAIN;
 		}
 	}

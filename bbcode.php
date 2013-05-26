@@ -19,7 +19,7 @@
 		<title>NERDZ - BBCode</title>
 <?php
 	$headers = $tplcfg->getTemplateVars('bbcode');
-	require_once $_SERVER['DOCUMENT_ROOT'].'pages/common/jscssheaders.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 	ob_flush();
 ?>
 	</head>

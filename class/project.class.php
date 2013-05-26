@@ -3,7 +3,7 @@
  * Classe per la gestione dei progetti
  * I nomi dei metodi sono esplicativi
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'class/messages.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 
 class project extends messages
 {
@@ -110,7 +110,7 @@ class project extends messages
 
     public function addProjectMessage($to,$message,$news = null)
     {
-		require_once $_SERVER['DOCUMENT_ROOT'].'class/flood.class.php';
+		require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
 		if(!(new flood())->projectPost())
 			return 0;
 			

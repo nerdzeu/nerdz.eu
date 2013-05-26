@@ -1,7 +1,7 @@
 <?php
 //TEMPLATE: OK 
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'class/comments.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 $core = new comments();
 ob_start(array('phpCore','minifyHtml'));
 

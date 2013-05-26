@@ -2,7 +2,7 @@
 /*
  * Classe per la gestione dei commenti
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'class/project.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 
 class comments extends project
 {
@@ -189,7 +189,7 @@ class comments extends project
 		
 		if(($gravatar = parent::hasGravatarEnabled($_SESSION['nerdz_id'])))
 		{
-			require_once $_SERVER['DOCUMENT_ROOT'].'class/gravatar.class.php';
+			require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
 			$grav = new gravatar();
 
 			while(($o = $f->fetch(PDO::FETCH_OBJ)))
@@ -348,7 +348,7 @@ class comments extends project
 
 	public function addComment($hpid,$message)
 	{
-		require_once $_SERVER['DOCUMENT_ROOT'].'class/flood.class.php';
+		require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
 		if(!(new flood())->postComment())
 			return null;
 
@@ -485,7 +485,7 @@ class comments extends project
 
     public function addProjectComment($hpid,$message)
     {
-		require_once $_SERVER['DOCUMENT_ROOT'].'class/flood.class.php';
+		require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
 		if(!(new flood())->projectComment())
 			return null;
 

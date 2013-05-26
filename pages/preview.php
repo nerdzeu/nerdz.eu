@@ -1,6 +1,6 @@
 <?php
 //Template: OK
-require_once $_SERVER['DOCUMENT_ROOT'].'class/comments.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 $core = new comments();
 
 if(!$core->isLogged() || empty($_GET['message']))

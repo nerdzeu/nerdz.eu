@@ -77,7 +77,7 @@
 		<link rel="alternate" type="application/atom+xml" title="<?php echo $name; ?>" href="http://<?php echo SITE_HOST; ?>/feed.php?id=<?php echo $gid; ?>&amp;project=1" />
 <?php
 	$headers = $tplcfg->getTemplateVars('project');
-	require_once $_SERVER['DOCUMENT_ROOT'].'pages/common/jscssheaders.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
 	</head>
 <?php ob_flush(); ?>
