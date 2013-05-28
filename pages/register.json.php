@@ -196,7 +196,7 @@ if(isset($user['username'][MIN_LENGTH_USER]))
 					$_SESSION['nerdz_board_lang'] = $core->getBoardLanguage($o->counter);
 					//gravatar enabled by default
 					//return value is useless, because user is just registred
-					$core->query(array('INSERT INTO `gravatar_profiles`(`counter`) VALUES(?)',array($o->counter),db::NO_RETURN));
+					$core->query(array('INSERT INTO `gravatar_profiles`(`counter`) VALUES(?)',array($o->counter)),db::NO_RETURN);
 
 					die($core->jsonResponse('ok',$core->lang('LOGIN_OK')));
 
