@@ -36,7 +36,8 @@ final class Browser
 		const BROWSER_UNKNOWN = 'unknown';
 		const VERSION_UNKNOWN = 'unknown';
 
-		const BROWSER_OPERA = 'Opera';                            // http://www.opera.com/
+		const BROWSER_OPERA = 'Opera';
+		const BROWSER_CLASSIC_OPERA = 'Classic Opera';            // http://www.opera.com/ version <12
 		const BROWSER_OPERA_MINI = 'Opera Mini';                  // http://www.opera.com/mini/
 		const BROWSER_WEBTV = 'WebTV';                            // http://www.webtv.net/pc/
 		const BROWSER_IE = 'Internet Explorer';                   // http://www.microsoft.com/ie/
@@ -58,7 +59,7 @@ final class Browser
 		const BROWSER_IPOD = 'iOS';                              // http://apple.com
 		const BROWSER_IPAD = 'iOS';                              // http://apple.com
 		const BROWSER_CHROME = 'Chrome';                          // http://www.google.com/chrome
-		const BROWSER_ANDROID = 'Android';                        // http://www.android.com/
+		const BROWSER_ANDROID = 'Android Stock Browser';          // http://www.android.com/
 		const BROWSER_GOOGLEBOT = 'GoogleBot';                    // http://en.wikipedia.org/wiki/Googlebot
 		const BROWSER_SLURP = 'Yahoo! Slurp';                     // http://en.wikipedia.org/wiki/Yahoo!_Slurp
 		const BROWSER_W3CVALIDATOR = 'W3C Validator';             // http://validator.w3.org/
@@ -77,6 +78,7 @@ final class Browser
 
 		const PLATFORM_UNKNOWN = 'unknown';
 		const PLATFORM_WINDOWS = 'Windows';
+		const PLATFORM_WINDOWS_PHONE = 'Windows Phone';
 		const PLATFORM_WINDOWS_CE = 'Windows CE';
 		const PLATFORM_APPLE = 'Mac OS X';
 		const PLATFORM_LINUX = 'Linux';
@@ -321,8 +323,9 @@ final class Browser
 			return (
 				// well-known, well-used
 				// Special Notes:
-				// (1) Opera must be checked before FireFox due to the odd
-				//     user agents used in some older versions of Opera
+				// (1) Classic Opera must be checked before FireFox due to the odd
+				//     user agents used in some older versions of Opera and new Opera must be checked 
+				//     before Chrome due its being a Chromium-based browser.
 				// (2) WebTV is strapped onto Internet Explorer so we must
 				//     check for WebTV before IE
 				// (3) (deprecated) Galeon is based on Firefox and needs to be
@@ -334,6 +337,7 @@ final class Browser
 				$this->checkBrowserWebTv() ||
 				$this->checkBrowserInternetExplorer() ||
 				$this->checkBrowserOpera() ||
+				$this->checkBrowserClassicOpera() ||
 				$this->checkBrowserGaleon() ||
 				$this->checkBrowserNetscapeNavigator9Plus() ||
 				$this->checkBrowserSeaMonkey() ||
@@ -547,12 +551,29 @@ final class Browser
 			    }
 			return false;
 	    }
-
+	    
 	    /**
-	     * Determine if the browser is Opera or not (last updated 1.7)
+	     * Determine if the browser is the new Chromium-based Opera or not.
 	     * @return boolean True if the browser is Opera otherwise false
 	     */
-	    private function checkBrowserOpera()
+	    private function checkBrowserChrome()
+	    {
+		    if( stripos($this->_agent,'OPR') !== false )
+		    {
+			    $aresult = explode('/',stristr($this->_agent,'OPR'));
+			    $aversion = explode(' ',$aresult[1]);
+			    $this->setVersion($aversion[0]);
+			    $this->setBrowser(self::BROWSER_OPERA);
+			    return true;
+		    }
+		    return false;
+	    }
+
+	    /**
+	     * Determine if the browser is Classic Opera Presto-based or not (last updated 1.7)
+	     * @return boolean True if the browser is Opera otherwise false
+	     */
+	    private function checkBrowserClassicOpera()
 	    {
 		    if( stripos($this->_agent,'opera mini') !== false )
 		    {
@@ -589,7 +610,7 @@ final class Browser
 					    $aversion = explode(' ',stristr($resultant,'opera'));
 					    $this->setVersion(isset($aversion[1])?$aversion[1]:"");
 				    }
-				    $this->_browser_name = self::BROWSER_OPERA;
+				    $this->_browser_name = self::BROWSER_CLASSIC_OPERA;
 				    return true;
 			    }
 			return false;
@@ -1080,6 +1101,8 @@ final class Browser
 	     */
 	    private function checkPlatform()
 	    {
+	    	    if( stripos($this->_agent, 'IEMobile') !== false )
+			    $this->_platform = self::PLATFORM_WINDOWS_PHONE;
 		    if( stripos($this->_agent, 'windows') !== false )
 			    $this->_platform = self::PLATFORM_WINDOWS;
 		    
