@@ -36,8 +36,8 @@ final class Browser
 		const BROWSER_UNKNOWN = 'unknown';
 		const VERSION_UNKNOWN = 'unknown';
 
-		const BROWSER_OPERA = 'Opera';
-		const BROWSER_CLASSIC_OPERA = 'Classic Opera';            // http://www.opera.com/ version <12
+		const BROWSER_OPERA = 'Opera';                            // http://www.opera.com/ version >12
+		const BROWSER_CLASSIC_OPERA = 'Classic Opera';            // http://www.opera.com/ version <=12
 		const BROWSER_OPERA_MINI = 'Opera Mini';                  // http://www.opera.com/mini/
 		const BROWSER_WEBTV = 'WebTV';                            // http://www.webtv.net/pc/
 		const BROWSER_IE = 'Internet Explorer';                   // http://www.microsoft.com/ie/
@@ -55,9 +55,9 @@ final class Browser
 		const BROWSER_EPIPHANY = 'Epiphany';                      // http://projects.gnome.org/epiphany/
 		const BROWSER_LYNX = 'Lynx';                              // http://en.wikipedia.org/wiki/Lynx
 		const BROWSER_SAFARI = 'Safari';                          // http://apple.com
-		const BROWSER_IPHONE = 'iOS';                          // http://apple.com
-		const BROWSER_IPOD = 'iOS';                              // http://apple.com
-		const BROWSER_IPAD = 'iOS';                              // http://apple.com
+		const BROWSER_IPHONE = 'iOS';                             // http://apple.com
+		const BROWSER_IPOD = 'iOS';                               // http://apple.com
+		const BROWSER_IPAD = 'iOS';                               // http://apple.com
 		const BROWSER_CHROME = 'Chrome';                          // http://www.google.com/chrome
 		const BROWSER_ANDROID = 'Android Stock Browser';          // http://www.android.com/
 		const BROWSER_GOOGLEBOT = 'GoogleBot';                    // http://en.wikipedia.org/wiki/Googlebot
