@@ -616,24 +616,7 @@ final class Browser
 			return false;
 	    }
 
-	    /**
-	     * Determine if the browser is Chrome or not (last updated 1.7)
-	     * @return boolean True if the browser is Chrome otherwise false
-	     */
-	    private function checkBrowserChrome()
-	    {
-		    if( stripos($this->_agent,'Chrome') !== false )
-		    {
-			    $aresult = explode('/',stristr($this->_agent,'Chrome'));
-			    $aversion = explode(' ',$aresult[1]);
-			    $this->setVersion($aversion[0]);
-			    $this->setBrowser(self::BROWSER_CHROME);
-			    return true;
-		    }
-		    return false;
-	    }
-
-	    private function checkBrowserEpiphany()
+		private function checkBrowserEpiphany()
 	    {
 		    if( stripos($this->_agent,'Epiphany') !== false ) {
 			    $aresult = explode('/',stristr($this->_agent,'Epiphany'));
