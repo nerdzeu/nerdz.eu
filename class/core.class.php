@@ -104,9 +104,6 @@ class phpCore
 		}
 		catch(PDOException $e)
 		{
-//			if($this->isLogged() && $_SESSION['nerdz_id'] == 169) //DEBUG
-//				echo $e->getMessage(), $query[0];
-
 			if($action == db::FETCH_ERR)
 				return $stmt->errorInfo()[1];
 
@@ -549,13 +546,9 @@ class phpCore
 		if(is_numeric($limit) && $limit < $n && $limit > 0)
 			return true;
 
-		if(2 == sscanf($limit,'%d,%d',$a,$b))
-		{
-			if($b>$n)
-				return false;
-		}
-		else
+		if(sscanf($limit,'%d,%d',$a,$b) != 2 || (sscanf($limit,'%d,%d',$a,$b) == 2 && $b > $n))
 			return false;
+		
 		return true;
 	}
 
