@@ -556,7 +556,7 @@ final class Browser
 	     * Determine if the browser is the new Chromium-based Opera or not.
 	     * @return boolean True if the browser is Opera otherwise false
 	     */
-	    private function checkBrowserChrome()
+	    private function checkBrowserOpera()
 	    {
 		    if( stripos($this->_agent,'OPR') !== false )
 		    {
@@ -644,6 +644,21 @@ final class Browser
 		    }
 		    return false;
 	    }
+
+
+	    private function checkBrowserChrome()
+	    {
+		    if( stripos($this->_agent,'Chrome') !== false)
+		    {
+			    $aresult = explode('/',stristr($this->_agent,'Chrome'));
+			    $aversion = explode(' ',$aresult[1]);
+			    $this->setVersion($aversion[0]);
+			    $this->setBrowser(self::BROWSER_CHROME);
+			    return true;
+		    }
+		    return false;
+	    }
+
 
 	    /**
 	     * Determine if the browser is NetPositive or not (last updated 1.7)
