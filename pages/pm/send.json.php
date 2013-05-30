@@ -10,12 +10,12 @@ if(!$core->isLogged())
 	
 if(empty($_POST['to']) || empty($_POST['message']))
 	die($core->jsonResponse('error',$core->lang('SOMETHING_MISS')));
+	
+if(!($toid = $core->getUserId($_POST['to']))) //getUserId DON'T what htmlentities in parameter
+    die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
 
 foreach($_POST as &$val)
 	$val = htmlentities(trim($val),ENT_QUOTES,'UTF-8');
-	
-if(!($toid = $core->getUserId($_POST['to'])))
-    die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
     
 if($_SESSION['nerdz_id'] == $toid)
     die($core->jsonResponse('error',$core->lang('ERROR')));
