@@ -11,7 +11,7 @@ class messages extends phpCore
 		parent::__construct();
 	}
 
-	private function getCodes($str)
+	public function getCodes($str)
 	{
 		$epos = $key = $i = $codecounter = 0;
 		$codes = $start = $end = $ret = array();
