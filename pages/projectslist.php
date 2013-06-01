@@ -41,7 +41,7 @@ if(($r = $core->query($query,db::FETCH_STMT)))
 		$vals['list_a'][$i]['id_n'] = $o->counter;
 		$vals['list_a'][$i]['name_n'] = $o->name;
 		$vals['list_a'][$i]['description_n'] = $o->description;
-		$vals['list_a'][$i]['name4link_n'] = phpCore::userLink($o->name);
+		$vals['list_a'][$i]['name4link_n'] = phpCore::projectLink($o->name);
 		++$i;
 	}
 }
