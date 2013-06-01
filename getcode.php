@@ -41,5 +41,5 @@ elseif(isset($pcid) || isset($gcid))
 else
 	die();
 
-die(html_entity_decode($core->getCodes($o->message)[$ncode]['code'],ENT_QUOTES,'UTF-8'));
+die(html_entity_decode($core->getCodes(isset( $o->message)[$ncode]['code']) ? $o->message)[$ncode]['code'] : 'Wrong get parameters',ENT_QUOTES,'UTF-8'));
 ?>
