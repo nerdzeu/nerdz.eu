@@ -1,11 +1,12 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$core = new phpCore();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
+$core = new messages();
 
 header('Content-Type: text/plain; charset=utf-8');
 
-$ncode = isset($_GET['ncode']) && is_numeric($_GET['ncode']) ? intval($_GET['ncode']) : 1;
+$ncode = isset($_GET['ncode']) && is_numeric($_GET['ncode']) && intval($_GET['ncode']) > 0 ? $_GET['ncode'] : 1;
+--$ncode;
 
 if(isset($_GET['id']) && is_numeric($_GET['id']))
 	$id = intval($_GET['id']);
@@ -39,36 +40,6 @@ elseif(isset($pcid) || isset($gcid))
 }
 else
 	die();
-
-$str = $o->message;
-$start[0] = strpos(strtolower($str),'[code=',0);
-$end[0] = strpos(strtolower($str),'[/code]',0);
-$key = 0;
-if((false === $start[$key]) || (false === $end[$key]))
-	die();
-
-for($key = 1;$key<$ncode;++$key)
-{
-	$start[$key] = strpos(strtolower($str),'[code=',$end[$key-1]+6);
-	$end[$key] = strpos(strtolower($str),'[/code]',$end[$key-1]+7);
-}
-$code = '';
-if(!isset($_GET['ncode']) || $_GET['ncode'] == 1)
-	$key = 0;
-else
-	--$key;
-
-if((false !== $start[$key]) && (false !== $end[$key]))
-{
-	$start[$key]+=6;
-	for($i=$start[$key];$i<=$end[$key];++$i)
-		if($str[$i] == ']')
-		{
-			$etag = $i;
-			break;
-		}
-	if(isset($etag))
-		$code = html_entity_decode(substr($str,$etag+1,$end[$key]-$etag-1),ENT_QUOTES,'UTF-8');
-}
-die($code);
+$codes = $core->getCodes($o->message);
+die(html_entity_decode(isset($codes[$ncode]['code']) ? $codes[$ncode]['code'] : 'Wrong get parameters',ENT_QUOTES,'UTF-8'));
 ?>

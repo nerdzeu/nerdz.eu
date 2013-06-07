@@ -60,7 +60,10 @@ class comments extends project
 			$users[] = $dest;
 
 		$users = array_values(array_diff(array_unique(array_merge($users,$lurkers)),array(USERS_NEWS,DELETED_USERS)));
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7b4fd0e2c65d7ff81ea98e501bad9ae3f5007d8c
 		$i = count($users);
 		$time = time(); //devo usare questa e non UNIX_TIMESTAMP perché nel while altrimenti perdo secondi e le cose si sfasano
 		while($i-- > 0)
