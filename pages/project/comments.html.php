@@ -38,8 +38,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 		$vals['dontreceivenotifications'] = $core->lang('NOT_RECV_NOTIFY');
 		$vals['morebtn_label'] = $core->lang ('MORE_COMMENTS');
 		$vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
-		// See TODO in ../profile/comments.html.php
-		$vals['needmorebtn_b'] = count ($_list) == 10 && ( !isset ($_POST['start']) || ( isset ($_POST['start']) && $_POST['start'] == 0 )) && !isset ($_POST['hcid']);
+		$vals['needmorebtn_b'] = count ($_list) == 10 && ( !isset ($_POST['start']) || ( isset ($_POST['start']) && $_POST['start'] == 0 )) && !isset ($_POST['hcid']) && $core->countProjectComments ($hpid) > 10;
 		$tpl->assign($vals);
 		$tpl->draw('project/comments');
 	break;

@@ -161,5 +161,12 @@ final class pm extends messages
 		
 		return $ret;
 	}
+
+	public function countPms ($from, $to)
+	{
+		if (!is_numeric ($from) || !is_numeric ($to) || !($res = parent::query (array ('SELECT COUNT(`pmid`) AS pc FROM `pms` WHERE `from` = :from AND `to` = :to', array (':from' => $from, ':to' => $to)), db::FETCH_OBJ)))
+			return 0;
+		return $res->pc;
+	}
 }
 ?>

@@ -38,9 +38,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 		$vals['dontreceivenotifications'] = $core->lang('NOT_RECV_NOTIFY');
 		$vals['morebtn_label'] = $core->lang ('MORE_COMMENTS');
 		$vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
-		// Potential bug: this will show the 'More' button even if the comment number
-		// is just 10 (and not 11). TODO: get a real comment number, maybe with a query
-		$vals['needmorebtn_b'] = count ($_list) == 10 && ( !isset ($_POST['start']) || ( isset ($_POST['start']) && $_POST['start'] == 0 )) && !isset ($_POST['hcid']);
+		$vals['needmorebtn_b'] = count ($_list) == 10 && ( !isset ($_POST['start']) || ( isset ($_POST['start']) && $_POST['start'] == 0 )) && !isset ($_POST['hcid']) && $core->countComments ($hpid) > 10;
 		$tpl->assign($vals);
 		$tpl->draw('profile/comments');
 	break;
