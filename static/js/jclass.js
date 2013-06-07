@@ -682,7 +682,7 @@ N.html.profile = function()
 	
 	/**
 	* Get html code of comments (as defined in template)
-	* @parameters: { hpid }
+	* @parameters: { hpid, start, num }
 	* hpid: hidden post id
 	*/	
 	this.getComments = function(jObj,done)
@@ -824,7 +824,7 @@ N.html.project = function()
 	
 	/**
 	* Get html code of comments (as defined in template)
-	* @parameters: { hpid }
+	* @parameters: { hpid, start, num }
 	* hpid: hidden post id
 	*/
 	this.getComments = function(jObj,done)
@@ -966,7 +966,7 @@ N.html.pm = function()
 	
 	/**
 	 * get conversation from and to ID
-	 * @parameters: { from, to }
+	 * @parameters: { from, to, start, num }
 	 * to: toid
 	 * from: fromid
 	 */

@@ -198,6 +198,9 @@ $_LANG = array(
 	'CLOSED_PROFILE_DESCR' => 'Perfil fechado. Apenas o dono pode escrever sobre ele',
 	'INVISIBLE_PROJECT_DESCR' => 'Projeto invisível. Visíveis apenas para membros',
 	'REGISTER_CALL' => 'Registre-se no NERDZ para vê-lo!',
-	'RESET_DESCR' => 'Compilar este formulário para redefinir sua senha. Nós lhe enviaremos um e-mail para o seu endereço com sua nova senha'
+	'RESET_DESCR' => 'Compilar este formulário para redefinir sua senha. Nós lhe enviaremos um e-mail para o seu endereço com sua nova senha',
+	'MORE_COMMENTS' => 'Mais comentários',
+	'MORE_MSGS' => 'Mais mensagens',
+	'BACK_TO_THE_BOTTOM' => 'Volta para o fundo'
 );
 ?>

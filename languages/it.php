@@ -198,6 +198,9 @@
 	'CLOSED_PROFILE_DESCR' => 'Profilo chiuso, solo il proprietario può scriverci.',
 	'INVISIBLE_PROJECT_DESCR' => 'Progetto invisible. Visibile ai soli membri',
 	'REGISTER_CALL' => 'Registrati su NERDZ per vederlo!',
-	'RESET_DESCR' => 'Completa questo form per resettare la tua password. La tua nuova password ti sarà inviata via email'
+	'RESET_DESCR' => 'Completa questo form per resettare la tua password. La tua nuova password ti sarà inviata via email',
+	'MORE_COMMENTS' => 'Più commenti',
+	'MORE_MSGS' => 'Più messaggi',
+	'BACK_TO_THE_BOTTOM' => 'Torna giù'
     );
 ?>

@@ -199,6 +199,9 @@ $_LANG = array(
 	'CLOSED_PROFILE_DESCR' => 'Closed profile. Only the owner can write on it',
 	'INVISIBLE_PROJECT_DESCR' => 'Invisible project. Visible only to members',
 	'REGISTER_CALL' => 'Register on NERDZ to view it!',
-	'RESET_DESCR' => 'Compile this form to reset your password. We will send you an email to your address with your new password'
+	'RESET_DESCR' => 'Compile this form to reset your password. We will send you an email to your address with your new password',
+	'MORE_COMMENTS' => 'More comments',
+	'MORE_MSGS' => 'More messages',
+	'BACK_TO_THE_BOTTOM' => 'Back to the bottom'
 );
 ?>

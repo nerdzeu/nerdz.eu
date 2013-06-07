@@ -59,7 +59,7 @@ class comments extends project
 		if(!$prj && (!in_array($dest,$users) && ($dest != $_SESSION['nerdz_id'])))
 			$users[] = $dest;
 
-		$users = array_unique(array_merge($users,$lurkers));
+		$users = array_values(array_diff(array_unique(array_merge($users,$lurkers)),array(USERS_NEWS,DELETED_USERS))); 
 
 		$i = count($users);
 		$time = time(); //devo usare questa e non UNIX_TIMESTAMP perché nel while altrimenti perdo secondi e le cose si sfasano
@@ -158,22 +158,22 @@ class comments extends project
 		return $ret;
 	}
 
-	private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null)
+	private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
 	{
 		if(!$prj && in_array($to,parent::getBlacklist())) // se ho messo l'utente in blacklist, non mostro i commenti fatti ai suoi post
 			return array();
 
 		$glue = $prj ? 'groups_' : '';
-
-		if(!
-			($res =  parent::query(
-					$olderThanMe ? 
-						array("SELECT `from`,`to`,`time`,`message`,`hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid AND `hcid` > :hcid ORDER BY `hcid`",array(':hpid' => $hpid, ':hcid' => $olderThanMe))
-			 		:
-						array("SELECT `from`,`to`,`time`,`message`,`hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid ORDER BY `hcid`",array(':hpid' => $hpid))
-					,db::FETCH_STMT)
-			)
-		  )
+		// sorry for the bad indentation, but I'm not good at
+		// making things pretty >:(
+		$queryArr = ( $olderThanMe ?
+		               array("SELECT `from`,`to`,`time`,`message`,`hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid AND `hcid` > :hcid ORDER BY `hcid`",array(':hpid' => $hpid, ':hcid' => $olderThanMe))
+		            : (is_numeric ($maxNum) && is_numeric ($startFrom) ?
+		                // sort by hcid, descending, then reverse the order (ascending)
+		                array("SELECT q.from, q.to, q.time, q.message, q.hcid FROM (SELECT `from`, `to`, `time`, `message`, `hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid ORDER BY `hcid` DESC LIMIT :minn, :maxn) AS q ORDER BY q.hcid ASC", array (':hpid' => $hpid, ':minn' => $startFrom, ':maxn' => $maxNum))
+		             : array("SELECT `from`,`to`,`time`,`message`,`hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid ORDER BY `hcid`",array(':hpid' => $hpid)))
+		            );
+		if(!($res = parent::query($queryArr, db::FETCH_STMT)))
 			return false;
 
 		if(
@@ -220,8 +220,8 @@ class comments extends project
 
 		$ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravatar,$gravurl,$users,$cg,$times,$lkd,$glue);
 		
-/* Per il beforeHcid, nel caso in cui nella fase di posting si siano uniti gli ultimi messaggi
-   allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty e fuck off*/
+		/* Per il beforeHcid, nel caso in cui nella fase di posting si siano uniti gli ultimi messaggi
+		   allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty e fuck off*/
 		if($olderThanMe && empty($ret))
 		{
 			if(!($res = parent::query(array("SELECT `from`,`to`,`time`,`message`,`hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid AND `hcid` = :hcid ORDER BY `hcid`",array(':hpid' => $hpid, ':hcid' => $olderThanMe)),db::FETCH_STMT)))
@@ -406,6 +406,9 @@ class comments extends project
 		return parent::getUserName($o->from);
 	}
 
+	/*
+	 * @deprecated Use getLastComments().
+	 */
     public function getComments($hpid)
     {
 		if(!($o = parent::query(array('SELECT `to`,`pid`,`from` FROM `posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
@@ -420,6 +423,13 @@ class comments extends project
 			return false;
 		
 		return $this->showControl($o->from,$o->to,$hpid,$o->pid,false,$hcid);
+	}
+
+	public function getLastComments ($hpid, $num, $cycle = 0)
+	{
+		if($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 || !($o = parent::query(array('SELECT `to`,`pid`,`from` FROM `posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+			return false;
+		return $this->showControl ($o->from, $o->to, $hpid, $o->pid, false, false, $num, $cycle * $num);
 	}
 
     public function delComment($hcid)
@@ -511,6 +521,9 @@ class comments extends project
 		return $this->addControl($obj->from,$obj->to,$hpid,true);
 	}
 
+	/*
+	 * @deprecated use getProjectLastComments()
+	 */
     public function getProjectComments($hpid)
     {
 		if(!($o = parent::query(array('SELECT `to`,`from`,`pid` FROM `groups_posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
@@ -523,6 +536,13 @@ class comments extends project
 		if(!($o = parent::query(array('SELECT `to`,`from`,`pid` FROM `groups_posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
 			return false;
 		return $this->showControl($o->from,$o->to,$hpid,$o->pid,true,$hcid);
+	}
+
+	public function getProjectLastComments ($hpid, $num, $cycle = 0)
+	{
+		if ($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 || !($o = parent::query(array('SELECT `to`,`from`,`pid` FROM `groups_posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+			return false;
+		return $this->showControl ($o->from, $o->to, $hpid, $o->pid, true, false, $num, $cycle * $num);
 	}
 
     public function delProjectComment($hcid)

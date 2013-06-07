@@ -71,6 +71,7 @@ $(document).ready(function() {
 		{
 			plist.html(d);
 			//VARIABILE BOOLEANA MESSA COME STRINGA DATO CHE NEL DOM POSSO SALVARE SOLO STRINGHE, DEVO COMPARARARE COME STRINGA
+			//CAPS LOCK DAY
 			sessionStorage.setItem('searchLoad', "1"); //è la variabile load di search, dato che queste azioni sono in questo file js ma sono condivise da tutte le pagine, la variabile di caricamento dev'essere nota a tutte
 		};
 
@@ -213,81 +214,72 @@ $(document).ready(function() {
 
 	plist.on('submit','.frmcomment',function(e) {
 		e.preventDefault();
-		var hpid = $(this).data('hpid');
-		var me = $(this);
-		var refto = $('#commentlist' + $(this).data('hpid'));
-		var error = me.find('.error').eq(0);
-
-		/* se ci sono altri commenti, prendo quelli successivi. Altriment uso getCommetns */
-		var pattern = "div[id^='c']";
-		var comments = refto.find(pattern);
-		var hcid = 0;
-		var last = null;
+		var last, hcid,
+			hpid     = $(this).data ('hpid'),
+			refto    = $('#commentlist' + hpid),
+			error    = $(this).find ('.error').eq (0),
+			pattern  = 'div[id^="c"]',
+			comments = refto.find (pattern);
 		if(comments.length)
 		{
-			last = comments.last();
-			hcid = last.data('hcid');
+			// Uses the second-last element instead of the last one (if available)
+			// to fix the append bug reported by nessuno.
+			last = comments.length > 1 ? comments.eq (comments.length - 2) : null;
+			hcid = last ? last.data('hcid') : 0;
 		}
-
-		var handleAfter = function(d) {
-			var form = refto.find("form.frmcomment").eq(0);
-
-			var tmp = $(document.createElement('div'));
-			tmp.html(d);
-			var recv = tmp.find(pattern);
-			if(recv.length == 1 && recv.eq(0).data('hcid') == hcid) {
-				last.remove();
+		error.html (loading);
+		N.json[plist.data('type')].addComment ({ hpid: hpid, message: $(this).find('textarea').eq(0).val() }, function(d) {
+			if(d.status == 'ok')
+			{
+				if(hcid && last)
+				{
+					N.html[plist.data('type')].getCommentsAfterHcid ({ hpid: hpid, hcid: hcid }, function(d) {
+						var form = refto.find ('form.frmcomment').eq (0),
+							pushBefore = form.parent(),
+							newComments = $('<div>' + d + '</div>').find (pattern),
+							internalLengthPointer = comments.length,
+							lastComment = comments.last();
+						// if available, delete the secondlast comment
+						if (comments.length > 1) {
+							comments.eq (comments.length - 1).remove();
+							internalLengthPointer--;
+						}
+						// then, check the hcid of the last comment
+						// delete it if it matches
+						if (lastComment.data ('hcid') == newComments.last().data ('hcid')) {
+							lastComment.remove();
+							internalLengthPointer--;
+						}
+						// wait until we reach 10 comments (except if the user pressed more)
+						// TODO: replace this with comments.slice (0, n).remove()
+						// TODO: add logic to show again the 'more' button if we deleted
+						// enough comments
+						while ((internalLengthPointer + newComments.length) > (((comments.parent().find ('more_btn').data ('morecount') || 0) + 1) * 10)) {
+							comments.first().remove();
+							// reassign the variable, otherwise .first() won't work
+							// anymore with .remove().
+							comments = refto.find (pattern);
+							internalLengthPointer--;
+						}
+						// append newComments
+						pushBefore.before (d);
+						form.find ('textarea').val ('');
+						error.html('');
+					});
+				}
+				else
+				{
+					N.html[plist.data('type')].getComments( { hpid: hpid, start: 0, num: 10 },function(d) {
+						refto.html(d);
+						error.html('');
+					});
+				}
 			}
-
-			form.parent().before(d);
-			form.find('textarea').val('');
-			error.html('');
-		};
-
-		error.html(loading);
-		if(plist.data('type') == 'profile') {
-			N.json.profile.addComment({ hpid: hpid,  message: $(this).find('textarea').eq(0).val() },function(d) {
-				if(d.status == 'ok')
-				{
-					if(hcid && last) {
-						N.html.profile.getCommentsAfterHcid( { hpid: hpid, hcid:hcid },handleAfter);
-					}
-					else
-					{
-						N.html.profile.getComments( { hpid: hpid },function(d) {
-							refto.html(d);
-							error.html('');
-						});
-					}
-				}
-				else
-				{
-					error.html(d.message);
-				}
-			});
-		}
-		else
-		{
-			N.json.project.addComment({ hpid: hpid,  message: $(this).find('textarea').eq(0).val() },function(d) {
-				if(d.status == 'ok')
-				{
-					if(hcid) {
-						N.html.project.getCommentsAfterHcid( { hpid: hpid, hcid:hcid },handleAfter);
-					}
-					else {
-						N.html.project.getComments( { hpid: hpid },function(d) {
-							refto.html(d);
-							error.html('');
-						});
-					}
-				}
-				else
-				{
-					error.html(d.message);
-				}
-			});
-		}
-
+			else
+			{
+				error.html(d.message);
+			}
+		});
 	});
 
 	plist.on('click',".showcomments",function() {
@@ -295,29 +287,47 @@ $(document).ready(function() {
 		if(refto.html() == '')
 		{
 			refto.html(loading+'...');
-			
-			if(plist.data('type') == 'profile') {
-				N.html.profile.getComments( { hpid: $(this).data('hpid')},function(d) {
-					refto.html(d);
-					if(window.location.hash == '#last') { //notifiche
-						refto.find(".frmcomment textarea[name=message]").focus();
-					}
-				});
-			}
-			else
-			{
-				N.html.project.getComments( { hpid: $(this).data('hpid') },function(d) {
-					refto.html(d);
-					if(window.location.hash == '#last') { //notifiche
-						refto.find(".frmcomment textarea[name=message]").focus();
-					}
-				});
-			}
+			N.html[plist.data ('type')].getComments ({
+				hpid: $(this).data ('hpid'),
+				start: 0,
+				num: 10
+			}, function (res) {
+				refto.html (res);
+				if (window.location.hash == '#last')
+					refto.find ('.frmcomment textarea[name=message]').focus();
+			});
 		}
 		else
 		{
 			refto.html('');
 		}
+	});
+
+	plist.on ('click', '.more_btn', function() {
+		var moreBtn     = $(this),
+			commentList = moreBtn.parents ("div[id^=\"commentlist\"]"),
+			hpid        = /^post(\d+)$/.exec (commentList.parents ("div[id^=\"post\"]").attr ("id"))[1],
+			intCounter  = moreBtn.data ("morecount") || 0;
+		if (moreBtn.data ("inprogress") === "1") return;
+		moreBtn.data ("inprogress", "1").text (loading + "...");
+		N.html[plist.data ('type')].getComments ({ hpid: hpid, start: intCounter + 1, num: 10 }, function (r) {
+			moreBtn.data ("inprogress", "0").data ("morecount", ++intCounter).text (moreBtn.data ('localization'));
+			var _ref = $(r);
+			// Lesson learned: don't use .parent() after a .hide()
+			_ref.insertAfter (moreBtn.parent());
+			if (intCounter == 1)
+				moreBtn.parent().find (".scroll_bottom_hidden").show();
+			if ($.trim (r) == "" || _ref.find (".nerdz_from").length < 10)
+				moreBtn.hide().parent().find (".scroll_bottom_separator").hide();//html (moreBtn.parent().html().replace (/\s\|\s/, ""));
+		});
+	});
+
+	plist.on ('click', '.scroll_bottom_btn', function() {
+		// thanks to stackoverflow for .eq(x) and for the scroll hack
+		var cForm = $(this).parents().eq (2).find (".frmcomment");
+		$("html, body").animate ({ scrollTop: cForm.offset().top }, function() {
+			cForm.find ("textarea").focus();
+		});
 	});
 
 	plist.on('click',".qu_ico",function() {

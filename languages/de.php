@@ -198,6 +198,9 @@ $_LANG = array(
 	'CLOSED_PROFILE_DESCR' => 'Geschlossenes Profil. Nur der Eigentümer kann auf sie zu schreiben',
 	'INVISIBLE_PROJECT_DESCR' => 'Unsichtbar Projekt. Sichtbar nur für Mitglieder',
 	'REGISTER_CALL' => 'Registrieren Sie sich auf NERDZ damit Sie es sehen!',
-	'RESET_DESCR' => 'Füllen Sie dieses Formular um Ihr Kennwort zurückzusetzen. Wir schicken Ihnen eine E-Mail an Ihre Adresse mit Ihrem neuen Passwort'
+	'RESET_DESCR' => 'Füllen Sie dieses Formular um Ihr Kennwort zurückzusetzen. Wir schicken Ihnen eine E-Mail an Ihre Adresse mit Ihrem neuen Passwort',
+	'MORE_COMMENTS' => 'Weitere kommentare',
+	'MORE_MSGS' => 'Mehr meldungen',
+	'BACK_TO_THE_BOTTOM' => 'Zurück zum unteren'
 );
 ?>

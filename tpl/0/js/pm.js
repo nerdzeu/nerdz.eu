@@ -11,32 +11,44 @@ $(document).ready(function() {
 		var pmid = 0;
 
 		if(mess.length) {
-			last = mess.last();
-			console.log(last.data('pmid'));
-			pmid = last.data('pmid');
+			last = mess.length > 1 ? mess.eq (mess.length - 2) : null; // request every message if cnum < 2.
+			pmid = last ? last.data('pmid') : 0;
 		}
-
 		N.json.pm.send({ to: $("#to").val(), message: $("#message").val() },function(d) {
 				$('#res').html(d.message);
 				if(d.status == 'ok') {
 					$("#message").val('');
 					if(pmid) {
-						N.html.pm.getConversationAfterPmid({ from: c_from, to: c_to, pmid: pmid },function(d) {
-							var tmp = $(document.createElement('div'));
-							tmp.html(d);
-
-							var recv = tmp.find(pattern);
-							console.log(recv.eq(0));
-							
-							if(recv.length == 1 && recv.eq(0).data('pmid') == pmid) {
-								last.remove();
+						N.html.pm.getConversationAfterPmid({ from: c_from, to: c_to, pmid: pmid }, function(d) {
+							var newPms = $('<div>' + d + '</div>').find (pattern), internalCounter = mess.length, lastPm = mess.last();
+							// This implementation is almost the same as the one in tpl/x/js/default.js.
+							// For explanations see that file.
+							// NOTE: it appears that mess.eq (mess.length - 1) isn't properly selecting
+							// the secondlast element. But.. it works. Yeah, I really can't explain that.
+							// But until it works, let's keep it like that. I left debugging stuff here for that.
+							//console.log ("DBG: secondlast? " + mess.eq(mess.length-1).data('pmid'));
+							if (mess.length > 1) {
+								mess.eq (mess.length - 1).remove();
+								internalCounter--;
 							}
-						  
-							$("#convfrm").before(d);
+							if (lastPm.data ('pmid') == newPms.last().data ('pmid')) {
+								lastPm.remove();
+								internalCounter--;
+							}
+							//console.log ("Reduce to: " + ((($(".more_btn").data ('counter') || 0) + 1) * 10));
+							//console.log ("counter: " + internalCounter + ", newPmLength: " + newPms.length);
+							while ((internalCounter + newPms.length) > ((($(".more_btn").data ('counter') || 0) + 1) * 10))
+							{
+								mess.first().remove();
+								mess = $("#conversation").find (pattern);
+								internalCounter--;
+							}
+							//console.log ("counter: " + internalCounter);
+							$("#convfrm").before (d);
 						});
 					}
 					else {
-						N.html.pm.getConversation({ from: c_from, to: c_to},function(data) {
+						N.html.pm.getConversation({ from: c_from, to: c_to, start: 0, num: 10 },function(data) {
 							$("#conversation").html(data);
 						});
 					}
@@ -92,7 +104,7 @@ $(document).ready(function() {
 		/*variabili esterne che richiamo per far mostrare il pm appena inviato */
 		c_from =  $(this).data('from');
 		c_to = $(this).data('to');
-		N.html.pm.getConversation({ from: c_from, to: c_to },function(data) {
+		N.html.pm.getConversation({ from: c_from, to: c_to, start: 0, num: 10 },function(data) {
 			conv.html(data);
 			window.location.hash = 'message';
 			$("#message").focus();
@@ -113,6 +125,28 @@ $(document).ready(function() {
 		if( e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13) ) {
 			$(this).parent().trigger('submit');
 		}
+	});
+
+	c.on ('click', '.more_btn', function() {
+		var thisBtn = $(this),
+			internalPointer = thisBtn.data ('counter') || 0;
+		if (thisBtn.data ('in-progress') === '1') return;
+		thisBtn.data ('in-progress', '1').text (loadtxt + '...');
+		N.html.pm.getConversation ({ from: c_from, to: c_to, start: internalPointer + 1, num: 10 }, function (data) {
+			thisBtn.data ('in-progress', '0').data ('counter', ++internalPointer).text (thisBtn.data ('localization'));
+			var parsedData = $(data);
+			parsedData.insertAfter (thisBtn.parent());
+			if (internalPointer == 1)
+				thisBtn.parent().find ('.scroll_bottom_hidden').show();
+			if ($.trim (data) == ''|| parsedData.find ('.nerdz_from').length < 10)
+				thisBtn.hide().parent().find (".scroll_bottom_separator").hide();
+		});
+	});
+
+	c.on ('click', '.scroll_bottom_btn', function() {
+		$("html, body").animate ({ scrollTop: $("#convfrm").offset().top }, function() {
+			$("#message").focus();
+		})
 	});
 
 	setTimeout(function() {

@@ -196,6 +196,9 @@ $_LANG = array(
 	'CLOSED_PROFILE_DESCR' => 'Profil inchis. Numai proprietarul poate scrie pe ea',
 	'INVISIBLE_PROJECT_DESCR' => 'Project visibil duar de membri',
 	'REGISTER_CALL' => 'Înregistraţi-vă pe NERDZ pentru a o vizualiza!',
-	'RESET_DESCR' => 'Compilati acest formular pentru a reseta parola. Vă vom trimite un e-mail la adresa cu parola noua'
+	'RESET_DESCR' => 'Compilati acest formular pentru a reseta parola. Vă vom trimite un e-mail la adresa cu parola noua',
+	'MORE_COMMENTS' => 'Mai multe comentarii',
+	'MORE_MSGS' => 'Mai multe mesaje',
+	'BACK_TO_THE_BOTTOM' => 'Înapoi la partea de jos'
 );
 ?>

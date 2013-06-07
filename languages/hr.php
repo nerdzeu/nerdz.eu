@@ -198,6 +198,9 @@ $_LANG = array(
 	'CLOSED_PROFILE_DESCR' => 'Zatvoreno profil. Samo vlasnik može pisati na njemu',
 	'INVISIBLE_PROJECT_DESCR' => 'Nevidljiv projekt. Vidljiv samo članovima',
 	'REGISTER_CALL' => 'Registrirajte se na NERDZ da bi je vidjeli!',
-	'RESET_DESCR' => 'Sastaviti ovaj obrazac kako biste poništili zaporku. Mi ćemo Vam poslati poruku e-pošte na vašu adresu s novom lozinkom'
+	'RESET_DESCR' => 'Sastaviti ovaj obrazac kako biste poništili zaporku. Mi ćemo Vam poslati poruku e-pošte na vašu adresu s novom lozinkom',
+	'MORE_COMMENTS' => 'Više komentara',
+	'MORE_MSGS' => 'Više postova',
+	'BACK_TO_THE_BOTTOM' => 'Natrag niz'
 );
 ?>

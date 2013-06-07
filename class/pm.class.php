@@ -74,6 +74,7 @@ final class pm extends messages
 			if($c >= self::MAX_CONVERSATIONS)
 			{
 				sort($times,SORT_NUMERIC);
+				// probably I have to fix something about replacing time with ids here, but that query is just WAT
 				if(db::NO_ERR !=  parent::query(array('DELETE FROM `pms` WHERE (`time` BETWEEN ? AND ?) AND (`to` = ? OR `from` = ?)',array($times[0],$times[1],$_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_ERR))
 					return false;
 				$redo = true;
@@ -84,13 +85,13 @@ final class pm extends messages
 		return $res;
 	}
 	
-	public function read($fromid,$toid,$time)
+	public function read($fromid,$toid,$time,$pmid)
 	{
 		$ret = array();
 			
 		if(
-				!is_numeric($fromid) || !is_numeric($toid) || !in_array($_SESSION['nerdz_id'],array($fromid,$toid)) ||
-				!($res = parent::query(array('SELECT `pmid`,`message`,`read` FROM `pms` WHERE `from` = :from AND `to` = :to AND `time` = :time',array(':from' => $fromid, ':to' => $toid, ':time' => $time)),db::FETCH_STMT))
+				!is_numeric($fromid) || !is_numeric($toid) || !is_numeric ($pmid) || !in_array($_SESSION['nerdz_id'],array($fromid,$toid)) ||
+				!($res = parent::query(array('SELECT `message`,`read` FROM `pms` WHERE `from` = :from AND `to` = :to AND `pmid` = :pmid',array(':from' => $fromid, ':to' => $toid, ':pmid' => $pmid)),db::FETCH_STMT))
 		  )
 			return false;
 
@@ -104,7 +105,8 @@ final class pm extends messages
 			$ret['toid_n'] = $toid;
 			$ret['message_n'] = parent::bbcode($o->message);
 			$ret['read_b'] = $o->read;
-			$ret['pmid_n'] = $o->pmid;
+			$ret['pmid_n'] = $pmid;
+			//$ret['realto_n'] = $fromid != $_SESSION['nerdz_id'] ? $from : $this->getUserName ($toid);
 		}
 		
 		return $ret;
@@ -123,17 +125,24 @@ final class pm extends messages
 			db::NO_ERR == parent::query(array('DELETE FROM `pms` WHERE (`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)',array($from,$to,$to,$from)),db::FETCH_ERR);
 	}
     
-    public function readConversation($from, $to,$afterPmId = null)
+    public function readConversation($from, $to, $afterPmId = null, $num = null, $start = 0)
     {
 		$ret = array();
 		
-		if(!is_numeric($from) || !is_numeric($to) || !in_array($_SESSION['nerdz_id'],array($from,$to)) ||
-			  	!($res = parent::query(
+		if(!is_numeric($from) || !is_numeric($to) || (is_numeric ($num) && is_numeric ($start) && ($start < 0 || $start > 200 || $num < 0 || $num > 10)) /*|| !in_array($_SESSION['nerdz_id'],array($from,$to))*/)
+			return $ret;
+		$__enableLimit = is_numeric ($num) && is_numeric ($start);
+		$query = $__enableLimit ?
+		                //"SELECT q.from, q.to, q.time FROM (SELECT `from`, `to`, `time` FROM `pms` WHERE ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid`"
+		                'SELECT q.from, q.to, q.time, q.pmid FROM (SELECT `from`, `to`, `time`, `pmid` FROM `pms` WHERE ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` DESC LIMIT ?, ?) AS q ORDER BY q.pmid ASC' :
+		                'SELECT `from`, `to`, `time`, `pmid` FROM `pms` WHERE '.($afterPmId ? '`pmid` > ? AND ' : '').' ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` ASC';
+		if (!($res = parent::query (array ($query, ($__enableLimit ? array ($from, $to, $to, $from, $start * $num, $num) : ( $afterPmId ? array ($afterPmId, $from, $to, $to, $from) : array ($from, $to, $to, $from)))), db::FETCH_STMT)))
+			  	/*!($res = parent::query(
 					array('SELECT `from`,`to`,`time` FROM `pms` WHERE '.($afterPmId ? '`pmid` > ? AND ' : '').' ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` ASC',
 					$afterPmId ?
 						array($afterPmId,$from, $to,$to,$from) :
 						array($from, $to,$to,$from)
-					),db::FETCH_STMT)))
+					),db::FETCH_STMT)))*/
 			return $ret;
 
 		$ret = $res->fetchAll(PDO::FETCH_FUNC,array($this,'read'));
@@ -142,14 +151,11 @@ final class pm extends messages
 		if($afterPmId && empty($ret))
 		{
 			if(!($res = parent::query(
-					array('SELECT `from`,`to`,`time` FROM `pms` WHERE `pmid` = ? AND ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` ASC',array($afterPmId,$from, $to,$to,$from)
+					array('SELECT `from`,`to`,`time`,`pmid` FROM `pms` WHERE `pmid` = ? AND ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` ASC',array($afterPmId,$from, $to,$to,$from)
 						  ),db::FETCH_STMT)))
 				return $ret;
-
 			$ret = $res->fetchAll(PDO::FETCH_FUNC,array($this,'read'));
-
 		}
-
 		if(db::NO_ERR != parent::query(array('UPDATE `pms` SET `read` = 0 WHERE `from` = :from AND `to` = :id',array(':from' => $from, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
 			return false;
 		
