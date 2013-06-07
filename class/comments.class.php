@@ -59,7 +59,7 @@ class comments extends project
 		if(!$prj && (!in_array($dest,$users) && ($dest != $_SESSION['nerdz_id'])))
 			$users[] = $dest;
 
-		$users = array_values(array_diff(array_unique(array_merge($users,$lurkers)),array(USERS_NEWS,DELETED_USERS))); 
+		$users = array_values(array_diff(array_unique(array_merge($users,$lurkers)),array(USERS_NEWS,DELETED_USERS)));
 
 		$i = count($users);
 		$time = time(); //devo usare questa e non UNIX_TIMESTAMP perché nel while altrimenti perdo secondi e le cose si sfasano
