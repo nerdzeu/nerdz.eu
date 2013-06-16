@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+    <head>
+        <title>An error has occurred</title>
+        <link rel="stylesheet" href="http://necolas.github.io/normalize.css/2.1.2/normalize.css">
+        <style type="text/css">
+        * { cursor: none; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        body { padding: 20px 30px; font-family: 'Consolas', 'monospace', 'Courier New', serif; background: #0102ac; height: 9999px; width: 800px; overflow: hidden; color: #fff; font-size: 17px; }
+        a { color: white; }
+        input { background: transparent; border: 0; font-family: inherit; color: #fff; font-size: inherit; }
+        .fdiv { padding-top: 15px; }
+        </style>
+        <script type="application/javascript">
+        var triggered = false,
+            changeVisibility = function (id, visb) {
+                document.getElementById (id).style.display = visb;
+            },
+            getNum = function (min, max) {
+                return Math.floor (Math.random() * (max - min + 1)) + min;
+            },
+            doHaxorTyping = function (inputForm, str, endCallback) {
+                document.getElementById (inputForm).value = "";
+                var strPos = 0, dInterval = setInterval (function() {
+                    if (strPos >= str.length) {
+                        clearInterval (dInterval);
+                        endCallback();
+                        return;
+                    }
+                    document.getElementById (inputForm).value = document.getElementById (inputForm).value + str.charAt (strPos++);
+                }, getNum (200, 400))
+            },
+            replaceNicks = function() {
+                var gl = document.getElementsByClassName ("nick");
+                for (var i = 0; i < gl.length; i++)
+                {
+                    gl[i].innerHTML = window._NERDZ_NICK;
+                }
+            },
+            generateRandomSaltedPassword = function() {
+                // $1$rasmusle$rISCgZzpwk3UhDidwXvin0 [34 - 31]
+                var pwd = "$1$", charList = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_".split ("");
+                // generate salt (8)
+                for (var i = 0; i < 8; i++) {
+                    pwd += charList[getNum (0, (charList.length - 1))];
+                }
+                pwd += "$";
+                // generate hashed string (22)
+                for (var j = 0; j < 22; j++) {
+                    pwd += charList[getNum (0, (charList.length - 1))];
+                }
+                return pwd;
+            },
+            startHaxoring = function() {
+                changeVisibility ('mainFaggotry', 'none');
+                changeVisibility ('haxor', 'block');
+                // bad code incoming
+                setTimeout (function() {
+                    changeVisibility ('step2', 'block');
+                    doHaxorTyping ('bsodusr', 'nessuno', function() {
+                        changeVisibility ('step2_pwd', 'block');
+                        doHaxorTyping ('bsodpwd', 'imareallyfaggotpwd', function() {
+                            changeVisibility ('step1', 'none');
+                            changeVisibility ('step2', 'none');
+                            changeVisibility ('step3', 'block');
+                            setTimeout (function() {
+                                changeVisibility ('step3_ag', 'inline');
+                                setTimeout (function() {
+                                    changeVisibility ('step4', 'block');
+                                    replaceNicks();
+                                    setTimeout (function() {
+                                        changeVisibility ('step4_f', 'inline');
+                                        setTimeout (function() {
+                                            changeVisibility ('step5', 'block');
+                                            setTimeout (function() {
+                                                changeVisibility ('step5_d', 'inline');
+                                                document.getElementById ('step5_d').innerHTML = generateRandomSaltedPassword();
+                                                setTimeout (function() {
+                                                    changeVisibility ('step6', 'block');
+                                                    var lamerNicks = [ 'PTKDev', 'Vincenzo', 'Xenom0rph', 'jorgelorenzo97', 'Anonymous ITA' ],
+                                                        selected   = lamerNicks [getNum (0, (lamerNicks.length - 1))];
+                                                    document.getElementById ('lamernick').innerHTML = selected;
+                                                    setTimeout (function() {
+                                                        changeVisibility ('step7', 'block');
+                                                        document.getElementById ('pwd').innerHTML = ( selected == 'PTKDev' ? 'd4tb1ts0nMyD3b14n' : ( selected == 'Vincenzo' ? 'n3rdz1sd0wn4h4h4h4h0hw41t' : ( selected == 'Xenom0rph' ? '1l0v34m4nd4t0dd' : ( selected == 'jorgelorenzo97' ? 'brU774s3g497' : '0pfUcKn3rdz0rn0t'))));
+                                                        setTimeout (function() {
+                                                            changeVisibility ('step8', 'block');
+                                                            document.getElementById ('lamer').innerHTML = selected;
+                                                            document.getElementById ('lamercmd').innerHTML = ( selected == 'PTKDev' ? 'HACK_NERDZ_WITH_JS_SQLI' : ( selected == 'Vincenzo' ? 'DDOS_NERDZ_AND_WRITE_THAT_ON_YOUR_BOARD' : ( selected == 'Xenom0rph' ? 'POST_PEDO_PICS_AND_BREAK_DICKS' : ( selected == 'jorgelorenzo97' ? 'DOWNLOAD_UGLY_SAW_PICS' : 'DOWNLOAD_RIPPED_KEYLOGGER'))));
+                                                            setTimeout (function() {
+                                                                changeVisibility ('finalstep', 'block');
+                                                                var lamers = document.getElementsByClassName ("lamahUC");
+                                                                for (var i = 0; i < lamers.length; i++) { lamers[i].innerHTML = selected.toUpperCase(); }
+                                                                var dE = document.getElementById ("enlarge"), cn = 0;
+                                                                var _nt = setInterval (function() {
+                                                                    if (!dE.style.fontSize) dE.style.fontSize = "17px";
+                                                                    dE.style.fontSize = (parseInt (document.getElementById("enlarge").style.fontSize) * 2) + "px";
+                                                                    if (cn++ >= 4) {
+                                                                        clearInterval (_nt);
+                                                                        document.location.reload();
+                                                                    }
+                                                                }, 1200);
+                                                            }, getNum (3, 5) * 1000);
+                                                        }, getNum (5, 7) * 1000);
+                                                    }, getNum (4, 6) * 1000);
+                                                }, 2000);
+                                            }, getNum (4, 6) * 1000);
+                                        }, getNum (1, 3) * 1000);
+                                    }, getNum (2, 4) * 1000);
+                                }, 2000);
+                            }, getNum (2, 4) * 1000);
+                        });
+                    });
+                }, getNum (1, 3) * 1000);
+            };
+        window.onkeydown = function (e) {
+            if ((e.keyCode == 114 || e.keyCode == 82) && !triggered) {
+                triggered = true;
+                startHaxoring();
+            }
+        };
+        </script>
+    </head>
+    <body onselectstart="return false" onload="if(!window.NERDZ_NICK)document.location.replace('http://www.pornhub.com')">
+        <div id="mainFaggotry">
+        <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAI0AAAAjCAYAAACpSIk7AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAJuSURBVHja7Jv9bYMwEMUfVRfICqzACmaErpAV6AhlhayQEWCFrMAKjOD+Q5Wri5PzZ5v0/SQklADH2ad7hz8aay0ICeGFTUAYNKQ4rwAGz39nAMud+1sAb4E25XOPAA4F/Bo9v+e0NyquSbG3AjhF3Fe+Ta0fY63FncPYcORzJ1sG3/tOFWzksjcpbZT0cddfyhMJprHWDk5qa7fzHsCcIE8f4vxdIU/S9qywfcteo0jdqfZC5TDV3qi8bgJgtvOTosQIb9Mbqc1EpsevIyWVD7T3Q/pj5KlIH1KeSNTXk49OnC+Jaa4G85P1zer4ZJS+XpxnhHBw+n0ODRq3Jhn/eCP3TxY0F8cnq6jZ3PoxlG6riW7aoTyRYBg0JGvQ9Ft6akR6tPCPINfAiPeY2H3Z23QQfd4w0xDKE2HQ7H252Z2DkpSHwSNJ/SMHDWGmIc/Eq/K6M64jjXIA6IK0wSQfp82mS4fvg465OOL7iKuGnkFzGzmN0EU0cCgL6k4LtLjOQDNoKE/ktzKNT6raClIlkfMxa8bnauSwhn8lOeK69mlOaceYoJFSZSpIlWQtJFsaOSxluxYH0VdJi84oT6SKPP0nFkeS5Lzb+ADv7+5MeBdSy6ApGDSjkOLpwYLmTUhStjVRlCdSPdPI4nCpXBS7aJdD5irCS9tTLb30fPEddgr8NVebpgaN/AR203dt7i5TzOgroF9+GUsX6dOH6Ow+MaB37VOeSJQ8GSclykj3FYdLYPrWpFJpuy0kdRp7MTsvjJOR1gz+tRlkrysSNRF7eoeMm8n+4l7uGP9K7FXnXm7yPDBoSDCfAAAA//8DACXCTzP1O1Y3AAAAAElFTkSuQmCC"></p>
+        <p>A problem has been detected and NERDZ has been shut down to prevent damage to our servers.</p>
+        <p>The problem seems to be caused by the following file: dick.cur</p>
+        <p>HETEROSEXUALITY_TEST_FAULT</p>
+        <p>If this is the first time you've seen this Stop error screen, restart your NERDZ session. If this screen appears again, follow these steps:</p>
+        <p>Check to make sure you are not Xenom0rph, Vincenzo or PTKDev. If this is a new account, contact your ISP for identity confirmation.</p>
+        <p>If problems continue, try changing your username and IP address. Enable utility options from the BRAIN extension, such as thinking and saying meaningful things.</p>
+        <p>Technical information:</p>
+        <p>*** STOP: 0xDEADBEEF (0xB16B00B5, 0x00000002, 0x0DEFACED, 0x00000000)</p>
+        <p style="margin-top: 30px">***&nbsp;&nbsp;DICK.CUR - Address C0C59016 base at C0C50000</p>
+        <p>If you want, you can try to perform an emergency recovery by pressing R.</p>
+        </div>
+        <div id="haxor" style="display: none">
+            <p id="step1">Logging into NERDZ main database, please wait...</p>
+            <div id="step2" style="display: none">Username: <input type="text" id="bsodusr" disabled="disabled" value=""><div id="step2_pwd" style="display: none">Password: <input type="password" id="bsodpwd" disabled="disabled" value=""></div></div>
+            <div id="step3" style="display: none" class="fdiv">Verifying data... <span id="step3_ag" style="display: none; color: #48DD00">ACCESS GRANTED</span></div>
+            <div id="step4" style="display: none">Finding record '<span class="nick"></span>' in table globalUsersList... <span id="step4_f" style="display: none; color: #48DD00">FOUND</span></div>
+            <!--<div id="step5" style="display: none">Executing: <span style='color: #FF5900'>DELETE FROM globalUsersList WHERE uname = '<span class="nick"></span>'</span> ... <span id="step5_d" style="display: none; color: #48DD00">1 RECORD DELETED</span></div>-->
+            <div id="step5" style="display: none">Retrieving your hashed password from the database... <span id='step5_d' style='display: none; color: #48DD00'></span></div>
+            <div id="step6" style="display: none">Sending the hashed password to <span id="lamernick"></span> and awaiting decrypting...</div>
+            <div id="step7" style="display: none">Got your password: <span id="pwd" style="color: #48DD00"></span></div>
+            <div id="step8" style="display: none">W-wait! <span id="lamer"></span> is sending another command: <span id="lamercmd" style="color: #FF5900"></span></div>
+            <div id="finalstep" style="display: none"><span class="lamahUC" style="font-weight: bold"></span>, WAT R U DOING, <span class="lamahUC" style="font-weight: bold"></span>, <span id="enlarge">STAHP</span></div>
+        </div>
+    </body>
+</html>
