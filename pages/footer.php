@@ -14,9 +14,6 @@ $tpl->draw('base/footer');
 
 $fl = in_array($_SERVER['SCRIPT_NAME'], array('/profile.php','/project.php'));
 $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-if(!empty($_GET['pid']) && $fl)
-    echo '<script type="application/javascript" src="http', $ssl ? 's' : '', '://ws.sharethis.com/button/buttons.js"></script>',
-			'<script type="application/javascript">stLight.options({publisher:\'a7205560-4f35-4932-a921-1d6810fcd593\'});</script>';	
 
 if($fl)
 	echo '<script type="application/javascript">
