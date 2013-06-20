@@ -58,7 +58,7 @@ if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //se ssl è attivo u
 		  displayMath: [ ['[math]','[/math]'] ],
 		  processEscapes: true
 		},
-		"HTML-CSS": { availableFonts: ["TeX"] }
+		"HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
 	  });
 	</script>
 	<script type="application/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js"></script>
@@ -108,7 +108,7 @@ else //ssl non attivo
 		  displayMath: [ ['[math]','[/math]'] ],
 		  processEscapes: true
 		},
-		"HTML-CSS": { availableFonts: ["TeX"] }
+		"HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
 	  });
 	</script>
 	<script type="application/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
