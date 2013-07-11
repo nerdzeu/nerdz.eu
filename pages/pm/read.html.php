@@ -33,7 +33,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 			$conv = $core->readConversation ($from, $to, $_POST['pmid']);
 		else
 			die ($core->lang ('ERROR'));
-		$doShowForm = !isset ($_POST['pmid']) && (!isset ($_POST['start']) || (isset ($_POST['start']) && $_POST['start'] == 0));
+		$doShowForm = !isset ($_POST['pmid']) && (!isset ($_POST['start']) || $_POST['start'] == 0);
 		if (!$doShowForm && empty ($conv))
 			die();
 		$vals['to_n'] = ( $_SESSION['nerdz_id'] != $to ? $core->getUserName ($to) : $core->getUserName ($from) );
@@ -41,7 +41,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 		$vals['list_a'] = $conv;
 		$vals['morebtn_label'] = $core->lang ('MORE_MSGS');
 		$vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
-		$data['pmcount_n'] = $core->countPms ($from, $to)
+		$vals['pmcount_n'] = $core->countPms ($from, $to);
 		$vals['needmorebtn_b'] = $doShowForm && $vals['pmcount_n'] > 10;
 		$vals['showform_b'] = $doShowForm;
 		$tpl->assign($vals);
