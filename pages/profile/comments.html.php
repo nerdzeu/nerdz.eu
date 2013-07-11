@@ -22,7 +22,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 			$_list = $core->getCommentsAfterHcid ($hpid, $_POST['hcid']);
 		else
 			die ($core->lang('ERROR'));
-		$doShowForm = !isset ($_POST['hcid']) && (!isset ($_POST['start']) || (isset ($_POST['start']) && $_POST['start'] == 0));
+		$doShowForm = !isset ($_POST['hcid']) && (!isset ($_POST['start']) || $_POST['start'] == 0);
 		if (empty ($_list) && !$doShowForm)
 			die();
 		$vals = array();
@@ -38,7 +38,8 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 		$vals['dontreceivenotifications'] = $core->lang('NOT_RECV_NOTIFY');
 		$vals['morebtn_label'] = $core->lang ('MORE_COMMENTS');
 		$vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
-		$vals['needmorebtn_b'] = count ($_list) == 10 && ( !isset ($_POST['start']) || ( isset ($_POST['start']) && $_POST['start'] == 0 )) && !isset ($_POST['hcid']) && $core->countComments ($hpid) > 10;
+		$vals['commentcount_n'] = $core->countComments ($hpid);
+		$vals['needmorebtn_b'] = $doShowForm && $vals['commentcount_n'] > 10;
 		$tpl->assign($vals);
 		$tpl->draw('profile/comments');
 	break;

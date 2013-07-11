@@ -165,26 +165,29 @@ class comments extends project
 		$glue = $prj ? 'groups_' : '';
 		// sorry for the bad indentation, but I'm not good at
 		// making things pretty >:(
+		$useLimitedQuery = is_numeric ($maxNum) && is_numeric ($startFrom);
 		$queryArr = ( $olderThanMe ?
 		               array("SELECT `from`,`to`,`time`,`message`,`hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid AND `hcid` > :hcid ORDER BY `hcid`",array(':hpid' => $hpid, ':hcid' => $olderThanMe))
-		            : (is_numeric ($maxNum) && is_numeric ($startFrom) ?
+		            : ($useLimitedQuery ?
 		                // sort by hcid, descending, then reverse the order (ascending)
-		                array("SELECT q.from, q.to, q.time, q.message, q.hcid FROM (SELECT `from`, `to`, `time`, `message`, `hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid ORDER BY `hcid` DESC LIMIT :minn, :maxn) AS q ORDER BY q.hcid ASC", array (':hpid' => $hpid, ':minn' => $startFrom, ':maxn' => $maxNum))
+		                array("SELECT q.from, q.to, q.time, q.message, q.hcid FROM (SELECT `from`, `to`, `time`, `message`, `hcid` FROM `{$glue}comments` WHERE `hpid` = ? AND `from` NOT IN (SELECT `from` AS a FROM `blacklist` WHERE `to` = ? UNION SELECT `to` AS a FROM `blacklist` WHERE `from` = ?) AND `to` NOT IN (SELECT `from` AS a FROM `blacklist` WHERE `to` = ? UNION SELECT `to` AS a FROM `blacklist` WHERE `from` = ?) ORDER BY `hcid` DESC LIMIT ?, ?) AS q ORDER BY q.hcid ASC", array ($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $startFrom, $maxNum))
 		             : array("SELECT `from`,`to`,`time`,`message`,`hcid` FROM `{$glue}comments` WHERE `hpid` = :hpid ORDER BY `hcid`",array(':hpid' => $hpid)))
 		            );
+		//print $queryArr[]
 		if(!($res = parent::query($queryArr, db::FETCH_STMT)))
 			return false;
 
 		if(
 			!($f = parent::query(array("SELECT DISTINCT `from` FROM `{$glue}comments` WHERE `hpid` = :hpid",array(':hpid' => $hpid)),db::FETCH_STMT)) ||
-			!($ll = parent::query(array("SELECT `from` FROM `{$glue}comments_no_notify` WHERE `hpid` = :hpid AND `to` = :id",array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)) ||
-			!($r = parent::query(array('SELECT `from` AS a FROM `blacklist` WHERE `to` = ? UNION SELECT `to` AS a FROM `blacklist` WHERE `from` = ?',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)) //quelli da non notificare
+			!($ll = parent::query(array("SELECT `from` FROM `{$glue}comments_no_notify` WHERE `hpid` = :hpid AND `to` = :id",array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)) || //quelli da non notificare
+			!($r = ($useLimitedQuery ? true : parent::query(array('SELECT `from` AS a FROM `blacklist` WHERE `to` = ? UNION SELECT `to` AS a FROM `blacklist` WHERE `from` = ?',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
 		  )
 			return false;
 		
 		$times = $gravurl = $users = $nonot = $lkd = $blist = $ret = array();
-			
-		$blist = $r->fetchAll(PDO::FETCH_COLUMN);
+		
+		if (!$useLimitedQuery)
+			$blist = $r->fetchAll(PDO::FETCH_COLUMN);
 		
 		if(($gravatar = parent::hasGravatarEnabled($_SESSION['nerdz_id'])))
 		{

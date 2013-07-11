@@ -4,7 +4,9 @@ $(document).ready(function() {
 	//elementi singoli
 	$("iframe").attr('scrolling','no'); //dato che il validatore non li vuole e con i css overflow:hidden non funge
 	$("body").append($('<br />')); //per fare funzionare infinte scrolling sempre
-
+	// append version information
+	if ($("#left_col").length && window.location.pathname == "/home.php")
+		$("#left_col .title").eq (0).append (" <span style='font-weight: normal'><a href='/NERDZilla:690' style='color: #000 !important'>[" + N.getVersion() + "]</a></span>");
 	$("#notifycounter").on('click',function(e) {
 		e.preventDefault();
 		var list = $("#notify_list"), old = $(this).html();
@@ -32,13 +34,9 @@ $(document).ready(function() {
 			});
 	
 			$("#notify_list").on('click','.notref',function(e) {
+				if (e.ctrlKey) return;
 				e.preventDefault();
 				var href = $(this).attr('href');
-				if(e.ctrlKey)
-				{
-					window.open(href);
-					return false;
-				}
 				if(href == window.location.pathname + window.location.hash) {
 					location.reload();
 				}
@@ -254,7 +252,8 @@ $(document).ready(function() {
 						// TODO: replace this with comments.slice (0, n).remove()
 						// TODO: add logic to show again the 'more' button if we deleted
 						// enough comments
-						while ((internalLengthPointer + newComments.length) > (((comments.parent().find ('more_btn').data ('morecount') || 0) + 1) * 10)) {
+						// Fix for issue #9: add a >point<
+						while ((internalLengthPointer + newComments.length) > (((comments.parent().find ('.more_btn').data ('morecount') || 0) + 1) * 10)) {
 							comments.first().remove();
 							// reassign the variable, otherwise .first() won't work
 							// anymore with .remove().
@@ -293,8 +292,10 @@ $(document).ready(function() {
 				num: 10
 			}, function (res) {
 				refto.html (res);
-				if (window.location.hash == '#last')
+				if (document.location.hash == '#last')
 					refto.find ('.frmcomment textarea[name=message]').focus();
+				else if (document.location.hash)
+					$(document).scrollTop ($(document.location.hash).offset().top);
 			});
 		}
 		else
@@ -311,22 +312,23 @@ $(document).ready(function() {
 		if (moreBtn.data ("inprogress") === "1") return;
 		moreBtn.data ("inprogress", "1").text (loading + "...");
 		N.html[plist.data ('type')].getComments ({ hpid: hpid, start: intCounter + 1, num: 10 }, function (r) {
-			moreBtn.data ("inprogress", "0").data ("morecount", ++intCounter).text (moreBtn.data ('localization'));
-			var _ref = $(r);
+			moreBtn.data ("inprogress", "0").data ("morecount", ++intCounter).text (moreBtn.data ("localization"));
+			var _ref = $("<div>" + r + "</div>");
 			// Lesson learned: don't use .parent() after a .hide()
-			_ref.insertAfter (moreBtn.parent());
+			moreBtn.parent().after (r);
 			if (intCounter == 1)
 				moreBtn.parent().find (".scroll_bottom_hidden").show();
-			if ($.trim (r) == "" || _ref.find (".nerdz_from").length < 10)
+			if ($.trim (r) == "" || _ref.find (".nerdz_from").length < 10 || (10 * (intCounter + 1)) == _ref.find (".commentcount:eq(0)").html())
 				moreBtn.hide().parent().find (".scroll_bottom_separator").hide();//html (moreBtn.parent().html().replace (/\s\|\s/, ""));
 		});
 	});
 
 	plist.on ('click', '.scroll_bottom_btn', function() {
 		// thanks to stackoverflow for .eq(x) and for the scroll hack
-		var cForm = $(this).parents().eq (2).find (".frmcomment");
-		$("html, body").animate ({ scrollTop: cForm.offset().top }, function() {
-			cForm.find ("textarea").focus();
+		var cList = $(this).parents().eq (2);
+		// Select the second last comment, do a fancy scrolling and then focus the textbox.
+		$("html, body").animate ({ scrollTop: cList.find (".singlecomment:nth-last-child(2)").offset().top }, function() {
+			cList.find (".frmcomment textarea").focus();
 		});
 	});
 

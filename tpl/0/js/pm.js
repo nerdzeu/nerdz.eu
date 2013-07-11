@@ -138,7 +138,7 @@ $(document).ready(function() {
 			parsedData.insertAfter (thisBtn.parent());
 			if (internalPointer == 1)
 				thisBtn.parent().find ('.scroll_bottom_hidden').show();
-			if ($.trim (data) == ''|| parsedData.find ('.nerdz_from').length < 10)
+			if ($.trim (data) == ''|| parsedData.find ('.nerdz_from').length < 10 || (10 * (internalPointer + 1)) == thisBtn.data ('count'))
 				thisBtn.hide().parent().find (".scroll_bottom_separator").hide();
 		});
 	});

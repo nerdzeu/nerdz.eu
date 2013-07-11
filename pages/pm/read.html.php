@@ -41,7 +41,8 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 		$vals['list_a'] = $conv;
 		$vals['morebtn_label'] = $core->lang ('MORE_MSGS');
 		$vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
-		$vals['needmorebtn_b'] = count ($conv) == 10 && ( !isset ($_POST['start']) || ( isset ($_POST['start']) && $_POST['start'] == 0 )) && !isset ($_POST['pmid']) && $core->countPms ($from, $to);
+		$data['pmcount_n'] = $core->countPms ($from, $to)
+		$vals['needmorebtn_b'] = $doShowForm && $vals['pmcount_n'] > 10;
 		$vals['showform_b'] = $doShowForm;
 		$tpl->assign($vals);
 		$tpl->draw('pm/conversation');
