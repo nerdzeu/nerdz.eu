@@ -37,6 +37,16 @@ function N() /* THE FATHER of God (class/object/function)*/
 			th.innerHTML = '<span style="display:block;background-color: #FFF;text-align:center;width:132px;color:#000;font-weight: bold">'+N.tmp+'</span><img src="'+img+'" alt="" style="width: 130px; height: 130px; float:left;border: 1px solid #FFF" />';
 		}
 	};
+
+	/**
+	 * getVersion
+	 * Author: NERDZ Devs
+	 * Original author: Robertof
+	 * Description: returns the current NERDZ version.
+	 */
+	this.getVersion = function() {
+		return "2.42.1";
+	};
 };
 
 N = new N();
