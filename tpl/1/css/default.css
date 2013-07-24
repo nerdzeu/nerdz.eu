@@ -3,7 +3,7 @@
     color: #000;
     margin: 0 auto 1.5% auto;
     width: 100%;
-    height: 210px;
+    height: 240px;
     background-color: #AFAFAF;
     display: block;
     overflow: hidden;
@@ -68,7 +68,7 @@
 {
     position: absolute;
     display: block;
-    top: 210px;
+    top: 240px;
     font-size: 40px;
     width: 100%;
     background-color: #000;

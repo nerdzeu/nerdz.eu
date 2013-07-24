@@ -106,6 +106,7 @@ final class pm extends messages
 			$ret['message_n'] = parent::bbcode($o->message);
 			$ret['read_b'] = $o->read;
 			$ret['pmid_n'] = $pmid;
+			$ret['timestamp_n'] = $time;
 			//$ret['realto_n'] = $fromid != $_SESSION['nerdz_id'] ? $from : $this->getUserName ($toid);
 		}
 		
