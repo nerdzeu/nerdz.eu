@@ -61,6 +61,7 @@ final class pm extends messages
 				$res[$c]['from4link_n'] = phpCore::userLink($from);
 				$res[$c]['from_n'] = $from;
 				$res[$c]['datetime_n'] = parent::getDateTime($o->lasttime);
+				$res[$c]['timestamp_n'] = $o->lasttime;
 				$res[$c]['fromid_n'] = $o->from;
 				$res[$c]['toid_n'] = $_SESSION['nerdz_id'];
 				$times[$c] = $o->lasttime;
