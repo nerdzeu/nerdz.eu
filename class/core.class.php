@@ -546,7 +546,9 @@ class phpCore
 		if(is_numeric($limit) && $limit < $n && $limit > 0)
 			return true;
 
-		if(sscanf($limit,'%d,%d',$a,$b) != 2 || (sscanf($limit,'%d,%d',$a,$b) == 2 && $b > $n))
+		$r = sscanf($limit,'%d,%d',$a,$b);
+
+		if($r != 2 || ($r == 2 && $b > $n) )
 			return false;
 		
 		return true;
