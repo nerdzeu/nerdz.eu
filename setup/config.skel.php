@@ -31,7 +31,7 @@ $Rsmtp_port = 465;
 $Rsmtp_user = 'mail user';
 $Rsmtp_pass = 'mail pass';
 // A domain used for serving of static data.
-// Use localhost if you have no static domains.
+// Use an empty string if you have no static domains.
 // NOTE: be sure to check $Rdo_minification and similar.
 // You can have a lot of problems if you misconfigure them.
 $Rstatic_domain = 'http://static.doma.in/';
