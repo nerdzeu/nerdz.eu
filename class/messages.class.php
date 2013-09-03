@@ -152,7 +152,7 @@ class messages extends phpCore
 		$str = preg_replace_callback('#\[project\](.+?)\[/project\]#im',function($m) {
 				return '<a href="/'.phpCore::projectLink($m[1])."\">{$m[1]}</a>";
 				},$str);
-		$str = preg_replace_callback('#\[wiki=([a-z]{2})\]([a-z_\(\)\- ]+)\[/wiki\]#im',function($m) {
+		$str = preg_replace_callback('#\[wiki=([a-z]{2})\](.+?)\[/wiki\]#im',function($m) {
 				return '<a href="http://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ','_',html_entity_decode($m[2],ENT_QUOTES,'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
 				},$str);
 		$str = preg_replace_callback("#(\[math\]|\[m\])(.+?)(\[/math\]|\[/m\])#im",function($m) {
