@@ -199,6 +199,7 @@ $_LANG = array(
 	'RESET_DESCR' => 'Compilati acest formular pentru a reseta parola. Vă vom trimite un e-mail la adresa cu parola noua',
 	'MORE_COMMENTS' => 'Mai multe comentarii',
 	'MORE_MSGS' => 'Mai multe mesaje',
-	'BACK_TO_THE_BOTTOM' => 'Înapoi la partea de jos'
+	'BACK_TO_THE_BOTTOM' => 'Înapoi la partea de jos',
+	'EXPAND' => 'Extinde'
 );
 ?>

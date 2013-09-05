@@ -202,6 +202,7 @@ $_LANG = array(
 	'RESET_DESCR' => 'Compile this form to reset your password. We will send you an email to your address with your new password',
 	'MORE_COMMENTS' => 'More comments',
 	'MORE_MSGS' => 'More messages',
-	'BACK_TO_THE_BOTTOM' => 'Back to the bottom'
+	'BACK_TO_THE_BOTTOM' => 'Back to the bottom',
+	'EXPAND' => 'Expand'
 );
 ?>

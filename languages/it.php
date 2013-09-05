@@ -201,6 +201,7 @@
 	'RESET_DESCR' => 'Completa questo form per resettare la tua password. La tua nuova password ti sarà inviata via email',
 	'MORE_COMMENTS' => 'Più commenti',
 	'MORE_MSGS' => 'Più messaggi',
-	'BACK_TO_THE_BOTTOM' => 'Torna giù'
+	'BACK_TO_THE_BOTTOM' => 'Torna giù',
+	'EXPAND' => 'Espandi'
     );
 ?>

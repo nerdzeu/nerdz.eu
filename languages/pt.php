@@ -201,6 +201,7 @@ $_LANG = array(
 	'RESET_DESCR' => 'Compilar este formulário para redefinir sua senha. Nós lhe enviaremos um e-mail para o seu endereço com sua nova senha',
 	'MORE_COMMENTS' => 'Mais comentários',
 	'MORE_MSGS' => 'Mais mensagens',
-	'BACK_TO_THE_BOTTOM' => 'Volta para o fundo'
+	'BACK_TO_THE_BOTTOM' => 'Volta para o fundo',
+	'EXPAND' => 'Expandir'
 );
 ?>

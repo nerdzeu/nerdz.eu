@@ -201,6 +201,7 @@ $_LANG = array(
 	'RESET_DESCR' => 'Sastaviti ovaj obrazac kako biste poništili zaporku. Mi ćemo Vam poslati poruku e-pošte na vašu adresu s novom lozinkom',
 	'MORE_COMMENTS' => 'Više komentara',
 	'MORE_MSGS' => 'Više postova',
-	'BACK_TO_THE_BOTTOM' => 'Natrag niz'
+	'BACK_TO_THE_BOTTOM' => 'Natrag niz',
+	'EXPAND' => 'Proširiti'
 );
 ?>

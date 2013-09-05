@@ -7,14 +7,17 @@ $(document).ready(function() {
 	plist.html('<h1>'+loading+'...</h1>');
 
 	var fixHeights = function() {
-		plist.find(".nerdz_message").each(function() {
+		plist.find(".nerdz_message").each (function() {
 			var el = $(this).find('div:first');
-			if(el.height() > 200 && !el.attr('data-parsed')) {
-				el.height(200);
-				var n = el.parent().find('div:last-child');
-				n.append('<div class="more">...</div>');
-				n.css('background-color','#FFFDD0');
-				n.css('color','#000');
+			if (el.height() > 200 && !el.attr('data-parsed'))
+			{
+				el.height (200);
+				el.find (".userimage").slice (1).hide();
+				var n = el.parent().find ('div:last');
+				n.append ('<div class="more">&gt;&gt; ' + n.data ('expand') + ' &lt;&lt;</div>');
+				n.css ('background-color', '#000');
+				//n.css ('zIndex', 20);
+				n.css ('position', 'relative');
 			}
 			el.attr('data-parsed','1');
 		});
@@ -30,20 +33,23 @@ $(document).ready(function() {
 			{
 				var el = plist.find("#"+pids[i]);
 				if(el)
-				{
 					el.hide();
-				}
 			}
 		}
 		fixHeights();
 	};
 
 	plist.on('click','.more',function() {
-		var par = $(this).parent();
-		par.parent().find('div:first').height('100%');
-		par.css('background-color','#000');
-		par.css('color','#FFF');
-		$(this).remove();
+		var me = $(this), par = me.parent(), jenk = par.parent().find ('div:first');
+		jenk.css ('height', '100%'); var fHeight = jenk.height();
+		jenk.height (200).animate ({ height: fHeight }, 500, function() {
+			par.css('background-color','#000');
+			par.css('color','#FFF');
+			me.slideUp('slow', function() {
+				me.remove();
+			});
+		});
+		jenk.find (".userimage").slideDown();
 	});
 
 	plist.on('click',".hide",function() {

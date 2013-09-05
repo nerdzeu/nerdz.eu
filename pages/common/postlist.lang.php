@@ -10,5 +10,5 @@ $vals['areyousure'] = $core->lang('ARE_YOU_SURE');
 $vals['receivenotifications'] = $core->lang('REVC_NOTIFY');
 $vals['dontreceivenotifications'] = $core->lang('NOT_RECV_NOTIFY');
 $vals['hide'] = $core->lang('HIDE');
-
+$vals['expand'] = $core->lang('EXPAND');
 ?>

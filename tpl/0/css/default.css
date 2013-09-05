@@ -245,6 +245,8 @@ html, #body
 {
 	position: relative;
 	top: -12px;
+    margin-bottom: -10px;
+    padding-bottom: 5px;
 	text-align: center;
 }
 

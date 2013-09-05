@@ -201,6 +201,7 @@ $_LANG = array(
 	'RESET_DESCR' => 'Füllen Sie dieses Formular um Ihr Kennwort zurückzusetzen. Wir schicken Ihnen eine E-Mail an Ihre Adresse mit Ihrem neuen Passwort',
 	'MORE_COMMENTS' => 'Weitere kommentare',
 	'MORE_MSGS' => 'Mehr meldungen',
-	'BACK_TO_THE_BOTTOM' => 'Zurück zum unteren'
+	'BACK_TO_THE_BOTTOM' => 'Zurück zum unteren',
+	'EXPAND' => 'Erweitern'
 );
 ?>
