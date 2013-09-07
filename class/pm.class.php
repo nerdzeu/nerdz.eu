@@ -6,7 +6,6 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 
 final class pm extends messages
 {
-	const MAX_CONVERSATIONS = 20;
 
 	public function __construct()
 	{
@@ -19,38 +18,15 @@ final class pm extends messages
 		if(!(new flood())->pm())
 			return null;
 		
-		if(
-				isset($message[65534]) ||
-				!($stmt = parent::query(array('SELECT `from`, `pmid`,`message` AS oldmessage FROM `pms` WHERE `pmid` = (SELECT MAX(`pmid`) FROM `pms` WHERE (`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?))',
-												  array($_SESSION['nerdz_id'],$to,$to,$_SESSION['nerdz_id'])),db::FETCH_STMT)
-				 )
-		  )
+		if(isset($message[65534]))
 			return false;
 
-		$o = $stmt->fetch(PDO::FETCH_OBJ);
-
-		if($o && $o->from == $_SESSION['nerdz_id'])
-			return $this->appendMessage($message,$o->oldmessage,$o->pmid);
-	
 		return db::NO_ERR == parent::query(array('INSERT INTO `pms` (`from`,`to`,`message`,`time`,`read`) VALUES (:id,:to,:message,UNIX_TIMESTAMP(),1)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERR);
     }
 
-	private function appendMessage($message,$oldMessage,$pmid)
-	{
-		$newmsg = $oldMessage.'[hr]'.$message;
-
-		if(isset($newmsg[65534]))
-			return false;
-
-		return db::NO_ERR == parent::query(array('UPDATE `pms` SET `message` = :message, `read` = 1, `time` = UNIX_TIMESTAMP() WHERE `pmid` = :pmid',array(':message' => $newmsg,':pmid' => $pmid)),db::FETCH_ERR);
-	}
-    
-    
     public function getList()
     {
-		do
-		{
-			if(!($rs = parent::query(array('SELECT * FROM ((SELECT DISTINCT time as lasttime, `from`,`read` FROM pms where `read` = 1 and `to` = ?)  UNION (SELECT MAX(`time`) AS lasttime, `from`, `read` FROM pms WHERE `to` = ? GROUP BY `from`)) AS tmp ORDER BY `read` DESC, `lasttime` DESC',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
+			if(!($rs = parent::query(array('SELECT DISTINCT MAX(times) as lasttime, otherid as `from`, `read` FROM ((SELECT MAX(`time`) AS times, `from` as otherid, `read` FROM pms WHERE `to` = ? GROUP BY `from`) UNION (SELECT MAX(`time`) AS times, `to` as otherid, `read` FROM pms WHERE `from` = ? GROUP BY `to`)) AS tmp GROUP BY otherid ORDER BY `read` DESC, `lasttime` DESC',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
 				return false;
 	
 			$times = $res = array();
@@ -71,18 +47,6 @@ final class pm extends messages
 			$res = array_unique($res,SORT_REGULAR); //fix for new duplicate pm
 			$c = count($res);
 			
-			$redo = false;
-			if($c >= self::MAX_CONVERSATIONS)
-			{
-				sort($times,SORT_NUMERIC);
-				// probably I have to fix something about replacing time with ids here, but that query is just WAT
-				if(db::NO_ERR !=  parent::query(array('DELETE FROM `pms` WHERE (`time` BETWEEN ? AND ?) AND (`to` = ? OR `from` = ?)',array($times[0],$times[1],$_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_ERR))
-					return false;
-				$redo = true;
-			}
-		}
-		while($redo);
-		
 		return $res;
 	}
 	
@@ -149,7 +113,7 @@ final class pm extends messages
 
 		$ret = $res->fetchAll(PDO::FETCH_FUNC,array($this,'read'));
 
-		//se l'ultimo l'ho inviato io e ora voglio vedere presumibilmente l'append, mostro il nuovo commento se non ne sono stati aggiunti di nuovi dall'altro prima
+		//se l'ultimo l'ho inviato io, mostro il nuovo commento se non ne sono stati aggiunti di nuovi dall'altro prima
 		if($afterPmId && empty($ret))
 		{
 			if(!($res = parent::query(
@@ -169,6 +133,34 @@ final class pm extends messages
 		if (!is_numeric ($from) || !is_numeric ($to) || !($res = parent::query (array ('SELECT COUNT(`pmid`) AS pc FROM `pms` WHERE ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?))', array ($from, $to, $to, $from)), db::FETCH_OBJ)))
 			return 0;
 		return $res->pc;
+	}	
+
+	public function getLastMessageForConversation($otherId) {
+		
+		$ret = false;
+
+		if(is_numeric($otherId)) {
+			
+			$res = parent::query(
+				array(
+					'SELECT message,time FROM pms WHERE time = (SELECT MAX(time) FROM pms WHERE(`from` = :me AND `to` = :other) OR  (`from` = :otheragain AND  `to` = :meagain));',
+					array(
+						':me' => $_SESSION['nerdz_id'],
+						':meagain' => $_SESSION['nerdz_id'],
+						':other' => $otherId,
+						':otheragain' => $otherId
+					)					
+				), db::FETCH_OBJ				
+			);
+
+			if ($res && $res->message && $res->time) {
+				$ret = $res->message ? $res->message : "Tzupamassivefailah";
+			}
+
+		}
+
+		return $ret;
+
 	}
 }
 ?>

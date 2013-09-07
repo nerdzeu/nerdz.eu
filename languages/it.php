@@ -130,7 +130,7 @@
 	'VIDEO' => 'Video',
 	'IMAGES' => 'Immagine',
 	'PM' => 'MP',
-	'PM_DESCR' => "Benvenuto nella tua casella.\n\nQuesta casella ha un limite di conversazioni fissato a 20, al raggiungimento di 20 conversazioni le più vecchie saranno automaticamente eliminate.\n(E ho detto conversazioni, non singoli MP!).",
+	'PM_DESCR' => "Benvenuto nella tua casella.\n\nQuesta casella ha un limite di messaggi fissato a 5000, al raggiungimento di 5000 messaggi i più vecchi saranno automaticamente eliminati con cadenza mensile.\n(E ho detto messaggi, non conversazioni!).",
 	'COMPOSE' => 'Scrivi',
 	'INBOX' => 'Casella',
 	'TO' => 'Invia a:',

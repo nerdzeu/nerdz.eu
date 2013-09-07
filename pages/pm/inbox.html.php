@@ -9,7 +9,7 @@ if(!$core->isLogged())
 	die($core->lang('REGISTER'));
 
 $vals = array();
-$vals['from'] = $core->lang('FROM');
+$vals['from'] = $core->lang('USERNAME');
 $vals['read'] = $core->lang('READ');
 $vals['when'] = $core->lang('WHEN');
 $vals['delete'] = $core->lang('DELETE');
