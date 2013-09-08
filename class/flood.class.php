@@ -18,7 +18,7 @@ class flood extends phpCore
 			
 		if(!isset($_SESSION['nerdz_MPflood']))
 		{
-			if(($r = parent::query(array('SELECT MAX(`time`) AS cc FROM `pms` WHERE `from` = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+			if(($r = parent::query(array('SELECT MAX("time") AS cc FROM "pms" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
 			{
 				if(!$r->rowCount()) //first pm
 				{
@@ -56,7 +56,7 @@ class flood extends phpCore
 
 		if(!isset($_SESSION['nerdz_ProfileFlood']))
 		{
-			if(($r = parent::query(array('SELECT MAX(`time`) as cc FROM `posts` WHERE `from` = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+			if(($r = parent::query(array('SELECT MAX("time") as cc FROM "posts" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
 			{
 				if(!$r->rowCount()) //first post
 				{
@@ -88,7 +88,7 @@ class flood extends phpCore
 
 		if(!isset($_SESSION['nerdz_ProjectFlood']))
 		{
-			if(($r = parent::query(array('SELECT MAX(`time`) as cc FROM `groups_posts` WHERE `from` = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+			if(($r = parent::query(array('SELECT MAX("time") as cc FROM "groups_posts" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
 			{
 				if(!$r->rowCount()) //first post
 				{
@@ -119,7 +119,7 @@ class flood extends phpCore
 			
 		if(!isset($_SESSION['nerdz_PostCommentFlood']))
 		{
-			if(($r = parent::query(array('SELECT MAX(`time`) as cc FROM `comments` WHERE `from` = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+			if(($r = parent::query(array('SELECT MAX("time") as cc FROM "comments" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
 			{
 				if(!$r->rowCount()) //first comment
 				{
@@ -152,7 +152,7 @@ class flood extends phpCore
 	
 		if(!isset($_SESSION['nerdz_ProjectCommentFlood']))
 		{
-			if(($r = parent::query(array('SELECT MAX(`time`) as cc FROM `groups_comments` WHERE `from` = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+			if(($r = parent::query(array('SELECT MAX("time") as cc FROM "groups_comments" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
 			{
 				if(!$r->rowCount()) //first comment
 				{

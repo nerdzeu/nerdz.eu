@@ -91,33 +91,33 @@ $par = array(':interests' => $user['interests'],
 			 ':counter' => $obj->counter);
     
 if(
-	db::NO_ERR != $core->query(array('UPDATE profiles SET `interests` = :interests, `biography` = :biography, `quotes` = :quotes, `website` = :website, `dateformat` = :dateformat,
-      `photo` = :photo, `jabber` = :jabber, `yahoo` = :yahoo,
-	  `userscript` = :userscript, `facebook` = :facebook, `twitter` = :twitter, `steam` = :steam, `skype` = :skype WHERE `counter` = :counter',$par),db::FETCH_ERR)
+	db::NO_ERR != $core->query(array('UPDATE profiles SET "interests" = :interests, "biography" = :biography, "quotes" = :quotes, "website" = :website, "dateformat" = :dateformat,
+      "photo" = :photo, "jabber" = :jabber, "yahoo" = :yahoo,
+	  "userscript" = :userscript, "facebook" = :facebook, "twitter" = :twitter, "steam" = :steam, "skype" = :skype WHERE "counter" = :counter',$par),db::FETCH_ERR)
  )
 	die($core->jsonResponse('error',$core->lang('ERROR')));
 
 if($closed)
 {
 	if(!$core->closedProfile($_SESSION['nerdz_id']))
-		if(db::NO_ERR != $core->query(array('INSERT INTO `closed_profiles`(`counter`) VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
+		if(db::NO_ERR != $core->query(array('INSERT INTO "closed_profiles"("counter") VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
 			die($core->jsonResponse('error',$core->lang('ERROR')));
 }
 else
-	if( db::NO_ERR != $core->query(array('DELETE FROM `closed_profiles` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR) )
+	if( db::NO_ERR != $core->query(array('DELETE FROM "closed_profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR) )
 		die($core->jsonResponse('error',$core->lang('ERROR')));
 
 if($gravatar)
 {
 	if(!$core->hasGravatarEnabled($_SESSION['nerdz_id']))
-		if(db::NO_ERR != $core->query(array('INSERT INTO `gravatar_profiles`(`counter`) VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
+		if(db::NO_ERR != $core->query(array('INSERT INTO "gravatar_profiles"("counter") VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
 			die($core->jsonResponse('error',$core->lang('ERROR')));
 
 	$_SESSION['nerdz_gravatar'] = true;
 }
 else
 {
-	if(db::NO_ERR != $core->query(array('DELETE FROM `gravatar_profiles` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
+	if(db::NO_ERR != $core->query(array('DELETE FROM "gravatar_profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
 		die($core->jsonResponse('error',$core->lang('ERROR')));
 	$_SESSION['nerdz_gravatar'] = false;
 }
@@ -134,7 +134,7 @@ if(isset($_POST['whitelist']))
 		$uid = $core->getUserId(trim($v));
 		if(is_numeric($uid))
 		{
-			if(!in_array($core->query(array('INSERT INTO `whitelist`(`from`,`to`) VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERR),array(db::NO_ERR,1062)))
+			if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERR),array(db::NO_ERR,1062)))
 				die($core->jsonResponse('error',$core->lang('ERROR').'1'));
 			$newlist[] = $uid;
 		}
@@ -147,7 +147,7 @@ if(isset($_POST['whitelist']))
 			$toremove[] = $val;
 
 	foreach($toremove as $val)
-		if(db::NO_ERR != $core->query(array('DELETE FROM whitelist WHERE `from` = :id AND `to` = :val',array(':id' => $_SESSION['nerdz_id'], ':val' => $val)),db::FETCH_ERR))
+		if(db::NO_ERR != $core->query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['nerdz_id'], ':val' => $val)),db::FETCH_ERR))
 			die($core->jsonResponse('error',$core->lang('ERROR').'4'));
 }
 		

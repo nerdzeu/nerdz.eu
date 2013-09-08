@@ -13,7 +13,7 @@ if(
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
 	case 'del':
-		if(db::NO_ERR != $core->query(array('DELETE FROM `blacklist` WHERE `from` = :me AND `to` = :to',array(':me' => $_SESSION['nerdz_id'],':to' => $_POST['id'])),db::FETCH_ERR))
+		if(db::NO_ERR != $core->query(array('DELETE FROM "blacklist" WHERE "from" = :me AND "to" = :to',array(':me' => $_SESSION['nerdz_id'],':to' => $_POST['id'])),db::FETCH_ERR))
 			die($core->jsonResponse('error',$core->lang('ERROR')));
 	break;
 	
@@ -21,7 +21,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 		$motivation = empty($_POST['motivation']) ? '' : htmlentities(trim($_POST['motivation']),ENT_QUOTES,'UTF-8');
 		if(!($core->isInBlacklist($_POST['id'],$_SESSION['nerdz_id'])))
 		{
-			if(db::NO_ERR != $core->query(array('INSERT INTO `blacklist`(`from`,`to`,`motivation`) VALUES (:me,:to,:motivation)',array(':me' => $_SESSION['nerdz_id'],':to' => $_POST['id'],':motivation' => $motivation)),db::FETCH_ERR))
+			if(db::NO_ERR != $core->query(array('INSERT INTO "blacklist"("from","to","motivation") VALUES (:me,:to,:motivation)',array(':me' => $_SESSION['nerdz_id'],':to' => $_POST['id'],':motivation' => $motivation)),db::FETCH_ERR))
 				die($core->jsonResponse('error',$core->lang('ERROR')));
 		}
 		else

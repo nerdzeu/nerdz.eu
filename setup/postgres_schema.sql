@@ -13,8 +13,6 @@
 --Disables notices about indexes creation in tables.
 SET CLIENT_MIN_MESSAGES = WARNING;
 
-ALTER DATABASE nerdz SET timezone = 'UTC';
-
 --Starts transaction.
 BEGIN;
 

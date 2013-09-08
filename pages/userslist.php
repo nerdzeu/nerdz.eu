@@ -44,8 +44,8 @@ $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 $db = $core->getDB();
 
 $query = empty($q) ?
-		"SELECT `name`,`surname`,`username`, `counter`,`birth_date`,`last` FROM `users` ORDER BY {$orderby} {$order} LIMIT {$limit}" :
-		array("SELECT `name`,`surname`,`username`, `counter`,`birth_date`,`last` FROM `users` WHERE {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
+		"SELECT "name","surname","username", "counter","birth_date","last" FROM "users" ORDER BY {$orderby} {$order} LIMIT {$limit}" :
+		array("SELECT "name","surname","username", "counter","birth_date","last" FROM "users" WHERE {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
 
 $vals['list_a'] = array();
 

@@ -38,7 +38,7 @@ Then:
 - Configure NERDZ properly: copy setup/config.skel.php to class/config/index.php and edit the vars.
   Don't forget to disable minification if you haven't got csstidy / uglifyjs.
 - Enable the following rewrite rules on your webserver. Example for nginx:
-    ```nginx
+    """nginx
     location / {
         index index.html index.htm index.php;
         try_files $uri $uri/ @rewriterules;
@@ -49,7 +49,7 @@ Then:
         rewrite ^/(.+?)\.(\d+)$ /profile.php?id=$1&pid=$2 last;
         rewrite ^/(.+?):(\d+)$ /project.php?gid=$1&pid=$2 last;
     }
-    ```
+    """
 - Start everything and load your local NERDZ, then create your account (by registering).
 - It works? Yay! It doesn't work? See the next section.
 

@@ -20,11 +20,11 @@ switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
 {
 	case 'add':
 		$retcode = array(-1,1062); //il trigger mi fa il controllo sul fatto che l'utente abbia postato o no (lo aggiunge solo se non ha postato)
-		if(!in_array($core->query(array('INSERT INTO `lurkers`(`user`,`post`,`time`) VALUES(:to,:hpid,UNIX_TIMESTAMP())',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),array(db::NO_ERR,1062)))
+		if(!in_array($core->query(array('INSERT INTO "lurkers"("user","post","time") VALUES(:to,:hpid,UNIX_TIMESTAMP())',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),array(db::NO_ERR,1062)))
 			die($core->jsonResponse('error',$core->lang('ERROR')));	
 	break;
 	case 'del':
-		if(db::NO_ERR != $core->query(array('DELETE FROM `lurkers` WHERE `user` = :to AND `post` = :hpid',array(':to' => $to,':hpid' => $hpid)),db::FETCH_ERR))
+		if(db::NO_ERR != $core->query(array('DELETE FROM "lurkers" WHERE "user" = :to AND "post" = :hpid',array(':to' => $to,':hpid' => $hpid)),db::FETCH_ERR))
 			die($core->jsonResponse('error',$core->lang('ERROR')));
 	break;
 	default:

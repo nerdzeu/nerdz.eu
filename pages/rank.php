@@ -1,7 +1,7 @@
 <?php
 //TEMPLATE: OK
 $mo = empty($_GET['top']);
-$un_ti = ' AND (`time` + 2419200) > UNIX_TIMESTAMP()';
+$un_ti = ' AND ("time" + 2419200) > UNIX_TIMESTAMP()';
 $path = $_SERVER['DOCUMENT_ROOT'].'/pages/cache/'.($mo ? 'rank.json' : 'r_month.json');
 
 $vals['position'] = $core->lang('POSITION');
@@ -12,13 +12,13 @@ $vals['stupidstuff'] = '5tUp1d stUfF!1';
 
 if(!file_exists($path) || (filemtime($path)+3600)<time())
 {
-	$res = $core->query('SELECT COUNT(`hcid`) AS cc,`from` FROM `comments` WHERE `from` <> '.DELETED_USERS.(!$mo ? $un_ti : '').' GROUP BY `from` ORDER BY cc DESC LIMIT 100',db::FETCH_STMT);
+	$res = $core->query('SELECT COUNT("hcid") AS cc,"from" FROM "comments" WHERE "from" <> '.DELETED_USERS.(!$mo ? $un_ti : '').' GROUP BY "from" ORDER BY cc DESC LIMIT 100',db::FETCH_STMT);
     $rank = array();
 	
 	require_once $_SERVER['DOCUMENT_ROOT'].'/class/stuff.class.php';
     while(($o = $res->fetch(PDO::FETCH_OBJ)))
     {
-		$gc = $core->query(array('SELECT COUNT(`hcid`) AS cc FROM `groups_comments` WHERE `from` = :from '.(!$mo ? $un_ti : ''),array(':from' => $o->from)),db::FETCH_OBJ);
+		$gc = $core->query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :from '.(!$mo ? $un_ti : ''),array(':from' => $o->from)),db::FETCH_OBJ);
         $us = $core->getUserName($o->from);
 		$n = $o->cc + $gc->cc;
 		$rank[$us] = $n;

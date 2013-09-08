@@ -28,8 +28,8 @@ $vals['description'] = $core->lang('DESCRIPTION');
 $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 
 $query = empty($q) ?
-		 "SELECT `name`,`description`,`counter` FROM `groups` ORDER BY {$orderby} {$order} LIMIT {$limit}" :
-		 array("SELECT `name`,`description`,`counter` FROM `groups` WHERE {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
+		 "SELECT "name","description","counter" FROM "groups" ORDER BY {$orderby} {$order} LIMIT {$limit}" :
+		 array("SELECT "name","description","counter" FROM "groups" WHERE {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
 
 $vals['list_a'] = array();
 

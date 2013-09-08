@@ -381,14 +381,14 @@ class messages extends phpCore
 
     public function countMessages($id)
     {
-		if(!($o = parent::query(array('SELECT MAX(`pid`) AS cc FROM `posts` WHERE `to` = :id',array(':id' => $id)),db::FETCH_OBJ)))
+		if(!($o = parent::query(array('SELECT MAX("pid") AS cc FROM "posts" WHERE "to" = :id',array(':id' => $id)),db::FETCH_OBJ)))
 			return false;
 		return $o->cc === null ? 0 : $o->cc;
     }
 
     public function getMessage($hpid,$edit = false)
     {
-		if(!($o = parent::query(array('SELECT * FROM `posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+		if(!($o = parent::query(array('SELECT * FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
 			return false;
 		if($edit)
 			$_SESSION['nerdz_editpid'] = $o->pid;
@@ -404,10 +404,10 @@ class messages extends phpCore
 		else
 		{
 			$imp_blist = implode(',',$blist);
-			$glue = "AND `posts`.`from` NOT IN ({$imp_blist}) AND `posts`.`to` NOT IN ({$imp_blist})";
+			$glue = "AND "posts"."from" NOT IN ({$imp_blist}) AND "posts"."to" NOT IN ({$imp_blist})";
 		}
 
-		if(!($result = parent::query(array("SELECT * FROM `posts` WHERE `to` = :id {$glue} ORDER BY `hpid` DESC LIMIT {$limit}",array(':id' => $id)),db::FETCH_STMT)))
+		if(!($result = parent::query(array("SELECT * FROM "posts" WHERE "to" = :id {$glue} ORDER BY "hpid" DESC LIMIT {$limit}",array(':id' => $id)),db::FETCH_STMT)))
 			return false;
 		return $this->getPostsArray($result,false);
 	}
@@ -424,10 +424,10 @@ class messages extends phpCore
 		else
 		{
 			$imp_blist = implode(',',$blist);
-			$glue = "AND `posts`.`from` NOT IN ({$imp_blist}) AND `posts`.`to` NOT IN ({$imp_blist})";
+			$glue = "AND "posts"."from" NOT IN ({$imp_blist}) AND "posts"."to" NOT IN ({$imp_blist})";
 		}
 
-		if(!($result = parent::query(array("SELECT * FROM `posts` WHERE `hpid` < :hpid AND `to` = :id {$glue} ORDER BY `hpid` DESC LIMIT {$N}",array(':id' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
+		if(!($result = parent::query(array("SELECT * FROM "posts" WHERE "hpid" < :hpid AND "to" = :id {$glue} ORDER BY "hpid" DESC LIMIT {$N}",array(':id' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
 			return false;
 
 		return $this->getPostsArray($result,false);
@@ -453,20 +453,20 @@ class messages extends phpCore
 
 		$message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-		return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO `posts` (`from`,`to`,`pid`,`message`,`notify`, `time`) VALUE (:id,:to,:lastpid,:message,:not,UNIX_TIMESTAMP())',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':lastpid' => $lastpid,':message' => $message,':not' => $not)),db::FETCH_ERR);
+		return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO "posts" ("from","to","pid","message","notify", "time") VALUE (:id,:to,:lastpid,:message,:not,UNIX_TIMESTAMP())',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':lastpid' => $lastpid,':message' => $message,':not' => $not)),db::FETCH_ERR);
     }
 
     public function deleteMessage($hpid)
     {
 		if(
-			!($obj = parent::query(array('SELECT `from`,`to`,`pid` FROM `posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
+			!($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
 			!$this->canRemovePost(array('from' => $obj->from,'to' => $obj->to)) ||
-			db::NO_ERR != parent::query(array('DELETE FROM `posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR)//il trigger `before_delete_post` gestisce elimimo comments, comments_notify
+			db::NO_ERR != parent::query(array('DELETE FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR)//il trigger "before_delete_post" gestisce elimimo comments, comments_notify
 		  )
 			return false;
 
 		//NON POSSO GESTIRE L'AGGIORNAMENTO QUI SOTTO VIA TRIGGER MYSQL A CAUSA DI UNA SUA LIMITAZIONE
-		return db::NO_ERR == parent::query(array('UPDATE `posts` SET `pid` = `pid` -1 WHERE `pid` > :pid AND `to` = :to',array(':pid' => $obj->pid, ':to' => $obj->to)),db::FETCH_ERR);
+		return db::NO_ERR == parent::query(array('UPDATE "posts" SET "pid" = "pid" -1 WHERE "pid" > :pid AND "to" = :to',array(':pid' => $obj->pid, ':to' => $obj->to)),db::FETCH_ERR);
 	}
 
     public function editMessage($hpid,$message)
@@ -474,11 +474,11 @@ class messages extends phpCore
 		$message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 		return !(
 			empty($message) ||
-			!($obj = parent::query(array('SELECT `from`,`to`,`pid` FROM `posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
+			!($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
 			!$this->canEditPost(array('from' => $obj->from, 'to' => $obj->to)) ||
 			empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
 			empty($message) || isset($message[65534]) ||
-			db::NO_ERR != parent::query(array('UPDATE `posts` SET `from` = :from, `to` = :to, `pid` = :pid, `message` = :message WHERE `hpid` = :hpid',array(':from' => $obj->from, ':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
+			db::NO_ERR != parent::query(array('UPDATE "posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from, ':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
 	      );
 	}
 
@@ -490,7 +490,7 @@ class messages extends phpCore
 		if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
 		{
 			$lang = $lang ? $lang : parent::getUserLanguage($_SESSION['nerdz_id']);
-			$glue = $lang == '*' ? '1' : "`lang` = '{$lang}'";
+			$glue = $lang == '*' ? '1' : ""lang" = '{$lang}'";
 		}
 		elseif($onlyfollowed)
 		{
@@ -506,8 +506,8 @@ class messages extends phpCore
 		}
 
 		$q = $prj ?
-		"SELECT groups.visible, groups_posts.* FROM `groups_posts` INNER JOIN `groups` ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts.`from` = users.counter WHERE {$glue} AND `visible` = 1 ORDER BY groups_posts.hpid DESC LIMIT {$limit}" :
-		"SELECT posts.*,users.lang FROM `posts` INNER JOIN `users` ON users.counter = posts.to WHERE {$glue} ORDER BY posts.hpid DESC LIMIT {$limit}";
+		"SELECT groups.visible, groups_posts.* FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE {$glue} AND "visible" = 1 ORDER BY groups_posts.hpid DESC LIMIT {$limit}" :
+		"SELECT posts.*,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE {$glue} ORDER BY posts.hpid DESC LIMIT {$limit}";
 
 		if(!($result = parent::query($q,db::FETCH_STMT)))
 			return $ret;
@@ -527,7 +527,7 @@ class messages extends phpCore
 		if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
 		{
 			$lang = $lang ? $lang : parent::getUserLanguage($_SESSION['nerdz_id']);
-			$glue = $lang == '*' ? '1' : "`lang` = '{$lang}'";
+			$glue = $lang == '*' ? '1' : ""lang" = '{$lang}'";
 		}
 		elseif($onlyfollowed)
 		{
@@ -543,8 +543,8 @@ class messages extends phpCore
 		}
 
 		$q = $prj ?
-		array("SELECT groups.visible, groups_posts.* FROM `groups_posts` INNER JOIN `groups` ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts.`from` = users.counter WHERE {$glue} AND `visible` = 1 AND `hpid` < :hpid ORDER BY groups_posts.hpid DESC LIMIT {$N}",array(':hpid' => $hpid)) :
-		array("SELECT posts.*,users.lang FROM `posts` INNER JOIN `users` ON users.counter = posts.to WHERE {$glue}".(empty($glue) ? '' : ' AND ')." `hpid` < :hpid ORDER BY posts.hpid DESC LIMIT {$N}",array(':hpid' => $hpid));
+		array("SELECT groups.visible, groups_posts.* FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE {$glue} AND "visible" = 1 AND "hpid" < :hpid ORDER BY groups_posts.hpid DESC LIMIT {$N}",array(':hpid' => $hpid)) :
+		array("SELECT posts.*,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE {$glue}".(empty($glue) ? '' : ' AND ')." "hpid" < :hpid ORDER BY posts.hpid DESC LIMIT {$N}",array(':hpid' => $hpid));
 
 		if(!($result = parent::query($q,db::FETCH_STMT)))
 			return $ret;
@@ -598,7 +598,7 @@ class messages extends phpCore
 			parent::isLogged() &&
 			(
 				in_array($_SESSION['nerdz_id'],array($post['from'],$post['to'])) ||
-				parent::query(array('SELECT DISTINCT `from` FROM `comments` WHERE `hpid` = :hpid AND `from` = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+				parent::query(array('SELECT DISTINCT "from" FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
 			)
 		  )
 			return true;
@@ -609,7 +609,7 @@ class messages extends phpCore
 	{
 		return (
 				parent::isLogged() &&
-				parent::query(array('SELECT `hpid` FROM `posts_no_notify` WHERE `hpid` = :hpid AND `user` = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+				parent::query(array('SELECT "hpid" FROM "posts_no_notify" WHERE "hpid" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
 			   );
 	}
 
@@ -617,7 +617,7 @@ class messages extends phpCore
 	{
 		return (
 				parent::isLogged() &&
-				parent::query(array('SELECT `post` FROM `lurkers` WHERE `post` = :hpid AND `user` = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+				parent::query(array('SELECT "post" FROM "lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
 			   );
 	}
 
@@ -625,7 +625,7 @@ class messages extends phpCore
 	{
 		return (
 				parent::isLogged() &&
-				parent::query(array('SELECT `hpid` FROM `bookmarks` WHERE `hpid` = :hpid AND `from` = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+				parent::query(array('SELECT "hpid" FROM "bookmarks" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
 			   );
 	}
 

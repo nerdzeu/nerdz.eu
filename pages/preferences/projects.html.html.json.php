@@ -23,7 +23,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 		if(!($capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : '')))
 			die($core->jsonResponse('error',$core->lang('ERROR').': '.$core->lang('CAPTCHA')));
 
-		if(db::NO_ERR != $core->query(array('DELETE FROM `groups` WHERE `counter` = ?',array($id)),db::FETCH_ERR))//il trigger fa il resto
+		if(db::NO_ERR != $core->query(array('DELETE FROM "groups" WHERE "counter" = ?',array($id)),db::FETCH_ERR))//il trigger fa il resto
 			die($core->jsonResponse('error',$core->lang('ERROR')));
 	break;
 	
@@ -57,7 +57,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 
 		$_POST['members'] = isset($_POST['members']) ? $_POST['members'] : '';
 	
-		if(!($res = $core->query(array('SELECT `user` FROM groups_members where `group` = ?',array($id)),db::FETCH_STMT)))
+		if(!($res = $core->query(array('SELECT "user" FROM groups_members where "group" = ?',array($id)),db::FETCH_STMT)))
 			die($core->jsonResponse('error',$core->lang('ERROR').'2'));
 
 		$oldmem = $res->fetchAll(PDO::FETCH_COLUMN);
@@ -69,7 +69,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 			$uid = $core->getUserId(trim($v));
 			if(is_numeric($uid))
 			{
-				if(!in_array($core->query(array('INSERT INTO `groups_members`(`group`,`user`) VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERR),array(-1,1062)))
+				if(!in_array($core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERR),array(-1,1062)))
 					die($core->jsonResponse('error',$core->lang('ERROR').'1'));
 				$newmem[] = $uid;
 			}
@@ -83,7 +83,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 				$toremove[] = $val;
 
 		 foreach($toremove as $val)
-			 if(db::NO_ERR != $core->query(array('DELETE FROM groups_members WHERE `group` = :id AND user = :val',array(':id' => $id,':val' => $val)),db::FETCH_ERR))
+			 if(db::NO_ERR != $core->query(array('DELETE FROM groups_members WHERE "group" = :id AND user = :val',array(':id' => $id,':val' => $val)),db::FETCH_ERR))
 				die($core->jsonResponse('error',$core->lang('ERROR').'4'));
 		
 		foreach($_POST as &$val)
@@ -101,7 +101,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 
 		$par = array(':desc' => $_POST['description'], ':website' => $_POST['website'], ':photo' => $_POST['photo'], ':private' => $_POST['private'], ':open' => $_POST['open'], ':goal' => $_POST['goal'], ':visible' => $_POST['visible'], ':id' => $id);
 		
-		if(db::NO_ERR != $core->query(array('UPDATE `groups` SET `description` = :desc, `website` = :website, `photo` = :photo, `private` = :private, `open` = :open, `goal` = :goal, `visible` = :visible WHERE `counter` = :id',$par),db::FETCH_ERR))
+		if(db::NO_ERR != $core->query(array('UPDATE "groups" SET "description" = :desc, "website" = :website, "photo" = :photo, "private" = :private, "open" = :open, "goal" = :goal, "visible" = :visible WHERE "counter" = :id',$par),db::FETCH_ERR))
 		    die($core->jsonResponse('error',$core->lang('ERROR')));
 	break;
 	default:

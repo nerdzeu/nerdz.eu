@@ -24,7 +24,7 @@
 			$found = true;
 			$name = $info->name;
 			if($pid && !$info->private && $info->visible)
-				if(!($post = $core->query(array('SELECT `message` FROM `groups_posts` WHERE `pid` = :pid AND `to` = :gid',array(':pid' => $pid, ':gid' => $gid)),db::FETCH_OBJ)))
+				if(!($post = $core->query(array('SELECT "message" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),db::FETCH_OBJ)))
 				{
 					$post = new stdClass();
 					$post->message = '';

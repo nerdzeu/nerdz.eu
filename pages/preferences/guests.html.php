@@ -9,7 +9,7 @@ $core = new phpCore();
 if(!$core->isLogged())
 	die($core->lang('REGISTER'));
 
-if(!($o = $core->query(array('SELECT `private` FROM `users` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+if(!($o = $core->query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
 	die($core->lang('ERROR'));
 
 $vals['description'] = $core->lang('GUESTS_DESCR');

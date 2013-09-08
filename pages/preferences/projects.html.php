@@ -20,7 +20,7 @@ $vals['listdescription'] = $core->lang('PROJECT_LIST');
 $vals['manage'] = $core->lang('MANAGE');
 $vals['tok_n'] = $core->getCsrfToken('edit');
 
-if(!($r = $core->query(array('SELECT `name`,`counter` FROM `groups` WHERE `owner` = ?',array($_SESSION['nerdz_id'])),db::FETCH_STMT)))
+if(!($r = $core->query(array('SELECT "name","counter" FROM "groups" WHERE "owner" = ?',array($_SESSION['nerdz_id'])),db::FETCH_STMT)))
 	$vals['myprojects_a'] = array();
 else
 {

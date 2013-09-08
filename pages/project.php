@@ -123,7 +123,7 @@ else
 		$found = false;
 		if($vals['singlepost_b'])
 		{
-			if(!($post = $core->query(array('SELECT `hpid` FROM `groups_posts` WHERE `pid` = :pid AND `to` = :gid',array(':pid' => $pid, ':gid' => $gid)),db::FETCH_OBJ)))
+			if(!($post = $core->query(array('SELECT "hpid" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),db::FETCH_OBJ)))
 			{
 				$tpl->assign('banners_a',$vals['banners_a']);
 				$tpl->assign('postnotfound',$core->lang('POST_NOT_FOUND'));

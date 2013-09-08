@@ -9,7 +9,7 @@ $core = new phpCore();
 if(!$core->isLogged())
 	die($core->lang('REGISTER'));
 
-if(!($obj = $core->query(array('SELECT * FROM `users` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+if(!($obj = $core->query(array('SELECT * FROM "users" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
     die($core->lang('ERROR'));
     
 $vals = array();
