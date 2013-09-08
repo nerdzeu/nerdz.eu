@@ -2,12 +2,12 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/config.class.php';
 $class = new confClass();
 
-#begin mysql constants
-define('MYSQL_HOST',$class->mysql_host);
-define('MYSQL_DATA_NAME',$class->mysql_db);
-define('MYSQL_USER',$class->mysql_user);
-define('MYSQL_PASS',$class->mysql_pass);
-#end mysql constants
+#begin postgresql constants
+define('POSTGRESQL_HOST',$class->postgresql_host);
+define('POSTGRESQL_DATA_NAME',$class->postgresql_db);
+define('POSTGRESQL_USER',$class->postgresql_user);
+define('POSTGRESQL_PASS',$class->postgresql_pass);
+#end postgresql constants
 
 #begin user constants
 #length
