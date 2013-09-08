@@ -1,7 +1,7 @@
 <?php
 //TEMPLATE: OK
 $mo = empty($_GET['top']);
-$un_ti = ' AND ("time" + 2419200) > UNIX_TIMESTAMP()';
+$un_ti = ' AND ("time" + INTERVAL \'28 days\') > NOW()';
 $path = $_SERVER['DOCUMENT_ROOT'].'/pages/cache/'.($mo ? 'rank.json' : 'r_month.json');
 
 $vals['position'] = $core->lang('POSITION');

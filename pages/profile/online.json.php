@@ -9,7 +9,7 @@ if(!$core->isLogged())
 
 $viewonline = empty($_SESSION['nerdz_mark_offline']) ? '1' : '0';
 
-if(db::NO_ERR != $core->query(array('UPDATE "users" SET "last" = UNIX_TIMESTAMP(), "viewonline" = :on WHERE "counter" = :id',array(':on' => $viewonline,':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+if(db::NO_ERR != $core->query(array('UPDATE "users" SET "last" = NOW(), "viewonline" = :on WHERE "counter" = :id',array(':on' => $viewonline,':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
 	die($core->jsonResponse('error','Time'));
 
 if(!($o = $core->query(array('SELECT "remote_addr","http_user_agent" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))

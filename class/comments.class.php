@@ -17,10 +17,10 @@ class comments extends project
 
 		if(
 			!($r = parent::query(array('SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)) || //quelli da non notificare 
-			!($nn = parent::query(array("SELECT "from","to" FROM "{$glue}comments_no_notify" WHERE "hpid" = :hpid",array(':hpid' => $hpid)),db::FETCH_STMT)) ||
-			!($nnp = parent::query(array("SELECT "user" FROM "{$glue}posts_no_notify" WHERE "hpid" = :hpid",array(':hpid' => $hpid)),db::FETCH_STMT)) ||
-			!($res = parent::query(array("SELECT DISTINCT "from" FROM "{$glue}comments" WHERE "hpid" = :hpid",array(':hpid' => $hpid)),db::FETCH_STMT)) ||
-			!($lur = parent::query(array("SELECT "user" FROM "{$glue}lurkers" WHERE "post" = :hpid",array(':hpid' => $hpid)),db::FETCH_STMT))
+			!($nn = parent::query(array('SELECT "from","to" FROM "'.$glue.'comments_no_notify" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
+			!($nnp = parent::query(array('SELECT "user" FROM "'.$glue.'posts_no_notify" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
+			!($res = parent::query(array('SELECT DISTINCT "from" FROM "'.$glue.'comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
+			!($lur = parent::query(array('SELECT "user" FROM "'.$glue.'lurkers" WHERE "post" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT))
 		  )
 			return false;
 
@@ -33,7 +33,7 @@ class comments extends project
 
 		if(in_array($_SESSION['nerdz_id'],$lurkers)) //se lurki non commenti (non avrebbe senso che tu venga notificato novamente)
 		{
-			if(db::NO_ERR != parent::query(array("DELETE FROM "{$glue}lurkers" WHERE "post" = :hpid AND "user" = :id",array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+			if(db::NO_ERR != parent::query(array('DELETE FROM "'.$glue.'lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
 				return false;
 
 			unset($lurkers[array_search($_SESSION['nerdz_id'],$lurkers)]);
@@ -61,7 +61,7 @@ class comments extends project
 
 		$users = array_values(array_diff(array_unique(array_merge($users,$lurkers)),array(USERS_NEWS,DELETED_USERS)));
 		$i = count($users);
-		$time = time(); //devo usare questa e non UNIX_TIMESTAMP perché nel while altrimenti perdo secondi e le cose si sfasano
+		$time = time(); //devo usare questa e non NOW perché nel while altrimenti perdo secondi e le cose si sfasano
 		while($i-- > 0)
 			if(isset($users[$i]) && ($jmp && ($author == $users[$i]))||($_SESSION['nerdz_id'] != $users[$i]))
 			{
@@ -81,7 +81,7 @@ class comments extends project
 					if(!$f)
 						continue;
 				}
-				if(!in_array(parent::query(array("INSERT INTO "{$glue}comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,:time)",array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERR),array(db::NO_ERR,1062)))
+				if(!in_array(parent::query(array('INSERT INTO "'.$glue.'comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,TO_TIMESTAMP(:time))',array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERR),array(db::NO_ERR,1062)))
 					break;
 			}
 		return !($i+1);
@@ -152,7 +152,7 @@ class comments extends project
 		}
 		//non controllo il valore di ritorno, perché non è un errore grave per cui ritornare false, ci pensa poi la classe per le notifiche a gestire tutto
 		if(parent::isLogged() && $i > 1)
-			parent::query(array("DELETE FROM "{$glue}comments_notify" WHERE "to" = ? AND "hpid" = ?",array($_SESSION['nerdz_id'],$hpid)),db::NO_RETURN);
+			parent::query(array('DELETE FROM "'.$glue.'comments_notify" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['nerdz_id'],$hpid)),db::NO_RETURN);
 		
 		return $ret;
 	}
@@ -167,19 +167,19 @@ class comments extends project
 		// making things pretty >:(
 		$useLimitedQuery = is_numeric ($maxNum) && is_numeric ($startFrom);
 		$queryArr = ( $olderThanMe ?
-		               array("SELECT "from","to","time","message","hcid" FROM "{$glue}comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"",array(':hpid' => $hpid, ':hcid' => $olderThanMe))
+		               array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe))
 		            : ($useLimitedQuery ?
 		                // sort by hcid, descending, then reverse the order (ascending)
-		                array("SELECT q.from, q.to, q.time, q.message, q.hcid FROM (SELECT "from", "to", "time", "message", "hcid" FROM "{$glue}comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) AND "to" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) ORDER BY "hcid" DESC LIMIT ?, ?) AS q ORDER BY q.hcid ASC", array ($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $startFrom, $maxNum))
-		             : array("SELECT "from","to","time","message","hcid" FROM "{$glue}comments" WHERE "hpid" = :hpid ORDER BY "hcid"",array(':hpid' => $hpid)))
+		               array('SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid FROM (SELECT "from", "to", "time", "message", "hcid" FROM "'.$glue.'comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) AND "to" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) ORDER BY "hcid" DESC LIMIT ? OFFSET ?) AS q ORDER BY q.hcid ASC', array ($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $maxNum, $startFrom))
+		             : array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',array(':hpid' => $hpid)))
 		            );
 		//print $queryArr[]
 		if(!($res = parent::query($queryArr, db::FETCH_STMT)))
 			return false;
 
 		if(
-			!($f = parent::query(array("SELECT DISTINCT "from" FROM "{$glue}comments" WHERE "hpid" = :hpid",array(':hpid' => $hpid)),db::FETCH_STMT)) ||
-			!($ll = parent::query(array("SELECT "from" FROM "{$glue}comments_no_notify" WHERE "hpid" = :hpid AND "to" = :id",array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)) || //quelli da non notificare
+			!($f = parent::query(array('SELECT DISTINCT "from" FROM "'.$glue.'comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
+			!($ll = parent::query(array('SELECT "from" FROM "'.$glue.'comments_no_notify" WHERE "hpid" = :hpid AND "to" = :id',array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)) || //quelli da non notificare
 			!($r = ($useLimitedQuery ? true : parent::query(array('SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
 		  )
 			return false;
@@ -226,7 +226,7 @@ class comments extends project
 		   allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty e fuck off*/
 		if($olderThanMe && empty($ret))
 		{
-			if(!($res = parent::query(array("SELECT "from","to","time","message","hcid" FROM "{$glue}comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"",array(':hpid' => $hpid, ':hcid' => $olderThanMe)),db::FETCH_STMT)))
+			if(!($res = parent::query(array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe)),db::FETCH_STMT)))
 				return false;
 			$ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravatar,$gravurl,$users,$cg,$times,$lkd,$glue);
 		}
@@ -381,7 +381,7 @@ class comments extends project
 				//$message .= $this->removeNestedQuotes($quot);
 //				$message .=$quot;
 
-		if(db::NO_ERR != parent::query(array('INSERT INTO "comments" ("from","to","hpid","message","time") VALUES (:from,:to,:hpid,:message,UNIX_TIMESTAMP())',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERR))
+		if(db::NO_ERR != parent::query(array('INSERT INTO "comments" ("from","to","hpid","message","time") VALUES (:from,:to,:hpid,:message,NOW())',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERR))
 			return false;
 
 		return $this->addControl($obj->from,$obj->to,$hpid);
@@ -437,7 +437,7 @@ class comments extends project
     public function delComment($hcid)
     {
 		$ok =  (
-			($o = parent::query(array('SELECT "hpid","from","to","time" FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)) //cid, from, to, time servono
+			($o = parent::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)) //cid, from, to, time servono
 			&&
 			($owner = parent::query(array('SELECT "to" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),db::FETCH_OBJ))
 			&&
@@ -445,7 +445,7 @@ class comments extends project
 			&&
 			parent::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_ERR) == db::NO_ERR
 			&&
-			parent::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = :time',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERR)  == db::NO_ERR
+			parent::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERR)  == db::NO_ERR
 		);
 		if($ok)
 		{
@@ -518,7 +518,7 @@ class comments extends project
 		if($user && $user->from == $_SESSION['nerdz_id'])
 			return $this->appendProjectComment($user,$message) && $this->addControl($obj->from,$obj->to,$hpid,true);
 
-		if(db::NO_ERR != parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message","time") VALUES (:id,:to,:hpid,:message,UNIX_TIMESTAMP())',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERR))
+		if(db::NO_ERR != parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message","time") VALUES (:id,:to,:hpid,:message,NOW())',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERR))
 			return false;
 		return $this->addControl($obj->from,$obj->to,$hpid,true);
 	}
@@ -550,7 +550,7 @@ class comments extends project
     public function delProjectComment($hcid)
     {
 		if(
-			!($o = parent::query(array('SELECT "hpid","from","to","time" FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)) ||
+			!($o = parent::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)) ||
 		    !($owner = parent::getOwnerByGid($o->to))
 		  )
 			return false;
@@ -561,8 +561,8 @@ class comments extends project
 		if(in_array($_SESSION['nerdz_id'],$canremovecomment))
 		{
 			if(
-				db::NO_ERR != parent::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = :time',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),db::FETCH_ERR) ||
-				db::NO_ERR != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = :time',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERR)
+				db::NO_ERR != parent::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),db::FETCH_ERR) ||
+				db::NO_ERR != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERR)
 			  )
 				return false;
 		}

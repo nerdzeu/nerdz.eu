@@ -64,6 +64,9 @@ else
 		$vals['username4link_n'] = phpCore::userLink($info->username);
 		$vals['lang_n'] = $core->getUserLanguage($info->counter);
 		$vals['online_b'] = $core->isOnline($info->counter);
+		
+		error_log($core->isOnline($info->counter) ? 'yes' : 'no');
+		
 		$vals['online'] = $core->lang('ONLINE');
 		$vals['offline'] = $core->lang('OFFLINE');
 		$vals['username'] = $core->lang('USERNAME');
@@ -108,7 +111,7 @@ else
 		$vals['comments'] = $core->lang('COMMENTS');
 		$vals['totalcomments_n'] = $a['n'];
 
-		if(!($o = $core->query(array('SELECT "last" from "users" WHERE "counter" = :id',$ida),db::FETCH_OBJ)))
+		if(!($o = $core->query(array('SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',$ida),db::FETCH_OBJ)))
 			die($core->lang('ERROR'));
 			
 		$vals['lastvisit_n'] = $core->getDateTime($o->last);

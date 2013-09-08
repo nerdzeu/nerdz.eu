@@ -24,11 +24,11 @@ switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
 		$retcode = array(db::NO_ERR,1062);
 		if(!$from) //intero post
 		{
-			if(!in_array($core->query(array('INSERT INTO "groups_posts_no_notify"("user","hpid","time") VALUES(:to,:hpid,UNIX_TIMESTAMP())',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),$retcode))
+			if(!in_array($core->query(array('INSERT INTO "groups_posts_no_notify"("user","hpid","time") VALUES(:to,:hpid,NOW())',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),$retcode))
 				die($core->jsonResponse('error',$core->lang('ERROR')));
 		}
 		else
-			if(!in_array($core->query(array('INSERT INTO "groups_comments_no_notify"("from","to","hpid","time") VALUES(:from,:to,:hpid,UNIX_TIMESTAMP())',array(':from' => $from, ':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),$retcode))
+			if(!in_array($core->query(array('INSERT INTO "groups_comments_no_notify"("from","to","hpid","time") VALUES(:from,:to,:hpid,NOW())',array(':from' => $from, ':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),$retcode))
 				die($core->jsonResponse('error',$core->lang('ERROR')));
 	break;
 	case 'del':

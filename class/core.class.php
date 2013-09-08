@@ -28,7 +28,7 @@ class phpCore
 	private $db;
 
 	public function __construct()
-    {
+        {
 		try
 		{
 			$this->db = db::getDB();
@@ -36,9 +36,7 @@ class phpCore
 		catch(PDOException $e)
 		{
 			require_once $_SERVER['DOCUMENT_ROOT'].'/data/databaseError.html';
-			$path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
-			file_put_contents($path,$e->getMessage());
-			chmod($path,0775);
+			$this->dumpException($e);
 			die();
 		}
 
@@ -53,12 +51,22 @@ class phpCore
 		$idiots = array();
 		if(!empty($idiots) && $this->isLogged() && in_array($_SESSION['nerdz_id'], $idiots))
 			$this->logout();
-    }
+        }
 
 	public function getDB()
 	{
 		return $this->db;
 	}
+   
+    public function dumpException($e, $moredata = false) {
+        $this->dumpErrorString((($moredata != false) ? "{$moredata}: " : '').$e->getMessage());
+    }
+    
+    public function dumpErrorString($string) {
+        $path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
+        file_put_contents($path,$string."\n", FILE_APPEND);
+        chmod($path,0775);
+    }
    
     public function jsonResponse($status, $message)
     {
@@ -104,6 +112,7 @@ class phpCore
 		}
 		catch(PDOException $e)
 		{
+                        $this->dumpException($e, is_string($query) ? $query : $query[0]);
 			if($action == db::FETCH_ERR)
 				return $stmt->errorInfo()[1];
 
@@ -313,9 +322,9 @@ class phpCore
 
     public function isOnline($id)
     {
-		if(!($o = $this->query(array('SELECT "last","viewonline" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+		if(!($o = $this->query(array('SELECT ("last" + INTERVAL \'300 SECONDS\') > NOW() AS online,"viewonline" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
 			return false;
-		return $o->viewonline && (($o->last+300) > time());
+		return $o->viewonline && $o->online;
     }
 
     public function areFriends($uno,$due)
@@ -369,8 +378,8 @@ class phpCore
 	}
 
     public function isLogged()
-    {
-		return (isset($_SESSION['nerdz_logged']) && $_SESSION['nerdz_logged']);
+    {     
+	return (isset($_SESSION['nerdz_logged']) && $_SESSION['nerdz_logged']);
     }
 
     public function getUserObject($id)
@@ -483,7 +492,7 @@ class phpCore
 	public function getDateTime($timestamp)
 	{
 		$timezone = $this->getUserTimezone($this->isLogged() ? $_SESSION['nerdz_id'] : 0);
-
+		
 		$date = new DateTime();
 		$date->setTimestamp($timestamp);
 		$date->setTimeZone(new DateTimezone($timezone));

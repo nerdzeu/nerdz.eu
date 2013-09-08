@@ -171,16 +171,20 @@ if(isset($user['username'][MIN_LENGTH_USER]))
 
 						$stmt->execute($par);
 
-						$num_row = $db->exec('INSERT INTO profiles ("website", "quotes", "biography", "interests", "photo") VALUES ("","","","","")');
+						$stmt = $db->prepare('INSERT INTO profiles ("remote_addr", "http_user_agent") VALUES (:addr, :ua)');
+						
+						$stmt->execute(array( 
+                                                                ':addr' => $_SERVER['REMOTE_ADDR'],
+                                                                ':ua' => htmlentities($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
+                                                               )
+                                                );
 
 						$db->commit(); //end transaction
 					}
 					catch(PDOException $e)
 					{
 						$db->rollBack();
-						$path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
-                                                file_put_contents($path,$e->getMessage());
-                                                chmod($path,0775);
+						$core->dumpException($e);
 						die($core->jsonResponse('error',$core->lang('ERROR').'1')); //fail transaction
 					}
 					

@@ -47,7 +47,7 @@ class project extends messages
 
     public function getProjectMessage($hpid,$edit = false)
     {
-		if(!($o = parent::query(array('SELECT * FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+		if(!($o = parent::query(array('SELECT groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
 			return false;
 		if($edit)
 			$_SESSION['nerdz_editpid'] = $o->pid;
@@ -63,9 +63,9 @@ class project extends messages
 		else
 		{
 			$imp_blist = implode(',',$blist);
-			$glue = "AND "groups_posts"."from" NOT IN ({$imp_blist})";
+			$glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.'})';
 		}
-		if(!($result = parent::query(array("SELECT * FROM "groups_posts" WHERE "to" = :gid {$glue} ORDER BY "hpid" DESC LIMIT {$limit}",array(':gid' => $gid)),db::FETCH_STMT)))
+		if(!($result = parent::query(array('SELECT groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" WHERE "to" = :gid '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,array(':gid' => $gid)),db::FETCH_STMT)))
 			return false;
 
 		return parent::getPostsArray($result,true);
@@ -83,10 +83,10 @@ class project extends messages
 		else
 		{
 			$imp_blist = implode(',',$blist);
-			$glue = "AND "groups_posts"."from" NOT IN ({$imp_blist})";
+			$glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.')';
 		}
 
-		if(!($result = parent::query(array("SELECT * FROM "groups_posts" WHERE "hpid" < :hpid AND "to" = :gid {$glue} ORDER BY "hpid" DESC LIMIT {$N}",array(':gid' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
+		if(!($result = parent::query(array('SELECT groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" WHERE "hpid" < :hpid AND "to" = :gid '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,array(':gid' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
 			return false;
 
 		return parent::getPostsArray($result,true);
@@ -138,7 +138,7 @@ class project extends messages
 		
 		$message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-		if(empty($message) || db::NO_ERR != parent::query(array("INSERT INTO "groups_posts" ("from","to","pid","message","time","news") VALUES (:id,:to,:lastpid,:message,:time,:news)",array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':lastpid' => $lastpid, ':time' => $time, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
+		if(empty($message) || db::NO_ERR != parent::query(array('INSERT INTO "groups_posts" ("from","to","pid","message","time","news") VALUES (:id,:to,:lastpid,:message,TO_TIMESTAMP(:time),:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':lastpid' => $lastpid, ':time' => $time, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
 			return false;
 
 		if($_SESSION['nerdz_id'] != $own)
@@ -147,7 +147,7 @@ class project extends messages
 		$tonotify = array_diff(array_unique(array_merge($members,$followers)),$blacklist,array($_SESSION['nerdz_id']));
 
 		foreach($tonotify as $v)
-			if(db::NO_ERR != parent::query(array('INSERT INTO "groups_notify" ("group","to","time") VALUES (:to,:v,:time)',array(':to' => $to, ':v' => $v, ':time' => $time)),db::FETCH_ERR))
+			if(db::NO_ERR != parent::query(array('INSERT INTO "groups_notify" ("group","to","time") VALUES (:to,:v,TO_TIMESTAMP(:time))',array(':to' => $to, ':v' => $v, ':time' => $time)),db::FETCH_ERR))
 					return false;											
 		return true;
     }

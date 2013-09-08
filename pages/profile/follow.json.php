@@ -19,7 +19,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 	case 'add':
 		if($core->query(array('SELECT "from" FROM "follow" WHERE "from" = :me AND "to" = :id',array(':me' => $_SESSION['nerdz_id'],':id' => $_POST['id'])),db::ROW_COUNT) == 0)
 		{
-			if(db::NO_ERR != $core->query(array('INSERT INTO "follow"("from","to","time") VALUES (:me, :id,UNIX_TIMESTAMP())',array(':me' => $_SESSION['nerdz_id'],':id' => $_POST['id'])),db::FETCH_ERR))
+			if(db::NO_ERR != $core->query(array('INSERT INTO "follow"("from","to","time") VALUES (:me, :id,NOW())',array(':me' => $_SESSION['nerdz_id'],':id' => $_POST['id'])),db::FETCH_ERR))
 				die($core->jsonResponse('error',$core->lang('ERROR')));
 		}
 		else
