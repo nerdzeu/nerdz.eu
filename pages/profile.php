@@ -65,8 +65,6 @@ else
 		$vals['lang_n'] = $core->getUserLanguage($info->counter);
 		$vals['online_b'] = $core->isOnline($info->counter);
 		
-		error_log($core->isOnline($info->counter) ? 'yes' : 'no');
-		
 		$vals['online'] = $core->lang('ONLINE');
 		$vals['offline'] = $core->lang('OFFLINE');
 		$vals['username'] = $core->lang('USERNAME');
