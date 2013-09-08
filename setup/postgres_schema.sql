@@ -22,7 +22,7 @@ BEGIN;
 CREATE TABLE users (
   counter serial8 NOT NULL,
   last int4 NOT NULL,
-  notify_story text,
+  notify_story json,
   private boolean NOT NULL DEFAULT FALSE,
   lang varchar(2) DEFAULT NULL,
   username varchar(90) NOT NULL,
