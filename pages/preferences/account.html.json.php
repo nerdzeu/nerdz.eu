@@ -158,7 +158,7 @@ foreach($user as $id => $value)
 if(count(array_filter($user)) != count($user))
 	die($core->jsonResponse('error',$core->lang('ERROR').': INVALID UTF-8'));
 
-if(($ut = $core->query("SELECT "counter" FROM "users" WHERE "email" = '{$user['email']}'",db::FETCH_OBJ)))
+if(($ut = $core->query("SELECT counter FROM users WHERE email = '{$user['email']}'",db::FETCH_OBJ)))
 	if($ut->counter != $obj->counter)
 		die($core->jsonResponse('error',$core->lang('MAIL_EXITS')));
 
@@ -201,7 +201,7 @@ if($usernamechanged)
 
 if(
 	db::NO_ERR != $core->query(array('UPDATE users SET "username" = :username, "timezone" = :timezone, "name" = :name, "surname" = :surname,"email" = :email,"gender" = :gender,
-	"birth_date" = :date'. ($control ? ","password" = SHA1(:pass)" : '') . ' WHERE counter = :id',$par),db::FETCH_ERR)
+	"birth_date" = :date'. ($control ? ",password = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\')" : '') . ' WHERE counter = :id',$par),db::FETCH_ERR)
   )
 	die($core->jsonResponse('error',$core->lang('ERROR')));
 

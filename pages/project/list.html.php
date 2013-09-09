@@ -18,11 +18,11 @@ $s['name'] 		  = isset($_POST['name']) 		 && is_string($_POST['name']) 		 ? html
 $imp = array();
 foreach($s as $val)
 	if($val !== false)
-	    $imp[] = ""{$fid}" LIKE '%{$val}%'";
+	    $imp[] = "\"{$fid}\" LIKE '%{$val}%'";
 
 $query = empty($imp) ?
-		"SELECT "description","name" FROM "groups" ORDER BY "{$_POST['orderby']}" LIMIT {$_POST['limit']}" :
-		'SELECT "description","name" FROM "groups" WHERE ('.implode(' AND ',$imp).") ORDER BY "{$_POST['orderby']}" LIMIT {$_POST['limit']}";
+		"SELECT description,name FROM groups ORDER BY \"{$_POST['orderby']}\" LIMIT {$_POST['limit']}" :
+		'SELECT "description","name" FROM "groups" WHERE ('.implode(' AND ',$imp).') ORDER BY "'.$_POST['orderby'].'" LIMIT '.$_POST['limit'];
 
 if(!($r = $core->query($query,db::FETCH_STMT)))
     die($core->lang('ERROR'));

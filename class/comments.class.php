@@ -81,7 +81,7 @@ class comments extends project
 					if(!$f)
 						continue;
 				}
-				if(!in_array(parent::query(array('INSERT INTO "'.$glue.'comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,TO_TIMESTAMP(:time))',array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERR),array(db::NO_ERR,1062)))
+				if(!in_array(parent::query(array('INSERT INTO "'.$glue.'comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,TO_TIMESTAMP(:time))',array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERR),array(db::NO_ERR,7)))
 					break;
 			}
 		return !($i+1);

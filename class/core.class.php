@@ -112,9 +112,10 @@ class phpCore
 		}
 		catch(PDOException $e)
 		{
-                        $this->dumpException($e, is_string($query) ? $query : $query[0]);
-			if($action == db::FETCH_ERR)
+                        $this->dumpException($e,$_SERVER['REQUEST_URI']);
+			if($action == db::FETCH_ERR) {
 				return $stmt->errorInfo()[1];
+                        }
 
 			return null;
 		}

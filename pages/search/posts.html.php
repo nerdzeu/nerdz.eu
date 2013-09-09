@@ -37,7 +37,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 		else
 		{
 			$imp_blist = implode(',',$blist);
-			$glue = "AND "posts"."from" NOT IN ({$imp_blist}) AND "posts"."to" NOT IN ({$imp_blist})";
+			$glue = 'AND "posts"."from" NOT IN ('.$imp_blist.') AND "posts"."to" NOT IN ('.$imp_blist.')';
 		}
 
 		if(!($k = $core->query(
@@ -55,7 +55,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 		else
 		{
 			$imp_blist = implode(',',$blist);
-			$glue = "AND "groups_posts"."from" NOT IN ({$imp_blist})";
+			$glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.')';
 		}
 
 		if(!($k = $core->query(
