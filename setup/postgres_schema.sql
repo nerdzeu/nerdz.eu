@@ -34,7 +34,7 @@ CREATE TABLE users (
   timezone varchar(35) NOT NULL DEFAULT 'UTC',
   viewonline boolean NOT NULL DEFAULT TRUE,
   PRIMARY KEY (counter),
-  CHECK(EXTRACT(TIMEZONE FROM last) = '0') --TIMEZONES MUST BE UTC - otherwise inconsistency can arise. see the precedent ALTER DATABASE statement
+  CONSTRAINT usersLastCheck CHECK(EXTRACT(TIMEZONE FROM last) = '0') --TIMEZONES MUST BE UTC - otherwise inconsistency can arise. see the precedent ALTER DATABASE statement
 );
 
 CREATE TABLE profiles (
@@ -86,7 +86,7 @@ CREATE TABLE posts (
   PRIMARY KEY (hpid),
   CONSTRAINT foreignkToUsers FOREIGN KEY ("to") REFERENCES users (counter),
   CONSTRAINT foreignkFromUsers FOREIGN KEY ("from") REFERENCES users (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0') --TIMEZONES MUST BE UTC - otherwise inconsistency can arise. see the precedent ALTER DATABASE statement
+  CONSTRAINT postsTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0') --TIMEZONES MUST BE UTC - otherwise inconsistency can arise. see the precedent ALTER DATABASE statement
 );
 
 CREATE INDEX pid ON posts (pid, "to");
@@ -98,7 +98,7 @@ CREATE TABLE posts_no_notify (
   PRIMARY KEY ("user",hpid),
   CONSTRAINT destFkUsers FOREIGN KEY ("user") REFERENCES users (counter),
   CONSTRAINT foreignhpid FOREIGN KEY (hpid) REFERENCES posts (hpid),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT postsNoNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE TABLE lurkers (
@@ -108,7 +108,7 @@ CREATE TABLE lurkers (
   PRIMARY KEY ("user",post),
   CONSTRAINT refhipdl FOREIGN KEY ("post") REFERENCES posts (hpid),
   CONSTRAINT refuserl FOREIGN KEY ("user") REFERENCES users (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT lurkersTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 --END post tables
@@ -125,7 +125,7 @@ CREATE TABLE comments (
   CONSTRAINT foreignFromUsers FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT foreignToUsers FOREIGN KEY ("to") REFERENCES users (counter),
   CONSTRAINT hpidRef FOREIGN KEY (hpid) REFERENCES posts (hpid),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT commentsTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE INDEX cid ON comments (hpid);
@@ -139,7 +139,7 @@ CREATE TABLE comments_no_notify (
   CONSTRAINT forhpid FOREIGN KEY (hpid) REFERENCES posts (hpid),
   CONSTRAINT forKeyFromUsers FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT forKeyToUsers FOREIGN KEY ("to") REFERENCES users (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT commentsNoNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE TABLE comments_notify (
@@ -151,7 +151,7 @@ CREATE TABLE comments_notify (
   CONSTRAINT forNotfKeyToUsers FOREIGN KEY ("to") REFERENCES users (counter),
   CONSTRAINT forNotfKeyFromUsers FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT foreignHpid FOREIGN KEY (hpid) REFERENCES posts (hpid),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT commentsNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE INDEX "commentsTo" ON comments_notify("to");
@@ -194,7 +194,7 @@ CREATE TABLE bookmarks (
   PRIMARY KEY ("from",hpid),
   CONSTRAINT forhpidbm FOREIGN KEY (hpid) REFERENCES posts (hpid),
   CONSTRAINT forKeyFromUsersBmarks FOREIGN KEY ("from") REFERENCES users (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT bookmarksTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE TABLE follow (
@@ -204,7 +204,7 @@ CREATE TABLE follow (
   "time" timestamp(0) WITH TIME ZONE NOT NULL,
   CONSTRAINT fkFromFol FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT fkToFol FOREIGN KEY ("to") REFERENCES users (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT followTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE INDEX "followTo" ON follow ("to", notified);
@@ -222,7 +222,7 @@ CREATE TABLE pms (
   PRIMARY KEY (pmid),
   CONSTRAINT fromRefUs FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT toRefUs FOREIGN KEY ("to") REFERENCES users (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT pmsTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 /*BEGIN groups tables*/
@@ -257,7 +257,7 @@ CREATE TABLE groups_notify (
   "time" timestamp(0) WITH TIME ZONE NOT NULL,
   CONSTRAINT grForKey FOREIGN KEY ("group") REFERENCES groups (counter),
   CONSTRAINT useToForKey FOREIGN KEY ("to") REFERENCES users (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT groupsNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE INDEX groupsNTo ON groups_notify ("to");
@@ -276,7 +276,7 @@ CREATE TABLE groups_posts (
   PRIMARY KEY (hpid),
   CONSTRAINT fkFromProj FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT fkToProj FOREIGN KEY ("to") REFERENCES groups (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT groupsPostsTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE INDEX gPid ON groups_posts(pid, "to");
@@ -288,7 +288,7 @@ CREATE TABLE groups_posts_no_notify (
   PRIMARY KEY ("user",hpid),
   CONSTRAINT destgroFkUsers FOREIGN KEY ("user") REFERENCES users (counter),
   CONSTRAINT foregngrouphpid FOREIGN KEY (hpid) REFERENCES groups_posts (hpid),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT groupsPostsNoNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE TABLE groups_lurkers (
@@ -298,7 +298,7 @@ CREATE TABLE groups_lurkers (
   PRIMARY KEY ("user",post),
   CONSTRAINT refhipdgl FOREIGN KEY (post) REFERENCES groups_posts (hpid),
   CONSTRAINT refusergl FOREIGN KEY ("user") REFERENCES users (counter),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT groupsLurkersTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 --END groups posts tables
@@ -315,7 +315,7 @@ CREATE TABLE groups_comments (
   CONSTRAINT fkFromUsersP FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT fkToProject FOREIGN KEY ("to") REFERENCES groups (counter),
   CONSTRAINT hpidProj FOREIGN KEY (hpid) REFERENCES groups_posts (hpid),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT groupsCommentsTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE INDEX groupsCid ON groups_comments(hpid);
@@ -329,7 +329,7 @@ CREATE TABLE groups_comments_no_notify (
   CONSTRAINT fkFromProjNoNot FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT fkToProjNoNot FOREIGN KEY ("to") REFERENCES "users" (counter),
   CONSTRAINT hpidProjNoNot FOREIGN KEY (hpid) REFERENCES groups_posts (hpid),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT groupsCommentsNoNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 CREATE TABLE groups_comments_notify (
@@ -341,7 +341,7 @@ CREATE TABLE groups_comments_notify (
   CONSTRAINT fkFromNoNot FOREIGN KEY ("from") REFERENCES users (counter),
   CONSTRAINT fkFromnoNotProj FOREIGN KEY ("to") REFERENCES users (counter),
   CONSTRAINT refToGroupsHpid FOREIGN KEY (hpid) REFERENCES groups_posts (hpid),
-  CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
+  CONSTRAINT groupsCommentsNoNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
 --END groups comments tables
