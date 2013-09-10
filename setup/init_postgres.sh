@@ -30,7 +30,6 @@ echo -n "Setting variables and privileges..."
 psql nerdz "$1" << EOF 1>/dev/null
 
 GRANT ALL PRIVILEGES ON DATABASE nerdz TO nerdz\;
-ALTER DATABASE nerdz SET timezone = 'UTC'\;
 CREATE EXTENSION pgcrypto\;
 
 EOF
@@ -48,4 +47,4 @@ else
 fi
 
 echo "Done." ; echo
-echo "Database is now ready to use".
+echo "REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK".
