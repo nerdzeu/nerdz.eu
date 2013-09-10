@@ -47,4 +47,4 @@ else
 fi
 
 echo "Done." ; echo
-echo "REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK".
+echo "REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!".

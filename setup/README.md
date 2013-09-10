@@ -39,6 +39,8 @@ OR
 - If your are not on a POSIX system (i.e you're on windows), install Cygwin, add PostgreSQL binaries to PATH and repeat again. 
 NERDZ does not work on pure Windows, and you'll need Cygwin for running a webserver capable of parsing our rewrite rules. 
 Sorry about that. 
+
+REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!
   
   After a bit of output, you'll be left with a fully initialized database.
 - Move into 'static/js/' directory and download the following files:
