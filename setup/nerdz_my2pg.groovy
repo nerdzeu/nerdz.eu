@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+
 /**
  * This script is strictly confidential and is intendend for use with MySQL NERDZ databases.
  *
@@ -26,7 +28,9 @@ if(args.length != 8) {
 }
 
 def now = new Date()
-println "Started at $now"
+println "Started at $now\n" +
+        "You could be able to undo with CTRL+C (DO IT AT YOUR RISK!), because we're using transactions so the database will remain consistant.\n" +
+        "However, your db will remain exactly equal to the one you had before running this.\n\n"
 
 def startTime = now.time
 def lastOp = startTime
@@ -43,10 +47,13 @@ pgSql.execute("SET TIMEZONE TO 'UTC'")
 
 pgSql.connection.autoCommit = false
 
-
 def tables = ["ban", "blacklist", "bookmarks", "closed_profiles", "comments", "comments_no_notify", "comments_notify", "follow", "gravatar_profiles", "groups", "groups_bookmarks", "groups_comments", "groups_comments_no_notify", "groups_comments_notify", "groups_followers", "groups_lurkers", "groups_members", "groups_notify", "groups_posts", "groups_posts_no_notify", "lurkers", "pms", "posts", "posts_no_notify", "profiles", "users", "whitelist"]. each {
+
+    print "Cleaning table \"${it}\"..."
+
     pgSql.execute("DELETE FROM " + it)
 
+    println "Done."
 }
 
 pgSql.commit()
