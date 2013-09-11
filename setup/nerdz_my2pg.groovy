@@ -1,5 +1,3 @@
-#!/usr/bin/env groovy
-
 /**
  * This script is strictly confidential and is intendend for use with MySQL NERDZ databases.
  *
@@ -30,7 +28,8 @@ if(args.length != 8) {
 def now = new Date()
 println "Started at $now\n" +
         "You could be able to undo with CTRL+C (DO IT AT YOUR RISK!), because we're using transactions so the database will remain consistant.\n" +
-        "However, your db will remain exactly equal to the one you had before running this.\n\n"
+        "However, your db will remain exactly equal to the one you had before running this.\n" +
+        "After a brutal interruption you might need to restart PostgreSQL.\n\n"
 
 def startTime = now.time
 def lastOp = startTime
