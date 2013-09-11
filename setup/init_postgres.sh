@@ -9,12 +9,12 @@ fi
 
 echo -n "Dropping if existing nerdz user and database... "
 
-set +e
+if test $(echo "SELECT rolname FROM pg_roles WHERE rolname='nerdz';" | psql postgres "$1" | grep -c nerdz) -gt 0 ; then
 
-dropdb -U "$1" nerdz 2>/dev/null
-dropuser -U "$1" nerdz 2>/dev/null
+    dropdb -U "$1" nerdz 
+    dropuser -U "$1" nerdz 
 
-set -e
+fi
 
 echo "Done." ; echo
 
@@ -30,6 +30,7 @@ echo -n "Setting variables and privileges..."
 psql nerdz "$1" << EOF 1>/dev/null
 
 GRANT ALL PRIVILEGES ON DATABASE nerdz TO nerdz\;
+ALTER DATABASE nerdz SET timezone = 'UTC'\;
 CREATE EXTENSION pgcrypto\;
 
 EOF
@@ -47,4 +48,4 @@ else
 fi
 
 echo "Done." ; echo
-echo "REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!".
+echo "REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!"

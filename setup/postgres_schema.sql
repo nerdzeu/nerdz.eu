@@ -39,7 +39,7 @@ CREATE TABLE users (
 
 CREATE TABLE profiles (
   counter serial8 NOT NULL,
-  remote_addr inet NOT NULL,
+  remote_addr inet,
   http_user_agent text NOT NULL,
   website varchar(350) NOT NULL DEFAULT '',
   quotes text NOT NULL DEFAULT '',
@@ -547,6 +547,8 @@ CREATE FUNCTION before_insert_on_lurkers() RETURNS TRIGGER AS $func$
         ) THEN
             RAISE EXCEPTION 'Can''t lurk if just posted';
         END IF;
+        
+        RETURN NEW;
         
     END
 
