@@ -63,7 +63,7 @@ class project extends messages
 		else
 		{
 			$imp_blist = implode(',',$blist);
-			$glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.'})';
+			$glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.')';
 		}
 		if(!($result = parent::query(array('SELECT groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" WHERE "to" = :gid '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,array(':gid' => $gid)),db::FETCH_STMT)))
 			return false;
