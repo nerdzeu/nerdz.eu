@@ -49,3 +49,4 @@ fi
 
 echo "Done." ; echo
 echo "REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!"
+echo "If you have an existing MySQL database, you can now migrate it with setup/nerdz_my2pg.groovy."
