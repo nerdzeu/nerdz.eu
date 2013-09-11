@@ -64,6 +64,15 @@ REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!
     }
     """
 - Start everything and load your local NERDZ, then create your account (by registering).
+
+OR
+
+- If you already have a MySQL NERDZ database, you can run setup/nerdz_my2pg.groovy to migrate it.
+  You need groovy, MySQL Java Connector and PostgreSQL JDBCv4 Driver.
+  
+  Then run:
+  $ groovy -cp "path/to/jdbc/mysql/postgresql/drivers/jars/*" nerdz_my2pg.groovy myuser mypass mydb myport pguser pgpass pgdb pgport
+
 - It works? Yay! It doesn't work? See the next section.
 
 Troubleshooting
@@ -112,6 +121,10 @@ I used [this build](http://kevinworthington.com/nginx-for-windows/) of nginx and
 ### Errors on Top 100/Monthly 100/others
 
 Nessuno is using some C binaries for that, so we can't help you. Sorry :(
+
+### I'm setting some weird exceptions from Groovy script, something about timestamps.
+
+Have you set timezone to UTC?
 
 ### I got some other problem!
 
