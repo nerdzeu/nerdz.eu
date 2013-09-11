@@ -51,6 +51,10 @@ REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!
 - Configure NERDZ properly: copy setup/config.skel.php to class/config/index.php and edit the vars.
   Don't forget to disable minification if you haven't got csstidy / uglifyjs.
 - Enable the following rewrite rules on your webserver. Example for nginx:
+
+TODO: le query qui sotto riportate non funzionano su nginx, o per lo meno non funzionano correttamente se l'utente o il gruppo ha un id contenente spazi.
+Sono invece perfettamente funzionanti sotto lighttpd.
+
     """nginx
     location / {
         index index.html index.htm index.php;
