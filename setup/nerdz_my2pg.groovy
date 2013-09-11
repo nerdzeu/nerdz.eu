@@ -162,7 +162,7 @@ def closures = [ "migrate_users" : {
     forEachRowInTable("users", rowNum) { GroovyResultSet row ->
 
         //fields: "last", "notify_story", "private", "lang", "username", "password", "name", "surname", "email", "gender", "birth_date", "board_lang", "timezone", "viewonline"
-        pgSql.execute("INSERT INTO users VALUES (${row.counter.longValue()}, TO_TIMESTAMP($row.last), ${row.notify_story}::json, ${row.private == 1}, ${row.lang}, ${row.username}, ${row.password}, ${row.name}, ${row.surname}, ${row.email}, ${row.gender == 1}, ${row.birth_date}, ${row.board_lang}, ${row.timezone}, ${row.viewonline == 1})")
+        pgSql.execute("INSERT INTO users VALUES (${row.counter.longValue()}, TO_TIMESTAMP($row.last), ${row.notify_story}::json, ${row.private}, ${row.lang}, ${row.username}, ${row.password}, ${row.name}, ${row.surname}, ${row.email}, ${row.gender}, ${row.birth_date}, ${row.board_lang}, ${row.timezone}, ${row.viewonline})")
 
     }
 
@@ -219,7 +219,7 @@ def closures = [ "migrate_users" : {
     forEachRowInTable("groups", rowNum) { GroovyResultSet row ->
 
         //fields: "counter", "description", "owner", "name", "private", "photo", "website", "goal", "visible", "open"
-        pgSql.execute("INSERT INTO groups VALUES (${row.counter.longValue()}, ${row.description}, ${row.owner.longValue()}, ${row.name}, ${row.private == 1}, ${row.photo}, ${row.website}, ${row.goal == 1}, ${row.visible == 1}, ${row.open == 1})")
+        pgSql.execute("INSERT INTO groups VALUES (${row.counter.longValue()}, ${row.description}, ${row.owner.longValue()}, ${row.name}, ${row.private}, ${row.photo}, ${row.website}, ${row.goal}, ${row.visible}, ${row.open})")
 
     }
 
@@ -310,7 +310,7 @@ def closures = [ "migrate_users" : {
     forEachRowInTable("follow", rowNum) { GroovyResultSet row ->
 
         //fields: "from", "to", "notified", "time"
-        pgSql.execute("INSERT INTO follow VALUES (${row.from.longValue()}, ${row.to.longValue()}, ${row.notified == 1}, TO_TIMESTAMP(${row.time}))")
+        pgSql.execute("INSERT INTO follow VALUES (${row.from.longValue()}, ${row.to.longValue()}, ${row.notified}, TO_TIMESTAMP(${row.time}))")
 
     }
 
@@ -327,7 +327,7 @@ def closures = [ "migrate_users" : {
     forEachRowInTable("groups_posts", rowNum) { GroovyResultSet row ->
 
         //fields: "hpid", "from", "to", "pid", "message", "time", "news"
-        pgSql.execute("INSERT INTO groups_posts VALUES (${row.hpid.longValue()}, ${row.from.longValue()}, ${row.to.longValue()}, ${row.pid.longValue()}, ${row.message}, TO_TIMESTAMP(${row.time}), ${row.news == 1})")
+        pgSql.execute("INSERT INTO groups_posts VALUES (${row.hpid.longValue()}, ${row.from.longValue()}, ${row.to.longValue()}, ${row.pid.longValue()}, ${row.message}, TO_TIMESTAMP(${row.time}), ${row.news})")
 
     }
 
@@ -430,7 +430,7 @@ def closures = [ "migrate_users" : {
     forEachRowInTable("pms", rowNum) { GroovyResultSet row ->
 
         //fields: "from", "to", "time", "message", "read", "pmid"
-        pgSql.execute("INSERT INTO pms VALUES (${row.from.longValue()}, ${row.to.longValue()}, TO_TIMESTAMP(${row.time}), ${row.message}, ${row.read == 1}, ${row.pmid.longValue()})")
+        pgSql.execute("INSERT INTO pms VALUES (${row.from.longValue()}, ${row.to.longValue()}, TO_TIMESTAMP(${row.time}), ${row.message}, ${row.read}, ${row.pmid.longValue()})")
 
     }
 
@@ -449,7 +449,7 @@ def closures = [ "migrate_users" : {
     forEachRowInTable("posts", rowNum) { GroovyResultSet row ->
 
         //fields: "hpid", "from", "to", "pid", "message", "notify", "time"
-        pgSql.execute("INSERT INTO posts VALUES (${row.hpid.longValue()}, ${row.from.longValue()}, ${row.to.longValue()}, ${row.pid.longValue()}, ${row.message}, ${row.notify == 1}, TO_TIMESTAMP(${row.time}))")
+        pgSql.execute("INSERT INTO posts VALUES (${row.hpid.longValue()}, ${row.from.longValue()}, ${row.to.longValue()}, ${row.pid.longValue()}, ${row.message}, ${row.notify}, TO_TIMESTAMP(${row.time}))")
 
     }
 

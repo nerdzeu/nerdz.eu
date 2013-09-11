@@ -112,7 +112,7 @@ class phpCore
 		}
 		catch(PDOException $e)
 		{
-                        $this->dumpException($e,$_SERVER['REQUEST_URI']);
+                        $this->dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
 			if($action == db::FETCH_ERR) {
 				return $stmt->errorInfo()[1];
                         }
