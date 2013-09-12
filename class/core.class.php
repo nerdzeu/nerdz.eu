@@ -28,7 +28,7 @@ class phpCore
     private $db;
 
     public function __construct()
-        {
+    {
         try
         {
             $this->db = db::getDB();
@@ -51,18 +51,20 @@ class phpCore
         $idiots = array();
         if(!empty($idiots) && $this->isLogged() && in_array($_SESSION['nerdz_id'], $idiots))
             $this->logout();
-        }
+    }
 
     public function getDB()
     {
         return $this->db;
     }
    
-    public function dumpException($e, $moredata = false) {
+    public function dumpException($e, $moredata = false)
+	{
         $this->dumpErrorString((($moredata != false) ? "{$moredata}: " : '').$e->getMessage());
     }
     
-    public function dumpErrorString($string) {
+    public function dumpErrorString($string)
+	{
         $path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
         file_put_contents($path,$string."\n", FILE_APPEND);
         chmod($path,0775);

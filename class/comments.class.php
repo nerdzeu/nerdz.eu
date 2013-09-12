@@ -492,7 +492,7 @@ class comments extends project
     {
         $message = $oldMsgObj->message.'[hr]'.$newMessage;
 
-        return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
+        return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = CLOCK_TIMESTAMP() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
     }
 
     public function addProjectComment($hpid,$message)
