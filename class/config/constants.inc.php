@@ -39,7 +39,7 @@ define('MINIFICATION_JS_CMD',  $class->js_min_cmd);
 define('MINIFICATION_CSS_CMD', $class->css_min_cmd);
 
 #special profiles
-define('USERS_NEWS',2);
-define('DELETED_USERS',3);
+define('USERS_NEWS',1643);
+define('DELETED_USERS',1644);
 
 ?>
