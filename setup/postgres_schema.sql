@@ -160,15 +160,15 @@ CREATE INDEX "commentsTo" ON comments_notify("to");
 
 --BEGIN utility tables
 CREATE TABLE ban (
-  "user" int8 NOT NULL DEFAULT -1,
+  "user" int8 NOT NULL,
   "motivation" text NOT NULL DEFAULT 'No reason given',
   PRIMARY KEY ("user"),
   CONSTRAINT fkbanned FOREIGN KEY ("user") REFERENCES users (counter)
 );
 
 CREATE TABLE blacklist (
-  "from" int8 NOT NULL DEFAULT -1,
-  "to" int8 NOT NULL DEFAULT -1,
+  "from" int8 NOT NULL,
+  "to" int8 NOT NULL,
   motivation text DEFAULT 'No reason given',
   PRIMARY KEY ("from", "to"),
   CONSTRAINT fkFromUsers FOREIGN KEY ("from") REFERENCES users (counter),
