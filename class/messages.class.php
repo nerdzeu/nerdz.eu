@@ -6,98 +6,98 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
 class messages extends phpCore
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-	public function getCodes($str)
-	{
-		$epos = $key = $i = $codecounter = 0;
-		$codes = $start = $end = $ret = array();
-		$ncod = 1;
+    public function getCodes($str)
+    {
+        $epos = $key = $i = $codecounter = 0;
+        $codes = $start = $end = $ret = array();
+        $ncod = 1;
 
-		$zzz = strtolower($str);
+        $zzz = strtolower($str);
 
-		$start[$key] = strpos($zzz,'[code=',0);
-		$end[$key] = strpos($zzz,'[/code]',0);
+        $start[$key] = strpos($zzz,'[code=',0);
+        $end[$key] = strpos($zzz,'[/code]',0);
 
-		while((false !== $start[$key]) && (false !== $end[$key]))
-		{
-			++$key;
-			$start[$key] = strpos($zzz,'[code=',$end[$key-1]+6);
-			$end[$key] = strpos($zzz,'[/code]',$end[$key-1]+7);
-		}
-		while($key-->0)
-		{
-			$codes[] = substr($str,$start[$i]+6,$end[$i]-$start[$i]-6);
-			++$i;
-		}
-		$epos = $i;
+        while((false !== $start[$key]) && (false !== $end[$key]))
+        {
+            ++$key;
+            $start[$key] = strpos($zzz,'[code=',$end[$key-1]+6);
+            $end[$key] = strpos($zzz,'[/code]',$end[$key-1]+7);
+        }
+        while($key-->0)
+        {
+            $codes[] = substr($str,$start[$i]+6,$end[$i]-$start[$i]-6);
+            ++$i;
+        }
+        $epos = $i;
 
-		for($i=0;$i<$epos;++$i)
-		{
-			for($x=0;$x<30;++$x)
-				if(isset($codes[$i][$x]) && $codes[$i][$x] == ']')
-				{
-					$lang = substr($codes[$i],0,$x);
-					$code = substr($codes[$i],$x+1);
-					break;
-				}
-			if($x<30 && isset($code[1]))
-			{
-				$ret[$codecounter]['lang'] = $lang;
-				$ret[$codecounter]['code'] = $code;
-				++$codecounter;
-			}
-		}
-		return $ret;
-	}
+        for($i=0;$i<$epos;++$i)
+        {
+            for($x=0;$x<30;++$x)
+                if(isset($codes[$i][$x]) && $codes[$i][$x] == ']')
+                {
+                    $lang = substr($codes[$i],0,$x);
+                    $code = substr($codes[$i],$x+1);
+                    break;
+                }
+            if($x<30 && isset($code[1]))
+            {
+                $ret[$codecounter]['lang'] = $lang;
+                $ret[$codecounter]['code'] = $code;
+                ++$codecounter;
+            }
+        }
+        return $ret;
+    }
 
 
-	private function parseCode($str,$type = NULL,$pid = NULL,$id = NULL)
-	{
-		$codes = $this->getCodes($str);
+    private function parseCode($str,$type = NULL,$pid = NULL,$id = NULL)
+    {
+        $codes = $this->getCodes($str);
 
-		$i = 1;
-		foreach($codes as $code)
-		{
-			$totalcode = $code['code'];
-			$lang = $code['lang'];
-			$codeurl = '';
-			
-			if($pid && $id)
-			{
-				if(isset($type))
-				{
-					$codeurl = '/getcode.php?';
-					if($type == 'g') //gid, group, project
-						$codeurl.='g';
-					elseif($type == 'pc') //pcid, ppstccomment
-						$codeurl.='pc';
-					elseif($type == 'gc')//gcid group comment
-						$codeurl.='gc';
-					//else il nulla, id, profile
-					$codeurl.="id={$id}&amp;".(in_array($type,array('pc','gc')) ? '' : "pid={$pid}&amp;")."ncode={$i}";
-				}
-			}
-			else
-				$pid = $id = 0;
-			
-			$str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
-							   '<div style="background-color:#FFF;color:#000">
-									<span>'.$lang.':</span><pre style="background-color:#FFF;color:#000" class="language-'.$lang.'">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
-										(
-										 empty($codeurl) ? '' :
-										 '<a href="'.$codeurl.'" onclick="window.open(this.href); return false">'.parent::lang('TEXT_VERSION').'</a>'
-										).'</div>',
-								$str);
-			++$i;
-		}
-		return $str;
-	}
+        $i = 1;
+        foreach($codes as $code)
+        {
+            $totalcode = $code['code'];
+            $lang = $code['lang'];
+            $codeurl = '';
+            
+            if($pid && $id)
+            {
+                if(isset($type))
+                {
+                    $codeurl = '/getcode.php?';
+                    if($type == 'g') //gid, group, project
+                        $codeurl.='g';
+                    elseif($type == 'pc') //pcid, ppstccomment
+                        $codeurl.='pc';
+                    elseif($type == 'gc')//gcid group comment
+                        $codeurl.='gc';
+                    //else il nulla, id, profile
+                    $codeurl.="id={$id}&amp;".(in_array($type,array('pc','gc')) ? '' : "pid={$pid}&amp;")."ncode={$i}";
+                }
+            }
+            else
+                $pid = $id = 0;
+            
+            $str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
+                               '<div style="background-color:#FFF;color:#000">
+                                    <span>'.$lang.':</span><pre style="background-color:#FFF;color:#000" class="language-'.$lang.'">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
+                                        (
+                                         empty($codeurl) ? '' :
+                                         '<a href="'.$codeurl.'" onclick="window.open(this.href); return false">'.parent::lang('TEXT_VERSION').'</a>'
+                                        ).'</div>',
+                                $str);
+            ++$i;
+        }
+        return $str;
+    }
 
-	public function bbcode($str,$truncate = null, $type = NULL,$pid = NULL,$id = NULL)
+    public function bbcode($str,$truncate = null, $type = NULL,$pid = NULL,$id = NULL)
     {
                 $str = str_replace("\n",'<br />',$str);
                 //evitare il parsing del bbcode nel tag code
@@ -374,304 +374,304 @@ class messages extends phpCore
                 return $str;
         }
 
-	public function parseNewsMessage($message)
-	{
-		return str_replace('%%12now is34%%',$this->lang('NOW_IS'),$message);
-	}
+    public function parseNewsMessage($message)
+    {
+        return str_replace('%%12now is34%%',$this->lang('NOW_IS'),$message);
+    }
 
     public function countMessages($id)
     {
-		if(!($o = parent::query(array('SELECT MAX("pid") AS cc FROM "posts" WHERE "to" = :id',array(':id' => $id)),db::FETCH_OBJ)))
-			return false;
-		return $o->cc === null ? 0 : $o->cc;
+        if(!($o = parent::query(array('SELECT MAX("pid") AS cc FROM "posts" WHERE "to" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+            return false;
+        return $o->cc === null ? 0 : $o->cc;
     }
 
     public function getMessage($hpid,$edit = false)
     {
-		if(!($o = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-			return false;
-		if($edit)
-			$_SESSION['nerdz_editpid'] = $o->pid;
-		return $o;
+        if(!($o = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+            return false;
+        if($edit)
+            $_SESSION['nerdz_editpid'] = $o->pid;
+        return $o;
     }
 
     public function getMessages($id,$limit)
     {
-		$blist = parent::getBlacklist();
+        $blist = parent::getBlacklist();
 
-		if(empty($blist))
-			$glue = '';
-		else
-		{
-			$imp_blist = implode(',',$blist);
-			$glue = 'AND "posts"."from" NOT IN ('.$imp_blist.') AND "posts"."to" NOT IN ('.$imp_blist.')';
-		}
+        if(empty($blist))
+            $glue = '';
+        else
+        {
+            $imp_blist = implode(',',$blist);
+            $glue = 'AND "posts"."from" NOT IN ('.$imp_blist.') AND "posts"."to" NOT IN ('.$imp_blist.')';
+        }
 
-		if(!($result = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,array(':id' => $id)),db::FETCH_STMT)))
-			return false;
-		return $this->getPostsArray($result,false);
-	}
+        if(!($result = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,array(':id' => $id)),db::FETCH_STMT)))
+            return false;
+        return $this->getPostsArray($result,false);
+    }
 
     public function getNMessagesBeforeHpid($N,$hpid,$id)
     {
-		$blist = parent::getBlacklist();
+        $blist = parent::getBlacklist();
 
-		if($N > 20 || $N <= 0) //massimo 20 posts, defaults
-			$N = 20;
+        if($N > 20 || $N <= 0) //massimo 20 posts, defaults
+            $N = 20;
 
-		if(empty($blist))
-			$glue = '';
-		else
-		{
-			$imp_blist = implode(',',$blist);
-			$glue = 'AND "posts"."from" NOT IN ('.$imp_blist.') AND "posts"."to" NOT IN ('.$imp_blist.')';
-		}
+        if(empty($blist))
+            $glue = '';
+        else
+        {
+            $imp_blist = implode(',',$blist);
+            $glue = 'AND "posts"."from" NOT IN ('.$imp_blist.') AND "posts"."to" NOT IN ('.$imp_blist.')';
+        }
 
-		if(!($result = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "hpid" < :hpid AND "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,array(':id' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
-			return false;
+        if(!($result = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "hpid" < :hpid AND "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,array(':id' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
+            return false;
 
-		return $this->getPostsArray($result,false);
-	}
+        return $this->getPostsArray($result,false);
+    }
 
     public function addMessage($to,$message)
     {
-		require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-		if(!(new flood())->profilePost())
-			return 0;
-			
-		if(isset($message[65534]))
-			return false;
+        require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
+        if(!(new flood())->profilePost())
+            return 0;
+            
+        if(isset($message[65534]))
+            return false;
 
-		if(parent::closedProfile($to) && ($to != $_SESSION['nerdz_id'] && !in_array($_SESSION['nerdz_id'],parent::getWhitelist($to))))
-			return false;
+        if(parent::closedProfile($to) && ($to != $_SESSION['nerdz_id'] && !in_array($_SESSION['nerdz_id'],parent::getWhitelist($to))))
+            return false;
 
-		if(in_array($to,parent::getBlacklist()))
-			return false;
+        if(in_array($to,parent::getBlacklist()))
+            return false;
 
-		$lastpid = $this->countMessages($to) + 1;
-		$not = $_SESSION['nerdz_id'] != $to ? '1' : '0';
+        $lastpid = $this->countMessages($to) + 1;
+        $not = $_SESSION['nerdz_id'] != $to ? '1' : '0';
 
-		$message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
+        $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-		return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO "posts" ("from","to","pid","message","notify", "time") VALUES (:id,:to,:lastpid,:message,:not,NOW())',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':lastpid' => $lastpid,':message' => $message,':not' => $not)),db::FETCH_ERR);
+        return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO "posts" ("from","to","pid","message","notify", "time") VALUES (:id,:to,:lastpid,:message,:not,NOW())',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':lastpid' => $lastpid,':message' => $message,':not' => $not)),db::FETCH_ERR);
     }
 
     public function deleteMessage($hpid)
     {
-		if(
-			!($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
-			!$this->canRemovePost(array('from' => $obj->from,'to' => $obj->to)) ||
-			db::NO_ERR != parent::query(array('DELETE FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR)//il trigger "before_delete_post" gestisce elimimo comments, comments_notify
-		  )
-			return false;
+        if(
+            !($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
+            !$this->canRemovePost(array('from' => $obj->from,'to' => $obj->to)) ||
+            db::NO_ERR != parent::query(array('DELETE FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR)//il trigger "before_delete_post" gestisce elimimo comments, comments_notify
+          )
+            return false;
 
-		//NON POSSO GESTIRE L'AGGIORNAMENTO QUI SOTTO VIA TRIGGER MYSQL A CAUSA DI UNA SUA LIMITAZIONE
-		return db::NO_ERR == parent::query(array('UPDATE "posts" SET "pid" = "pid" -1 WHERE "pid" > :pid AND "to" = :to',array(':pid' => $obj->pid, ':to' => $obj->to)),db::FETCH_ERR);
-	}
+        //NON POSSO GESTIRE L'AGGIORNAMENTO QUI SOTTO VIA TRIGGER MYSQL A CAUSA DI UNA SUA LIMITAZIONE
+        return db::NO_ERR == parent::query(array('UPDATE "posts" SET "pid" = "pid" -1 WHERE "pid" > :pid AND "to" = :to',array(':pid' => $obj->pid, ':to' => $obj->to)),db::FETCH_ERR);
+    }
 
     public function editMessage($hpid,$message)
     {
-		$message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
-		return !(
-			empty($message) ||
-			!($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
-			!$this->canEditPost(array('from' => $obj->from, 'to' => $obj->to)) ||
-			empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
-			empty($message) || isset($message[65534]) ||
-			db::NO_ERR != parent::query(array('UPDATE "posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from, ':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
-	      );
-	}
+        $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
+        return !(
+            empty($message) ||
+            !($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
+            !$this->canEditPost(array('from' => $obj->from, 'to' => $obj->to)) ||
+            empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
+            empty($message) || isset($message[65534]) ||
+            db::NO_ERR != parent::query(array('UPDATE "posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from, ':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
+          );
+    }
 
     public function getLatests($limit,$prj = null,$onlyfollowed = false,$lang = false)
     {
-		$ret = array();
-		$blist = parent::getBlacklist();
+        $ret = array();
+        $blist = parent::getBlacklist();
 
-		if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
-		{
-			$lang = $lang ? $lang : parent::getUserLanguage($_SESSION['nerdz_id']);
-			$glue = $lang == '*' ? 'TRUE' : "\"lang\" = '{$lang}'";
-		}
-		elseif($onlyfollowed)
-		{
-			$followed = parent::getFollow($_SESSION['nerdz_id']);
-			$followed[] = $_SESSION['nerdz_id'];
-			$glue = ($prj ? 'groups_posts.from' : 'posts.from').' IN ('.implode(',',$followed).')';
-		}
+        if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
+        {
+            $lang = $lang ? $lang : parent::getUserLanguage($_SESSION['nerdz_id']);
+            $glue = $lang == '*' ? 'TRUE' : "\"lang\" = '{$lang}'";
+        }
+        elseif($onlyfollowed)
+        {
+            $followed = parent::getFollow($_SESSION['nerdz_id']);
+            $followed[] = $_SESSION['nerdz_id'];
+            $glue = ($prj ? 'groups_posts.from' : 'posts.from').' IN ('.implode(',',$followed).')';
+        }
 
-		if(!empty($blist))
-		{
-			$imp_blist = implode(',',$blist);
-			$glue.= ' AND '.($prj ? 'groups_posts.from' : 'posts.from')." NOT IN ({$imp_blist})".($prj ? '' : " AND posts.to NOT IN ({$imp_blist})");
-		}
+        if(!empty($blist))
+        {
+            $imp_blist = implode(',',$blist);
+            $glue.= ' AND '.($prj ? 'groups_posts.from' : 'posts.from')." NOT IN ({$imp_blist})".($prj ? '' : " AND posts.to NOT IN ({$imp_blist})");
+        }
 
-		$q = $prj ?
-		'SELECT groups.visible, groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND "visible" = TRUE ORDER BY groups_posts.hpid DESC LIMIT '.$limit :
-		'SELECT posts.hpid, posts.from, posts.to, posts.pid, posts.message, posts.notify, EXTRACT(EPOCH FROM posts.time) AS time,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE '.$glue.' ORDER BY posts.hpid DESC LIMIT '.$limit;
+        $q = $prj ?
+        'SELECT groups.visible, groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND "visible" = TRUE ORDER BY groups_posts.hpid DESC LIMIT '.$limit :
+        'SELECT posts.hpid, posts.from, posts.to, posts.pid, posts.message, posts.notify, EXTRACT(EPOCH FROM posts.time) AS time,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE '.$glue.' ORDER BY posts.hpid DESC LIMIT '.$limit;
 
-		if(!($result = parent::query($q,db::FETCH_STMT)))
-			return $ret;
+        if(!($result = parent::query($q,db::FETCH_STMT)))
+            return $ret;
 
-		return $this->getPostsArray($result,$prj);
+        return $this->getPostsArray($result,$prj);
     }
 
     public function getNLatestBeforeHpid($N,$hpid,$prj = null,$onlyfollowed = false,$lang = false)
     {
-		$ret = array();
-		$blist = parent::getBlacklist();
-		$glue = '';
+        $ret = array();
+        $blist = parent::getBlacklist();
+        $glue = '';
 
-		if($N > 20 || $N <= 0) //massimo 20 posts, defaults
-			$N = 20;
+        if($N > 20 || $N <= 0) //massimo 20 posts, defaults
+            $N = 20;
 
-		if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
-		{
-			$lang = $lang ? $lang : parent::getUserLanguage($_SESSION['nerdz_id']);
-			$glue = $lang == '*' ? 'TRUE' : "\"lang\" = '{$lang}'";
-		}
-		elseif($onlyfollowed)
-		{
-			$followed = parent::getFollow($_SESSION['nerdz_id']);
-			$followed[] = $_SESSION['nerdz_id'];
-			$glue = ($prj ? 'groups_posts.from' : 'posts.from').' IN ('.implode(',',$followed).')';
-		}
+        if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
+        {
+            $lang = $lang ? $lang : parent::getUserLanguage($_SESSION['nerdz_id']);
+            $glue = $lang == '*' ? 'TRUE' : "\"lang\" = '{$lang}'";
+        }
+        elseif($onlyfollowed)
+        {
+            $followed = parent::getFollow($_SESSION['nerdz_id']);
+            $followed[] = $_SESSION['nerdz_id'];
+            $glue = ($prj ? 'groups_posts.from' : 'posts.from').' IN ('.implode(',',$followed).')';
+        }
 
-		if(!empty($blist))
-		{
-			$imp_blist = implode(',',$blist);
-			$glue.= ' AND '.($prj ? 'groups_posts.from' : 'posts.from')." NOT IN ({$imp_blist})".($prj ? '' : " AND posts.to NOT IN ({$imp_blist})");
-		}
+        if(!empty($blist))
+        {
+            $imp_blist = implode(',',$blist);
+            $glue.= ' AND '.($prj ? 'groups_posts.from' : 'posts.from')." NOT IN ({$imp_blist})".($prj ? '' : " AND posts.to NOT IN ({$imp_blist})");
+        }
 
-		$q = $prj ?
-		array('SELECT groups.visible, groups_posts.* FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND "visible" = TRUE AND "hpid" < :hpid ORDER BY groups_posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid)) :
-		array('SELECT posts.hpid, posts.from, posts.to, posts.pid, posts.message, posts.notify, EXTRACT(EPOCH FROM posts.time) AS time,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE '.(empty($glue) ? '' : "{$glue} AND ").' "hpid" < :hpid ORDER BY posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid));
+        $q = $prj ?
+        array('SELECT groups.visible, groups_posts.* FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND "visible" = TRUE AND "hpid" < :hpid ORDER BY groups_posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid)) :
+        array('SELECT posts.hpid, posts.from, posts.to, posts.pid, posts.message, posts.notify, EXTRACT(EPOCH FROM posts.time) AS time,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE '.(empty($glue) ? '' : "{$glue} AND ").' "hpid" < :hpid ORDER BY posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid));
 
-		if(!($result = parent::query($q,db::FETCH_STMT)))
-			return $ret;
+        if(!($result = parent::query($q,db::FETCH_STMT)))
+            return $ret;
 
-		return $this->getPostsArray($result,$prj);
-	}
+        return $this->getPostsArray($result,$prj);
+    }
 
-	public function getPostsArray($result,$prj)
-	{
-		$c=0;
-		$ret = array();
-		while(($row = $result->fetch(PDO::FETCH_OBJ)))
-		{
-			$ret[$c]['news'] = (!$prj && ($row->from == USERS_NEWS)) || ($prj && ($row->to == 1)); // per i progetti, le news sono nerdz
-			$ret[$c]['hpid'] = $row->hpid;
-			$ret[$c]['from'] = $row->from;
-			$ret[$c]['to'] = $row->to;
-			$ret[$c]['pid'] = $row->pid;
-			$ret[$c]['message'] = $ret[$c]['news'] ? $this->parseNewsMessage($row->message) : $row->message;
-			$ret[$c]['datetime'] = parent::getDateTime($row->time);
-			$ret[$c]['cmp'] = $row->time;
-			++$c;
-		}
-		return $ret;
-	}
+    public function getPostsArray($result,$prj)
+    {
+        $c=0;
+        $ret = array();
+        while(($row = $result->fetch(PDO::FETCH_OBJ)))
+        {
+            $ret[$c]['news'] = (!$prj && ($row->from == USERS_NEWS)) || ($prj && ($row->to == 1)); // per i progetti, le news sono nerdz
+            $ret[$c]['hpid'] = $row->hpid;
+            $ret[$c]['from'] = $row->from;
+            $ret[$c]['to'] = $row->to;
+            $ret[$c]['pid'] = $row->pid;
+            $ret[$c]['message'] = $ret[$c]['news'] ? $this->parseNewsMessage($row->message) : $row->message;
+            $ret[$c]['datetime'] = parent::getDateTime($row->time);
+            $ret[$c]['cmp'] = $row->time;
+            ++$c;
+        }
+        return $ret;
+    }
 
-	public function canEditPost($post) 
-	{
-		if(parent::isLogged())
-			if(($_SESSION['nerdz_id'] == $post['to']) && ($_SESSION['nerdz_id'] == $post['from']))
-				return true;
-			else
-			{
-				if($_SESSION['nerdz_id'] == $post['from'])
-					return true;
-				elseif($_SESSION['nerdz_id'] == $post['to'])
-					return false;
-			}
-		return false;
-	}
+    public function canEditPost($post) 
+    {
+        if(parent::isLogged())
+            if(($_SESSION['nerdz_id'] == $post['to']) && ($_SESSION['nerdz_id'] == $post['from']))
+                return true;
+            else
+            {
+                if($_SESSION['nerdz_id'] == $post['from'])
+                    return true;
+                elseif($_SESSION['nerdz_id'] == $post['to'])
+                    return false;
+            }
+        return false;
+    }
 
-	public function canRemovePost($post)
-	{
-		if(parent::isLogged())
-			return ($_SESSION['nerdz_id'] == $post['to']) || ($_SESSION['nerdz_id'] == $post['from']);
-	}
+    public function canRemovePost($post)
+    {
+        if(parent::isLogged())
+            return ($_SESSION['nerdz_id'] == $post['to']) || ($_SESSION['nerdz_id'] == $post['from']);
+    }
 
-	public function canShowLockForPost($post)
-	{
-		if(
-			parent::isLogged() &&
-			(
-				in_array($_SESSION['nerdz_id'],array($post['from'],$post['to'])) ||
-				parent::query(array('SELECT DISTINCT "from" FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
-			)
-		  )
-			return true;
-		return false;
-	}
+    public function canShowLockForPost($post)
+    {
+        if(
+            parent::isLogged() &&
+            (
+                in_array($_SESSION['nerdz_id'],array($post['from'],$post['to'])) ||
+                parent::query(array('SELECT DISTINCT "from" FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+            )
+          )
+            return true;
+        return false;
+    }
 
-	public function hasLockedPost($post)
-	{
-		return (
-				parent::isLogged() &&
-				parent::query(array('SELECT "hpid" FROM "posts_no_notify" WHERE "hpid" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
-			   );
-	}
+    public function hasLockedPost($post)
+    {
+        return (
+                parent::isLogged() &&
+                parent::query(array('SELECT "hpid" FROM "posts_no_notify" WHERE "hpid" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+               );
+    }
 
-	public function hasLurkedPost($post)
-	{
-		return (
-				parent::isLogged() &&
-				parent::query(array('SELECT "post" FROM "lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
-			   );
-	}
+    public function hasLurkedPost($post)
+    {
+        return (
+                parent::isLogged() &&
+                parent::query(array('SELECT "post" FROM "lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+               );
+    }
 
-	public function hasBookmarkedPost($post)
-	{
-		return (
-				parent::isLogged() &&
-				parent::query(array('SELECT "hpid" FROM "bookmarks" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
-			   );
-	}
+    public function hasBookmarkedPost($post)
+    {
+        return (
+                parent::isLogged() &&
+                parent::query(array('SELECT "hpid" FROM "bookmarks" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+               );
+    }
 
-	public function stripTags($message)
-	{
-		return 	str_ireplace('[url="','',
-			   	str_ireplace('[url=','',
-			   	str_ireplace('"]',' ',
-				str_replace(']',' ',
-				str_ireplace('[url]','',
-				str_ireplace('[img]','',
-				str_ireplace('[/img]','',
-				str_ireplace('[/url]','',
-				str_ireplace('[youtube]','',
-				str_ireplace('[/youtube]','',
-				str_ireplace('[yt]','',
-				str_ireplace('[/yt]','',
-				str_ireplace('[i]','',
-				str_ireplace('[/i]','',
-				str_ireplace('[b]','',
-				str_ireplace('[/b]','',
-				str_ireplace('[code=','',
-				str_ireplace('[/code]','',
-				str_ireplace('[cur]','',
-				str_ireplace('[/cur]','',
-				str_ireplace('[list]','',
-				str_ireplace('[/list]','',
-				str_ireplace('[gist]','',
-				str_ireplace('[*]','',
-				str_ireplace('[quote]','',
-				str_ireplace('[user]','',
-				str_ireplace('[/user]','',
-				str_ireplace('[project]','',
-				str_ireplace('[/project]','',
-				str_ireplace('[spoiler]','',
-				str_ireplace('[/spoiler]','',
-				str_ireplace('[small]','',
-				str_ireplace('[/small]','',
-				str_ireplace('[m]','',
-				str_ireplace('[/m]','',
-				str_ireplace('[math]','',
-				str_ireplace('[/math]','',
-				str_ireplace('[wiki=','',
-				str_ireplace('[/wiki]','',
-				str_ireplace('[hr]','',
-				str_ireplace('[quote=','',$message)))))))))))))))))))))))))))))))))))))))));
-	}    
+    public function stripTags($message)
+    {
+        return     str_ireplace('[url="','',
+                   str_ireplace('[url=','',
+                   str_ireplace('"]',' ',
+                str_replace(']',' ',
+                str_ireplace('[url]','',
+                str_ireplace('[img]','',
+                str_ireplace('[/img]','',
+                str_ireplace('[/url]','',
+                str_ireplace('[youtube]','',
+                str_ireplace('[/youtube]','',
+                str_ireplace('[yt]','',
+                str_ireplace('[/yt]','',
+                str_ireplace('[i]','',
+                str_ireplace('[/i]','',
+                str_ireplace('[b]','',
+                str_ireplace('[/b]','',
+                str_ireplace('[code=','',
+                str_ireplace('[/code]','',
+                str_ireplace('[cur]','',
+                str_ireplace('[/cur]','',
+                str_ireplace('[list]','',
+                str_ireplace('[/list]','',
+                str_ireplace('[gist]','',
+                str_ireplace('[*]','',
+                str_ireplace('[quote]','',
+                str_ireplace('[user]','',
+                str_ireplace('[/user]','',
+                str_ireplace('[project]','',
+                str_ireplace('[/project]','',
+                str_ireplace('[spoiler]','',
+                str_ireplace('[/spoiler]','',
+                str_ireplace('[small]','',
+                str_ireplace('[/small]','',
+                str_ireplace('[m]','',
+                str_ireplace('[/m]','',
+                str_ireplace('[math]','',
+                str_ireplace('[/math]','',
+                str_ireplace('[wiki=','',
+                str_ireplace('[/wiki]','',
+                str_ireplace('[hr]','',
+                str_ireplace('[quote=','',$message)))))))))))))))))))))))))))))))))))))))));
+    }    
 }
 ?>

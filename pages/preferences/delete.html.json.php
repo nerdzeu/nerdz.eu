@@ -8,10 +8,10 @@ $tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
 $core = new phpCore();
 
 if(!$core->refererControl())
-	die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
-		
+    die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
+        
 if(!$core->isLogged())
-	die($core->jsonResponse('error',$core->lang('REGISTER')));
+    die($core->jsonResponse('error',$core->lang('REGISTER')));
 
 $capt = new Captcha();
 

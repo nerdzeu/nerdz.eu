@@ -11,23 +11,23 @@ $comments = new comments();
 $gid = (isset($_POST['id']) && is_numeric($_POST['id'])) ? $_POST['id'] : false; //ID DEL PROPOSTTO CHE STO VISITANDO
 
 if(isset($_POST['limit']))
-	$_POST['limit'] = $core->limitControl($_POST['limit'],10) ? $_POST['limit'] : 10;
+    $_POST['limit'] = $core->limitControl($_POST['limit'],10) ? $_POST['limit'] : 10;
 else
-	$_POST['limit'] = 10;
+    $_POST['limit'] = 10;
 
 if(!$gid)
-	die($core->lang('ERROR'));
+    die($core->lang('ERROR'));
 
 $logged = $core->isLogged();
 $afterHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
 if(!(
-		$mess = $afterHpid ? 
-		$core->getNMessagesBeforeHpid($_POST['limit'],$afterHpid,$gid)
-		:
-		$core->getProjectMessages($gid,$_POST['limit'])
-	) || 
-	(!$logged && !is_numeric($_POST['limit']))
+        $mess = $afterHpid ? 
+        $core->getNMessagesBeforeHpid($_POST['limit'],$afterHpid,$gid)
+        :
+        $core->getProjectMessages($gid,$_POST['limit'])
+    ) || 
+    (!$logged && !is_numeric($_POST['limit']))
   )
     die(); //vuoto così automaticamente il javascript non fa altre chiamate
 

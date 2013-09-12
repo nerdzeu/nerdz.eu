@@ -5,13 +5,13 @@ $prj = isset($_GET['project']);
 
 switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 {
-	case 'preview':
-		$orderby = 'message';
-	break;
+    case 'preview':
+        $orderby = 'message';
+    break;
 
-	default:
-		$orderby = 'time';
-	break;
+    default:
+        $orderby = 'time';
+    break;
 }
 
 $order = isset($_GET['asc']) && $_GET['asc'] == 1 ? 'ASC' : 'DESC';
@@ -27,39 +27,39 @@ $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 
 if($prj)
 {
-	$orderby = $orderby == 'time' ? 'groups_bookmarks.time' : $orderby; //per non svelare struttura database
-	$query = empty($q)
-		?
-		 array(
-				'SELECT groups_bookmarks.hpid, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time, groups_posts.message, groups_posts.to, groups_posts.pid FROM "groups_bookmarks" INNER JOIN "groups_posts" ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? ORDER BY '.$orderby.' '.$order.' LIMIT '.$limit,
-				array($_SESSION['nerdz_id'])
-			 )
-		:
-		array(
-				"SELECT groups_bookmarks.hpid, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time, groups_posts.message, groups_posts.to, groups_posts.pid FROM groups_bookmarks INNER JOIN groups_posts ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-				array($_SESSION['nerdz_id'],"%{$q}%")
-			 );
+    $orderby = $orderby == 'time' ? 'groups_bookmarks.time' : $orderby; //per non svelare struttura database
+    $query = empty($q)
+        ?
+         array(
+                'SELECT groups_bookmarks.hpid, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time, groups_posts.message, groups_posts.to, groups_posts.pid FROM "groups_bookmarks" INNER JOIN "groups_posts" ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? ORDER BY '.$orderby.' '.$order.' LIMIT '.$limit,
+                array($_SESSION['nerdz_id'])
+             )
+        :
+        array(
+                "SELECT groups_bookmarks.hpid, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time, groups_posts.message, groups_posts.to, groups_posts.pid FROM groups_bookmarks INNER JOIN groups_posts ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+                array($_SESSION['nerdz_id'],"%{$q}%")
+             );
 
-	$linkMethod = 'projectLink';
-	$nameMethod = 'getProjectName';
+    $linkMethod = 'projectLink';
+    $nameMethod = 'getProjectName';
 }
 else
 {
-	$orderby = $orderby == 'time' ? 'bookmarks.time' : $orderby;
-	$query = empty($q)
-		?
-		 array(
-				 "SELECT bookmarks.hpid, EXTRACT(EPOCH FROM bookmarks.time) AS time, posts.message, posts.to, posts.pid FROM bookmarks INNER JOIN posts ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-				 array($_SESSION['nerdz_id'])
-			 )
-		:
-		array(
-				"SELECT bookmarks.hpid, EXTRACT(EPOCH FROM bookmarks.time) AS time, posts.message, posts.to, posts.pid FROM bookmarks INNER JOIN posts ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-				array($_SESSION['nerdz_id'],"%{$q}%")
-			 );
+    $orderby = $orderby == 'time' ? 'bookmarks.time' : $orderby;
+    $query = empty($q)
+        ?
+         array(
+                 "SELECT bookmarks.hpid, EXTRACT(EPOCH FROM bookmarks.time) AS time, posts.message, posts.to, posts.pid FROM bookmarks INNER JOIN posts ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+                 array($_SESSION['nerdz_id'])
+             )
+        :
+        array(
+                "SELECT bookmarks.hpid, EXTRACT(EPOCH FROM bookmarks.time) AS time, posts.message, posts.to, posts.pid FROM bookmarks INNER JOIN posts ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+                array($_SESSION['nerdz_id'],"%{$q}%")
+             );
 
-	$linkMethod = 'userLink';
-	$nameMethod = 'getUserName';
+    $linkMethod = 'userLink';
+    $nameMethod = 'getUserName';
 }
 
 $vals['list_a'] = array();
@@ -86,21 +86,21 @@ $desc = $order == 'DESC' ? '1' : '0';
 $url = "?orderby={$orderby}&amp;desc={$desc}&amp;q={$q}".($prj ? '&amp;project=1' : '');
 if(is_numeric($limit))
 {
-	$vals['prev_url'] = '';
-	$vals['next_url'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
+    $vals['prev_url'] = '';
+    $vals['next_url'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
 }
 else
 {
     if(2 == sscanf($limit,"%d,%d",$a,$b))
     {
-		$next =  $a+20;
-		$prev = $a-20;
-		$limitnext = "{$next},20";
-		$limitprev = $prev >0 ? "{$prev},20" : '20';
+        $next =  $a+20;
+        $prev = $a-20;
+        $limitnext = "{$next},20";
+        $limitprev = $prev >0 ? "{$prev},20" : '20';
     }
 
-	$vals['next_url'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
-	$vals['prev_url'] = $url."&amp;lim={$limitprev}";
+    $vals['next_url'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
+    $vals['prev_url'] = $url."&amp;lim={$limitprev}";
 }
 $tpl->assign($vals);
 $tpl->draw('profile/bookmarks');

@@ -12,19 +12,19 @@ if(!$core->isLogged())
     die($core->lang('REGISTER'));
  
 if(!$core->refererControl())
-	die($core->lang('ERROR'));
+    die($core->lang('ERROR'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
-	case 'get':
-		//fa tutto lei compresa la gestione di $_POST[hpid]
-		$hpid = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
-		$draw = true;
-		require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';
-	break;
-	
-	default:
-		die($core->lang('ERROR'));
-	break;
+    case 'get':
+        //fa tutto lei compresa la gestione di $_POST[hpid]
+        $hpid = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
+        $draw = true;
+        require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';
+    break;
+    
+    default:
+        die($core->lang('ERROR'));
+    break;
 }
 ?>
