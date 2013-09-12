@@ -297,7 +297,7 @@ def closures = [ "migrate_users" : {
     forEachRowInTable("whitelist", rowNum) { GroovyResultSet row ->
 
         //fields: "from", "to"
-        pgSql.execute("INSERT INTO blacklist VALUES (${row.from.longValue()}, ${row.to.longValue()})")
+        pgSql.execute("INSERT INTO whitelist VALUES (${row.from.longValue()}, ${row.to.longValue()})")
 
     }
 

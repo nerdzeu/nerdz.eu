@@ -212,7 +212,8 @@ if($usernamechanged)
 {
     $lastpid = $core->countMessages(USERS_NEWS) + 1;
     $message = "{$obj->username} %%12now is34%%: [user]{$user['username']}[/user].";
-    if(db::NO_ERR != $core->query(array('INSERT INTO "posts" ("from","to","pid","message","notify", "time") VALUE ('.USERS_NEWS.','.USERS_NEWS.",{$lastpid}, :msg , false ,CLOCK_TIMESTAMP())",array($message)),db::FETCH_ERR))
+
+    if(db::NO_ERR != $core->query(array('INSERT INTO "posts" ("from","to","pid","message","notify", "time") VALUE ('.USERS_NEWS.','.USERS_NEWS.",{$lastpid}, :msg , FALSE ,CLOCK_TIMESTAMP())",array($message)),db::FETCH_ERR))
         die($core->jsonResponse('error',$core->lang('ERROR')));
         
     $_SESSION['nerdz_username'] = $user['username'];
