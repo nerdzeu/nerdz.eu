@@ -134,7 +134,7 @@ if(isset($_POST['whitelist']))
         $uid = $core->getUserId(trim($v));
         if(is_numeric($uid))
         {
-            if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERR),array(db::NO_ERR,1062)))
+            if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERR),array(db::NO_ERR,POSTGRESQL_DUP_KEY)))
                 die($core->jsonResponse('error',$core->lang('ERROR').'1'));
             $newlist[] = $uid;
         }

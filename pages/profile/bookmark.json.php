@@ -19,8 +19,8 @@ $to = $_SESSION['nerdz_id'];
 switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
 {
     case 'add':
-        $retcode = array(-1,1062); //il trigger mi fa il controllo sul fatto che l'utente abbia postato o no (lo aggiunge solo se non ha postato)
-        if(!in_array($core->query(array('INSERT INTO "bookmarks"("from","hpid","time") VALUES(:to,:hpid,NOW())',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),array(db::NO_ERR,1062)))
+        //il trigger mi fa il controllo sul fatto che l'utente abbia postato o no (lo aggiunge solo se non ha postato)
+        if(!in_array($core->query(array('INSERT INTO "bookmarks"("from","hpid","time") VALUES(:to,:hpid,NOW())',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),array(db::NO_ERR,POSTGRESQL_DUP_KEY)))
             die($core->jsonResponse('error',$core->lang('ERROR')));    
     break;
     case 'del':

@@ -69,7 +69,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             $uid = $core->getUserId(trim($v));
             if(is_numeric($uid))
             {
-                if(!in_array($core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERR),array(-1,1062)))
+                if(!in_array($core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERR),array(-1,POSTGRESQL_DUP_KEY)))
                     die($core->jsonResponse('error',$core->lang('ERROR').'1'));
                 $newmem[] = $uid;
             }

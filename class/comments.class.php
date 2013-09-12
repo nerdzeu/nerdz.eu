@@ -81,7 +81,7 @@ class comments extends project
                     if(!$f)
                         continue;
                 }
-                if(!in_array(parent::query(array('INSERT INTO "'.$glue.'comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,TO_TIMESTAMP(:time))',array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERR),array(db::NO_ERR,7)))
+                if(!in_array(parent::query(array('INSERT INTO "'.$glue.'comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,TO_TIMESTAMP(:time))',array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERR),array(db::NO_ERR,POSTGRESQL_DUP_KEY)))
                     break;
             }
         return !($i+1);
@@ -492,7 +492,7 @@ class comments extends project
     {
         $message = $oldMsgObj->message.'[hr]'.$newMessage;
 
-        return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = CLOCK_TIMESTAMP() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
+        return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
     }
 
     public function addProjectComment($hpid,$message)

@@ -20,7 +20,7 @@ $to = $_SESSION['nerdz_id'];
 switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
 {
     case 'add':
-        $retcode = array(db::NO_ERR,1062);
+        $retcode = array(db::NO_ERR,POSTGRESQL_DUP_KEY);
         if(!$from) //intero post
         {
             if(!in_array($core->query(array('INSERT INTO "posts_no_notify"("user","hpid","time") VALUES(:to,:hpid,NOW())',array(':to' => $to,':hpid' => $hpid)),db::FETCH_ERR),$retcode))

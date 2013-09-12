@@ -7,6 +7,7 @@ define('POSTGRESQL_HOST',$class->postgresql_host);
 define('POSTGRESQL_DATA_NAME',$class->postgresql_db);
 define('POSTGRESQL_USER',$class->postgresql_user);
 define('POSTGRESQL_PASS',$class->postgresql_pass);
+define('POSTGRESQL_DUP_KEY',7);
 #end postgresql constants
 
 #begin user constants
@@ -38,7 +39,7 @@ define('MINIFICATION_JS_CMD',  $class->js_min_cmd);
 define('MINIFICATION_CSS_CMD', $class->css_min_cmd);
 
 #special profiles
-define('USERS_NEWS',1643);
-define('DELETED_USERS',1644);
+define('USERS_NEWS',2);
+define('DELETED_USERS',3);
 
 ?>
