@@ -24,12 +24,12 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
     case 'public':
         if($obj->private == 1)
-            if(db::NO_ERR != $core->query(array('UPDATE "users" SET "private" = 0 WHERE "counter" = ?',array($id)),db::FETCH_ERR))
+            if(db::NO_ERR != $core->query(array('UPDATE "users" SET "private" = FALSE WHERE "counter" = ?',array($id)),db::FETCH_ERR))
                 die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     case 'private':
         if(!$obj->private)
-            if(db::NO_ERR != $core->query(array('UPDATE "users" SET "private" = 1 WHERE "counter" = ?',array($id)),db::FETCH_ERR))
+            if(db::NO_ERR != $core->query(array('UPDATE "users" SET "private" = TRUE WHERE "counter" = ?',array($id)),db::FETCH_ERR))
                 die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     default:

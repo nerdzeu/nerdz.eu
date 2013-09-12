@@ -166,7 +166,7 @@ class notify extends phpCore
             $ret[$i]['cmp'] = $o->time;
             $ret[$i]['board'] = true;
             $ret[$i]['project'] = false;
-            if($del && (db::NO_ERR != parent::query(array('UPDATE "posts" SET "notify" = 0 WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),db::FETCH_ERR)))
+            if($del && (db::NO_ERR != parent::query(array('UPDATE "posts" SET "notify" = FALSE WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),db::FETCH_ERR)))
                 return array();
             ++$i;
         }
