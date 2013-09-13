@@ -381,7 +381,7 @@ class messages extends phpCore
 
     public function countMessages($id)
     {
-		if(!($o = parent::query(array('SELECT MAX(`pid`) AS cc FROM `posts` WHERE `to` = :id',array(':id' => $id)),db::FETCH_OBJ)))
+		if(!($o = parent::query(array('SELECT MAX("pid") AS cc FROM "posts" WHERE "to" = :id',array(':id' => $id)),db::FETCH_OBJ)))
 			return false;
 		return $o->cc === null ? 0 : $o->cc;
     }

@@ -81,9 +81,8 @@ $(document).ready(function() {
 		var manageResponse = function(d)
 		{
 			plist.html(d);
-			//VARIABILE BOOLEANA MESSA COME STRINGA DATO CHE NEL DOM POSSO SALVARE SOLO STRINGHE, DEVO COMPARARARE COME STRINGA
-			//CAPS LOCK DAY
-			sessionStorage.setItem('searchLoad', "1"); //è la variabile load di search, dato che queste azioni sono in questo file js ma sono condivise da tutte le pagine, la variabile di caricamento dev'essere nota a tutte
+			//variabile booleana messa come stringa data che nel dom posso salvare solo stringhe
+			sessionStorage.setItem('searchLoad', "1"); //e' la variabile load di search, dato che queste azioni sono in questo file js ma sono condivise da tutte le pagine, la variabile di caricamento dev'essere nota a tutte
 		};
 
 		if(plist.data('type') == 'project')
