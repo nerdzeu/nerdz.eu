@@ -51,7 +51,7 @@ if($tot>0)
         $c = 0;
         for($i=0;$i<$tot;++$i)
         {
-            if(!($o = $core->query(array('SELECT `birth_date` FROM `users` WHERE `counter` = :id',array(':id' => $l[$i])),db::FETCH_OBJ)))
+            if(!($o = $core->query(array('SELECT "birth_date" FROM "users" WHERE "counter" = :id',array(':id' => $l[$i])),db::FETCH_OBJ)))
             {
                 echo $core->lang('ERROR');
                 break;
@@ -96,7 +96,7 @@ $vals['followedonlinetot_n'] = $c;
 $vals['yourprojects'] = $core->lang('YOUR_PROJECTS');
 $vals['memberof'] = $core->lang('MEMBER_OF');
 
-if(!($r = $core->query(array('SELECT `name` FROM `groups` WHERE `owner` = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
 $vals['ownerof_a'] = array();
@@ -108,7 +108,7 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
     ++$i;
 }
 
-if(!($r = $core->query(array('SELECT `name` FROM `groups` INNER JOIN `groups_members` ON `groups`.`counter` = `groups_members`.`group` WHERE `user` = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
 $vals['memberof_a'] = array();

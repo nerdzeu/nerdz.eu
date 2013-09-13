@@ -158,7 +158,7 @@ foreach($user as $id => $value)
 if(count(array_filter($user)) != count($user))
     die($core->jsonResponse('error',$core->lang('ERROR').': INVALID UTF-8'));
 
-if(($ut = $core->query("SELECT `counter` FROM `users` WHERE `email` = '{$user['email']}'",db::FETCH_OBJ)))
+if(($ut = $core->query("SELECT counter FROM users WHERE email = '{$user['email']}'",db::FETCH_OBJ)))
     if($ut->counter != $obj->counter)
         die($core->jsonResponse('error',$core->lang('MAIL_EXITS')));
 
@@ -182,7 +182,7 @@ $par = array( ':username' => $user['username'],
               ':name' => $user['name'],
               ':surname' => $user['surname'],
               ':email' => $user['email'],
-              ':gender' => $user['gender'],
+              ':gender' => intval($user['gender']) == 1 ? 'true' : 'false', //true if male, false woman
               ':date' => $birth['date'],
               ':id' => $obj->counter
             );
@@ -200,8 +200,8 @@ if($usernamechanged)
 }
 
 if(
-    db::NO_ERR != $core->query(array('UPDATE users SET `username` = :username, `timezone` = :timezone, `name` = :name, `surname` = :surname,`email` = :email,`gender` = :gender,
-    `birth_date` = :date'. ($control ? ",`password` = SHA1(:pass)" : '') . ' WHERE counter = :id',$par),db::FETCH_ERR)
+    db::NO_ERR != $core->query(array('UPDATE users SET "username" = :username, "timezone" = :timezone, "name" = :name, "surname" = :surname,"email" = :email,"gender" = :gender,
+    "birth_date" = :date'. ($control ? ",password = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\')" : '') . ' WHERE counter = :id',$par),db::FETCH_ERR)
   )
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
@@ -212,7 +212,8 @@ if($usernamechanged)
 {
     $lastpid = $core->countMessages(USERS_NEWS) + 1;
     $message = "{$obj->username} %%12now is34%%: [user]{$user['username']}[/user].";
-    if(db::NO_ERR != $core->query(array('INSERT INTO `posts` (`from`,`to`,`pid`,`message`,`notify`, `time`) VALUE ('.USERS_NEWS.','.USERS_NEWS.",{$lastpid}, :msg ,0,UNIX_TIMESTAMP())",array($message)),db::FETCH_ERR))
+
+    if(db::NO_ERR != $core->query(array('INSERT INTO "posts" ("from","to","pid","message","notify", "time") VALUES ('.USERS_NEWS.','.USERS_NEWS.",{$lastpid}, :msg , FALSE, NOW())",array($message)),db::FETCH_ERR))
         die($core->jsonResponse('error',$core->lang('ERROR')));
         
     $_SESSION['nerdz_username'] = $user['username'];

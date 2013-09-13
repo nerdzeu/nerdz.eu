@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var loading = $("#loadtxt").data('loading'); //il div è nell'header
+	var loading = $("#loadtxt").data('loading'); //il div è nell'header
 
     //elementi singoli
     $("iframe").attr('scrolling','no'); //dato che il validatore non li vuole e con i css overflow:hidden non funge
@@ -58,264 +58,264 @@ $(document).ready(function() {
                 }
             });
 
-        }
-        $(this).html(isNaN(nold) ? old : '0');
-    });
+		}
+		$(this).html(isNaN(nold) ? old : '0');
+	});
 
-    /* il footersearch si mostra solo in alcune pagine */
-    var wrongPages = [ '/bbcode.php','/terms.php','/faq.php','/stats.php','/rank.php','/preferences.php', '/informations.php' ];
-       if($.inArray(location.pathname,wrongPages) != -1) {
-           $("#footersearch").hide();
-       };
+	/* il footersearch si mostra solo in alcune pagine */
+	var wrongPages = [ '/bbcode.php','/terms.php','/faq.php','/stats.php','/rank.php','/preferences.php', '/informations.php' ];
+	   if($.inArray(location.pathname,wrongPages) != -1) {
+		   $("#footersearch").hide();
+	   };
 
-    $("#footersearch").on('submit',function(e) {
-        e.preventDefault();
-        var plist = $("#postlist");
-        var qs =  $.trim($("#footersearch input[name=q]").val());
-        var num = 10; //TODO: numero di posts, parametro?
+	$("#footersearch").on('submit',function(e) {
+		e.preventDefault();
+		var plist = $("#postlist");
+		var qs =  $.trim($("#footersearch input[name=q]").val());
+		var num = 10; //TODO: numero di posts, parametro?
 
-        if(qs == '') {
-            return false;
-        }
+		if(qs == '') {
+			return false;
+		}
 
-        var manageResponse = function(d)
-        {
-            plist.html(d);
-            //VARIABILE BOOLEANA MESSA COME STRINGA DATO CHE NEL DOM POSSO SALVARE SOLO STRINGHE, DEVO COMPARARARE COME STRINGA
-            //CAPS LOCK DAY
-            sessionStorage.setItem('searchLoad', "1"); //è la variabile load di search, dato che queste azioni sono in questo file js ma sono condivise da tutte le pagine, la variabile di caricamento dev'essere nota a tutte
-        };
+		var manageResponse = function(d)
+		{
+			plist.html(d);
+			//VARIABILE BOOLEANA MESSA COME STRINGA DATO CHE NEL DOM POSSO SALVARE SOLO STRINGHE, DEVO COMPARARARE COME STRINGA
+			//CAPS LOCK DAY
+			sessionStorage.setItem('searchLoad', "1"); //è la variabile load di search, dato che queste azioni sono in questo file js ma sono condivise da tutte le pagine, la variabile di caricamento dev'essere nota a tutte
+		};
 
-        if(plist.data('type') == 'project')
-        {
-            if(plist.data('location') == 'home')
-            {
-                N.html.search.globalProjectPosts(num, qs, manageResponse);
-            }
-            else
-            {
-                if(plist.data('location') == 'project')
-                {
-                    N.html.search.specificProjectPosts(num, qs, plist.data('projectid'),manageResponse);
-                }
-            }
-        }
-        else
-        {
-            if(plist.data('location') == 'home')
-            {
-                N.html.search.globalProfilePosts(num, qs, manageResponse);
-            }
-            else
-            {
-                if(plist.data('location') == 'profile')
-                {
-                    N.html.search.specificProfilePosts(num, qs, plist.data('profileid'),manageResponse);
-                }
-            }
-        }
-        plist.data('mode','search');
-    });
+		if(plist.data('type') == 'project')
+		{
+			if(plist.data('location') == 'home')
+			{
+				N.html.search.globalProjectPosts(num, qs, manageResponse);
+			}
+			else
+			{
+				if(plist.data('location') == 'project')
+				{
+					N.html.search.specificProjectPosts(num, qs, plist.data('projectid'),manageResponse);
+				}
+			}
+		}
+		else
+		{
+			if(plist.data('location') == 'home')
+			{
+				N.html.search.globalProfilePosts(num, qs, manageResponse);
+			}
+			else
+			{
+				if(plist.data('location') == 'profile')
+				{
+					N.html.search.specificProfilePosts(num, qs, plist.data('profileid'),manageResponse);
+				}
+			}
+		}
+		plist.data('mode','search');
+	});
 
-    $("#logout").on('click',function(event) {
-        event.preventDefault();
-        var t = $("#title_right");
-        N.json.logout( { tok: $(this).data('tok') }, function(r) {
-            var tmp = t.html();
-            if(r.status == 'ok')
-            {
-                t.html(r.message);
-                setTimeout(function() {
-                    document.location.href = "/";
-                    },1500);
-            }
-            else
-            {
-                t.html('<h2>'+ r.message + '</h2>');
-                setTimeout(function() {
-                    t.html(tmp);
-                },1500);
-            }
-        });
-    });
+	$("#logout").on('click',function(event) {
+		event.preventDefault();
+		var t = $("#title_right");
+		N.json.logout( { tok: $(this).data('tok') }, function(r) {
+			var tmp = t.html();
+			if(r.status == 'ok')
+			{
+				t.html(r.message);
+				setTimeout(function() {
+					document.location.href = "/";
+					},1500);
+			}
+			else
+			{
+				t.html('<h2>'+ r.message + '</h2>');
+				setTimeout(function() {
+					t.html(tmp);
+				},1500);
+			}
+		});
+	});
 
-    $("#gotopm").on('click',function(e) {
-            e.preventDefault();
+	$("#gotopm").on('click',function(e) {
+			e.preventDefault();
 
-            var href = $(this).attr('href');
+			var href = $(this).attr('href');
 
-            if($('#pmcounter').html() != '0') {
+			if($('#pmcounter').html() != '0') {
 
-                if(href == window.location.pathname ) {
-                    location.hash = "new";
-                    location.reload();
-                }
-                else {
-                    location.href='/pm.php#new';
-                }
-            }
-            else
-            {
-                location.href = href;
-            }
-    });
+				if(href == window.location.pathname ) {
+					location.hash = "new";
+					location.reload();
+				}
+				else {
+					location.href='/pm.php#new';
+				}
+			}
+			else
+			{
+				location.href = href;
+			}
+	});
 
-    $(".preview").on('click',function(){
-        var txt = $($(this).data('refto')).val();
-        if(undefined != txt && txt != '') {
-            window.open('/preview.php?message='+encodeURIComponent(txt));
-        }
-    });
-    
-    $("textarea").on('keydown', function(e) {
-        if( e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13) ) {
-            $(this).parent().trigger('submit');
-        }
-    });
+	$(".preview").on('click',function(){
+		var txt = $($(this).data('refto')).val();
+		if(undefined != txt && txt != '') {
+			window.open('/preview.php?message='+encodeURIComponent(txt));
+		}
+	});
+	
+	$("textarea").on('keydown', function(e) {
+		if( e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13) ) {
+			$(this).parent().trigger('submit');
+		}
+	});
 
-    //begin plist into events (common to: homepage, projects, profiles)
-    var plist = $("#postlist");
+	//begin plist into events (common to: homepage, projects, profiles)
+	var plist = $("#postlist");
 
-    plist.on('click','.preview',function(){
-        var txtarea = $($(this).data('refto'));
-        txtarea.val(txtarea.val()+' '); //workaround
-        var txt = txtarea.val();
-        txtarea.val($.trim(txtarea.val()));
-        if(undefined != txt && $.trim(txt) != '') {
-            window.open('/preview.php?message='+encodeURIComponent(txt));
-        }
-    });
+	plist.on('click','.preview',function(){
+		var txtarea = $($(this).data('refto'));
+		txtarea.val(txtarea.val()+' '); //workaround
+		var txt = txtarea.val();
+		txtarea.val($.trim(txtarea.val()));
+		if(undefined != txt && $.trim(txt) != '') {
+			window.open('/preview.php?message='+encodeURIComponent(txt));
+		}
+	});
 
-    plist.on('keydown',"textarea", function(e) {
-        if( e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13) ) {
-            $(this).parent().trigger('submit');
-        }
-    });
+	plist.on('keydown',"textarea", function(e) {
+		if( e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13) ) {
+			$(this).parent().trigger('submit');
+		}
+	});
 
-    plist.on('click',".delcomment",function() {
-        var refto = $('#' + $(this).data('refto'));
-        refto.html(loading+'...');
+	plist.on('click',".delcomment",function() {
+		var refto = $('#' + $(this).data('refto'));
+		refto.html(loading+'...');
 
-        if(plist.data('type') == 'profile') {
-            N.json.profile.delComment({ hcid: $(this).data('hcid') },function(d) {
-                if(d.status == 'ok')
-                {
-                    refto.remove();
-                }
-                else
-                {
-                    refto.html(d.message);
-                }
-            });
-        }
-        else
-        {
-            N.json.project.delComment({ hcid: $(this).data('hcid') },function(d) {
-                if(d.status == 'ok')
-                {
-                    refto.remove();
-                }
-                else
-                {
-                    refto.html(d.message);
-                }
-            });
-        }
-    });
+		if(plist.data('type') == 'profile') {
+			N.json.profile.delComment({ hcid: $(this).data('hcid') },function(d) {
+				if(d.status == 'ok')
+				{
+					refto.remove();
+				}
+				else
+				{
+					refto.html(d.message);
+				}
+			});
+		}
+		else
+		{
+			N.json.project.delComment({ hcid: $(this).data('hcid') },function(d) {
+				if(d.status == 'ok')
+				{
+					refto.remove();
+				}
+				else
+				{
+					refto.html(d.message);
+				}
+			});
+		}
+	});
 
-    plist.on('submit','.frmcomment',function(e) {
-        e.preventDefault();
-        var last, hcid,
-            hpid     = $(this).data ('hpid'),
-            refto    = $('#commentlist' + hpid),
-            error    = $(this).find ('.error').eq (0),
-            pattern  = 'div[id^="c"]',
-            comments = refto.find (pattern);
-        if(comments.length)
-        {
-            // Uses the second-last element instead of the last one (if available)
-            // to fix the append bug reported by nessuno.
-            last = comments.length > 1 ? comments.eq (comments.length - 2) : null;
-            hcid = last ? last.data('hcid') : 0;
-        }
-        error.html (loading);
-        N.json[plist.data('type')].addComment ({ hpid: hpid, message: $(this).find('textarea').eq(0).val() }, function(d) {
-            if(d.status == 'ok')
-            {
-                if(hcid && last)
-                {
-                    N.html[plist.data('type')].getCommentsAfterHcid ({ hpid: hpid, hcid: hcid }, function(d) {
-                        var form = refto.find ('form.frmcomment').eq (0),
-                            pushBefore = form.parent(),
-                            newComments = $('<div>' + d + '</div>').find (pattern),
-                            internalLengthPointer = comments.length,
-                            lastComment = comments.last();
-                        // if available, delete the secondlast comment
-                        if (comments.length > 1) {
-                            comments.eq (comments.length - 1).remove();
-                            internalLengthPointer--;
-                        }
-                        // then, check the hcid of the last comment
-                        // delete it if it matches
-                        if (lastComment.data ('hcid') == newComments.last().data ('hcid')) {
-                            lastComment.remove();
-                            internalLengthPointer--;
-                        }
-                        // wait until we reach 10 comments (except if the user pressed more)
-                        // TODO: replace this with comments.slice (0, n).remove()
-                        // TODO: add logic to show again the 'more' button if we deleted
-                        // enough comments
-                        // Fix for issue #9: add a >point<
-                        while ((internalLengthPointer + newComments.length) > (((comments.parent().find ('.more_btn').data ('morecount') || 0) + 1) * 10)) {
-                            comments.first().remove();
-                            // reassign the variable, otherwise .first() won't work
-                            // anymore with .remove().
-                            comments = refto.find (pattern);
-                            internalLengthPointer--;
-                        }
-                        // append newComments
-                        pushBefore.before (d);
-                        form.find ('textarea').val ('');
-                        error.html('');
-                    });
-                }
-                else
-                {
-                    N.html[plist.data('type')].getComments( { hpid: hpid, start: 0, num: 10 },function(d) {
-                        refto.html(d);
-                        error.html('');
-                    });
-                }
-            }
-            else
-            {
-                error.html(d.message);
-            }
-        });
-    });
+	plist.on('submit','.frmcomment',function(e) {
+		e.preventDefault();
+		var last, hcid,
+			hpid     = $(this).data ('hpid'),
+			refto    = $('#commentlist' + hpid),
+			error    = $(this).find ('.error').eq (0),
+			pattern  = 'div[id^="c"]',
+			comments = refto.find (pattern);
+		if(comments.length)
+		{
+			// Uses the second-last element instead of the last one (if available)
+			// to fix the append bug reported by nessuno.
+			last = comments.length > 1 ? comments.eq (comments.length - 2) : null;
+			hcid = last ? last.data('hcid') : 0;
+		}
+		error.html (loading);
+		N.json[plist.data('type')].addComment ({ hpid: hpid, message: $(this).find('textarea').eq(0).val() }, function(d) {
+			if(d.status == 'ok')
+			{
+				if(hcid && last)
+				{
+					N.html[plist.data('type')].getCommentsAfterHcid ({ hpid: hpid, hcid: hcid }, function(d) {
+						var form = refto.find ('form.frmcomment').eq (0),
+							pushBefore = form.parent(),
+							newComments = $('<div>' + d + '</div>').find (pattern),
+							internalLengthPointer = comments.length,
+							lastComment = comments.last();
+						// if available, delete the secondlast comment
+						if (comments.length > 1) {
+							comments.eq (comments.length - 1).remove();
+							internalLengthPointer--;
+						}
+						// then, check the hcid of the last comment
+						// delete it if it matches
+						if (lastComment.data ('hcid') == newComments.last().data ('hcid')) {
+							lastComment.remove();
+							internalLengthPointer--;
+						}
+						// wait until we reach 10 comments (except if the user pressed more)
+						// TODO: replace this with comments.slice (0, n).remove()
+						// TODO: add logic to show again the 'more' button if we deleted
+						// enough comments
+						// Fix for issue #9: add a >point<
+						while ((internalLengthPointer + newComments.length) > (((comments.parent().find ('.more_btn').data ('morecount') || 0) + 1) * 10)) {
+							comments.first().remove();
+							// reassign the variable, otherwise .first() won't work
+							// anymore with .remove().
+							comments = refto.find (pattern);
+							internalLengthPointer--;
+						}
+						// append newComments
+						pushBefore.before (d);
+						form.find ('textarea').val ('');
+						error.html('');
+					});
+				}
+				else
+				{
+					N.html[plist.data('type')].getComments( { hpid: hpid, start: 0, num: 10 },function(d) {
+						refto.html(d);
+						error.html('');
+					});
+				}
+			}
+			else
+			{
+				error.html(d.message);
+			}
+		});
+	});
 
-    plist.on('click',".showcomments",function() {
-        var refto = $('#' + $(this).data('refto'));
-        if(refto.html() == '')
-        {
-            refto.html(loading+'...');
-            N.html[plist.data ('type')].getComments ({
-                hpid: $(this).data ('hpid'),
-                start: 0,
-                num: 10
-            }, function (res) {
-                refto.html (res);
-                if (document.location.hash == '#last')
-                    refto.find ('.frmcomment textarea[name=message]').focus();
-                else if (document.location.hash)
-                    $(document).scrollTop ($(document.location.hash).offset().top);
-            });
-        }
-        else
-        {
-            refto.html('');
-        }
-    });
+	plist.on('click',".showcomments",function() {
+		var refto = $('#' + $(this).data('refto'));
+		if(refto.html() == '')
+		{
+			refto.html(loading+'...');
+			N.html[plist.data ('type')].getComments ({
+				hpid: $(this).data ('hpid'),
+				start: 0,
+				num: 10
+			}, function (res) {
+				refto.html (res);
+				if (document.location.hash == '#last')
+					refto.find ('.frmcomment textarea[name=message]').focus();
+				else if (document.location.hash)
+					$(document).scrollTop ($(document.location.hash).offset().top);
+			});
+		}
+		else
+		{
+			refto.html('');
+		}
+	});
 
     plist.on ('click', '.more_btn', function() {
         var moreBtn     = $(this),

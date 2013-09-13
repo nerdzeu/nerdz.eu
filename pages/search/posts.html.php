@@ -37,11 +37,11 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         else
         {
             $imp_blist = implode(',',$blist);
-            $glue = "AND `posts`.`from` NOT IN ({$imp_blist}) AND `posts`.`to` NOT IN ({$imp_blist})";
+            $glue = 'AND "posts"."from" NOT IN ('.$imp_blist.') AND "posts"."to" NOT IN ('.$imp_blist.')';
         }
 
         if(!($k = $core->query(
-                    array('SELECT `from`,`to`,`pid`,`message`,`time`,`hpid` FROM `posts` WHERE `message` LIKE :like '.$glue.($specific ? ' AND `to` = :to' : '').($afterHpid ? ' AND `hpid` < :hpid' : '').' ORDER BY `hpid` DESC LIMIT '.$limit,
+                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "posts" WHERE "message" LIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($afterHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
                         $query_param
                 ),db::FETCH_STMT))
             )
@@ -55,11 +55,11 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         else
         {
             $imp_blist = implode(',',$blist);
-            $glue = "AND `groups_posts`.`from` NOT IN ({$imp_blist})";
+            $glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.')';
         }
 
         if(!($k = $core->query(
-                    array('SELECT `from`,`to`,`pid`,`message`,`time`,`hpid` FROM `groups_posts` WHERE `message` LIKE :like '.$glue.($specific ? ' AND `to` = :to' : '').($afterHpid ? ' AND `hpid` < :hpid' : '').' ORDER BY `hpid` DESC LIMIT '.$limit,
+                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "groups_posts" WHERE "message" LIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($afterHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
                     $query_param
                 ),db::FETCH_STMT))
             )

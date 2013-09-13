@@ -5,24 +5,24 @@ ob_start(array('phpCore','minifyHtml'));
 
 $core = new phpCore();
 
-$_POST['limit'] = isset($_POST['limit'])       && is_string($_POST['limit'])   ? $_POST['limit'] : 20;
+$_POST['limit']   = isset($_POST['limit'])    && is_string($_POST['limit'])   ? $_POST['limit'] : 20;
 $_POST['orderby'] = isset($_POST['orderby'])  && is_string($_POST['orderby']) ? $_POST['orderby'] : 'counter';
 
 if(!$core->limitControl($_POST['limit'],20))
     die($core->lang('ERROR'));
 
 $s = array();
-$s['description'] = isset($_POST['description']) && is_string($_POST['description']) ? htmlentities($_POST['description'],ENT_QUOTES,'UTF-8') : false;
+$s['description']    = isset($_POST['description'])   && is_string($_POST['description']) ? htmlentities($_POST['description'],ENT_QUOTES,'UTF-8') : false;
 $s['name']           = isset($_POST['name'])          && is_string($_POST['name'])          ? htmlentities($_POST['name'],ENT_QUOTES,'UTF-8')          : false;
 
 $imp = array();
 foreach($s as $val)
     if($val !== false)
-        $imp[] = "`{$fid}` LIKE '%{$val}%'";
+        $imp[] = "\"{$fid}\" LIKE '%{$val}%'";
 
 $query = empty($imp) ?
-        "SELECT `description`,`name` FROM `groups` ORDER BY `{$_POST['orderby']}` LIMIT {$_POST['limit']}" :
-        'SELECT `description`,`name` FROM `groups` WHERE ('.implode(' AND ',$imp).") ORDER BY `{$_POST['orderby']}` LIMIT {$_POST['limit']}";
+        "SELECT description,name FROM groups ORDER BY \"{$_POST['orderby']}\" LIMIT {$_POST['limit']}" :
+        'SELECT "description","name" FROM "groups" WHERE ('.implode(' AND ',$imp).') ORDER BY "'.$_POST['orderby'].'" LIMIT '.$_POST['limit'];
 
 if(!($r = $core->query($query,db::FETCH_STMT)))
     die($core->lang('ERROR'));

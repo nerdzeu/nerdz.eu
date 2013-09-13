@@ -76,7 +76,7 @@ foreach($group as &$value)
 if(count(array_filter($group)) != count($group))
     die($core->jsonResponse('error',$core->lang('ERROR').': INVALID UTF-8'));
 
-if(db::NO_ERR != $core->query(array('INSERT INTO groups (`description`,`owner`,`name`) VALUES (:description,:owner,:name)',array(':description' => $group['description'],':owner' => $group['owner'],':name' => $group['name'])),db::FETCH_ERR))
+if(db::NO_ERR != $core->query(array('INSERT INTO groups ("description","owner","name") VALUES (:description,:owner,:name)',array(':description' => $group['description'],':owner' => $group['owner'],':name' => $group['name'])),db::FETCH_ERR))
     die($core->jsonResponse('error',$core->lang('ERROR')));
         
 die($core->jsonResponse('ok','OK'));

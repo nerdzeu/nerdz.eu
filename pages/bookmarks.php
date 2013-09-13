@@ -31,12 +31,12 @@ if($prj)
     $query = empty($q)
         ?
          array(
-                 "SELECT groups_bookmarks.hpid, groups_bookmarks.time, groups_posts.message, groups_posts.to, groups_posts.pid FROM `groups_bookmarks` INNER JOIN `groups_posts` ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-                 array($_SESSION['nerdz_id'])
+                'SELECT groups_bookmarks.hpid, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time, groups_posts.message, groups_posts.to, groups_posts.pid FROM "groups_bookmarks" INNER JOIN "groups_posts" ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? ORDER BY '.$orderby.' '.$order.' LIMIT '.$limit,
+                array($_SESSION['nerdz_id'])
              )
         :
         array(
-                "SELECT groups_bookmarks.hpid, groups_bookmarks.time, groups_posts.message, groups_posts.to, groups_posts.pid FROM `groups_bookmarks` INNER JOIN `groups_posts` ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+                "SELECT groups_bookmarks.hpid, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time, groups_posts.message, groups_posts.to, groups_posts.pid FROM groups_bookmarks INNER JOIN groups_posts ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
                 array($_SESSION['nerdz_id'],"%{$q}%")
              );
 
@@ -49,12 +49,12 @@ else
     $query = empty($q)
         ?
          array(
-                 "SELECT bookmarks.hpid, bookmarks.time, posts.message, posts.to, posts.pid FROM `bookmarks` INNER JOIN `posts` ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+                 "SELECT bookmarks.hpid, EXTRACT(EPOCH FROM bookmarks.time) AS time, posts.message, posts.to, posts.pid FROM bookmarks INNER JOIN posts ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
                  array($_SESSION['nerdz_id'])
              )
         :
         array(
-                "SELECT bookmarks.hpid, bookmarks.time, posts.message, posts.to, posts.pid FROM `bookmarks` INNER JOIN `posts` ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+                "SELECT bookmarks.hpid, EXTRACT(EPOCH FROM bookmarks.time) AS time, posts.message, posts.to, posts.pid FROM bookmarks INNER JOIN posts ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
                 array($_SESSION['nerdz_id'],"%{$q}%")
              );
 

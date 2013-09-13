@@ -14,40 +14,40 @@ class project extends messages
 
     public function getProjectObject($gid)
     {
-        return parent::query(array('SELECT * FROM `groups` WHERE `counter` = :gid',array(':gid' => $gid)),db::FETCH_OBJ);
+        return parent::query(array('SELECT * FROM "groups" WHERE "counter" = :gid',array(':gid' => $gid)),db::FETCH_OBJ);
     }
 
     public function getGid($name)
     {
-        if(!($o = parent::query(array('SELECT `counter` FROM `groups` WHERE `name` = :name',array(':name' => htmlentities($name,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT "counter" FROM "groups" WHERE "name" = :name',array(':name' => htmlentities($name,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
             return false;
         return $o->counter;
     }
 
     public function getOwnerByGid($gid)
     {
-        if(!($o = parent::query(array('SELECT `owner` FROM `groups` WHERE `counter` = :gid',array(':gid' => $gid)),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT "owner" FROM "groups" WHERE "counter" = :gid',array(':gid' => $gid)),db::FETCH_OBJ)))
             return false;
         return $o->owner;
     }
 
     public function isProjectOpen($gid)
     {
-        if(!($o = parent::query(array('SELECT `open` FROM `groups` WHERE `counter` = :gid',array(':gid' => $gid)),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT "open" FROM "groups" WHERE "counter" = :gid',array(':gid' => $gid)),db::FETCH_OBJ)))
             return false;
         return $o->open;
     }
 
     public function countProjectMessages($gid)
     {
-        if(!($o = parent::query(array('SELECT MAX(`pid`) AS cc FROM `groups_posts` WHERE `to` = :gid',array(':gid' => $gid)),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT MAX("pid") AS cc FROM "groups_posts" WHERE "to" = :gid',array(':gid' => $gid)),db::FETCH_OBJ)))
             return false;
         return $o->cc;
     }
 
     public function getProjectMessage($hpid,$edit = false)
     {
-        if(!($o = parent::query(array('SELECT * FROM `groups_posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
             return false;
         if($edit)
             $_SESSION['nerdz_editpid'] = $o->pid;
@@ -63,9 +63,9 @@ class project extends messages
         else
         {
             $imp_blist = implode(',',$blist);
-            $glue = "AND `groups_posts`.`from` NOT IN ({$imp_blist})";
+            $glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.')';
         }
-        if(!($result = parent::query(array("SELECT * FROM `groups_posts` WHERE `to` = :gid {$glue} ORDER BY `hpid` DESC LIMIT {$limit}",array(':gid' => $gid)),db::FETCH_STMT)))
+        if(!($result = parent::query(array('SELECT groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" WHERE "to" = :gid '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,array(':gid' => $gid)),db::FETCH_STMT)))
             return false;
 
         return parent::getPostsArray($result,true);
@@ -83,10 +83,10 @@ class project extends messages
         else
         {
             $imp_blist = implode(',',$blist);
-            $glue = "AND `groups_posts`.`from` NOT IN ({$imp_blist})";
+            $glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.')';
         }
 
-        if(!($result = parent::query(array("SELECT * FROM `groups_posts` WHERE `hpid` < :hpid AND `to` = :gid {$glue} ORDER BY `hpid` DESC LIMIT {$N}",array(':gid' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
+        if(!($result = parent::query(array('SELECT groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" WHERE "hpid" < :hpid AND "to" = :gid '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,array(':gid' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
             return false;
 
         return parent::getPostsArray($result,true);
@@ -94,7 +94,7 @@ class project extends messages
 
     public function getMembers($gid)
     {
-        if(!($stmt = parent::query(array('SELECT `user` FROM `groups_members` WHERE `group` = :gid',array(':gid' => $gid)),db::FETCH_STMT)))
+        if(!($stmt = parent::query(array('SELECT "user" FROM "groups_members" WHERE "group" = :gid',array(':gid' => $gid)),db::FETCH_STMT)))
             return array();
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -102,7 +102,7 @@ class project extends messages
 
     public function getFollowers($gid)
     {
-        if(!($stmt = parent::query(array('SELECT `user` FROM `groups_followers` WHERE `group` = :gid',array(':gid' => $gid)),db::FETCH_STMT)))
+        if(!($stmt = parent::query(array('SELECT "user" FROM "groups_followers" WHERE "group" = :gid',array(':gid' => $gid)),db::FETCH_STMT)))
             return array();
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -138,7 +138,7 @@ class project extends messages
         
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-        if(empty($message) || db::NO_ERR != parent::query(array("INSERT INTO `groups_posts` (`from`,`to`,`pid`,`message`,`time`,`news`) VALUES (:id,:to,:lastpid,:message,:time,:news)",array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':lastpid' => $lastpid, ':time' => $time, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
+        if(empty($message) || db::NO_ERR != parent::query(array('INSERT INTO "groups_posts" ("from","to","pid","message","time","news") VALUES (:id,:to,:lastpid,:message,TO_TIMESTAMP(:time),:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':lastpid' => $lastpid, ':time' => $time, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
             return false;
 
         if($_SESSION['nerdz_id'] != $own)
@@ -147,7 +147,7 @@ class project extends messages
         $tonotify = array_diff(array_unique(array_merge($members,$followers)),$blacklist,array($_SESSION['nerdz_id']));
 
         foreach($tonotify as $v)
-            if(db::NO_ERR != parent::query(array('INSERT INTO `groups_notify` (`group`,`to`,`time`) VALUES (:to,:v,:time)',array(':to' => $to, ':v' => $v, ':time' => $time)),db::FETCH_ERR))
+            if(db::NO_ERR != parent::query(array('INSERT INTO "groups_notify" ("group","to","time") VALUES (:to,:v,TO_TIMESTAMP(:time))',array(':to' => $to, ':v' => $v, ':time' => $time)),db::FETCH_ERR))
                     return false;                                            
         return true;
     }
@@ -155,15 +155,15 @@ class project extends messages
     public function deleteProjectMessage($hpid)
     {
         if(
-            !($obj = parent::query(array('SELECT `from`,`to`,`pid` FROM `groups_posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
+            !($obj = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
             !in_array($_SESSION['nerdz_id'],array($this->getOwnerByGid($obj->to),$obj->from)) ||
-            db::NO_ERR != parent::query(array('DELETE FROM `groups_comments` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) ||
-            db::NO_ERR != parent::query(array('DELETE FROM `groups_posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR)//il trigger gestice eliminazione in groups_notify, groups_comments_notify, groups_comments
+            db::NO_ERR != parent::query(array('DELETE FROM "groups_comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) ||
+            db::NO_ERR != parent::query(array('DELETE FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR)//il trigger gestice eliminazione in groups_notify, groups_comments_notify, groups_comments
           )
             return false;
 
         //NON POSSO GESTIRE L'AGGIORNAMENTO QUI SOTTO VIA TRIGGER MYSQL A CAUSA DI UNA SUA LIMITAZIONE
-        return db::NO_ERR == parent::query(array('UPDATE `groups_posts` SET `pid` = `pid` -1 WHERE `pid` > :pid AND `to` = :to',array(':pid' => $obj->pid,':to' => $obj->to)),db::FETCH_ERR);
+        return db::NO_ERR == parent::query(array('UPDATE "groups_posts" SET "pid" = "pid" -1 WHERE "pid" > :pid AND "to" = :to',array(':pid' => $obj->pid,':to' => $obj->to)),db::FETCH_ERR);
     }
 
     public function editProjectMessage($hpid,$message)
@@ -171,11 +171,11 @@ class project extends messages
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
         return ! (
             empty($message) ||
-            !($obj = parent::query(array('SELECT `from`,`to`,`pid` FROM `groups_posts` WHERE `hpid` = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
+            !($obj = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
             !$this->canEditProjectPost((array)$obj,$this->getOwnerByGid($obj->to),$this->getMembers($obj->to)) ||
             empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
             isset($message[65534]) ||
-            db::NO_ERR != parent::query(array('UPDATE `groups_posts` SET `from` = :from, `to` = :to, `pid` = :pid, `message` = :message WHERE `hpid` = :hpid',array(':from' => $obj->from,':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
+            db::NO_ERR != parent::query(array('UPDATE "groups_posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from,':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
           );
     }
 
@@ -196,7 +196,7 @@ class project extends messages
             parent::isLogged() &&
             (
                 $_SESSION['nerdz_id'] == $post['from'] ||
-                parent::query(array('SELECT DISTINCT `from` FROM `groups_comments` WHERE `hpid` = :hpid AND `from` = :id ',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+                parent::query(array('SELECT DISTINCT "from" FROM "groups_comments" WHERE "hpid" = :hpid AND "from" = :id ',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
             )
           );
     }
@@ -205,7 +205,7 @@ class project extends messages
     {
         return (
                 parent::isLogged() &&
-                parent::query(array('SELECT `hpid` FROM `groups_posts_no_notify` WHERE `hpid` = :hpid AND `user` = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+                parent::query(array('SELECT "hpid" FROM "groups_posts_no_notify" WHERE "hpid" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
                );
     }
 
@@ -213,7 +213,7 @@ class project extends messages
     {
         return (
                 parent::isLogged() &&
-                parent::query(array('SELECT `post` FROM `groups_lurkers` WHERE `post` = :hpid AND `user` = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+                parent::query(array('SELECT "post" FROM "groups_lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
                );
     }
 
@@ -221,7 +221,7 @@ class project extends messages
     {
         return (
                 parent::isLogged() &&
-                parent::query(array('SELECT `hpid` FROM `groups_bookmarks` WHERE `hpid` = :hpid AND `from` = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+                parent::query(array('SELECT "hpid" FROM "groups_bookmarks" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
                );
     }
 }

@@ -129,7 +129,7 @@ class feed extends project
         $urluser = phpCore::userLink($us);
         $us = $this->xmlentity($us);
     
-        if(!parent::isLogged() && (!($p = parent::query(array('SELECT `private` FROM `users` WHERE `counter` = ?',array($id)),db::FETCH_OBJ)) || $p->private))
+        if(!parent::isLogged() && (!($p = parent::query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($id)),db::FETCH_OBJ)) || $p->private))
                 return $this->error('Private profile OR undefined error');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -157,7 +157,7 @@ class feed extends project
         $urlprj = phpCore::projectLink($us);
         $us = $this->xmlentity($us);
     
-        if(!($p = parent::query(array('SELECT `private`,`owner` FROM `groups` WHERE `counter` = ?',array($id)),db::FETCH_OBJ)))
+        if(!($p = parent::query(array('SELECT "private","owner" FROM "groups" WHERE "counter" = ?',array($id)),db::FETCH_OBJ)))
             return $this->error('Undefined error');
 
         if($p->private && (!parent::isLogged() || (!in_array($_SESSION['nerdz_id'], parent::getMembers($id)) && $_SESSION['nerdz_id'] != $p->owner)))
