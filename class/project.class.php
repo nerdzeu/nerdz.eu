@@ -129,7 +129,7 @@ class project extends messages
         $open = $this->isProjectOpen($to);
         $can = $open || in_array($_SESSION['nerdz_id'],$members) || ($_SESSION['nerdz_id'] == $own);
 
-        $news = $news ? '1' : '0';
+        $news = $news ? 'TRUE' : 'FALSE';
     
         if(!$can)
             return false;
