@@ -202,6 +202,8 @@
 	'MORE_COMMENTS' => 'Più commenti',
 	'MORE_MSGS' => 'Più messaggi',
 	'BACK_TO_THE_BOTTOM' => 'Torna giù',
-	'EXPAND' => 'Espandi'
+	'EXPAND' => 'Espandi',
+	'EVERY_COMMENT' => 'Tutti i commenti',
+	'EVERY_MSG' => 'Tutti i messaggi'
     );
 ?>

@@ -7,6 +7,19 @@ $(document).ready(function() {
 	// append version information
 	if ($("#left_col").length && window.location.pathname == "/home.php")
 		$("#left_col .title").eq (0).append (" <span style='font-weight: normal'><a href='/NERDZilla:690' style='color: #000 !important'>[" + N.getVersion() + "]</a></span>");
+	// load the prettyprinter
+	var append_theme = "", _h = $("head");
+	if (localStorage.getItem ("has-dark-theme") == 'yep')
+		append_theme = "?skin=sons-of-obsidian";
+	var prettify = document.createElement ("script");
+	prettify.type = "text/javascript";
+	prettify.src  = document.location.protocol + '//cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.js' + append_theme;
+	_h.append (prettify);
+	if (append_theme != "")
+		_h.append ('<style type="text/css">.nerdz-code-wrapper { background-color: #000; color: #FFF; }</style>');
+	else
+		_h.append ('<style type="text/css">.nerdz-code-wrapper { background-color: #FFF; color: #000; }</style>');
+	
 	$("#notifycounter").on('click',function(e) {
 		e.preventDefault();
 		var list = $("#notify_list"), old = $(this).html();
@@ -319,7 +332,11 @@ $(document).ready(function() {
 			if (intCounter == 1)
 				moreBtn.parent().find (".scroll_bottom_hidden").show();
 			if ($.trim (r) == "" || _ref.find (".nerdz_from").length < 10 || (10 * (intCounter + 1)) == _ref.find (".commentcount:eq(0)").html())
-				moreBtn.hide().parent().find (".scroll_bottom_separator").hide();//html (moreBtn.parent().html().replace (/\s\|\s/, ""));
+			{
+				var btnDb = moreBtn.hide().parent();
+				btnDb.find (".scroll_bottom_separator").hide();
+				btnDb.find (".all_comments_hidden").hide();
+			}
 		});
 	});
 
@@ -329,6 +346,28 @@ $(document).ready(function() {
 		// Select the second last comment, do a fancy scrolling and then focus the textbox.
 		$("html, body").animate ({ scrollTop: cList.find (".singlecomment:nth-last-child(2)").offset().top }, function() {
 			cList.find (".frmcomment textarea").focus();
+		});
+	});
+
+	plist.on ('click', '.all_comments_btn', function() {
+		// TODO do not waste precious performance by requesting EVERY
+		// comment, but instead adapt the limited function to allow
+		// specifying a start parameter without 'num'.
+		var btn         = $(this),
+			btnDb       = btn.parent().parent(),
+			moreBtn     = btnDb.find (".more_btn"),
+			commentList = btn.parents ("div[id^=\"commentlist\"]"),
+			hpid        = /^post(\d+)$/.exec (commentList.parents ("div[id^=\"post\"]").attr ("id"))[1];
+		if (btn.data ("working") === "1" || moreBtn.data ("inprogress") === "1") return;
+		btn.data ("working", "1").text (loading + "...");
+		moreBtn.data ("inprogress", "1");
+		N.html[plist.data ('type')].getComments ({ hpid: hpid, forceNoForm: true }, function (res) {
+			btn.data ("working", "0").text (btn.data ("localization")).parent().hide();
+			btnDb.find (".scroll_bottom_hidden").show().find (".scroll_bottom_separator").hide();
+			var parsed = $("<div>" + res + "</div>"), push = $("#commentlist" + hpid);
+			moreBtn.hide().data ("morecount", Math.ceil (parseInt (parsed.find (".commentcount").html()) / 10));
+			push.find ("div[id^=\"c\"]").remove();
+			push.find ('form.frmcomment').eq (0).parent().before (res);
 		});
 	});
 
@@ -605,6 +644,12 @@ $(document).ready(function() {
 			N.json.project.unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
 		}
 	});
+
+	plist.on ('click', '.nerdz-code-title', function() {
+		localStorage.setItem ('has-dark-theme', ( localStorage.getItem ('has-dark-theme') == 'yep' ? 'nope' : 'yep' ));
+		document.location.reload();
+	});
+
 	// EASTER EGG! :O
 	// NOTE: If you alreay tried/discovered this easter egg, then feel free
 	// to read the code. Otherwise don't be a bad guy and try to find it by yourself.

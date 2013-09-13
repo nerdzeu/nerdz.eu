@@ -203,6 +203,8 @@ $_LANG = array(
 	'MORE_COMMENTS' => 'More comments',
 	'MORE_MSGS' => 'More messages',
 	'BACK_TO_THE_BOTTOM' => 'Back to the bottom',
-	'EXPAND' => 'Expand'
+	'EXPAND' => 'Expand',
+	'EVERY_COMMENT' => 'All comments',
+	'EVERY_MSG' => 'All messages'
 );
 ?>

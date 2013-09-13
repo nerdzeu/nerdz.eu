@@ -9,14 +9,13 @@ $(document).ready(function() {
 	var fixHeights = function() {
 		plist.find(".nerdz_message").each (function() {
 			var el = $(this).find('div:first');
-			if (el.height() > 200 && !el.attr('data-parsed'))
+			if ((el.height() > 200 || el.find ('.gistLoad').length > 0) && !el.attr('data-parsed'))
 			{
 				el.height (200);
 				el.find (".userimage").slice (1).hide();
 				var n = el.parent().find ('div:last');
 				n.append ('<div class="more">&gt;&gt; ' + n.data ('expand') + ' &lt;&lt;</div>');
 				n.css ('background-color', '#000');
-				//n.css ('zIndex', 20);
 				n.css ('position', 'relative');
 			}
 			el.attr('data-parsed','1');
@@ -43,9 +42,10 @@ $(document).ready(function() {
 		var me = $(this), par = me.parent(), jenk = par.parent().find ('div:first');
 		jenk.css ('height', '100%'); var fHeight = jenk.height();
 		jenk.height (200).animate ({ height: fHeight }, 500, function() {
-			par.css('background-color','#000');
-			par.css('color','#FFF');
-			me.slideUp('slow', function() {
+			jenk.css ('height', 'auto');
+			par.css('background-color', '#000');
+			par.css('color', '#FFF');
+			me.slideUp ('slow', function() {
 				me.remove();
 			});
 		});

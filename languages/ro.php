@@ -200,6 +200,8 @@ $_LANG = array(
 	'MORE_COMMENTS' => 'Mai multe comentarii',
 	'MORE_MSGS' => 'Mai multe mesaje',
 	'BACK_TO_THE_BOTTOM' => 'Înapoi la partea de jos',
-	'EXPAND' => 'Extinde'
+	'EXPAND' => 'Extinde',
+	'EVERY_COMMENT' => 'Toate comentariile',
+	'EVERY_MSG' => 'Toate posturile'
 );
 ?>

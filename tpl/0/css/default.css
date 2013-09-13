@@ -248,6 +248,7 @@ html, #body
     margin-bottom: -10px;
     padding-bottom: 5px;
 	text-align: center;
+    box-shadow: 0 0 25px #000;
 }
 
 .nitem
@@ -395,4 +396,36 @@ html, #body
 .qu_user
 {
     background-color: #333;
+}
+
+pre
+{
+    font-size: 12px;
+    margin-top: 0;
+}
+
+.nerdz-code-wrapper
+{
+    border: solid white 1px;
+}
+
+.nerdz-code-title
+{
+    height: auto;
+    padding-top: 1px;
+    padding-left: 2px;
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 1px solid white;
+    margin-bottom: 4px;
+}
+
+.nerdz-code-title:first-letter
+{
+    text-transform: uppercase;
+}
+
+.prettyprint
+{
+    padding: 3px 3px 3px 3px;
 }

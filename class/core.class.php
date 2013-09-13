@@ -297,7 +297,8 @@ class phpCore
 			$_LANG = unserialize(apc_fetch($cache));
 		else
 		{
-			require_once $_SERVER['DOCUMENT_ROOT']."/languages/{$lang}.php";
+			if (!isset ($_LANG))
+				require $_SERVER['DOCUMENT_ROOT']."/languages/{$lang}.php";
 			apc_store($cache,serialize($_LANG),3600);
 		}
 		return str_replace("\n",'<br />',htmlentities($_LANG[$index],ENT_QUOTES,'UTF-8'));

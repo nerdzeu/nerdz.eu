@@ -45,7 +45,7 @@ function N() /* THE FATHER of God (class/object/function)*/
 	 * Description: returns the current NERDZ version.
 	 */
 	this.getVersion = function() {
-		return "2.42.1";
+		return "2.42.2";
 	};
 };
 
@@ -660,10 +660,10 @@ N.html = function()
 				N.reloadCaptcha();
 				MathJax.Hub.Queue(['Typeset',MathJax.Hub,'body']);
 				N.html.eval(data);
-				if(typeof initGist == 'function') {
+				if (typeof initGist == 'function')
 					initGist();
-				}
-				$("#body").syntaxHighlight();
+				if (typeof window.PR.prettyPrint == 'function')
+					window.PR.prettyPrint();
 			});
 	};
 

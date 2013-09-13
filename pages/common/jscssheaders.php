@@ -44,10 +44,6 @@ if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //se ssl è attivo u
 		else
 			echo '<script type="application/javascript" src="/tpl/',$tno,'/',$var,'"></script>';
 ?>
-	<script type="application/javascript" src="/static/js/sh.jsmin.js"></script>
-	<script type="application/javascript">
-	$.SyntaxHighlighter.init();
-	</script>
 	<script type="application/javascript" src="/static/js/api.php"></script>
 	<script type="text/x-mathjax-config">
 	MathJax.Hub.Config({
@@ -94,10 +90,6 @@ else //ssl non attivo
 		else
 			echo '<script type="application/javascript" src="',STATIC_DOMAIN,'tpl/',$tno,'/',$var,'"></script>';
 ?>
-	<script type="application/javascript" src="<?php echo STATIC_DOMAIN;?>static/js/sh.jsmin.js"></script>
-	<script type="application/javascript">
-	$.SyntaxHighlighter.init();
-	</script>
 	<script type="application/javascript" src="<?php echo STATIC_DOMAIN;?>static/js/api.php"></script>
 	<script type="text/x-mathjax-config">
 	MathJax.Hub.Config({

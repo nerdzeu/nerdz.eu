@@ -1,5 +1,5 @@
 {if="$needmorebtn_b"}
-<div style="text-align: center; padding-top: 10px"><a href="#" class="more_btn" data-localization="{$morebtn_label}" onclick="return false;">{$morebtn_label}</a><span class="scroll_bottom_hidden" style="display: none"><span class="scroll_bottom_separator"> | </span><a href="#" class="scroll_bottom_btn" data-localization="{$bottombtn_label}" onclick="return false;">{$bottombtn_label}</a></span></div>
+<div style="text-align: center; padding-top: 10px"><a href="#" class="more_btn" data-localization="{$morebtn_label}" onclick="return false;">{$morebtn_label}</a><span class="scroll_bottom_hidden" style="display: none"><span class="scroll_bottom_separator"> | </span><a href="#" class="scroll_bottom_btn" data-localization="{$bottombtn_label}" onclick="return false;">{$bottombtn_label}</a></span><span class="all_msgs_hidden" style="{if="!$needeverymsgbtn_b"}display: none{/if}"><span class="all_msgs_separator"> | </span><a href="#" class="all_msgs_btn" data-localization="{$everymsg_label}" onclick="return false;">{$everymsg_label}</span></div>
 {/if}
 {loop="list_a"}
 	<div style="margin-top: 3px" id="pm{$value.pmid_n}" data-pmid="{$value.pmid_n}">

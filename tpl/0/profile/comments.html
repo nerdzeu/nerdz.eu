@@ -1,5 +1,5 @@
 {if="$needmorebtn_b"}
-<div style="text-align: center"><a href="#" class="more_btn" data-localization="{$morebtn_label}" onclick="return false;">{$morebtn_label}</a><span class="scroll_bottom_hidden" style="display: none"><span class="scroll_bottom_separator"> | </span><a href="#" class="scroll_bottom_btn" data-localization="{$bottombtn_label}" onclick="return false;">{$bottombtn_label}</a></span></div>
+<div style="text-align: center"><a href="#" class="more_btn" data-localization="{$morebtn_label}" onclick="return false;">{$morebtn_label}</a><span class="scroll_bottom_hidden" style="display: none"><span class="scroll_bottom_separator"> | </span><a href="#" class="scroll_bottom_btn" data-localization="{$bottombtn_label}" onclick="return false;">{$bottombtn_label}</a></span><span class="all_comments_hidden" style="{if="!$needeverycommentbtn_b"}display: none{/if}"><span class="all_comments_separator"> | </span><a href="#" class="all_comments_btn" data-localization="{$everycomment_label}" onclick="return false;">{$everycomment_label}</span></div>
 {else}
 <span style="display: none" class="commentcount">{$commentcount_n}</span>
 {/if}

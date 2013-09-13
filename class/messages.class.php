@@ -85,8 +85,8 @@ class messages extends phpCore
 				$pid = $id = 0;
 			
 			$str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
-							   '<div style="background-color:#FFF;color:#000">
-									<span>'.$lang.':</span><pre style="background-color:#FFF;color:#000" class="language-'.$lang.'">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
+							   '<div class="nerdz-code-wrapper">
+									<div class="nerdz-code-title">'.$lang.':</div><pre class="prettyprint lang-' . $lang . '">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
 										(
 										 empty($codeurl) ? '' :
 										 '<a href="'.$codeurl.'" onclick="window.open(this.href); return false">'.parent::lang('TEXT_VERSION').'</a>'

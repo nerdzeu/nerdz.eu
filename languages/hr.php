@@ -202,6 +202,8 @@ $_LANG = array(
 	'MORE_COMMENTS' => 'Više komentara',
 	'MORE_MSGS' => 'Više postova',
 	'BACK_TO_THE_BOTTOM' => 'Natrag niz',
-	'EXPAND' => 'Proširiti'
+	'EXPAND' => 'Proširiti',
+	'EVERY_COMMENT' => 'Svi komentari',
+	'EVERY_MSG' => 'Svi postovi'
 );
 ?>

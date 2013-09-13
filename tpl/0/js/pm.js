@@ -139,7 +139,11 @@ $(document).ready(function() {
 			if (internalPointer == 1)
 				thisBtn.parent().find ('.scroll_bottom_hidden').show();
 			if ($.trim (data) == ''|| parsedData.find ('.nerdz_from').length < 10 || (10 * (internalPointer + 1)) == thisBtn.data ('count'))
-				thisBtn.hide().parent().find (".scroll_bottom_separator").hide();
+			{
+				var btnDb = thisBtn.hide().parent();
+				btnDb.find (".scroll_bottom_separator").hide();
+				btnDb.find (".all_msgs_hidden").hide();
+			}
 		});
 	});
 
@@ -147,6 +151,23 @@ $(document).ready(function() {
 		$("html, body").animate ({ scrollTop: $("#convfrm").offset().top }, function() {
 			$("#message").focus();
 		})
+	});
+
+	c.on ('click', '.all_msgs_btn', function() {
+		var btn     = $(this),
+			btnDb   = btn.parent().parent(),
+			moreBtn = btnDb.find (".more_btn");
+		if (btn.data ("working") === "1" || moreBtn.data ("in-progress") === "1") return;
+		btn.data ("working", "1").text (loadtxt + "...");
+		moreBtn.data ("in-progress", "1");
+		N.html.pm.getConversation ({ from: c_from, to: c_to, forceNoForm: true }, function (data) {
+			btn.data ("working", "0").text (btn.data ("localization")).parent().hide();
+			btnDb.find (".scroll_bottom_hidden").show().find (".scroll_bottom_separator").hide();
+			var parsedData = $("<div>" + data + "</div>"), push = $("#conversation");
+			moreBtn.hide().data ("counter", Math.ceil (parsedData.find (".nerdz_from").length / 10));
+			push.find ("div[id^=\"pm\"]").remove();
+			$("#convfrm").before (data);
+		});
 	});
 
 	setTimeout(function() {

@@ -202,6 +202,8 @@ $_LANG = array(
 	'MORE_COMMENTS' => 'Weitere kommentare',
 	'MORE_MSGS' => 'Mehr meldungen',
 	'BACK_TO_THE_BOTTOM' => 'Zurück zum unteren',
-	'EXPAND' => 'Erweitern'
+	'EXPAND' => 'Erweitern',
+	'EVERY_COMMENT' => 'Alle kommentare',
+	'EVERY_MSG' => 'Alle beiträge'
 );
 ?>
