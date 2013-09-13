@@ -188,7 +188,7 @@ $par = array( ':username' => $user['username'],
             );
 
 if($control)
-    $par[':pass'] = $user['password'];
+    $par[':password'] = $user['password'];
 
 if($usernamechanged)
 {
@@ -201,7 +201,7 @@ if($usernamechanged)
 
 if(
     db::NO_ERR != $core->query(array('UPDATE users SET "username" = :username, "timezone" = :timezone, "name" = :name, "surname" = :surname,"email" = :email,"gender" = :gender,
-    "birth_date" = :date'. ($control ? ",password = ENCODE(DIGEST(:password, 'SHA1'), 'HEX')" : '') . ' WHERE counter = :id',$par),db::FETCH_ERR)
+    "birth_date" = :date'. ($control ? ', "password" = ENCODE(DIGEST(:password, \'SHA1\'), \'HEX\')' : '') . ' WHERE counter = :id',$par),db::FETCH_ERR)
   )
     die($core->jsonResponse('error',$core->lang('ERROR')));
 

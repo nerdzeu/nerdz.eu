@@ -159,7 +159,7 @@ if(isset($user['username'][MIN_LENGTH_USER]))
                               ':name' => $user['name'],
                               ':surname' => $user['surname'],
                               ':email' => $user['email'],
-                              ':gender' => $user['gender'],
+                              ':gender' => $user['gender'] == 1 ? 'TRUE' : 'FALSE',
                               ':date' => $birth['date'],
                               ':lang1' => $lang,
                               ':lang2' => $lang,
@@ -173,11 +173,11 @@ if(isset($user['username'][MIN_LENGTH_USER]))
 
                         $stmt = $db->prepare('INSERT INTO profiles ("remote_addr", "http_user_agent") VALUES (:addr, :ua)');
                         
-                        $stmt->execute(array( 
-                                                                ':addr' => $_SERVER['REMOTE_ADDR'],
-                                                                ':ua' => htmlentities($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
-                                                               )
-                                                );
+                        $stmt->execute(array(
+												':addr' => $_SERVER['REMOTE_ADDR'],
+                                                ':ua' => htmlentities($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
+                                            )
+                                      );
 
                         $db->commit(); //end transaction
                     }
