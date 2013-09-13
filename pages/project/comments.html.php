@@ -21,8 +21,8 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         else if (isset ($_POST['hcid']) && is_numeric ($_POST['hcid']))
             $_list = $core->getProjectCommentsAfterHcid ($hpid, $_POST['hcid']);
         else
-			$_list = $core->getProjectComments ($hpid);
-		$doShowForm = !isset ($_POST['hcid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']);
+            $_list = $core->getProjectComments ($hpid);
+        $doShowForm = !isset ($_POST['hcid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']);
         if (empty ($_list) && !$doShowForm)
             die();
         $vals = array();
@@ -39,9 +39,9 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals['morebtn_label'] = $core->lang ('MORE_COMMENTS');
         $vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
         $vals['commentcount_n'] = $core->countProjectComments ($hpid);
-		$vals['everycomment_label'] = $core->lang ('EVERY_COMMENT'); 
+        $vals['everycomment_label'] = $core->lang ('EVERY_COMMENT'); 
         $vals['needmorebtn_b'] = $doShowForm && $vals['commentcount_n'] > 10;
-		$vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20; 
+        $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20; 
         $tpl->assign($vals);
         $tpl->draw('project/comments');
     break;

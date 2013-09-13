@@ -59,12 +59,12 @@ class phpCore
     }
    
     public function dumpException($e, $moredata = false)
-	{
+    {
         $this->dumpErrorString((($moredata != false) ? "{$moredata}: " : '').$e->getMessage());
     }
     
     public function dumpErrorString($string)
-	{
+    {
         $path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
         file_put_contents($path,$string."\n", FILE_APPEND);
         chmod($path,0775);

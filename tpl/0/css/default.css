@@ -47,7 +47,7 @@
     display: inline;
     padding-left: 0.5px;
     padding-right: 0.5px;
-	font-size: 105%;
+    font-size: 105%;
 }
 
 #right_col
@@ -55,7 +55,7 @@
     width: 12.5%;
     float: left;
     display: inline;
-	margin-left: 1%;
+    margin-left: 1%;
 }
 
 #left_col ul, #right_col ul
@@ -70,7 +70,7 @@
 #footer_main
 {
     background-color: #AFAFAF;
-	text-align: center;
+    text-align: center;
     border-top: 1px #000 solid;
     bottom: 0px;
     clear: both;
@@ -126,47 +126,47 @@
 {
     left: 0px;
     width: 30px;
-	border: 0px;
+    border: 0px;
 }
 
 #main
 {
     margin: auto;
     width: 98%;
-	margin-right: 0.2%;
-	word-wrap: break-word;
+    margin-right: 0.2%;
+    word-wrap: break-word;
 }
 
 #gotopm
 {
-	float:left;
-	margin-top: 5px;
-	cursor: pointer;
-	font-weight: bold;
-	font-style: italic;
-	width:20px;
+    float:left;
+    margin-top: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-style: italic;
+    width:20px;
 }
 
 #postlist
 {
-	margin-bottom: 4%;
+    margin-bottom: 4%;
 }
 
 #rightmenu
 {
-	overflow-y: auto;
-	overflow-x: hidden;
-	height:310px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height:310px;
 }
 
 #leftmenu li, #rightmenu li
 {
-	margin-top: 5%;
+    margin-top: 5%;
 }
 
 #fast_nerdz
 {
-	margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 a:hover, a:visited, a:active, a:link, .qu_user a:visited, .qu_user a:active, .qu_user a:link, .atilda
@@ -192,15 +192,15 @@ input, option, select, textarea, button, .page th, .title
 
 button, input[type=submit], .page th, .title
 {
-	padding-left: 1%;
-	padding-right: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
     border: 0.5px #000 solid;
-	font-weight: bold;
-	white-space: nowrap;
-	word-wrap: normal;
-	vertical-align: middle;
-	cursor: pointer;
-	border-radius: 2px;
+    font-weight: bold;
+    white-space: nowrap;
+    word-wrap: normal;
+    vertical-align: middle;
+    cursor: pointer;
+    border-radius: 2px;
 }
 
 body
@@ -218,13 +218,13 @@ body
 
 img
 {
-	border: 0px none;
+    border: 0px none;
 }
 
 iframe
 {
-	margin: auto;
-	overflow: hidden;
+    margin: auto;
+    overflow: hidden;
 }
 
 html, #body
@@ -235,9 +235,9 @@ html, #body
 
 .box
 {
-	border: 1px solid #2370B6;
-	margin-top:3px;
-	padding: 3px;
+    border: 1px solid #2370B6;
+    margin-top:3px;
+    padding: 3px;
     border-radius: 5.5px;
 }
 
@@ -253,14 +253,14 @@ html, #body
 
 .nitem
 {
-	border-bottom: 1px solid #FFFFFF;
+    border-bottom: 1px solid #FFFFFF;
 }
 
 .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .bookmark, .unbookmark
 {
-	margin-bottom: -4px;
-	margin-top: -7px;
-	margin-left: 3px;
+    margin-bottom: -4px;
+    margin-top: -7px;
+    margin-left: 3px;
 }
 
 .page
@@ -284,14 +284,14 @@ html, #body
 
 .title
 {
-	cursor: default;
-	text-align: center;
+    cursor: default;
+    text-align: center;
 }
 
 .page th
 {
-	width: 10%;
-	text-align: center;
+    width: 10%;
+    text-align: center;
 }
 
 .nerdz_message, .nerdz_comments, .news
@@ -303,15 +303,15 @@ html, #body
     overflow: hidden;
     padding: 2px;
     border: 1px #FFFFFF solid;
-	word-wrap: break-word;
-	margin-bottom: 10px;
+    word-wrap: break-word;
+    margin-bottom: 10px;
 }
 
 .news
 {
-	background-color: #FFF;
+    background-color: #FFF;
     color: #000;
-	clear: left;
+    clear: left;
 }
 
 .nerdz_comments, .quote, .spoiler
@@ -319,27 +319,27 @@ html, #body
     border-color: #000;
     background-color: #BDBDBD;
     color: #000;
-	margin-bottom: 8px;
+    margin-bottom: 8px;
 }
 
 .nerdz_comments br, .nerdz_message br
 {
-	clear: both;
+    clear: both;
 }
 
 .quote
 {
-	margin: auto;
-	background-color: #FFFDD0;
-	margin-top: 5px;
-	overflow: auto;
+    margin: auto;
+    background-color: #FFFDD0;
+    margin-top: 5px;
+    overflow: auto;
 }
 
 .nerdz_date
 {
     float:right;
     margin-right: 2px;
-	font-size: 85%;
+    font-size: 85%;
 }
 
 .nerdz_from
@@ -362,7 +362,7 @@ html, #body
     margin-right: 1%;
     width: 95%;
     border: solid #AFAFAF 1px;
-	overflow: hidden;
+    overflow: hidden;
 }
 
 .error

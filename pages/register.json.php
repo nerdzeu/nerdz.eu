@@ -17,14 +17,14 @@ $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 $user['username'] = isset($_POST['username']) ? trim($_POST['username'],$l) : false;
 $user['name']     = isset($_POST['name'])    ? trim($_POST['name'],$l)        : false;
 $user['surname']  = isset($_POST['surname'])  ? trim($_POST['surname'],$l)  : false;
-$user['email']	  = isset($_POST['email'])    ? trim($_POST['email'],$l)    : false;
+$user['email']      = isset($_POST['email'])    ? trim($_POST['email'],$l)    : false;
 $user['timezone'] = isset($_POST['timezone']) ? trim($_POST['timezone'],$l) : false;
-$user['password'] = isset($_POST['password']) ? $_POST['password'] 			: false;
+$user['password'] = isset($_POST['password']) ? $_POST['password']             : false;
 
-$user['gender']	  		= isset($_POST['gender']) && is_numeric($_POST['gender']) && $_POST['gender'] >0 && $_POST['gender'] <= 2  	? $_POST['gender'] : false;
-$birth['birth_day']		= isset($_POST['birth_day'])	&& is_numeric($_POST['birth_day'])   && $_POST['birth_day']  >0 ? $_POST['birth_day']  		   : false;
-$birth['birth_month']	= isset($_POST['birth_month'])  && is_numeric($_POST['birth_month']) && $_POST['birth_month']>0 ? $_POST['birth_month'] 	   : false;
-$birth['birth_year']	= isset($_POST['birth_year'])   && is_numeric($_POST['birth_year'])  && $_POST['birth_year'] >0 ? $_POST['birth_year'] 		   : false;
+$user['gender']              = isset($_POST['gender']) && is_numeric($_POST['gender']) && $_POST['gender'] >0 && $_POST['gender'] <= 2      ? $_POST['gender'] : false;
+$birth['birth_day']        = isset($_POST['birth_day'])    && is_numeric($_POST['birth_day'])   && $_POST['birth_day']  >0 ? $_POST['birth_day']             : false;
+$birth['birth_month']    = isset($_POST['birth_month'])  && is_numeric($_POST['birth_month']) && $_POST['birth_month']>0 ? $_POST['birth_month']        : false;
+$birth['birth_year']    = isset($_POST['birth_year'])   && is_numeric($_POST['birth_year'])  && $_POST['birth_year'] >0 ? $_POST['birth_year']            : false;
 
 $user_flag  = !in_array(false,$user);
 $birth_flag = !in_array(false,$birth);
@@ -174,7 +174,7 @@ if(isset($user['username'][MIN_LENGTH_USER]))
                         $stmt = $db->prepare('INSERT INTO profiles ("remote_addr", "http_user_agent") VALUES (:addr, :ua)');
                         
                         $stmt->execute(array(
-												':addr' => $_SERVER['REMOTE_ADDR'],
+                                                ':addr' => $_SERVER['REMOTE_ADDR'],
                                                 ':ua' => htmlentities($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
                                             )
                                       );
