@@ -7,10 +7,10 @@ ob_start(array('phpCore','minifyHtml'));
 
 $core = new phpCore();
 if(!$core->isLogged())
-	die($core->lang('REGISTER'));
+    die($core->lang('REGISTER'));
 
 if(!($o = $core->query(array('SELECT `private` FROM `users` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
-	die($core->lang('ERROR'));
+    die($core->lang('ERROR'));
 
 $vals['description'] = $core->lang('GUESTS_DESCR');
 $vals['private_b'] = $o->private;

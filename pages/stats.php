@@ -6,27 +6,27 @@ $vals = array();
 $cache = 'nerdz_stats'.SITE_HOST;
 
 if(apc_exists('nerdz_stats'))
-	$ret = unserialize(apc_fetch('nerdz_stats'));
+    $ret = unserialize(apc_fetch('nerdz_stats'));
 else
 {
-	exec($_SERVER['DOCUMENT_ROOT'].'/pages/executables/site_stats.ccgi',$ret); //ret[0,6]
-	apc_store($cache,serialize($ret),300); //5 min
+    exec($_SERVER['DOCUMENT_ROOT'].'/pages/executables/site_stats.ccgi',$ret); //ret[0,6]
+    apc_store($cache,serialize($ret),300); //5 min
 }
 
 function apc_last_modified($key)
 {
-	$cache = apc_cache_info('user');
+    $cache = apc_cache_info('user');
 
-	if (empty($cache['cache_list']))
-		return false;
-	
-	foreach($cache['cache_list'] as $entry)
-	{
-		if($entry['info'] != $key)
-			continue;
+    if (empty($cache['cache_list']))
+        return false;
+    
+    foreach($cache['cache_list'] as $entry)
+    {
+        if($entry['info'] != $key)
+            continue;
 
-    	return $entry['creation_time'];
-	}
+        return $entry['creation_time'];
+    }
 }
 
 $vals['totusers_n'] = $ret[0];

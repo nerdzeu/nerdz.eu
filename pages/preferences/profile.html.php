@@ -7,7 +7,7 @@ ob_start(array('phpCore','minifyHtml'));
 
 $core = new phpCore();
 if(!$core->isLogged())
-	die($core->lang('REGISTER'));
+    die($core->lang('REGISTER'));
 
 if(!($obj = $core->query(array('SELECT * FROM `profiles` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
     die($core->lang('ERROR'));
@@ -18,14 +18,14 @@ $vals['interests'] = $core->lang('INTERESTS');
 $vals['oneperline'] = $core->lang('ONE_PER_LINE');
 $vals['interests_a'] = explode("\n",$obj->interests);
 foreach($vals['interests_a'] as &$val)
-	$val = trim($val);
+    $val = trim($val);
 $vals['biography'] = $core->lang('BIOGRAPHY');
 $vals['biographysub'] = $core->lang('BIOGRAPHY_SUB');
 $vals['biography_n'] = $obj->biography;
 $vals['quotes'] = $core->lang('QUOTES');
 $vals['quotes_a'] = explode("\n",$obj->quotes);
 foreach($vals['quotes_a'] as &$val)
-	$val = trim($val);
+    $val = trim($val);
 $vals['website'] = $core->lang('WEBSITE');
 $vals['website_n'] = $obj->website;
 $vals['jabber'] = $core->lang('JABBER');
@@ -52,7 +52,7 @@ $vals['canshowwhitelist_b'] = $vals['closedprofile_b'];
 $wl = $core->getWhitelist($_SESSION['nerdz_id']);
 $i = 0;
 foreach($wl as &$val)
-	$vals['whitelist_a'][$i++] = $core->getUsername($val);
+    $vals['whitelist_a'][$i++] = $core->getUsername($val);
 $vals['gravatar_b'] = $core->hasGravatarEnabled($_SESSION['nerdz_id']);
 $vals['edit'] = $core->lang('EDIT');
 $vals['tok_n'] = $core->getCsrfToken('edit');

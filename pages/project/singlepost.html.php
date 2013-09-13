@@ -9,17 +9,17 @@ $core = new project();
 $comments = new comments();
 
 if(
-	empty($hpid) ||
-	!($o = $core->getProjectMessage($hpid,$edit = false))
+    empty($hpid) ||
+    !($o = $core->getProjectMessage($hpid,$edit = false))
   )
-	die($core->lang('ERROR'));
+    die($core->lang('ERROR'));
 
 if(!($from = $core->getUserName($o->from)))
-	$from = '';
+    $from = '';
 if(!($to = $core->getProjectName($o->to)))
-	$to =  '';
+    $to =  '';
 if(!($own = $core->getOwnerByGid($o->to)))
-	$own = 0;
+    $own = 0;
 
 $members = $core->getMembers($o->to);
 
@@ -57,10 +57,10 @@ $singlepostvals['hpid_n'] = $o->hpid;
 $singlepostvals['news_b'] = $o->news;
 
 $tpl->assign($singlepostvals);
-	
+    
 if($draw)
-	$tpl->draw('project/post');
+    $tpl->draw('project/post');
 else
-	$singlepost = $tpl->draw('project/post',true);
+    $singlepost = $tpl->draw('project/post',true);
 
 ?>

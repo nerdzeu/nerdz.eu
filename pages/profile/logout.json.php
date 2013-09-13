@@ -9,10 +9,10 @@ if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
     
 if(!$core->refererControl())
-	die($core->jsonResponse('error',$core->lang('ERROR')));
+    die($core->jsonResponse('error',$core->lang('ERROR')));
 
 if(!$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
-	die($core->jsonResponse('error',$core->lang('ERROR').': token'));
+    die($core->jsonResponse('error',$core->lang('ERROR').': token'));
 
 $core->logout();
 die($core->jsonResponse('ok',$core->lang('LOGOUT_OK')));

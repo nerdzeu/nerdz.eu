@@ -9,37 +9,37 @@ $ncode = isset($_GET['ncode']) && is_numeric($_GET['ncode']) && intval($_GET['nc
 --$ncode;
 
 if(isset($_GET['id']) && is_numeric($_GET['id']))
-	$id = intval($_GET['id']);
+    $id = intval($_GET['id']);
 else
-	if(isset($_GET['gid']) && is_numeric($_GET['gid']))
-		$gid = intval($_GET['gid']);
+    if(isset($_GET['gid']) && is_numeric($_GET['gid']))
+        $gid = intval($_GET['gid']);
 
 if(!isset($id) || !isset($gid))
 {
-	if(isset($_GET['pcid']) && is_numeric($_GET['pcid']))
-		$pcid = intval($_GET['pcid']);
-	
-	if(isset($_GET['gcid']) && is_numeric($_GET['gcid']))
-		$gcid = intval($_GET['gcid']);
+    if(isset($_GET['pcid']) && is_numeric($_GET['pcid']))
+        $pcid = intval($_GET['pcid']);
+    
+    if(isset($_GET['gcid']) && is_numeric($_GET['gcid']))
+        $gcid = intval($_GET['gcid']);
 }
 
 if((isset($id) || isset($gid)) && isset($_GET['pid']) && is_numeric($_GET['pid']))
-	$pid = intval($_GET['pid']);
+    $pid = intval($_GET['pid']);
 
 if((isset($id) || isset($gid)) && isset($pid))
 {
-	$new = isset($id) ? $id : $gid;
-	if(!($o = $core->query(array('SELECT `message` FROM `'.(isset($id) ? '' : 'groups_').'posts` WHERE `pid` = :pid AND `to` = :new',array(':pid' => $pid, ':new' => $new)),db::FETCH_OBJ)))
-		die('Error');
+    $new = isset($id) ? $id : $gid;
+    if(!($o = $core->query(array('SELECT `message` FROM `'.(isset($id) ? '' : 'groups_').'posts` WHERE `pid` = :pid AND `to` = :new',array(':pid' => $pid, ':new' => $new)),db::FETCH_OBJ)))
+        die('Error');
 }
 elseif(isset($pcid) || isset($gcid))
 {
-	$new = isset($pcid) ? $pcid : $gcid;
-	if(!($o = $core->query(array('SELECT `message` FROM `'.(isset($pcid) ? '' : 'groups_').'comments` WHERE `hcid` = ?',array($new)),db::FETCH_OBJ)))
-		die('error');
+    $new = isset($pcid) ? $pcid : $gcid;
+    if(!($o = $core->query(array('SELECT `message` FROM `'.(isset($pcid) ? '' : 'groups_').'comments` WHERE `hcid` = ?',array($new)),db::FETCH_OBJ)))
+        die('error');
 }
 else
-	die();
+    die();
 $codes = $core->getCodes($o->message);
 die(html_entity_decode(isset($codes[$ncode]['code']) ? $codes[$ncode]['code'] : 'Wrong get parameters',ENT_QUOTES,'UTF-8'));
 ?>

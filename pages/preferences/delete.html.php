@@ -8,7 +8,7 @@ ob_start(array('phpCore','minifyHtml'));
 $core = new phpCore();
 
 if(!$core->isLogged())
-	die($core->lang('REGISTER'));
+    die($core->lang('REGISTER'));
 
 $vals = array();
 $vals['description'] = $core->lang('DELETE_DESCR');

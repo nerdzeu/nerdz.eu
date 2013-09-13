@@ -6,7 +6,7 @@ $core = new pm();
 ob_start(array('phpCore','minifyHtml'));
 
 if(!$core->isLogged())
-	die($core->lang('REGISTER'));
+    die($core->lang('REGISTER'));
 
 $vals = array();
 $vals['from'] = $core->lang('USERNAME');

@@ -36,7 +36,7 @@ $vals['members_n'] = count($mem);
 $vals['members_a'] = array();
 
 foreach($mem as &$uid)
-	$uid = $core->getUserName($uid);
+    $uid = $core->getUserName($uid);
 
 $vals['members_a'] = $mem;
 
@@ -48,12 +48,12 @@ $vals['id_n'] = $info->counter;
 $vals['description'] = $core->lang('DESCRIPTION');
 $vals['description_a'] = explode("\n",$info->description);
 foreach($vals['description_a'] as &$val)
-	$val = trim($val);
+    $val = trim($val);
 
 $vals['goal'] = $core->lang('GOAL');
 $vals['goal_a'] = explode("\n",$info->goal);
 foreach($vals['goal_a'] as &$val)
-	$val = trim($val);
+    $val = trim($val);
 
 $vals['oneperline'] = $core->lang('ONE_PER_LINE');
 

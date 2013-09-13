@@ -9,15 +9,15 @@ $core = new project();
 $comments = new comments();
 
 if(
-	empty($hpid) ||
-	!($o = $core->getMessage($hpid,$edit = false))
+    empty($hpid) ||
+    !($o = $core->getMessage($hpid,$edit = false))
   )
-	die($core->lang('ERROR'));
+    die($core->lang('ERROR'));
 
 if(!($from = $core->getUserName($o->from)))
-	$from = '';
+    $from = '';
 if(!($to = $core->getUserName($o->to)))
-	$to =  '';
+    $to =  '';
 
 $singlepostvals = array();
 $singlepostvals['remove'] = $core->lang('REMOVE');
@@ -55,10 +55,10 @@ $singlepostvals['hpid_n'] = $o->hpid;
 $singlepostvals['news_b'] = isset($o->news) ? $o->news : false;
 
 $tpl->assign($singlepostvals);
-	
+    
 if($draw)
-	$tpl->draw('profile/post');
+    $tpl->draw('profile/post');
 else
-	$singlepost = $tpl->draw('profile/post',true);
+    $singlepost = $tpl->draw('profile/post',true);
 
 ?>
