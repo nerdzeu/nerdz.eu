@@ -159,6 +159,29 @@ $(document).ready(function() {
             }
     });
 
+	//Questo evento deve essere qui e non in index.js (che ora viene eliminato), dato che un utente può registrarsi anche dal
+	//form di registrazione, che appare quando un profilo/progetto è chiuso 
+    $("#regfrm").on('submit',function(event) {
+        event.preventDefault();
+        N.json.register($("#regfrm").serialize(),function(obj) {
+            
+            if(obj.status == 'error')
+            {
+                $("#error").html(obj.message.replace(/\n/g,"<br />"));
+                $("#cptxt").html('');
+                N.reloadCaptcha();
+            }
+            else if(obj.status == 'ok')
+            {
+                $("#error").hide();
+                $("#done").html(obj.message);
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            }
+        });
+    });
+
     $(".preview").on('click',function(){
         var txt = $($(this).data('refto')).val();
         if(undefined != txt && txt != '') {
