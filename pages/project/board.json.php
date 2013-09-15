@@ -23,14 +23,18 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $retval = $core->addProjectMessage($_POST['to'],$_POST['message'],$news);
 
         if($retval === 0)
-            die($core->jsonResponse('error','Flood! '.$core->lang('WAIT').': '.(($_SESSION['nerdz_ProjectFlood']+30) - time().'s')));
+		{
+			require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
+			$flood = new flood();
+            die($core->jsonResponse('error','Flood! '.$core->lang('WAIT').': '.($_SESSION['nerdz_ProjectFlood']+ $flood::PROJECT_POST_TIMEOUT - time().'s')));
+		}
         else if($retval === false || $retval === null)
             die($core->jsonResponse('error',$core->lang('ERROR')));
         
     break;
     
     case 'del':
-        if(    !isset($_SESSION['nerdz_delpost']) || empty($_POST['hpid']) || ($_SESSION['nerdz_delpost'] != $_POST['hpid']) || !$core->deleteProjectMessage($_POST['hpid']) )
+        if(!isset($_SESSION['nerdz_delpost']) || empty($_POST['hpid']) || ($_SESSION['nerdz_delpost'] != $_POST['hpid']) || !$core->deleteProjectMessage($_POST['hpid']) )
             die($core->jsonResponse('error',$core->lang('ERROR')));
         unset($_SESSION['nerdz_delpost']);
     break;

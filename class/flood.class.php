@@ -6,6 +6,12 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
 class flood extends phpCore
 {
+	const PM_TIMEOUT = 5;
+	const PROFILE_POST_TIMEOUT = 20;
+	const PROJECT_POST_TIMEOUT = 20;
+	const PROFILE_COMMENT_TIMEOUT = 5;
+	const PROJECT_COMMENT_TIMEOUT = 5;
+
     public function __construct()
     {
         parent::__construct();
@@ -21,13 +27,11 @@ class flood extends phpCore
             if(($r = parent::query(array('SELECT EXTRACT (EPOCH FROM MAX("time")) AS cc FROM "pms" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
             {
                 if(!$r->rowCount()) //first pm
-                {
                     $_SESSION['nerdz_MPflood'] = time();
-                }
                 else
                 {
                     $o = $r->fetch(PDO::FETCH_OBJ);
-                    if(($o->cc +10) >= time())
+                    if(($o->cc + self::PM_TIMEOUT) > time())
                         return false;
                     else
                         $_SESSION['nerdz_MPflood'] = time();
@@ -35,13 +39,13 @@ class flood extends phpCore
             }
             else
             {
-                $_SESSION['nerdz_MPflood'] = time(); //?
+                $_SESSION['nerdz_MPflood'] = time();
                 return true;
             }
         }
         else
         {
-            if(($_SESSION['nerdz_MPflood']+10) >= time())
+            if(($_SESSION['nerdz_MPflood'] + self::PM_TIMEOUT) > time())
                 return false;
             $_SESSION['nerdz_MPflood'] = time();
         }
@@ -66,7 +70,7 @@ class flood extends phpCore
                 
                 $o = $r->fetch(PDO::FETCH_OBJ);
                 
-                if(($o->cc + 30) >= time())
+                if(($o->cc + self::PROFILE_POST_TIMEOUT) > time())
                     return false;
                     
                 $_SESSION['nerdz_ProfileFlood'] = time();
@@ -74,7 +78,7 @@ class flood extends phpCore
             }
             return false;
         }
-        if(($_SESSION['nerdz_ProfileFlood']+30) >= time())
+        if(($_SESSION['nerdz_ProfileFlood'] + self::PROFILE_POST_TIMEOUT) > time())
             return false;
             
         $_SESSION['nerdz_ProfileFlood'] = time();
@@ -98,7 +102,7 @@ class flood extends phpCore
                 
                 $o = $r->fetch(PDO::FETCH_OBJ);
                 
-                if(($o->cc +30) >= time())
+                if(($o->cc + self::PROJECT_POST_TIMEOUT) > time())
                     return false;
                     
                 $_SESSION['nerdz_ProjectFlood'] = time();
@@ -106,7 +110,7 @@ class flood extends phpCore
             }
             return false;
         }
-        if(($_SESSION['nerdz_ProjectFlood']+30) >= time())
+        if(($_SESSION['nerdz_ProjectFlood'] + self::PROJECT_POST_TIMEOUT) > time())
             return false;
         $_SESSION['nerdz_ProjectFlood'] = time();
         return true;
@@ -129,7 +133,7 @@ class flood extends phpCore
                 
                 $o = $r->fetch(PDO::FETCH_OBJ);
                 
-                if(($o->cc +8) >= time())
+                if(($o->cc + self::PROFILE_COMMENT_TIMEOUT) > time())
                     return false;
                     
                 $_SESSION['nerdz_PostCommentFlood'] = time();
@@ -138,7 +142,7 @@ class flood extends phpCore
             return false;
         }
         
-        if(($_SESSION['nerdz_PostCommentFlood']+8) >= time())
+        if(($_SESSION['nerdz_PostCommentFlood'] + self::PROFILE_COMMENT_TIMEOUT) > time())
             return false;
             
         $_SESSION['nerdz_PostCommentFlood'] = time();
@@ -162,7 +166,7 @@ class flood extends phpCore
                 
                 $o = $r->fetch(PDO::FETCH_OBJ);
                 
-                if(($o->cc +8) >= time())
+                if(($o->cc + self::PROJECT_COMMENT_TIMEOUT) > time())
                     return false;
                 $_SESSION['nerdz_ProjectCommentFlood'] = time();
                 return true;
@@ -170,7 +174,7 @@ class flood extends phpCore
             return false;
         }
         
-        if(($_SESSION['nerdz_ProjectCommentFlood']+8) >= time())
+        if(($_SESSION['nerdz_ProjectCommentFlood'] + self::PROJECT_COMMENT_TIMEOUT) > time())
             return false;
             
         $_SESSION['nerdz_ProjectCommentFlood'] = time();
