@@ -211,7 +211,7 @@ final class RainTPL
             }
 
             // file doesn't exsist, or the template was updated, Rain will compile the template
-            if( !file_exists( $this->tpl['compiled_filename'] ) || ( self::$check_template_update && filemtime($this->tpl['compiled_filename']) < filemtime( $this->tpl['tpl_filename'] ) ) )
+            if( !file_exists( $this->tpl['compiled_filename'] ) || ( self::$check_template_update && @filemtime($this->tpl['compiled_filename']) < filemtime( $this->tpl['tpl_filename'] ) ) )
             {
                 $this->compileFile( $tpl_basename, $tpl_basedir, $this->tpl['tpl_filename'], $this->cache_dir, $this->tpl['compiled_filename'] );
                 return true;
