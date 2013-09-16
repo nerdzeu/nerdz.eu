@@ -1,5 +1,22 @@
 <?php
+
+function parseLim($lim) {
+
+    $r = sscanf($lim,'%d,%d',$a,$b);
+
+    if($r != 2)
+        return false;
+        
+    return "$b OFFSET $a";
+}
+
 $limit = $core->limitControl(isset($_GET['lim']) ? $_GET['lim'] : 0 ,20) ? $_GET['lim'] : 20;
+
+//WTF? sscanf? strstr? What a shitty language! However, postgresql fix.
+if (strstr($limit, ',') != false)
+    $newlim = parseLim($limit);
+else
+    $newlim = $limit;
 
 switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 {
@@ -44,8 +61,8 @@ $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 $db = $core->getDB();
 
 $query = empty($q) ?
-        "SELECT `name`,`surname`,`username`, `counter`,`birth_date`,`last` FROM `users` ORDER BY {$orderby} {$order} LIMIT {$limit}" :
-        array("SELECT `name`,`surname`,`username`, `counter`,`birth_date`,`last` FROM `users` WHERE {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
+        "SELECT name,surname,username, counter, birth_date, EXTRACT(EPOCH FROM last) AS last FROM users ORDER BY {$orderby} {$order} LIMIT {$newlim}" :
+        array("SELECT name,surname,username, counter,birth_date,EXTRACT(EPOCH FROM last) AS last FROM users WHERE {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$newlim}",array("%{$q}%"));
 
 $vals['list_a'] = array();
 

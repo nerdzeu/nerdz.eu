@@ -6,10 +6,10 @@
 final class confClass
 {
     // TODO: migrate to an array-based configuration ($cfg['option'])
-    public $mysql_user;
-    public $mysql_pass;
-    public $mysql_host;
-    public $mysql_db;
+    public $postgresql_user;
+    public $postgresql_pass;
+    public $postgresql_host;
+    public $postgresql_db;
     public $captcha_level;
     public $length_user;
     public $length_pass;
@@ -31,12 +31,12 @@ final class confClass
     public function __construct()
     {
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/config/index.php';
-        if(isset($Rmysql_user, $Rmysql_host, $Rmysql_pass, $Rmysql_db,$Rsite_host))
+        if(isset($Rpostgresql_user, $Rpostgresql_host, $Rpostgresql_pass, $Rpostgresql_db,$Rsite_host))
         {
-            $this->mysql_user = $Rmysql_user;
-            $this->mysql_pass = $Rmysql_pass;
-            $this->mysql_host = $Rmysql_host;
-            $this->mysql_db   = $Rmysql_db;
+            $this->postgresql_user = $Rpostgresql_user;
+            $this->postgresql_pass = $Rpostgresql_pass;
+            $this->postgresql_host = $Rpostgresql_host;
+            $this->postgresql_db   = $Rpostgresql_db;
             $this->site_host  = $Rsite_host;
             if(isset($Rcaptcha_level, $Rlength_user, $Rlength_pass, $Rlength_name, $Rlength_surname))
             {

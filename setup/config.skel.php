@@ -2,16 +2,13 @@
 // Basic configuration
 // This should be put in '/class/config/index.php'.
 
-// MySQLd hostname.
-// NOTE: if you are having problems with PDO file not
-// found errors, put '127.0.0.1' instead of 'localhost'
-// which disables use of UNIX sockets
-$Rmysql_host = 'localhost';
-// Desidered MySQL database to use.
-$Rmysql_db = 'nerdz';
-// MySQLd username/password to use.
-$Rmysql_user = 'nerdz';
-$Rmysql_pass = 'pass';
+// PostgreSQL hostname.
+$Rpostgresql_host = 'localhost';
+// Desidered PostgreSQL database to use.
+$Rpostgresql_db = 'nerdz';
+// PostgreSQL username/password to use.
+$Rpostgresql_user = 'nerdz';
+$Rpostgresql_pass = '';
 // Length of the string generated in the captcha.
 $Rcaptcha_level = 5;
 // Site hostname. Change to 'localhost' if you are running

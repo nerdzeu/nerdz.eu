@@ -15,7 +15,7 @@ if(!$cptcka->check($captcha))
 $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 
 $user['username'] = isset($_POST['username']) ? trim($_POST['username'],$l) : false;
-$user['name']      = isset($_POST['name'])     ? trim($_POST['name'],$l)        : false;
+$user['name']     = isset($_POST['name'])    ? trim($_POST['name'],$l)        : false;
 $user['surname']  = isset($_POST['surname'])  ? trim($_POST['surname'],$l)  : false;
 $user['email']      = isset($_POST['email'])    ? trim($_POST['email'],$l)    : false;
 $user['timezone'] = isset($_POST['timezone']) ? trim($_POST['timezone'],$l) : false;
@@ -119,7 +119,7 @@ $birth['date'] = $birth['birth_year'].'/'.$birth['birth_month'].'/'.$birth['birt
 if(is_numeric($user['username']))
     die($core->jsonResponse('error',$core->lang('USERNAME_NUMBER')));
 
-if($core->query(array('SELECT `counter` FROM `users` WHERE `email` = :email',array(':email' => $user['email'])),db::ROW_COUNT) > 0)
+if($core->query(array('SELECT "counter" FROM "users" WHERE "email" = :email',array(':email' => $user['email'])),db::ROW_COUNT) > 0)
     die($core->jsonResponse('error',$core->lang('MAIL_EXISTS')."\n".$core->lang('FORGOT_PASSWORD').'?'));
 
 if(preg_match('#^~#',$user['username']))
@@ -159,32 +159,39 @@ if(isset($user['username'][MIN_LENGTH_USER]))
                               ':name' => $user['name'],
                               ':surname' => $user['surname'],
                               ':email' => $user['email'],
-                              ':gender' => $user['gender'],
+                              ':gender' => $user['gender'] == 1 ? 'TRUE' : 'FALSE',
                               ':date' => $birth['date'],
                               ':lang1' => $lang,
                               ':lang2' => $lang,
                               ':timezone' => $user['timezone']
                             );
 
-                        $stmt = $db->prepare("INSERT INTO users (`username`,`password`,`name`,`surname`,`email`,`gender`,`birth_date`,`lang`,`board_lang`,`timezone`)
-                        VALUES (:username,SHA1(:password), :name, :surname, :email, :gender,:date,:lang1,:lang2,:timezone)");
+                        $stmt = $db->prepare('INSERT INTO users ("username","password","name","surname","email","gender","birth_date","lang","board_lang","timezone")
+                        VALUES (:username,ENCODE(DIGEST(:password, \'SHA1\'), \'HEX\'), :name, :surname, :email, :gender,:date,:lang1,:lang2,:timezone)');
 
                         $stmt->execute($par);
 
-                        $num_row = $db->exec('INSERT INTO profiles (`website`, `quotes`, `biography`, `interests`, `photo`) VALUES ("","","","","")');
+                        $stmt = $db->prepare('INSERT INTO profiles ("remote_addr", "http_user_agent") VALUES (:addr, :ua)');
+                        
+                        $stmt->execute(array(
+                                                ':addr' => $_SERVER['REMOTE_ADDR'],
+                                                ':ua' => htmlentities($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
+                                            )
+                                      );
 
                         $db->commit(); //end transaction
                     }
                     catch(PDOException $e)
                     {
                         $db->rollBack();
+                        $core->dumpException($e);
                         die($core->jsonResponse('error',$core->lang('ERROR').'1')); //fail transaction
                     }
                     
                     $user = $user['username'];
                     $pass = sha1($_POST['password']);
     
-                    if(!($o = $core->query(array('SELECT `counter` FROM `users` WHERE `username` = :user AND `password` = :pass',array(':user' => $user, ':pass' => $pass)),db::FETCH_OBJ)))
+                    if(!($o = $core->query(array('SELECT "counter" FROM "users" WHERE "username" = :user AND "password" = :pass',array(':user' => $user, ':pass' => $pass)),db::FETCH_OBJ)))
                         die($core->jsonResponse('error',$core->lang('ERROR')));
 
                     setcookie('nerdz_id',$o->counter,time()+60*60*24*30,'/','.'.SITE_HOST,false,true);
@@ -196,7 +203,7 @@ if(isset($user['username'][MIN_LENGTH_USER]))
                     $_SESSION['nerdz_board_lang'] = $core->getBoardLanguage($o->counter);
                     //gravatar enabled by default
                     //return value is useless, because user is just registred
-                    $core->query(array('INSERT INTO `gravatar_profiles`(`counter`) VALUES(?)',array($o->counter)),db::NO_RETURN);
+                    $core->query(array('INSERT INTO "gravatar_profiles"("counter") VALUES(?)',array($o->counter)),db::NO_RETURN);
 
                     die($core->jsonResponse('ok',$core->lang('LOGIN_OK')));
 

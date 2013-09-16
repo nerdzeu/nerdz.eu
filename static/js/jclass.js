@@ -45,7 +45,7 @@ function N() /* THE FATHER of God (class/object/function)*/
      * Description: returns the current NERDZ version.
      */
     this.getVersion = function() {
-        return "2.42.2";
+        return "2.5-newdb";
     };
 };
 

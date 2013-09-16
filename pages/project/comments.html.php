@@ -38,10 +38,10 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals['dontreceivenotifications'] = $core->lang('NOT_RECV_NOTIFY');
         $vals['morebtn_label'] = $core->lang ('MORE_COMMENTS');
         $vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
-        $vals['everycomment_label'] = $core->lang ('EVERY_COMMENT');
         $vals['commentcount_n'] = $core->countProjectComments ($hpid);
+        $vals['everycomment_label'] = $core->lang ('EVERY_COMMENT'); 
         $vals['needmorebtn_b'] = $doShowForm && $vals['commentcount_n'] > 10;
-        $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20;
+        $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20; 
         $tpl->assign($vals);
         $tpl->draw('project/comments');
     break;

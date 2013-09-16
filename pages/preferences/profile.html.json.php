@@ -15,19 +15,19 @@ if(!$core->isLogged())
     
 $user['interests']  = isset($_POST['interests'])  ? trim($_POST['interests'])     : '';
 $user['biography']  = isset($_POST['biography'])  ? trim($_POST['biography'])     : '';
-$user['quotes']        = isset($_POST['quotes'])      ? trim($_POST['quotes'])         : '';
-$user['website']    = isset($_POST['website'])       ? strip_tags(trim($_POST['website']))     : '';
-$user['jabber']        = isset($_POST['jabber'])       ? trim($_POST['jabber'])         : '';
-$user['yahoo']        = isset($_POST['yahoo'])       ? trim($_POST['yahoo'])         : '';
+$user['quotes']     = isset($_POST['quotes'])     ? trim($_POST['quotes'])         : '';
+$user['website']    = isset($_POST['website'])    ? strip_tags(trim($_POST['website']))     : '';
+$user['jabber']     = isset($_POST['jabber'])     ? trim($_POST['jabber'])         : '';
+$user['yahoo']      = isset($_POST['yahoo'])      ? trim($_POST['yahoo'])         : '';
 $user['facebook']   = isset($_POST['facebook'])   ? trim($_POST['facebook'])         : '';
-$user['twitter']    = isset($_POST['twitter'])       ? trim($_POST['twitter'])         : '';
-$user['steam']        = isset($_POST['steam'])       ? trim($_POST['steam'])         : '';
-$user['skype']        = isset($_POST['skype'])       ? trim($_POST['skype'])         : '';
-$user['photo']        = isset($_POST['photo'])       ? trim($_POST['photo'])         : '';
+$user['twitter']    = isset($_POST['twitter'])    ? trim($_POST['twitter'])         : '';
+$user['steam']      = isset($_POST['steam'])      ? trim($_POST['steam'])         : '';
+$user['skype']      = isset($_POST['skype'])      ? trim($_POST['skype'])         : '';
+$user['photo']      = isset($_POST['photo'])      ? trim($_POST['photo'])         : '';
 $user['userscript'] = isset($_POST['userscript']) ? strip_tags(trim($_POST['userscript']))  : '';
 $user['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])  : '';
-$closed                = isset($_POST['closed']);
-$gravatar            = isset($_POST['gravatar']);
+$closed             = isset($_POST['closed']);
+$gravatar           = isset($_POST['gravatar']);
 $flag = true;
 
 if(!empty($user['website']) && !$core->isValidURL($user['website']))
@@ -91,33 +91,33 @@ $par = array(':interests' => $user['interests'],
              ':counter' => $obj->counter);
     
 if(
-    db::NO_ERR != $core->query(array('UPDATE profiles SET `interests` = :interests, `biography` = :biography, `quotes` = :quotes, `website` = :website, `dateformat` = :dateformat,
-      `photo` = :photo, `jabber` = :jabber, `yahoo` = :yahoo,
-      `userscript` = :userscript, `facebook` = :facebook, `twitter` = :twitter, `steam` = :steam, `skype` = :skype WHERE `counter` = :counter',$par),db::FETCH_ERR)
+    db::NO_ERR != $core->query(array('UPDATE profiles SET "interests" = :interests, "biography" = :biography, "quotes" = :quotes, "website" = :website, "dateformat" = :dateformat,
+      "photo" = :photo, "jabber" = :jabber, "yahoo" = :yahoo,
+      "userscript" = :userscript, "facebook" = :facebook, "twitter" = :twitter, "steam" = :steam, "skype" = :skype WHERE "counter" = :counter',$par),db::FETCH_ERR)
  )
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
 if($closed)
 {
     if(!$core->closedProfile($_SESSION['nerdz_id']))
-        if(db::NO_ERR != $core->query(array('INSERT INTO `closed_profiles`(`counter`) VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
+        if(db::NO_ERR != $core->query(array('INSERT INTO "closed_profiles"("counter") VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
             die($core->jsonResponse('error',$core->lang('ERROR')));
 }
 else
-    if( db::NO_ERR != $core->query(array('DELETE FROM `closed_profiles` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR) )
+    if( db::NO_ERR != $core->query(array('DELETE FROM "closed_profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR) )
         die($core->jsonResponse('error',$core->lang('ERROR')));
 
 if($gravatar)
 {
     if(!$core->hasGravatarEnabled($_SESSION['nerdz_id']))
-        if(db::NO_ERR != $core->query(array('INSERT INTO `gravatar_profiles`(`counter`) VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
+        if(db::NO_ERR != $core->query(array('INSERT INTO "gravatar_profiles"("counter") VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
             die($core->jsonResponse('error',$core->lang('ERROR')));
 
     $_SESSION['nerdz_gravatar'] = true;
 }
 else
 {
-    if(db::NO_ERR != $core->query(array('DELETE FROM `gravatar_profiles` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
+    if(db::NO_ERR != $core->query(array('DELETE FROM "gravatar_profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
         die($core->jsonResponse('error',$core->lang('ERROR')));
     $_SESSION['nerdz_gravatar'] = false;
 }
@@ -134,7 +134,7 @@ if(isset($_POST['whitelist']))
         $uid = $core->getUserId(trim($v));
         if(is_numeric($uid))
         {
-            if(!in_array($core->query(array('INSERT INTO `whitelist`(`from`,`to`) VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERR),array(db::NO_ERR,1062)))
+            if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERR),array(db::NO_ERR,POSTGRESQL_DUP_KEY)))
                 die($core->jsonResponse('error',$core->lang('ERROR').'1'));
             $newlist[] = $uid;
         }
@@ -147,7 +147,7 @@ if(isset($_POST['whitelist']))
             $toremove[] = $val;
 
     foreach($toremove as $val)
-        if(db::NO_ERR != $core->query(array('DELETE FROM whitelist WHERE `from` = :id AND `to` = :val',array(':id' => $_SESSION['nerdz_id'], ':val' => $val)),db::FETCH_ERR))
+        if(db::NO_ERR != $core->query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['nerdz_id'], ':val' => $val)),db::FETCH_ERR))
             die($core->jsonResponse('error',$core->lang('ERROR').'4'));
 }
         

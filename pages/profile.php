@@ -22,13 +22,13 @@ $vals['caniblacklist_b'] = false;
 
 if($vals['logged_b'])
 {
-    $vals['canifollow_b'] = !$core->query(array('SELECT `to` FROM `follow` WHERE `from` = :me AND `to` = :id',array(':me' => $_SESSION['nerdz_id'],':id' => $info->counter)),db::ROW_COUNT);
+    $vals['canifollow_b'] = !$core->query(array('SELECT "to" FROM "follow" WHERE "from" = :me AND "to" = :id',array(':me' => $_SESSION['nerdz_id'],':id' => $info->counter)),db::ROW_COUNT);
     $vals['caniblacklist_b'] = !$core->isInBlacklist($info->counter,$_SESSION['nerdz_id']);
 }
 
 if($vals['logged_b'] && (true === $core->isInBlacklist($_SESSION['nerdz_id'],$info->counter)))
 {
-    if(!($o = $core->query(array('SELECT `motivation` FROM `blacklist` WHERE `from` = :id AND `to` = :me',array(':me' => $_SESSION['nerdz_id'],':id' => $info->counter)),db::FETCH_OBJ)))
+    if(!($o = $core->query(array('SELECT "motivation" FROM "blacklist" WHERE "from" = :id AND "to" = :me',array(':me' => $_SESSION['nerdz_id'],':id' => $info->counter)),db::FETCH_OBJ)))
         die($core->lang('ERROR'));
         
     $vals['motivation_n'] = (new messages())->bbcode($o->motivation);
@@ -64,6 +64,7 @@ else
         $vals['username4link_n'] = phpCore::userLink($info->username);
         $vals['lang_n'] = $core->getUserLanguage($info->counter);
         $vals['online_b'] = $core->isOnline($info->counter);
+        
         $vals['online'] = $core->lang('ONLINE');
         $vals['offline'] = $core->lang('OFFLINE');
         $vals['username'] = $core->lang('USERNAME');
@@ -83,12 +84,12 @@ else
         if(!apc_exists($apc_name))
         {
 
-            if(!($o = $core->query(array('SELECT COUNT(`hcid`) AS cc FROM `comments` WHERE `from` = :id',$ida),db::FETCH_OBJ)))
+            if(!($o = $core->query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',$ida),db::FETCH_OBJ)))
                 die($core->lang('ERROR'));
 
             $n = $o->cc;
 
-            if(!($o = $core->query(array('SELECT COUNT(`hcid`) AS cc FROM `groups_comments` WHERE `from` = :id',$ida),db::FETCH_OBJ)))
+            if(!($o = $core->query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',$ida),db::FETCH_OBJ)))
                 die($core->lang('ERROR'));
 
             $n+=$o->cc;
@@ -108,7 +109,7 @@ else
         $vals['comments'] = $core->lang('COMMENTS');
         $vals['totalcomments_n'] = $a['n'];
 
-        if(!($o = $core->query(array('SELECT `last` from `users` WHERE `counter` = :id',$ida),db::FETCH_OBJ)))
+        if(!($o = $core->query(array('SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',$ida),db::FETCH_OBJ)))
             die($core->lang('ERROR'));
             
         $vals['lastvisit_n'] = $core->getDateTime($o->last);
@@ -187,7 +188,7 @@ else
         $vals['memberof'] = $core->lang('MEMBER_OF');
         $vals['userof'] = $core->lang('USER_OF');
 
-        if(!($r = $core->query(array('SELECT `name` FROM `groups` WHERE `owner` = :id',$ida),db::FETCH_STMT)))
+        if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',$ida),db::FETCH_STMT)))
             die($core->lang('ERROR'));
             
         $vals['ownerof_a'] = array();
@@ -199,7 +200,7 @@ else
             ++$i;
         }
 
-        if(!($r = $core->query(array('SELECT `name` FROM `groups` INNER JOIN `groups_members` ON `groups`.`counter` = `groups_members`.`group` WHERE `user` = :id',$ida),db::FETCH_STMT)))
+        if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',$ida),db::FETCH_STMT)))
             die($core->lang('ERROR'));
             
         $vals['memberof_a'] = array();
@@ -211,7 +212,7 @@ else
             ++$i;
         }
 
-        if(!($r = $core->query(array('SELECT `name` FROM `groups` INNER JOIN `groups_followers` ON `groups`.`counter` = `groups_followers`.`group` WHERE `user` = :id',$ida),db::FETCH_STMT)))
+        if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."group" WHERE "user" = :id',$ida),db::FETCH_STMT)))
             die($core->lang('ERROR'));
             
         $vals['userof_a'] = array();
@@ -248,7 +249,7 @@ else
         $found = false;
         if($vals['singlepost_b'])
         {
-            if(!($post = $core->query(array('SELECT `hpid` FROM `posts` WHERE `pid` = :pid AND `to` = :id',array(':pid' => $pid, ':id' => $info->counter)),db::FETCH_OBJ)))
+            if(!($post = $core->query(array('SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array(':pid' => $pid, ':id' => $info->counter)),db::FETCH_OBJ)))
             {
                 $tpl->assign('banners_a',$vals['banners_a']);
                 $tpl->assign('postnotfound',$core->lang('POST_NOT_FOUND'));

@@ -73,13 +73,13 @@ else //ssl non attivo
 <?php
     }
 ?>
-    <link rel="icon" type="image/x-icon" href="<?php echo STATIC_DOMAIN;?>static/images/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="<?php echo STATIC_DOMAIN;?>/static/images/favicon.ico" />
 <?php
     foreach($headers['css'] as $var)
         if(filter_var($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
             echo '<link rel="stylesheet" type="text/css" href="',$var,'" />';
         else
-            echo '<link rel="stylesheet" type="text/css" href="',STATIC_DOMAIN,'tpl/',$tno,'/',$var,'" />';
+            echo '<link rel="stylesheet" type="text/css" href="',STATIC_DOMAIN,'/tpl/',$tno,'/',$var,'" />';
     echo isset($blistcss) ? $blistcss : '';
 ?>
     <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
@@ -88,9 +88,9 @@ else //ssl non attivo
         if(filter_var($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
             echo '<script type="application/javascript" src="',$var,'"></script>';
         else
-            echo '<script type="application/javascript" src="',STATIC_DOMAIN,'tpl/',$tno,'/',$var,'"></script>';
+            echo '<script type="application/javascript" src="',STATIC_DOMAIN,'/tpl/',$tno,'/',$var,'"></script>';
 ?>
-    <script type="application/javascript" src="<?php echo STATIC_DOMAIN;?>static/js/api.php"></script>
+    <script type="application/javascript" src="<?php echo STATIC_DOMAIN;?>/static/js/api.php"></script>
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         extensions: ["tex2jax.js"],
@@ -120,6 +120,6 @@ else //ssl non attivo
              })();
     </script>
 <?php
-    if($core->isLogged() && (($o = $core->query(array('SELECT `userscript` FROM `profiles` WHERE `counter` = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ))) && !empty($o->userscript))
+    if($core->isLogged() && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ))) && !empty($o->userscript))
         echo '<script type="application/javascript" src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
 ?>

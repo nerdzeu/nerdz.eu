@@ -81,9 +81,8 @@ $(document).ready(function() {
         var manageResponse = function(d)
         {
             plist.html(d);
-            //VARIABILE BOOLEANA MESSA COME STRINGA DATO CHE NEL DOM POSSO SALVARE SOLO STRINGHE, DEVO COMPARARARE COME STRINGA
-            //CAPS LOCK DAY
-            sessionStorage.setItem('searchLoad', "1"); //è la variabile load di search, dato che queste azioni sono in questo file js ma sono condivise da tutte le pagine, la variabile di caricamento dev'essere nota a tutte
+            //variabile booleana messa come stringa data che nel dom posso salvare solo stringhe
+            sessionStorage.setItem('searchLoad', "1"); //e' la variabile load di search, dato che queste azioni sono in questo file js ma sono condivise da tutte le pagine, la variabile di caricamento dev'essere nota a tutte
         };
 
         if(plist.data('type') == 'project')
@@ -158,6 +157,29 @@ $(document).ready(function() {
             {
                 location.href = href;
             }
+    });
+
+	//Questo evento deve essere qui e non in index.js (che ora viene eliminato), dato che un utente può registrarsi anche dal
+	//form di registrazione, che appare quando un profilo/progetto è chiuso 
+    $("#regfrm").on('submit',function(event) {
+        event.preventDefault();
+        N.json.register($("#regfrm").serialize(),function(obj) {
+            
+            if(obj.status == 'error')
+            {
+                $("#error").html(obj.message.replace(/\n/g,"<br />"));
+                $("#cptxt").html('');
+                N.reloadCaptcha();
+            }
+            else if(obj.status == 'ok')
+            {
+                $("#error").hide();
+                $("#done").html(obj.message);
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            }
+        });
     });
 
     $(".preview").on('click',function(){

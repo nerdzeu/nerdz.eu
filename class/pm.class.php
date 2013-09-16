@@ -21,12 +21,12 @@ final class pm extends messages
         if(isset($message[65534]))
             return false;
 
-        return db::NO_ERR == parent::query(array('INSERT INTO `pms` (`from`,`to`,`message`,`time`,`read`) VALUES (:id,:to,:message,UNIX_TIMESTAMP(),1)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERR);
+        return db::NO_ERR == parent::query(array('INSERT INTO "pms" ("from","to","message","time","read") VALUES (:id,:to,:message,NOW(),TRUE)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERR);
     }
 
     public function getList()
     {
-            if(!($rs = parent::query(array('SELECT DISTINCT MAX(times) as lasttime, otherid as `from`, `read` FROM ((SELECT MAX(`time`) AS times, `from` as otherid, `read` FROM pms WHERE `to` = ? GROUP BY `from`) UNION (SELECT MAX(`time`) AS times, `to` as otherid, `read` FROM pms WHERE `from` = ? GROUP BY `to`)) AS tmp GROUP BY otherid ORDER BY `read` DESC, `lasttime` DESC',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
+            if(!($rs = parent::query(array('SELECT DISTINCT EXTRACT(EPOCH FROM MAX(times)) as lasttime, otherid as "from" FROM ((SELECT MAX("time") AS times, "from" as otherid FROM pms WHERE "to" = ? GROUP BY "from") UNION (SELECT MAX("time") AS times, "to" as otherid FROM pms WHERE "from" = ? GROUP BY "to")) AS tmp GROUP BY otherid ORDER BY "lasttime" DESC',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
                 return false;
     
             $times = $res = array();
@@ -49,14 +49,14 @@ final class pm extends messages
             
         return $res;
     }
-    
+        
     public function read($fromid,$toid,$time,$pmid)
     {
         $ret = array();
             
         if(
                 !is_numeric($fromid) || !is_numeric($toid) || !is_numeric ($pmid) || !in_array($_SESSION['nerdz_id'],array($fromid,$toid)) ||
-                !($res = parent::query(array('SELECT `message`,`read` FROM `pms` WHERE `from` = :from AND `to` = :to AND `pmid` = :pmid',array(':from' => $fromid, ':to' => $toid, ':pmid' => $pmid)),db::FETCH_STMT))
+                !($res = parent::query(array('SELECT "message","read" FROM "pms" WHERE "from" = :from AND "to" = :to AND "pmid" = :pmid',array(':from' => $fromid, ':to' => $toid, ':pmid' => $pmid)),db::FETCH_STMT))
           )
             return false;
 
@@ -80,7 +80,7 @@ final class pm extends messages
     
     public function countNew()
     {
-        if(!($o = parent::query(array('SELECT COUNT(DISTINCT `from`) as cc FROM (SELECT `from` FROM `pms` WHERE `to` = :id AND `read` = 1) AS tmp1',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT COUNT(DISTINCT "from") as cc FROM (SELECT "from" FROM "pms" WHERE "to" = :id AND "read" = TRUE) AS tmp1',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
             return -1;
         return $o->cc;
     }
@@ -88,7 +88,7 @@ final class pm extends messages
     public function deleteConversation($from, $to)
    {
         return is_numeric($from) && is_numeric($to) && in_array($_SESSION['nerdz_id'],array($from,$to)) && 
-            db::NO_ERR == parent::query(array('DELETE FROM `pms` WHERE (`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)',array($from,$to,$to,$from)),db::FETCH_ERR);
+            db::NO_ERR == parent::query(array('DELETE FROM "pms" WHERE ("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)',array($from,$to,$to,$from)),db::FETCH_ERR);
     }
     
     public function readConversation($from, $to, $afterPmId = null, $num = null, $start = 0)
@@ -99,12 +99,12 @@ final class pm extends messages
             return $ret;
         $__enableLimit = is_numeric ($num) && is_numeric ($start);
         $query = $__enableLimit ?
-                        //"SELECT q.from, q.to, q.time FROM (SELECT `from`, `to`, `time` FROM `pms` WHERE ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid`"
-                        'SELECT q.from, q.to, q.time, q.pmid FROM (SELECT `from`, `to`, `time`, `pmid` FROM `pms` WHERE ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` DESC LIMIT ?, ?) AS q ORDER BY q.pmid ASC' :
-                        'SELECT `from`, `to`, `time`, `pmid` FROM `pms` WHERE '.($afterPmId ? '`pmid` > ? AND ' : '').' ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` ASC';
-        if (!($res = parent::query (array ($query, ($__enableLimit ? array ($from, $to, $to, $from, $start * $num, $num) : ( $afterPmId ? array ($afterPmId, $from, $to, $to, $from) : array ($from, $to, $to, $from)))), db::FETCH_STMT)))
+                        //"SELECT q.from, q.to, q.time FROM (SELECT "from", "to", "time" FROM "pms" WHERE (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid""
+                        'SELECT q.from, q.to, q.time, q.pmid FROM (SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time, "pmid" FROM "pms" WHERE (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" DESC LIMIT ? OFFSET ?) AS q ORDER BY q.pmid ASC' :
+                        'SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time, "pmid" FROM "pms" WHERE '.($afterPmId ? '"pmid" > ? AND ' : '').' (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" ASC';
+        if (!($res = parent::query (array ($query, ($__enableLimit ? array ($from, $to, $to, $from, $num, $start * $num) : ( $afterPmId ? array ($afterPmId, $from, $to, $to, $from) : array ($from, $to, $to, $from)))), db::FETCH_STMT)))
                   /*!($res = parent::query(
-                    array('SELECT `from`,`to`,`time` FROM `pms` WHERE '.($afterPmId ? '`pmid` > ? AND ' : '').' ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` ASC',
+                    array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time FROM "pms" WHERE '.($afterPmId ? '"pmid" > ? AND ' : '').' (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" ASC',
                     $afterPmId ?
                         array($afterPmId,$from, $to,$to,$from) :
                         array($from, $to,$to,$from)
@@ -117,12 +117,12 @@ final class pm extends messages
         if($afterPmId && empty($ret))
         {
             if(!($res = parent::query(
-                    array('SELECT `from`,`to`,`time`,`pmid` FROM `pms` WHERE `pmid` = ? AND ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?)) ORDER BY `pmid` ASC',array($afterPmId,$from, $to,$to,$from)
+                    array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"pmid" FROM "pms" WHERE "pmid" = ? AND (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" ASC',array($afterPmId,$from, $to,$to,$from)
                           ),db::FETCH_STMT)))
                 return $ret;
             $ret = $res->fetchAll(PDO::FETCH_FUNC,array($this,'read'));
         }
-        if(db::NO_ERR != parent::query(array('UPDATE `pms` SET `read` = 0 WHERE `from` = :from AND `to` = :id',array(':from' => $from, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+        if(db::NO_ERR != parent::query(array('UPDATE "pms" SET "read" = FALSE WHERE "from" = :from AND "to" = :id',array(':from' => $from, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
             return false;
         
         return $ret;
@@ -130,7 +130,7 @@ final class pm extends messages
 
     public function countPms ($from, $to)
     {
-        if (!is_numeric ($from) || !is_numeric ($to) || !($res = parent::query (array ('SELECT COUNT(`pmid`) AS pc FROM `pms` WHERE ((`from` = ? AND `to` = ?) OR (`from` = ? AND `to` = ?))', array ($from, $to, $to, $from)), db::FETCH_OBJ)))
+        if (!is_numeric ($from) || !is_numeric ($to) || !($res = parent::query (array ('SELECT COUNT("pmid") AS pc FROM "pms" WHERE (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?))', array ($from, $to, $to, $from)), db::FETCH_OBJ)))
             return 0;
         return $res->pc;
     }    
@@ -143,7 +143,7 @@ final class pm extends messages
             
             $res = parent::query(
                 array(
-                    'SELECT message,time FROM pms WHERE time = (SELECT MAX(time) FROM pms WHERE(`from` = :me AND `to` = :other) OR  (`from` = :otheragain AND  `to` = :meagain));',
+                    'SELECT message,time FROM pms WHERE time = (SELECT MAX(time) FROM pms WHERE("from" = :me AND "to" = :other) OR  ("from" = :otheragain AND  "to" = :meagain));',
                     array(
                         ':me' => $_SESSION['nerdz_id'],
                         ':meagain' => $_SESSION['nerdz_id'],

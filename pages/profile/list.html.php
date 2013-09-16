@@ -20,13 +20,13 @@ $s['surname']   = isset($_POST['surname'])  && is_string($_POST['surname'])  ? h
 $imp = array();
 foreach($s as $val)
     if($val !== false)
-        $imp[] = "`{$fid}` LIKE '%{$val}%'";
+        $imp[] = "\"{$fid}\" LIKE '%{$val}%'";
 
 $orderby = in_array(strtolower($_GET['orderby']),array('counter','username','name','surname','birth_date')) ? $_GET['orderby'] : 'counter';
         
 $query = empty($imp) ? 
-        "SELECT `counter`,`username`,`name`,`surname`,`birth_date` FROM `users` ORDER BY `{$orderby}` LIMIT {$_POST['limit']}" :
-        'SELECT `counter`,`username`,`name`,`surname`,`birth_date` FROM `users` WHERE ('.implode(' AND ',$imp).") ORDER BY `counter` LIMIT {$_POST['limit']}";
+        "SELECT counter,username,name,surname,birth_date FROM users ORDER BY \"{$orderby}\" LIMIT {$_POST['limit']}" :
+        'SELECT "counter","username","name","surname","birth_date" FROM "users" WHERE ('.implode(' AND ',$imp).") ORDER BY counter LIMIT {$_POST['limit']}";
 
 if(!($r = $core->query($query,db::FETCH_STMT)))
     die($core->lang('ERROR'));

@@ -32,7 +32,11 @@ if(!$core->refererControl())
 $ret = $core->send($toid,$_POST['message']);
 
 if($ret === null)
-    die($core->jsonResponse('error',$core->lang('WAIT').' '.(-time()+$_SESSION['nerdz_MPflood']+20).'s'));
+{
+	include_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
+	$flood = new flood();
+    die($core->jsonResponse('error',$core->lang('WAIT').' '.($flood::PM_TIMEOUT - (time()-$_SESSION['nerdz_MPflood'])).'s'));
+}
 if($ret === false)
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
