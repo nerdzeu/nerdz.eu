@@ -218,31 +218,16 @@ $(document).ready(function() {
         var refto = $('#' + $(this).data('refto'));
         refto.html(loading+'...');
 
-        if(plist.data('type') == 'profile') {
-            N.json.profile.delComment({ hcid: $(this).data('hcid') },function(d) {
-                if(d.status == 'ok')
-                {
-                    refto.remove();
-                }
-                else
-                {
-                    refto.html(d.message);
-                }
-            });
-        }
-        else
-        {
-            N.json.project.delComment({ hcid: $(this).data('hcid') },function(d) {
-                if(d.status == 'ok')
-                {
-                    refto.remove();
-                }
-                else
-                {
-                    refto.html(d.message);
-                }
-            });
-        }
+		  N.json[plist.data('type')].delComment({ hcid: $(this).data('hcid') },function(d) {
+            if(d.status == 'ok')
+            {
+                refto.remove();
+            }
+            else
+            {
+                refto.html(d.message);
+            }
+        });
     });
 
     plist.on('submit','.frmcomment',function(e) {
@@ -404,50 +389,26 @@ $(document).ready(function() {
         var refto = $('#' + $(this).data('refto'));
         var post = refto.html();
         var hpid = $(this).data('hpid');
-        if(plist.data('type') == 'profile')
-        {
-            N.json.profile.delPostConfirm({ hpid: hpid },function(m) {
-                if(m.status == 'ok') {
-                    refto.html('<div style="text-align:center">' + m.message + '<br /><span id="delPostOk' + hpid +'" style="cursor:pointer">YES</span>|<span id="delPostNo'+hpid+'" style="cursor:pointer">NO</span></div>');
-                    refto.on('click','#delPostOk'+hpid,function() {
-                        N.json.profile.delPost({ hpid: hpid    },function(j) {
-                            if(j.status == 'ok') {
-                                refto.hide();
-                            }
-                            else {
-                                refto.html(j.message);
-                            }
-                        });
-                    });
 
-                    refto.on('click','#delPostNo'+hpid,function() {
-                        refto.html(post);
-                    });
-                }
-            });
-        }
-        else
-        {
-            N.json.project.delPostConfirm({ hpid: hpid },function(m) {
-                if(m.status == 'ok') {
-                    refto.html('<div style="text-align:center">' + m.message + '<br /><span id="delPostOk' + hpid +'" style="cursor:pointer">YES</span>|<span id="delPostNo'+hpid+'" style="cursor:pointer">NO</span></div>');
-                    refto.on('click','#delPostOk'+hpid,function() {
-                        N.json.project.delPost({ hpid: hpid    },function(j) {
-                            if(j.status == 'ok') {
-                                refto.hide();
-                            }
-                            else {
-                                refto.html(j.message);
-                            }
-                        });
-                    });
+		  N.json[plist.data('type')].delPostConfirm({ hpid: hpid },function(m) {
+			  if(m.status == 'ok') {
+				  refto.html('<div style="text-align:center">' + m.message + '<br /><span id="delPostOk' + hpid +'" style="cursor:pointer">YES</span>|<span id="delPostNo'+hpid+'" style="cursor:pointer">NO</span></div>');
+				  refto.on('click','#delPostOk'+hpid,function() {
+						N.json[plist.data('type')].delPost({ hpid: hpid    },function(j) {
+							 if(j.status == 'ok') {
+								  refto.hide();
+							 }
+							 else {
+								  refto.html(j.message);
+							 }
+						});
+				  });
 
-                    refto.on('click','#delPostNo'+hpid,function() {
-                        refto.html(post);
-                    });
-                }
-            });
-        }
+				  refto.on('click','#delPostNo'+hpid,function() {
+						refto.html(post);
+				  });
+			 }
+		});
     });
 
     plist.on('click',".editpost",function(e) {
@@ -462,63 +423,32 @@ $(document).ready(function() {
                                '<button type="button" style="float:left; margin-top:5px" onclick="window.open(\'/bbcode.php\')">BBCode</button>' +
                            '</form>';
                     };
+			N.json[plist.data('type')].getPost({hpid: hpid},function(d) {
+				 var fid = refto.attr('id') + 'editform';
+				 refto.html(form(fid,hpid,d.message,editlang,$(".preview").html()));
 
-        if(plist.data('type') == 'profile') {
-            N.json.profile.getPost({hpid: hpid},function(d) {
-                var fid = refto.attr('id') + 'editform';
-                refto.html(form(fid,hpid,d.message,editlang,$(".preview").html()));
-
-                $('#'+fid).on('submit',function(e) {
-                    e.preventDefault();
-                    N.json.profile.editPost(
-                        {
-                            hpid: $(this).data('hpid'),
-                            message: $(this).children('textarea').val()
-                        },function(d)
-                        {
-                            if(d.status == 'ok')
-                            {
-                                refto.slideToggle("slow");
-                                N.html.profile.getPost({hpid: hpid}, function(o) {
-                                    refto.html(o);
-                                    refto.slideToggle("slow");
-                                });
-                            }
-                            else {
-                                alert(d.message);
-                            }
-                    });
-                });
-            });
-        }
-        else
-        {
-            N.json.project.getPost({hpid: hpid},function(d) {
-                var fid = refto.attr('id') + 'editform';
-                refto.html(form(fid,hpid,d.message,editlang,$(".preview").html()));
-                $('#'+fid).on('submit',function(e) {
-                    e.preventDefault();
-                    N.json.project.editPost(
-                        {
-                            hpid: $(this).data('hpid'),
-                            message: $(this).children('textarea').val()
-                        },function(d)
-                        {
-                            if(d.status == 'ok')
-                            {
-                                refto.slideToggle('slow');
-                                N.html.project.getPost({hpid: hpid}, function(o) {
-                                    refto.html(o);
-                                    refto.slideToggle('slow');
-                                });
-                            }
-                            else {
-                                alert(d.message);
-                            }
-                    });
-                });
-            });
-        }
+				 $('#'+fid).on('submit',function(e) {
+					  e.preventDefault();
+					  N.json[plist.data('type')].editPost(
+							{
+								 hpid: $(this).data('hpid'),
+								 message: $(this).children('textarea').val()
+							},function(d)
+							{
+								 if(d.status == 'ok')
+								 {
+									  refto.slideToggle("slow");
+									  N.html[plist.data('type')].getPost({hpid: hpid}, function(o) {
+											refto.html(o);
+											refto.slideToggle("slow");
+									  });
+								 }
+								 else {
+									  alert(d.message);
+								 }
+					  });
+				 });
+			});
     });
 
     plist.on('click',".imglocked",function() {
@@ -531,25 +461,13 @@ $(document).ready(function() {
                 me.attr('title',d.message);
             }
         }
-
-        if(plist.data('type') == 'profile')
-        {
-            if($(this).data('silent')) { //nei commenti
-                N.json.profile.reNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
-            }
-            else {
-                N.json.profile.reNotifyForThisPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-            }
-        }
-        else
-        {
-            if($(this).data('silent')) {
-                N.json.project.reNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
-            }
-            else {
-                N.json.project.reNotifyForThisPost({hpid: $(this).data('hpid') },function(d) { tog(d);});
-            }
-        }
+		  
+		  if($(this).data('silent')) { //nei commenti
+		      N.json[plist.data('type')].reNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
+		  }
+		  else {
+				 N.json[plist.data('type')].reNotifyForThisPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
+		  }
     });
 
     plist.on('click',".imgunlocked",function() {
@@ -563,23 +481,11 @@ $(document).ready(function() {
             }
         }
 
-        if(plist.data('type') == 'profile')
-        {
-            if($(this).data('silent')) {
-                N.json.profile.noNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
-            }
-            else {
-                N.json.profile.noNotifyForThisPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-            }
+        if($(this).data('silent')) {
+            N.json[plist.data('type')].noNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
         }
-        else
-        {
-            if($(this).data('silent')) {
-                N.json.project.noNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
-            }
-            else {
-                N.json.project.noNotifyForThisPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-            }
+        else {
+            N.json[plist.data('type')].noNotifyForThisPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
         }
     });
 
@@ -593,15 +499,9 @@ $(document).ready(function() {
                 me.attr('title',d.message);
             }
         }
+		  
+		  N.json[plist.data('type')].lurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
 
-        if(plist.data('type') == 'profile')
-        {
-            N.json.profile.lurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        }
-        else
-        {
-            N.json.project.lurkPost({hpid: $(this).data('hpid') },function(d) { tog(d);});
-        }
     });
 
     plist.on('click',".unlurk",function() {
@@ -614,15 +514,8 @@ $(document).ready(function() {
                 me.attr('title',d.message);
             }
         }
-
-        if(plist.data('type') == 'profile')
-        {
-            N.json.profile.unlurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        }
-        else
-        {
-            N.json.project.unlurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        }
+		  
+		  N.json[plist.data('type')].unlurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
     });
 
     plist.on('click',".bookmark",function() {
@@ -635,15 +528,9 @@ $(document).ready(function() {
                 me.attr('title',d.message);
             }
         }
+		  
+		  N.json[plist.data('type')].bookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
 
-        if(plist.data('type') == 'profile')
-        {
-            N.json.profile.bookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        }
-        else
-        {
-            N.json.project.bookmarkPost({hpid: $(this).data('hpid') },function(d) { tog(d);});
-        }
     });
 
     plist.on('click',".unbookmark",function() {
@@ -657,14 +544,8 @@ $(document).ready(function() {
             }
         }
 
-        if(plist.data('type') == 'profile')
-        {
-            N.json.profile.unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        }
-        else
-        {
-            N.json.project.unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        }
+        N.json[plist.data('type')].unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
+        
     });
 
     plist.on ('click', '.nerdz-code-title', function() {

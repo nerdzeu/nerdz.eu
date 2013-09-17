@@ -31,15 +31,9 @@ $(document).ready(function() {
                 $("#"+me.data('refto')).hide();
             }
         }
+		  
+		  N.json[$("#center_col").data('type')].unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
 
-        if($("#center_col").data('type') == 'profile')
-        {
-            N.json.profile.unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        }
-        else
-        {
-            N.json.project.unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        }
     });
 
     $("#footersearch").on('submit',function(e) {
