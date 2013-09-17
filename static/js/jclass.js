@@ -905,7 +905,7 @@ N.html.project = function()
      * Return the homepage with only posts made by follwed users (lim posts), starting from post with id = hpid
      * @parameters lim, hpid
      */
-    this.getFollowedHomePostListBeforeHpid = function(lim, done)
+    this.getFollowedHomePostListBeforeHpid = function(lim, hpid, done)
     {
         this.post('/pages/home/home.html.php?action=project',{limit: lim ? lim : "10", onlyfollowed: '1', hpid:hpid}, function(d) {
             done(d);

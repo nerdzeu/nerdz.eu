@@ -279,29 +279,14 @@ $(document).ready(function() {
             if(load)
             {
                 load = false;
-                if(type == 'project')
-                {
-                    if(mode == 'std') {
-                        N.html.project.getHomePostListBeforeHpid(num,hpid,manageScrollResponse);
-                    }
-                    else if(mode == 'followed') {
-                        N.html.project.getFollowedHomePostListBeforeHpid(num,hpid,manageScrollResponse);
-                    }
-                    else if(mode == 'language') {
-                        N.html.project.getByLangHomePostListBeforeHpid(num,lang,hpid, manageScrollResponse);
-                    }
+                if(mode == 'std') {
+                    N.html[type].getHomePostListBeforeHpid(num,hpid,manageScrollResponse);
                 }
-                else
-                {
-                    if(mode == 'std') {
-                        N.html.profile.getHomePostListBeforeHpid(num, hpid ,manageScrollResponse);
-                    }
-                    else if(mode == 'followed') {
-                        N.html.profile.getFollowedHomePostListBeforeHpid(num, hpid, manageScrollResponse);
-                    }
-                    else if(mode == 'language') {
-                        N.html.profile.getByLangHomePostListBeforeHpid(num, lang, hpid, manageScrollResponse);
-                    }
+                else if(mode == 'followed') {
+                    N.html[type].getFollowedHomePostListBeforeHpid(num,hpid,manageScrollResponse);
+                }
+                else if(mode == 'language') {
+                    N.html[type].getByLangHomePostListBeforeHpid(num,lang,hpid, manageScrollResponse);
                 }
             }
             //a true ci va in default.js, dopo il primo search
