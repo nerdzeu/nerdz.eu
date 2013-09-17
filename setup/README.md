@@ -20,8 +20,8 @@ Requirements
 - PHP >= 5.4
 - PHP and PDO drivers for PostgreSQL (under Arch linux, type # pacman -S php-pgsql. Remember to uncomment the right pdo connector in php.ini.
 - PostgreSQL 9.2 or newer
-- A webserver. Recommended: nginx, I'll explain later why
-- php-apc extension (not included by default in PHP, you have to install it manually - usually 'pecl install apc' is okay, Windows [here](http://dev.freshsite.pl/php-accelerators/apc.html))
+- A webserver. Recommended: lighttpd, I'll explain later why
+- php-apcu extension (not included by default in PHP, you have to install it manually - on Arch is # pacman -S php-apcu, on other systems you can use 'pecl install apcu', on windows Windows see [here](http://dev.freshsite.pl/php-accelerators/apc.html))
 - Optional: Predis for session sharing (follow the instructions [here](http://pear.nrk.io/))
 
 Setup
@@ -50,10 +50,21 @@ REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!
   You can safely delete 'gistBlogger.js'.
 - Configure NERDZ properly: copy setup/config.skel.php to class/config/index.php and edit the vars.
   Don't forget to disable minification if you haven't got csstidy / uglifyjs.
-- Enable the following rewrite rules on your webserver. Example for nginx:
+- Enable the following rewrite rules on your webserver.
 
-TODO: le query qui sotto riportate non funzionano su nginx, o per lo meno non funzionano correttamente se l'utente o il gruppo ha un id contenente spazi.
-Sono invece perfettamente funzionanti sotto lighttpd.
+Example for Lighttpd (recommended, nginx do not parse rewriterules correctly):
+
+    """lighttpd
+    url.rewrite-once = (
+                            "^/(.+?)\.$" => "/profile.php?id=$1",
+                            "^/(.+?):$" => "/project.php?gid=$1",
+                            "^/(.+?)\.(\d+)$" => "/profile.php?id=$1&pid=$2",
+                            "^/(.+?):(\d+)$" => "/project.php?gid=$1&pid=$2",
+    )
+    """
+    
+
+If you have problems with Lighttpd, you can try with nginx, but remember that there are still issues with it (rewrite rules are not working propertly if an user or group have spaces in its name):
 
     """nginx
     location / {
@@ -67,6 +78,7 @@ Sono invece perfettamente funzionanti sotto lighttpd.
         rewrite ^/(.+?):(\d+)$ /project.php?gid=$1&pid=$2 last;
     }
     """
+    
 - Start everything and load your local NERDZ, then create your account (by registering).
 
 OR
@@ -122,11 +134,13 @@ Windows doesn't like paths ending with points and it ignores them (see [here](ht
 
 I used [this build](http://kevinworthington.com/nginx-for-windows/) of nginx and [cygwinports'](http://sourceware.org/cygwinports/) build of PHP.
 
+There are known problems with usernames and groupnames with spaces in it and nginx; you may find convenient to use lighttpd instead (if you care).
+
 ### Errors on Top 100/Monthly 100/others
 
 Nessuno is using some C binaries for that, so we can't help you. Sorry :(
 
-### I'm setting some weird exceptions from Groovy script, something about timestamps.
+### I'm setting some weird exceptions from the Groovy script, something about timestamps.
 
 Have you set timezone to UTC?
 
