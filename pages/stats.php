@@ -46,8 +46,6 @@ $vals['totalpostsprojects'] = $core->lang('TOTAL_POSTS_PROJECTS');
 $vals['totalcommentsprojects'] = $core->lang('TOTAL_COMMENTS_PROJECTS');
 $vals['totalonlineusers'] = $core->lang('TOTAL_ONLINE_USERS');
 $vals['tothiddenusers'] = $core->lang('HIDDEN_USERS');
-$vals['lastupdate'] = $core->lang('LAST_UPDATE');
-$vals['lastupdate_n'] = $core->getDateTime(apc_last_modified($cache));
 
 $tpl->assign($vals);
 $tpl->draw('base/stats');
