@@ -18,10 +18,10 @@ Requirements
 ------------
 
 - PHP >= 5.4
-- PHP and PDO drivers for PostgreSQL (under Arch linux, type # pacman -S php-pgsql. Remember to uncomment the right pdo connector in php.ini.
+- PHP and PDO drivers for PostgreSQL. Under Arch linux, type `pacman -S php-pgsql`. Remember to uncomment the right pdo connector in php.ini.
 - PostgreSQL 9.2 or newer
 - A webserver. Recommended: lighttpd, I'll explain later why
-- php-apcu extension (not included by default in PHP, you have to install it manually - on Arch is # pacman -S php-apcu, on other systems you can use 'pecl install apcu', on windows Windows see [here](http://dev.freshsite.pl/php-accelerators/apc.html))
+- php-apcu extension (not included by default in PHP, you have to install it manually - on Arch is `pacman -S php-apcu`, on other systems you can use 'pecl install apcu', on windows Windows see [here](http://dev.freshsite.pl/php-accelerators/apc.html))
 - Optional: Predis for session sharing (follow the instructions [here](http://pear.nrk.io/))
 
 Setup
@@ -31,8 +31,10 @@ First, ensure that the document root in your webserver is set to NERDZ source di
 
 Then:
 
-- Run setup/init_postgres.sh from directory /setup. You'll need an up and running database, and an user with admin rights (usually postgres). 
+- Run setup/init_postgres.sh from directory /setup. You'll need an up and running database, and an user with admin rights (usually postgres).
+  ```sh
   ./init_postgres.sh <adminuser>
+  ```
   
 OR
 
@@ -54,19 +56,19 @@ REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!
 
 Example for Lighttpd (recommended, nginx do not parse rewriterules correctly):
 
-"""lighttpd
+```lighttpd
 url.rewrite-once = (
                         "^/(.+?)\.$" => "/profile.php?id=$1",
                         "^/(.+?):$" => "/project.php?gid=$1",
                         "^/(.+?)\.(\d+)$" => "/profile.php?id=$1&pid=$2",
                         "^/(.+?):(\d+)$" => "/project.php?gid=$1&pid=$2",
 )
-"""
+```
     
 
 If you have problems with Lighttpd, you can try with nginx, but remember that there are still issues with it (rewrite rules are not working propertly if an user or group have spaces in its name):
 
-"""nginx
+```nginx
 location / {
     index index.html index.htm index.php;
     try_files $uri $uri/ @rewriterules;
@@ -77,7 +79,7 @@ location @rewriterules {
     rewrite ^/(.+?)\.(\d+)$ /profile.php?id=$1&pid=$2 last;
     rewrite ^/(.+?):(\d+)$ /project.php?gid=$1&pid=$2 last;
 }
-"""
+```
     
 - Start everything and load your local NERDZ, then create your account (by registering).
 
@@ -146,4 +148,4 @@ Have you set timezone to UTC?
 
 ### I got some other problem!
 
-Just open an issue, we could help you. (~~at a small price~~)
+Just open an issue, we could help you. ( ~~at a small price~~ )
