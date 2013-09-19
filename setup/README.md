@@ -54,40 +54,40 @@ REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!
 
 Example for Lighttpd (recommended, nginx do not parse rewriterules correctly):
 
-    """lighttpd
-    url.rewrite-once = (
-                            "^/(.+?)\.$" => "/profile.php?id=$1",
-                            "^/(.+?):$" => "/project.php?gid=$1",
-                            "^/(.+?)\.(\d+)$" => "/profile.php?id=$1&pid=$2",
-                            "^/(.+?):(\d+)$" => "/project.php?gid=$1&pid=$2",
-    )
-    """
+"""lighttpd
+url.rewrite-once = (
+                        "^/(.+?)\.$" => "/profile.php?id=$1",
+                        "^/(.+?):$" => "/project.php?gid=$1",
+                        "^/(.+?)\.(\d+)$" => "/profile.php?id=$1&pid=$2",
+                        "^/(.+?):(\d+)$" => "/project.php?gid=$1&pid=$2",
+)
+"""
     
 
 If you have problems with Lighttpd, you can try with nginx, but remember that there are still issues with it (rewrite rules are not working propertly if an user or group have spaces in its name):
 
-    """nginx
-    location / {
-        index index.html index.htm index.php;
-        try_files $uri $uri/ @rewriterules;
-    }
-    location @rewriterules {
-        rewrite ^/(.+?)\.$ /profile.php?id=$1 last;
-        rewrite ^/(.+?):$ /project.php?gid=$1 last;
-        rewrite ^/(.+?)\.(\d+)$ /profile.php?id=$1&pid=$2 last;
-        rewrite ^/(.+?):(\d+)$ /project.php?gid=$1&pid=$2 last;
-    }
-    """
+"""nginx
+location / {
+    index index.html index.htm index.php;
+    try_files $uri $uri/ @rewriterules;
+}
+location @rewriterules {
+    rewrite ^/(.+?)\.$ /profile.php?id=$1 last;
+    rewrite ^/(.+?):$ /project.php?gid=$1 last;
+    rewrite ^/(.+?)\.(\d+)$ /profile.php?id=$1&pid=$2 last;
+    rewrite ^/(.+?):(\d+)$ /project.php?gid=$1&pid=$2 last;
+}
+"""
     
 - Start everything and load your local NERDZ, then create your account (by registering).
 
-OR
+Or
 
 - If you already have a MySQL NERDZ database, you can run setup/nerdz_my2pg.groovy to migrate it.
   You need groovy, MySQL Java Connector and PostgreSQL JDBCv4 Driver.
   
   Then run:
-  $ groovy -cp "path/to/jdbc/mysql/postgresql/drivers/jars/*" nerdz_my2pg.groovy myuser mypass mydb myport pguser pgpass pgdb pgport
+  `$ groovy -cp "path/to/jdbc/mysql/postgresql/drivers/jars/*" nerdz_my2pg.groovy myuser mypass mydb myport pguser pgpass pgdb pgport`
 
 - It works? Yay! It doesn't work? See the next section.
 
@@ -114,8 +114,8 @@ We can reduce this to two cases:
 
 1. You have messed with database schema/permissions and php can't access correctly to postgres. Try looking into data/errlog.txt; if present, this indicates that some query has failed.
 See your httpd log too for PHP errors.
-2. You've stubled upon some feature still not ported from MySQL. No problem, this is expected given that this is a test branch and this port is not completely finished.
-You can use data/errlog.txt and php logs to find what is not working, and fix SQL syntax in a postgres-friendly way. Remember that a large part of bugs in this port are from backtick replacement and unextracted TIMESTAMPS.
+2. You've stubled upon some feature still not ported from MySQL. ~~No problem, this is expected given that this is a test branch and this port is not completely finished.~~ This should be no more the case, since the branch is now marked as stable.
+Please open an issue and use data/errlog.txt and PHP logs to report what is not working.
 
 ### I got some apc_* errors
 
@@ -140,10 +140,10 @@ There are known problems with usernames and groupnames with spaces in it and ngi
 
 Nessuno is using some C binaries for that, so we can't help you. Sorry :(
 
-### I'm setting some weird exceptions from the Groovy script, something about timestamps.
+### I'm getting some weird exceptions from the Groovy script, something about timestamps.
 
 Have you set timezone to UTC?
 
 ### I got some other problem!
 
-Open an issue!
+Just open an issue, we could help you. (~~at a small price~~)
