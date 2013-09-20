@@ -1,49 +1,48 @@
 <header id="site_title">
 	<div id="title_left">
-		<a id="title" href="/home.php" accesskey="h">NERDZ</a>
-		<b id="title_mobile">mobile</b>
-{if="$logged_b"}
-		<br />
-		<div id="l_menu">
-			<nav>
-			#<a href="/{$myusername4link_n}" accesskey="p">{$profile}</a>&nbsp;#<a href="/preferences.php" accesskey="z">{$preferences}</a>&nbsp;#<a href="/" id="logout" data-tok="{$tok_n}">{$logout}</a>
-			<br />
-    			<a href="/pm.php" accesskey="m" id="gotopm">
-			<span id="pmcounter" style="border-radius:3px; padding-left: 1px; padding-right: 1px" accesskey="q"></span>&nbsp;{$pm}</a>
-			<div style="font-size: 40px; margin-top: 5px; text-align:right;">{$welcome}, {$myusername_n}</div>
-			</nav>
-			<a id="notifycounter" accesskey="x">0</a>
-		</div>
-
-		<div id="r_menu">
-			<a href="#" id="RLink"></a>
-			<a href="#" id="LLink"></a>
-		</div>
-{else}
+		<a href="/home.php" accesskey="h">NERDZ</a>
 	</div>
 	<div id="title_right">
 		<nav>
+{if="$logged_b"}
+		# <a href="/{$myusername4link_n}" accesskey="p">{$profile}</a>&nbsp;&nbsp;
+		# <a href="/preferences.php" accesskey="z">{$preferences}</a>&nbsp;&nbsp;
+		# <a href="/" id="logout" data-tok="{$tok_n}">{$logout}</a>
+		<br />
+    	<a href="/pm.php" accesskey="m" id="gotopm">
+			<span id="pmcounter" style="border-radius:3px; padding-left: 1px; padding-right: 1px" accesskey="q"></span>&nbsp;{$pm}</a>
+		<div style="margin-top: 5px; text-align:right;">{$welcome}, {$myusername_n}</div>
+{else}
 			<form id="loginfrm">
 			<table>
 				<tr>
-					<td>	
-						<input style="height: 70px; width: 350px;" type="text" name="username" placeholder="{$username}" required />
+					<td>
+						<table style="width: 100%;" class="small">
+							<tr>
+								<th style="float: left">
+									<input type="checkbox" name="setcookie" id="remember" style="margin:0" checked="checked">
+								</th>
+								<th style="float: left">
+									<label for="remember">&nbsp;{$remember}</label>
+								</th>
+								<th style="float: left; margin-left:3px">
+									<input type="checkbox" name="offline" id="markoffline" style="margin:0">
+								</th>
+								<th style="float: left">
+									<label for="markoffline">&nbsp;{$hidestatus}</label>
+								</th>
+								<th style="float: right">
+									<a href="/reset.php">{$forgot}</a>
+								</th>
+							</tr>
+						</table>	
+						<input type="text" name="username" placeholder="{$username}" required autofocus />
+						<input type="password" name="password" placeholder="*******" required />
 					</td>
 					<td>
-						<input style="height: 70px; width: 350px;" type="password" name="password" placeholder="*******" required />
-					</td>
-					<td>
-						<input style="height: 70px" type="submit" value="{$login}" />
+						<br />
+						<input type="submit" value="{$login}" style="margin-top:13%" />
 						<input type="hidden" value="{$tok_n}" name="tok" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<label for="remember" style="font-size: 37px;">&nbsp;{$remember}</label>
-						<input type="checkbox" name="setcookie" id="remember" style="margin:0;width:1em;height:1em" checked="checked">
-					</td>
-					<td>
-						<a href="/reset.php" style="font-size: 30px;">{$forgot}</a>
 					</td>
 				</tr>
 			</table>

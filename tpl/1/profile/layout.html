@@ -25,11 +25,11 @@
 				{/if}
 				</td>
 				<td>
-					<img src="/images/flags/{$lang_n}.png" alt="{$lang_n}" title="{$lang_n}" style="border: 1px solid #FFF; margin-left:10%" width="43" height="34" />
+					<img src="/images/flags/{$lang_n}.png" alt="{$lang_n}" title="{$lang_n}" style="border: 1px solid #FFF; margin-left:10%" width="18" height="12" />
 				</td>
 				<td style="width:50%">
 					<div style="float:right;margin-right:-21%">
-						<div class="g-plusone" data-size="small" data-count="true" data-href="http://www.nerdz.eu/{$username4link_n}"></div>
+						<div class="g-plusone" data-size="small" data-count="1" data-href="http://www.nerdz.eu/{$username4link_n}"></div>
 					</div>
 				</td>
 			</tr>
@@ -71,7 +71,7 @@
 			{if="!empty($website_n)"}
 				<br />
 				<span class="light">{$website}:<br /></span>
-				<span>
+				<span style="font-size: 8pt;">
 					<a href="{$website4link_n}#" onclick="window.open(this.href); return false">{$website_n}</a>
 				<br />
 				</span>
@@ -108,18 +108,18 @@
 		<div id="fast_nerdz">
 		    <div>
 		    	<form id="stdfrm" data-to="{$id_n}">
-					<textarea id="frmtxt" name="message" style="width: 99.5%; height: 130px"></textarea>
-					<input type="submit" value="{$nerdzit}" style="font-size: 120%; float: left; margin:5px" />
-					<button type="button" style="font-size: 120%; float:left; margin: 5px" class="preview" data-refto="#frmtxt">{$preview}</button>
-					<button type="button" style="font-size: 120%; float:left; margin:5px" onclick="window.open('/bbcode.php')">BBCode</button>
+					<textarea id="frmtxt" name="message" style="width: 99.5%; height: 60px"></textarea>
+					<input type="submit" value="{$nerdzit}" style="float: right;margin-top:5px" />
+					<button type="button" style="float:right; margin-top: 5px" class="preview" data-refto="#frmtxt">{$preview}</button>
+					<button type="button" style="float:left; margin-top:5px" onclick="window.open('/bbcode.php')">BBCode</button>
 					<div id="pmessage" class="error"></div>
 				</form>
 			</div>
-			<br /><br />
+			<br />
 		</div>
 	{/if}
-		<div id="postlist" data-type="profile" data-profileid="{$id_n}" data-location="profile" data-limit="0" data-mode="std">
-			{ignore} Data type == profile, è un profilo. e si parte da limit 0 a fare le richieste{/ignore}
+		<div id="postlist" data-type="profile" data-profileid="{$id_n}" data-location="profile" data-mode="std">
+			{ignore} Data type == profile, è un profilo{/ignore}
 			{if="$singlepost_b"}
 				{$post_n}
 			{/if}
@@ -132,7 +132,7 @@
 {/ignore}
 	{if="!empty($biography_n)"}
 		<div class="title">{$biography}</div>
-		<div class="box">
+		<div class="box" style="overflow:hidden">
 			{$biography_n}
 		</div>
 		<br />
@@ -195,36 +195,36 @@
 		</div>
 		<br />
 	{/if}
-	    {if="!empty($jabber_n) || !empty($yahoo_n) || !empty($skype_n) || !empty($steam_n) || !empty($facebook_n) || !empty($twitter_n)"}
-            <div class="title">{$contactinfo}</div>
-            <div class="box">
-            {if="!empty($jabber_n)"}
-                    <span class="light">{$jabber}:<br /></span>
-                            {$jabber_n}<br /><br />
-            {/if}
-            {if="!empty($yahoo_n)"}
-                    <span class="light">{$yahoo}:<br /></span>
-                            {$yahoo_n}<br /><br />
-            {/if}
-            {if="!empty($skype_n)"}
-                    <span class="light">{$skype}:<br /></span>
-                            {$skype_n}<br /><br />
-            {/if}
-            {if="!empty($facebook_n)"}
-                    <span class="light">{$facebook}:<br /></span>
-                            <a href="{$facebook_n}">{$facebook_n}</a><br /><br />
-            {/if}
-            {if="!empty($twitter_n)"}
-                    <span class="light">{$twitter}:<br /></span>
-                            <a href="{$twitter_n}">{$twitter_n}</a><br /><br />
-            {/if}
-            {if="!empty($steam_n)"}
-                    <span class="light">{$steam}:<br /></span>
-                            {$steam_n}<br /><br />
-            {/if}
-            </div>
-            <br />
-    {/if}
+	{if="!empty($jabber_n) || !empty($yahoo_n) || !empty($skype_n) || !empty($steam_n) || !empty($facebook_n) || !empty($twitter_n)"}
+		<div class="title">{$contactinfo}</div>
+		<div class="box">
+		{if="!empty($jabber_n)"}
+			<span class="light">{$jabber}:<br /></span>
+				{$jabber_n}<br /><br />
+		{/if}
+		{if="!empty($yahoo_n)"}
+			<span class="light">{$yahoo}:<br /></span>
+				{$yahoo_n}<br /><br />
+		{/if}
+		{if="!empty($skype_n)"}
+			<span class="light">{$skype}:<br /></span>
+				{$skype_n}<br /><br />
+		{/if}
+		{if="!empty($facebook_n)"}
+			<span class="light">{$facebook}:<br /></span>
+				<a href="{$facebook_n}">{$facebook_n}</a><br /><br />
+		{/if}
+		{if="!empty($twitter_n)"}
+			<span class="light">{$twitter}:<br /></span>
+				<a href="{$twitter_n}">{$twitter_n}</a><br /><br />
+		{/if}
+		{if="!empty($steam_n)"}
+			<span class="light">{$steam}:<br /></span>
+				{$steam_n}<br /><br />
+		{/if}
+		</div>
+		<br />
+	{/if}
 		<div class="title">{$advertisement}</div>
 		<div class="box">
 			{$banners_a.120x600}
@@ -235,49 +235,64 @@
 {if="!$singlepost_b"}
 	<script type="application/javascript">
 		$(document).ready(function() {
-			var loading = $("#loadtxt").data('loading');
 			var plist = $("#postlist");
+			var num = 10; {ignore} TODO PARAM? {/ignore}
+			var load = false;
+			var sl = 'searchLoad'; {ignore}search label {/ignore}
+			var loading = $("#loadtxt").data('loading'); {ignore} in header {/ignore}
+			var divId = 'scrtxt';
+			var append = '<h3 id="'+divId+'">'+loading+'...</h3>';
+
 			$("#showpostlist").on('click',function() {
-				plist.html(loading+'...');
-				N.html.profile.getPostList({id: plist.data('profileid'), limit: 0},function(data) {
+				plist.html(loading);
+				load = false;
+				N.html.profile.getPostList(num, plist.data('profileid'),function(data) {
 					plist.html(data);
+					load = true;
+					sessionStorage.setItem(sl,"0");
 				});
 			});
 			
 			$("#showpostlist").click();
-			
-			/* Autoload vecchi post allo scrolldown */
 
-			var load = true;
+			{ignore} Autoload vecchi post allo scrolldown {/ignore}
 			$(window).scroll(function() {
 				if($(this).scrollTop()+200 >= ( $(document).height() - $(this).height() ) )
 				{
+					var hpid = null;
+
+					if((load || ("1" == sessionStorage.getItem(sl)) && !$("#"+divId).length))
+					{
+						plist.append(append);
+						hpid = plist.find("div[id^='post']").last().data('hpid');
+					}
+
 					if(load)
 					{
 						load = false;
-						var limit = plist.data('limit')+10;
-						plist.append('<h3 id="mainloadtxt">'+loading+'...</h3>');
+
 						if(plist.data('mode') == 'std') {
-							N.html.profile.getPostList({id: plist.data('profileid'), limit: limit+',10'},function(data) {
-								$("#mainloadtxt").remove();
+							N.html.profile.getPostListBeforeHpid(num, plist.data('profileid'), hpid,function(data) {
+								$("#"+divId).remove();
 								if(data.length > 0) {
 									plist.append(data);
-									plist.data('limit',limit);
 									load = true;
+									sessionStorage.setItem(sl,"0");
 								}
 							});
 						}
-						else
-						{
-							N.html.search.specificProfilePosts( { q: $("#footersearch input[name=q]").val(), limit: limit, id: plist.data('profileid') }, function(data) {
-								$("#mainloadtxt").remove();
-								if(data.length > 0) {
-									plist.append(data);
-									plist.data('limit',limit);
-									load = true;
-								}
-							});
-						}
+					}
+					if(sessionStorage.getItem(sl) == "1")
+					{
+						sessionStorage.setItem(sl,"0");
+						N.html.search.specificProfilePostsBeforeHpid(num, $("#footersearch input[name=q]").val(), plist.data('profileid'), hpid, function(data) {
+							$("#"+divId).remove();
+							if(data.length > 0) {
+								plist.append(data);
+								load = false;
+								sessionStorage.setItem(sl,"1");
+							}
+						});
 					}
 				}
 			});

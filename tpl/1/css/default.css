@@ -3,20 +3,9 @@
     color: #000;
     margin: 0 auto 1.5% auto;
     width: 100%;
-    height: 240px;
     background-color: #AFAFAF;
     display: block;
     overflow: hidden;
-}
-
-#title_mobile
-{
-    font-size: 45px;
-}
-
-#l_menu
-{
-    font-size: 50px;
 }
 
 #site_title a:visited, #site_title a:active, #site_title a:link, .nerdz_comments a:hover, .nerdz_comments a:visited, .nerdz_comments a:active, .nerdz_comments a:link, #footer_main a:visited, #footer_main a:active, #footer_main a:link
@@ -27,95 +16,48 @@
     cursor: pointer;
 }
 
-#RLink {
-    position: absolute;
-    height: 80px;
-    width: 80px;
-    top: 5px;
-    right: 90px;
-    background-image:url("images/r-ico.png");
-}
-
-#LLink {
-    position: absolute;
-    height: 80px;
-    width: 80px;
-    top: 5px;
-    right: 165px;
-    background-image:url("images/l-ico.png");
-}
-
 #title_left
 {
     display: inline;
     float: left;
-    font-size: 70px;
+    font-size: 200%;
     margin: 0.5%;
 }
 
 #title_right
 {
+    display: inline;
+    float: right;
     margin: 0.5% 1% 0.1% 0.5%;
-    float: left;
-    font-size: 120%;
-    margin-left: 5px;
-    margin-top: 80px;
-    display: block;
-    position: absolute;
-}
-
-#notify_list
-{
-    position: absolute;
-    display: block;
-    top: 240px;
-    font-size: 40px;
-    width: 100%;
-    background-color: #000;
-    border: 1px solid #FFF;
-}
-
-#notifycounter
-{
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    background-color: #FFF;
-    color: #000;
-    margin: 0%;
-    border: 2px solid #000000;
-    height: 80px;
-    width: 80px;
-    font-size: 70px;
-    text-align: center;
 }
 
 #left_col
 {
-    position: absolute;
     float: left;
-    width: 100%;
+    width: 12.5%;
+    margin-right: 1%;
+    display: inline;
     overflow-x: hidden;
-    display: none;
 }
 
 #center_col
 {
-    width: 99%;
-    float: left;
-    position: absolute;
+    width: 71%;
+    float:left;
     display: inline;
-    padding-left: 7px;
+    padding-left: 0.5px;
     padding-right: 0.5px;
+    font-size: 105%;
 }
 
 #right_col
 {
-    position: absolute;
-    width: 100%;
+    width: 12.5%;
     float: left;
-    display: none;
+    display: inline;
+    margin-left: 1%;
 }
+
 #left_col ul, #right_col ul
 {
     list-style-type: square;
@@ -127,7 +69,16 @@
 
 #footer_main
 {
-
+    background-color: #AFAFAF;
+    text-align: center;
+    border-top: 1px #000 solid;
+    bottom: 0px;
+    clear: both;
+    display: block;
+    height: 24px;
+    overflow: hidden;
+    width: 100%;
+    position: fixed;
 }
 
 #footer_left
@@ -139,7 +90,17 @@
     text-align: left;
 }
 
-#share,#bug_bar
+#notify_list
+{
+    position: fixed;
+    display: block;
+    bottom: 24px;
+    right: 0px;
+    background-color: #000;
+    border: 1px solid #FFF;
+}
+
+#notifycounter,#share,#bug_bar
 {
     position: fixed;
     bottom:0px;
@@ -170,7 +131,8 @@
 
 #main
 {
-    width: 99.8%;
+    margin: auto;
+    width: 98%;
     margin-right: 0.2%;
     word-wrap: break-word;
 }
@@ -194,40 +156,17 @@
 {
     overflow-y: auto;
     overflow-x: hidden;
-    height:auto;
+    height:310px;
 }
 
 #leftmenu li, #rightmenu li
 {
-    margin-top: 1%;
+    margin-top: 5%;
 }
 
 #fast_nerdz
 {
     margin-bottom: 15px;
-}
-
-#compose, #form, #inbox, textarea, select, input, button, .showcomments
-{
-    font-size: 37px;
-}
-
-#captcha
-{
-     width: 190px;
-     height: 130px; 
-}
-
-#to, #subject
-{
-    height: 45px;
-    width: 100%;
-}
-
-.qu_ico, .lurk, .unlurk, .bookmark, .unbookmark, .imglocked, .imgunlocked
-{
-    height: 50px ! important;
-    width: 50px ! important;
 }
 
 a:hover, a:visited, a:active, a:link, .qu_user a:visited, .qu_user a:active, .qu_user a:link, .atilda
@@ -237,7 +176,7 @@ a:hover, a:visited, a:active, a:link, .qu_user a:visited, .qu_user a:active, .qu
     text-decoration: none;
 }
 
-label, .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang, .more
+label, .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang, .more, .bookmark, .unbookmark
 {
     cursor: pointer;
 }
@@ -255,7 +194,7 @@ button, input[type=submit], .page th, .title
 {
     padding-left: 1%;
     padding-right: 1%;
-        border: 0.5px #000 solid;
+    border: 0.5px #000 solid;
     font-weight: bold;
     white-space: nowrap;
     word-wrap: normal;
@@ -268,8 +207,8 @@ body
 {
     background-color: #1D1B1B;
     color: #FFF;
-    font-size: 37px;
-    font-family: "Lucida Grande", "Cantarell", Arial, Helvetica, Sans-serif;
+    font-size: 80%;
+    font-family: "Lucida Grande", Arial, Helvetica, Sans-serif;
     font-weight: lighter;
     width: 100%;
     height: 100%;
@@ -304,10 +243,12 @@ html, #body
 
 .more
 {
-    font-size:37px;
     position: relative;
     top: -12px;
+    margin-bottom: -10px;
+    padding-bottom: 5px;
     text-align: center;
+    box-shadow: 0 0 25px #000;
 }
 
 .nitem
@@ -315,7 +256,7 @@ html, #body
     border-bottom: 1px solid #FFFFFF;
 }
 
-.qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk
+.qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .bookmark, .unbookmark
 {
     margin-bottom: -4px;
     margin-top: -7px;
@@ -381,7 +322,7 @@ html, #body
     margin-bottom: 8px;
 }
 
-.nerdz_comments br
+.nerdz_comments br, .nerdz_message br
 {
     clear: both;
 }
@@ -455,4 +396,36 @@ html, #body
 .qu_user
 {
     background-color: #333;
+}
+
+pre
+{
+    font-size: 12px;
+    margin-top: 0;
+}
+
+.nerdz-code-wrapper
+{
+    border: solid white 1px;
+}
+
+.nerdz-code-title
+{
+    height: auto;
+    padding-top: 1px;
+    padding-left: 2px;
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 1px solid white;
+    margin-bottom: 4px;
+}
+
+.nerdz-code-title:first-letter
+{
+    text-transform: uppercase;
+}
+
+.prettyprint
+{
+    padding: 3px 3px 3px 3px;
 }

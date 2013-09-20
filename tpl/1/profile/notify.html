@@ -1,6 +1,5 @@
-	<div style="font-size: 120%; margin-bottom: 5px; background-color: #dedede" class="nerdz_comments">Notifiche:</div>
 {loop="list_a"}
-	<div class="nerdz_comments" style="margin-bottom: 1px">
+	<div class="nerdz_comments" style="margin-bottom: -1px">
 		<span class="small">{$value.datetime_n}:</span>&nbsp;
 	{if="$value.type_n == 'new_follower'"}
 		<a href="/{$value.from4link_n}">{$value.from_n} {$followingyou}</a>

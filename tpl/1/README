@@ -17,7 +17,7 @@ chromeicon.jpeg  firefoxicon.jpeg
 ./base/images/online:
 chatofficon.png  chatonicon.png  ladyicon.png
 
-./css: [la cartella contiene i css, per specificare in che pagina incluederli, vedere "template.values"]
+./css: [la cartella contiene i css. Per specificare in che pagina incluederli vedere: "template.values"]
 
 ./home: [i file dell'homepage utenti registrati, layout e lista profili (in chiamata ajax)]
 images  layout.html  postlist.html
@@ -25,12 +25,12 @@ images  layout.html  postlist.html
 ./home/images:
 lock.png  rss.gif  unlock.png
 
-./js: [la cartella contiene i file javascript, per specificare in che pagina incluederli, vedere "template.values"]
+./js: [la cartella contiene i files javascript. Per specificare in che pagina incluederli vedere: "template.values"]
 
 ./pm: [cartella dei pm]
-conversation.html  form.html  inbox.html  main.html  newpmlist.html
+conversation.html  form.html  inbox.html  main.html
 
-./preferences:
+./preferences: [Esistente solo per il template di default. Negli altri non è esistente per motivi di sicurezza]
 account.html  friends.html  language.html  profile.html
 delete.html   guests.html   layout.html    projects.html
 
@@ -43,9 +43,6 @@ closed.html       images         post.html    postnotfound.html
 ./project: [cartella dei progetti]
 closed.html  layout.html  private.html
 
-# FILE: mandatory.values #
-Questo file è obbligatorio.
-Bisogna completare i due campi presenti (i cui nomi sono esplicativi)
 # FILE: template.values #
 Permette di specificare i file javascript e css da incluedere nelle differenti pagine, cioè in:
 codelist.php, error.php, faq.php, home.php, index.php, informations.php, list.php, pm.php
@@ -59,10 +56,9 @@ della pagina in questione, ridefinirle in altri file o modificarle lievemente.
 
 # API JAVASCRIPT #
 Sono a disposizione AuPI JS per una facile creazione dei template.
-È sempre incluso jquery in ogni pagina, sempre aggiornato all'ultima versione.
+(quasi) Sempre incluso jquery in ogni pagina, sempre aggiornato all'ultima versione.
 
 Per la guida alle api, vedere il file README_JAPI
-
 
 # Scrittura dei file #
 Per la scrittura dei file .html, presenti nelle varie directory, vedere la guida a RAINTPL.
@@ -72,8 +68,9 @@ da usare nella stesura della nuova
 
 #CSS
 Obbligatoria la class "quote", che è la classe css che verrà attribuita ai tag:
-[quote=username]testo[/quote]
+[qulte=username]testo[/quote]
 (quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui
 verrà usato quel tag (home, profile, project)
 Obbligatoria la class "spoiler", che è la classe css che verrà attribuita ai tag:
 [spoiler]text nascoste[/spoiler]
+(quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui

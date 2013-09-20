@@ -20,7 +20,35 @@ $(document).ready(function() {
             return url;
         };
 
-        $("#id, #name, #description").on('click', function() {
+        $("#id, #name, #description").click(function() {
             location.replace(fixURL(location.href,$(this).attr('id')));
         });
+
+    $("#footersearch").on('submit',function(e) {
+        e.preventDefault();
+        var url = location.href, order = '';
+
+        url.replace(/orderby=([a-z]+)/i,function(match,str) {
+            order = str;
+        });
+
+        if(order == '')
+        {
+            order = 'description';
+        }
+
+        url = fixURL(url,order);
+        var q = $(this).find('input[name=q]').val();
+
+        if(url.search(/q=[a-z]+/i) != -1)
+        {
+            url = url.replace(/q=[a-z]+/i,'q='+q);
+        }
+        else
+        {
+            url = url+'&q='+q;
+        }
+
+        window.location = url;
+    });
 });

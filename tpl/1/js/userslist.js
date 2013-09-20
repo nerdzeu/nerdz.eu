@@ -20,21 +20,35 @@ $(document).ready(function() {
             return url;
         };
 
-        $("#id, #name, #description").on('click', function() {
+        $("#id, #username, #name, #surname, #birthdate").click(function() {
             location.replace(fixURL(location.href,$(this).attr('id')));
         });
-        
-        $("#search").on('submit', function(event) {
-            event.preventDefault();
-            
-            var queryString = "";
 
-            $.each($(this).serializeArray(), function(i, field) {
-                if(field.value != "") {
-                    queryString += (queryString == "" ? "" : ",") + field.name + "=" + field.value;
-                    /* uso , (comma) come separatore per i parametri della query (?q=name=a,surname=b,...), nella pagina php sono da strippare in base alla posizione della ,
-                    e ogni virgola significa AND */
-                }
-            });
+    $("#footersearch").on('submit',function(e) {
+        e.preventDefault();
+        var url = location.href, order = '';
+
+        url.replace(/orderby=([a-z]+)/i,function(match,str) {
+            order = str;
         });
+
+        if(order == '')
+        {
+            order = 'username';
+        }
+
+        url = fixURL(url,order);
+        var q = $(this).find('input[name=q]').val();
+
+        if(url.search(/q=[a-z]+/i) != -1)
+        {
+            url = url.replace(/q=[a-z]+/i,'q='+q);
+        }
+        else
+        {
+            url = url+'&q='+q;
+        }
+
+        window.location = url;
+    });
 });

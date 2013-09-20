@@ -7,6 +7,11 @@
 			<div id="leftmenu">
 				<ul style="color: #AFAFAF">
 					<li><a id="profilePostList" href="#">NERDZ</a>
+						<span style="float:right">
+							<a href="/feed.php">
+								<img src="images/rss.gif" width="16" height="17" alt="Users RSS" />
+							</a>
+						</span>
 						<br />
 						<span class="small" style="margin-left:15px; cursor:pointer" id="nerdzselect">[{$from}...]</span>
 						<div id="nerdzlist" style="display:none; margin-left:20px">
@@ -21,6 +26,11 @@
 						</div>
 					</li>
 					<li><a id="projectPostList" href="#">{$projects}</a>
+						<span style="float:right">
+							<a href="/feed.php?project=1">
+								<img src="images/rss.gif" width="16" height="17" alt="Project RSS" />
+							</a>
+						</span>
 						<br />
 						<span class="small" style="margin-left:15px; cursor:pointer" id="projselect">[{$from}...]</span>
 						<div id="projlist" style="display:none; margin-left:20px">
@@ -59,64 +69,64 @@
 		<div id="fast_nerdz">
 		    <div>
 		    	<form id="stdfrm">
-					<textarea onkeyup="AddHeight(this)" id="frmtxt" name="message" style="width: 99.5%; height: 130px; margin-top:20px"></textarea>
-					<input type="submit" value="{$nerdzit}" style="font-size: 37px; float: left; margin:5px" />
-					<button type="button" style="font-size: 37px; float:left; margin: 5px" class="preview" data-refto="#frmtxt">{$preview}</button>
-					<button type="button" style="font-size: 37px; float:left; margin:5px" onclick="window.open('/bbcode.php')">BBCode</button>
+					<textarea id="frmtxt" name="message" style="width: 99.5%; height: 60px"></textarea>
+					<input type="submit" value="{$nerdzit}" style="float: right; margin-top:5px" />
+					<button type="button" style="float:right; margin-top: 5px" class="preview" data-refto="#frmtxt">{$preview}</button>
+					<button type="button" style="float:left; margin-top:5px" onclick="window.open('/bbcode.php')">BBCode</button>
 					<div id="pmessage" class="error"></div>
 				</form>
 			</div>
-			<br /><br />
+			<br />
 		</div>
-		<div id="postlist" data-type="profile" data-location="home" data-limit="0" data-mode="std"></div>
+		<div id="postlist" data-type="profile" data-location="home" data-mode="std"></div>
 		<br /><br /><br />
-		{ignore} Data type == profile di default, ma cambia poi quando si aggiorna #postlist con i projetti, idem per limit
+		{ignore} Data type == profile di default, ma cambia poi quando si aggiorna #postlist con i projetti
 				 location sta a indicare dove ci troviamo (che lo utilizzo e modifico nel footersearch)
 				mode è li per indicare al gestore dello scrolldown se deve caricare normalemente (std) oppure scrollare la pagina di ricerca (search)
 		{/ignore}
 	</article>
-
 	<aside id="right_col" class="page">
-		{if="!empty($ownerof_a)"}
-			<div class="title">{$yourprojects}</div>
-			<div class="box">
-				<ul>
-				{loop="ownerof_a"}
-					<li><a href="/{$value.name4link_n}">{$value.name_n}</a></li>
-				{/loop}
-				</ul>
-				</div>
-			<br />
-		{/if}
-		{if="!empty($memberof_a)"}
-			<div class="title">{$memberof}</div>
-			<div class="box">
-				<ul>
-				{loop="memberof_a"}
-					<li><a href="/{$value.name4link_n}">{$value.name_n}</a></li>
-				{/loop}
-				</ul>
-			</div>
-			<br />
-		{/if}
-		{if="!empty($followed_a)"}
-			<div style="width:99%" class="title">
-				{$youfollow}
-				<div style="font-style: italic" class="small">[{$followedonlinetot_n}/{$followedtot_n}]</div>
-			</div>
-			<br />
-			<div id="rightmenu">
-				<ul id="followedlist" style="color: #AFAFAF">
-				{loop="followed_a"}
-					<li>
-						<a href="/{$value.username4link_n}" {if="!$value.online_b"} style="color: #AFAFAF"{/if}>{$value.username_n}</a>
-						{if="$value.birthday_b"}
-							<img src="images/gift.gif" alt="gift" style="float: right; margin-right: 5px; border: 0px" width="12" height="12" />
-						{/if}
-					</li>
-				{/loop}
-				</ul>
-			</div>
-		{/if}
+	{if="!empty($followed_a)"}
+		<div style="width:99%" class="title">
+			{$youfollow}
+			<div style="font-style: italic" class="small">[{$followedonlinetot_n}/{$followedtot_n}]</div>
+		</div>
+		<br />
+		<div id="rightmenu">
+			<ul id="followedlist" style="color: #AFAFAF">
+			{loop="followed_a"}
+				<li>
+					<a href="/{$value.username4link_n}" {if="!$value.online_b"} style="color: #AFAFAF"{/if}>{$value.username_n}</a>
+					{if="$value.birthday_b"}
+						<img src="images/gift.gif" alt="gift" style="float: right; margin-right: 5px; border: 0px" width="12" height="12" />
+					{/if}
+				</li>
+			{/loop}
+			</ul>
+		</div>
+		<br />
+	{/if}
+	{if="!empty($ownerof_a)"}
+		<div class="title">{$yourprojects}</div>
+		<div class="box">
+			<ul>
+			{loop="ownerof_a"}
+				<li><a href="/{$value.name4link_n}">{$value.name_n}</a></li>
+			{/loop}
+			</ul>
+		</div>
+		<br />
+	{/if}
+	{if="!empty($memberof_a)"}
+		<div class="title">{$memberof}</div>
+		<div class="box">
+			<ul>
+			{loop="memberof_a"}
+				<li><a href="/{$value.name4link_n}">{$value.name_n}</a></li>
+			{/loop}
+			</ul>
+		</div>
+		<br />
+	{/if}
 	</aside>
 </div>

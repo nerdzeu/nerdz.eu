@@ -6,19 +6,21 @@
 		<th style="width:5%;font-weight:bold">{$delete}</th>
 	</tr>
 	{loop="list_a"}
-		<tr style="margin-top: 5px" id="x{$counter}" class="getconv" data-from="{$value.fromid_n}" data-to="{$value.toid_n}">
+		<tr style="margin-top: 5px" id="x{$counter}">
 			<td>
-				<a href="/{$value.from4link_n}">{$value.from_n}</a>
+				<a href="/{$value.from4link_n}" class="getconv" data-from="{$value.fromid_n}" data-to="{$value.toid_n}">{$value.from_n}</a>
 			</td>
-			<td><time>{$value.datetime_n}</time></td>
+			<td><time data-timestamp="{$value.timestamp_n}">{$value.datetime_n}</time></td>
 			<td style="text-align:center">
-				<a class="delete" data-del="true"  data-id="#x{$counter}" data-from="{$value.fromid_n}" data-to="{$value.toid_n}" data-time="{$value.timestamp_n}">X</a>
+				<a class="delete" data-del="true" data-id="#x{$counter}" data-from="{$value.fromid_n}" data-to="{$value.toid_n}">X</a>
 			</td>
 		</tr>
 	{else}
 		</table>
 		<table>
-		<tr><td style="text-align:center;width:90%">{$nopmdescr}</td></tr>
+			<tr>
+				<td style="text-align:center;width:90%">{$nopmdescr}</td>
+			</tr>
 	{/loop}
 </table>
-<div id="conversation"></div>
+<div id="conversation"></div><br />

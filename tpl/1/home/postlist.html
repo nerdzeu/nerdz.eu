@@ -1,5 +1,5 @@
 {loop="list_a"}
-	<div id="post{$value.hpid_n}">
+	<div id="post{$value.hpid_n}" data-hpid="{$value.hpid_n}">
 	{if="$value.news_b"}
 		<span class="nerdz_date" style="float:left">
 			{$value.datetime_n}
@@ -27,14 +27,14 @@
 			</span>
 		</div>
 		<div class="nerdz_message">
-			<span class="nerdz_date" style="font-size: 15pt">
+			<span class="nerdz_date" style="font-size: 7pt">
 				#{$value.pid_n}
 			</span>
 			<div>
 			{$value.message_n}
 			</div>
-			<div style="clear:both; padding-top: 5px" class="small">
-				<a href="/{$value.to4link_n}{$value.pid_n}">Link</a>&nbsp;&nbsp;
+			<div style="clear:both; padding-top: 5px" class="small" data-expand="{$expand}">
+				<a href="/{$value.to4link_n}{$value.pid_n}" class="post_link">Link</a>&nbsp;&nbsp;
 				<a class="showcomments" style="width:60%" data-hpid="{$value.hpid_n}" data-refto="commentlist{$value.hpid_n}">
 					{$comments} ({$value.postcomments_n})
 				</a>
@@ -56,40 +56,41 @@
 				{if="$value.canshowlock_b"}
 					{if="$value.lock_b"}
 						<span style="margin-right:3px; float: right">
-							<img class="imglocked" data-hpid="{$value.hpid_n}" src="images/lock.png" alt="" title="{$receivenotifications}" onclick="" />
+							<img class="imglocked" data-hpid="{$value.hpid_n}" src="images/lock.png" alt="" width="16" height="16" title="{$receivenotifications}" onclick="" />
 						</span>
 					{else}
 						<span style="margin-right:3px; float: right">
-							<img class="imgunlocked" data-hpid="{$value.hpid_n}" src="images/unlock.png" alt="" title="{$dontreceivenotifications}" onclick="" />
+							<img class="imgunlocked" data-hpid="{$value.hpid_n}" src="images/unlock.png" alt="" width="16" height="16" title="{$dontreceivenotifications}" onclick="" />
 						</span>
 					{/if}
 				{/if}
 				{if="$value.canshowlurk_b"}
 					{if="$value.lurk_b"}
 						<span style="margin-right:3px; float: right">
-							<img class="unlurk" data-hpid="{$value.hpid_n}" src="images/unlurk.png" alt="" title="Unlurk" style="float:right; margin-left:5px" onclick="" />
+							<img class="unlurk" data-hpid="{$value.hpid_n}" src="images/unlurk.png" alt="" width="16" height="16" title="Unlurk" style="float:right; margin-left:5px" onclick="" />
 						</span>
 					{else}
 						<span style="margin-right:3px; float: right">
-							<img class="lurk" data-hpid="{$value.hpid_n}" src="images/lurk.png" alt="" title="Lurk" style="float:right; margin-left:5px" onclick="" />
+							<img class="lurk" data-hpid="{$value.hpid_n}" src="images/lurk.png" alt="" width="16" height="16" title="Lurk" style="float:right; margin-left:5px" onclick="" />
 						</span>
 					{/if}
 				{/if}
 				{if="$value.canshowbookmark_b"}
 					{if="$value.bookmark_b"}
 						<span style="margin-right:3px; float: right">
-							<img class="unbookmark" data-hpid="{$value.hpid_n}" src="images/unbookmark.png" alt="" title="Unbookmark" style="float:right; margin-left:5px" onclick="" />
+							<img class="unbookmark" data-hpid="{$value.hpid_n}" src="images/unbookmark.png" alt="" width="16" height="16" title="Unbookmark" style="float:right; margin-left:5px" onclick="" />
 						</span>
 					{else}
 						<span style="margin-right:3px; float: right">
-							<img class="bookmark" data-hpid="{$value.hpid_n}" src="images/bookmark.png" alt="" title="Bookmark" style="float:right; margin-left:5px" onclick="" />
+							<img class="bookmark" data-hpid="{$value.hpid_n}" src="images/bookmark.png" alt="" width="16" height="16" title="Bookmark" style="float:right; margin-left:5px" onclick="" />
 						</span>
 					{/if}
 				{/if}
 			</div>
 		</div>
 		<div>
-			<div id="commentlist{$value.hpid_n}" style="width:100%;margin-top:1%; margin-bottom:15px"></div>
+			<script type="application/javascript">var lnk{$value.hpid_n} = "/{$value.to4link_n}{$value.pid_n}";</script>
+			<div id="commentlist{$value.hpid_n}" style="width:65%;margin-top:1%; margin-bottom:15px"></div>
 		</div>
 	{/if}
 	</div>

@@ -1,13 +1,16 @@
 <div id="main">
+	<br /><br />
+    <aside id="left_col">
     	<p>{$presentation_n}</p>
-	</br>
+    </aside>
+    <article id="center_col">
 	<form id="regfrm">
-		<table style="width: 80%; margin: auto; font-size: 37px">
+		<table style="width: 60%; margin: auto">
 			<tr>
-				<td style="width:5%;vertical-align: middle">
+				<td style="width:40%;vertical-align: middle">
 					{$username}:
 				</td>
-				<td style="width:5%;vertical-align: middle">
+				<td style="width:40%;vertical-align: middle">
 					<input type="text" name="username" required /><br />
 				</td>
 			</tr>
@@ -81,7 +84,7 @@
 				<td>
 					<div>
 						<img src="{$captchaurl_n}#" alt="" id="captcha" title="captcha" style="border: 1px solid #FFF" width="90" height="30" />
-						&nbsp;<span onclick="N.reloadCaptcha()" style="font-size:30px; cursor: pointer">{$reloadcaptcha}</span>
+						&nbsp;<span onclick="N.reloadCaptcha()" style="font-size:6pt; cursor: pointer">{$reloadcaptcha}</span>
 					</div>
 					<div>
 						<input type="text" id="cptxt" name="captcha" required />
@@ -90,11 +93,15 @@
 	    	</tr>
 		    <tr>
 				<td>
-					<input style="height: 70px" type="submit" value="{$register}" />
+					<input type="submit" value="{$register}" />
 				</td>
 				<td></td>
 		    </tr>
 	    </table>
 	</form>
-
+    </article>
+    <aside id="right_col">
+		<div class="error" id="error"></div>
+		<div id="done" class="error" style="color: #00FF00"></div>
+    </aside>
 </div>

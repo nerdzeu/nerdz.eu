@@ -85,14 +85,13 @@ $(document).ready(function() {
         }
     });
 
-    $("#postlist").on('submit',"#convfrm",function(event) { //per i pm
-        event.preventDefault();
+    $("#postlist").on('submit',"#convfrm",function(e) { //per i pm
+        e.preventDefault();
         $("#res").html('...');
         N.json.pm.send({
             tok: $(this).data('tok'),
             to: $("#to").val(),
             message: $("#message").val(),
-            subject: $("#subject").val()
             },function(d) {
                 $('#res').html(d.message);
                 if(d.status == 'ok') {
