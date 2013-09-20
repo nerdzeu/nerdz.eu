@@ -98,7 +98,17 @@ class phpCore
         }
     }
 
-    public function query($query,$action)
+    /**
+     * Executes a query.
+     * Its return value varies according to the $action parameter, which should 
+     * be a constant member of db.
+     * 
+     * @param string $query
+     * @param int $action
+     * @return null|boolean|object 
+     * 
+     */
+    public function query($query,$action = db::NO_RETURN)
     {
         $stmt = null; //PDO statement
 
