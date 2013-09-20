@@ -6,6 +6,7 @@
     background-color: #AFAFAF;
     display: block;
     overflow: hidden;
+    height: 50px;
 }
 
 #site_title a:visited, #site_title a:active, #site_title a:link, .nerdz_comments a:hover, .nerdz_comments a:visited, .nerdz_comments a:active, .nerdz_comments a:link, #footer_main a:visited, #footer_main a:active, #footer_main a:link
@@ -36,13 +37,13 @@
     float: left;
     width: 12.5%;
     margin-right: 1%;
-    display: inline;
+    display: none;
     overflow-x: hidden;
 }
 
 #center_col
 {
-    width: 71%;
+    width: 98%;
     float:left;
     display: inline;
     padding-left: 0.5px;
@@ -54,7 +55,7 @@
 {
     width: 12.5%;
     float: left;
-    display: inline;
+    display: none;
     margin-left: 1%;
 }
 
@@ -67,66 +68,24 @@
     margin: 0;
 }
 
-#footer_main
-{
-    background-color: #AFAFAF;
-    text-align: center;
-    border-top: 1px #000 solid;
-    bottom: 0px;
-    clear: both;
-    display: block;
-    height: 24px;
-    overflow: hidden;
-    width: 100%;
-    position: fixed;
-}
-
-#footer_left
-{
-    position: fixed;
-    display: inline;
-    bottom: 2px;
-    left: 2px;
-    text-align: left;
-}
-
 #notify_list
 {
     position: fixed;
     display: block;
-    bottom: 24px;
-    right: 0px;
+    top: 41px;
+    width: 100%;
     background-color: #000;
     border: 1px solid #FFF;
 }
 
-#notifycounter,#share,#bug_bar
+#notifycounter
 {
-    position: fixed;
-    bottom:0px;
-    right: 0px;
     background-color: #FFF;
-    padding-top: 4px;
-    padding-bottom: 1px;
     color: #000;
-    margin: 0%;
-    border-left: solid 1.5px #000;
-    height: 19px;
-    width: 60px;
     text-align:center;
-}
-
-#share
-{
-    right: 61px;
-    font-size: 90%;
-}
-
-#bug_bar
-{
-    left: 0px;
-    width: 30px;
-    border: 0px;
+    width: 60px;
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 
 #main

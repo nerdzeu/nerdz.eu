@@ -552,53 +552,8 @@ $(document).ready(function() {
         localStorage.setItem ('has-dark-theme', ( localStorage.getItem ('has-dark-theme') == 'yep' ? 'nope' : 'yep' ));
         document.location.reload();
     });
+    
 
-    // EASTER EGG! :O
-    // NOTE: If you alreay tried/discovered this easter egg, then feel free
-    // to read the code. Otherwise don't be a bad guy and try to find it by yourself.
-    if($("nav div").length) {
-        var code = [ 38, 38, 40, 40, 37, 39, 37, 39, 66, 65 ], pressed = [];
-        window._NERDZ_NICK = $.trim (/,(.+)/.exec ($("nav div").text())[1]);
-        $(window).keydown (function dEv (e) {
-            pressed.push (e.keyCode);
-            while (pressed.length > code.length) pressed.shift();
-            if (JSON.stringify (code) == JSON.stringify (pressed))
-            {
-                $(window).unbind ('keydown', dEv);
-                $('body, a, textarea, input, button').css ('cursor', 'url("http://www.nerdz.eu/static/images/owned.cur"), auto');
-                // okay, now the user sees a nice dick instead of its cursor. Why not
-                // improve this situation a bit, like changing every nickname with random l4m0rz nicks?
-                var fuckNicknames = function() {
-                    $(".nerdz_from a").each (function (i, elm) {
-                        if ($.inArray ($(elm).html(), ["Vincenzo", "Xenom0rph", "jorgelorenzo97", "PTKDev"]) === -1)
-                            $(elm).html (["Vincenzo", "Xenom0rph", "jorgelorenzo97", "PTKDev"][Math.floor(Math.random() * 5)]);
-                    });
-                };
-                // hook a global ajax event handler to destroy nicknames if needed
-                $(document).ajaxComplete (function (evt, xhr, settings) {
-                    if (/\?action=(show|profile)$|read\.html/.test (settings.url))
-                        fuckNicknames();
-                });
-                fuckNicknames();
-                // we're good to go. now do some other things
-                $("#title_left a").text ("L4M3RZ");
-                setTimeout (function() {
-                    $("aside").hide();
-                    setTimeout (function() {
-                        $("article").hide();
-                        $("#loadtxt").css ("text-align", "center").html ("Javascript error: Query #" + parseInt (1 + (Math.floor (Math.random() * 1000))) + " failed.<br><span style='color:#F80012;font-size:20px'>!! JS SQL Injection Detected. Shutting down !!</span>");
-                        setTimeout (function() {
-                            // enough fun, time for serious stuff
-                            $("body").load ("/bsod.html", function() {
-                                document.title = "!! SOMETHING F**KED UP !!";
-                                $("*").css ("cursor", "none");
-                            });
-                        }, 5000);
-                    }, 9500);
-                }, 10500);
-            }
-        });
-    }
     //end plist into events
     setInterval(function() {
         var nc = $("#notifycounter"), val = parseInt(nc.html());
