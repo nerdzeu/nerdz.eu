@@ -48,7 +48,7 @@ class phpCore
             die();
         }
 
-        $idiots = array();
+        $idiots = [];
         if(!empty($idiots) && $this->isLogged() && in_array($_SESSION['nerdz_id'], $idiots))
             $this->logout();
     }
@@ -171,7 +171,7 @@ class phpCore
                 return $ret;
             else
             {
-                $short = array();
+                $short = [];
                 foreach($ret as $id => $val)
                     $short[] = $id;
                 sort($short);
@@ -184,7 +184,7 @@ class phpCore
             if(!($fp = fopen($_SERVER['DOCUMENT_ROOT'].'/data/languages.csv','r')))
                 return $long ? 'English' : 'en';
 
-            $a = $b = array();
+            $a = $b = [];
             while(false !== ($row = fgetcsv($fp)))
             {
                 $a[] = $row[0]; //encoding sarebbe inutile, sono due caratteri e sono ascii
@@ -203,8 +203,8 @@ class phpCore
     {
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
         {
-            $langs = array();
-            $lang_parse = array();
+            $langs = [];
+            $lang_parse = [];
             
             // break up string into pieces (languages and q factors)
             preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
@@ -328,7 +328,7 @@ class phpCore
     public function getFollow($id)
     {
         if(!($stmt = $this->query(array('SELECT "to" FROM "follow" WHERE "from" = :id',array(':id' => $id)),db::FETCH_STMT)))
-            return array();
+            return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -362,7 +362,7 @@ class phpCore
 
     public function getBlacklist()
     {
-        $ret = $blist = array();
+        $ret = $blist = [];
         if((!$this->isLogged())||(!($r = $this->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT))))
             return $ret;
 
