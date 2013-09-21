@@ -19,7 +19,7 @@ class project extends messages
 
     public function getGid($name)
     {
-        if(!($o = parent::query(array('SELECT "counter" FROM "groups" WHERE "name" = :name',array(':name' => htmlentities($name,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT "counter" FROM "groups" WHERE LOWER("name") = LOWER(:name)',array(':name' => htmlentities($name,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
             return false;
         return $o->counter;
     }
