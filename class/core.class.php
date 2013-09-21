@@ -429,7 +429,7 @@ class phpCore
         if($this->isLogged() && ($username === null))
             return $_SESSION['nerdz_id'];
 
-        if(!($id = $this->query(array('SELECT "counter" FROM "users" WHERE "username" = :username',array(':username' => htmlentities($username,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
+        if(!($id = $this->query(array('SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',array(':username' => htmlentities($username,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
             return false;
 
         return $id->counter;

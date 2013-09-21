@@ -16,7 +16,7 @@ $pass = isset($_POST['password']) ? sha1($_POST['password']) : false;
 if(!$user || !$pass)
     die($core->jsonResponse('error',$core->lang('INSERT_USER_PASS')));
 
-if(!($result = $core->query(array('SELECT "counter","username" FROM users WHERE "username" = :user AND "password" = :pass',array(':user' => $user,':pass' => $pass)),db::FETCH_STMT)))
+if(!($result = $core->query(array('SELECT "counter","username" FROM users WHERE LOWER("username") = LOWER(:user) AND "password" = :pass',array(':user' => $user,':pass' => $pass)),db::FETCH_STMT)))
     die($core->jsonResponse('error',$core->lang('ERROR')));
     
 $ok = false;
