@@ -108,7 +108,7 @@ class phpCore
      * @return null|boolean|object 
      * 
      */
-    public function query($query,$action = db::NO_RETURN)
+    public function query($query,$action = db::NO_RETURN, $all = false)
     {
         $stmt = null; //PDO statement
 
@@ -140,8 +140,9 @@ class phpCore
             case db::FETCH_STMT:
                 return $stmt;
 
-            case db::FETCH_OBJ:
-                return $stmt->fetch(PDO::FETCH_OBJ);
+            case db::FETCH_OBJ: {
+                return ($all === false) ? $stmt->fetch(PDO::FETCH_OBJ) : $stmt->fetchAll(PDO::FETCH_OBJ);
+            }
 
             case db::ROW_COUNT:
                 return $stmt->rowCount();
