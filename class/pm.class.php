@@ -143,7 +143,7 @@ final class pm extends messages
             
             $res = parent::query(
                 array(
-                    'SELECT message,time FROM pms WHERE time = (SELECT MAX(time) FROM pms WHERE("from" = :me AND "to" = :other) OR  ("from" = :otheragain AND  "to" = :meagain));',
+                    'WITH thisconv AS (SELECT "from",time,message FROM pms WHERE("from" = :me AND "to" = :other) OR  ("from" = :otheragain AND  "to" = :meagain)) SELECT "from" as last_sender,message FROM thisconv WHERE time = (SELECT MAX(time) FROM thisconv)',
                     array(
                         ':me' => $_SESSION['nerdz_id'],
                         ':meagain' => $_SESSION['nerdz_id'],
@@ -152,9 +152,9 @@ final class pm extends messages
                     )                    
                 ), db::FETCH_OBJ                
             );
-
-            if ($res && $res->message && $res->time) {
-                $ret = $res->message ? $res->message : "Tzupamassivefailah";
+            
+            if (isset($res->message)) {
+                $ret = $res;
             }
 
         }

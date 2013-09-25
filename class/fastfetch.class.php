@@ -42,11 +42,18 @@ final class FastFetch {
 
             foreach($list as $conversation) {
                 
+                $result = $this->mPm->getLastMessageForConversation((int) $conversation['fromid_n']);
+                
+                if ($result === false) {
+                    throw new FFException(FFErrCode::SERVER_FAILURE);
+                }
+                
                 $element = array(
                             'name' => $conversation['from_n'],
                             'last_timestamp' => $conversation['timestamp_n'],
                             'id' => $conversation['fromid_n'],
-                            'last_message' => html_entity_decode($this->mPm->getLastMessageForConversation((int) $conversation['fromid_n']), ENT_QUOTES)                        
+                            'last_message' => html_entity_decode($result->message, ENT_QUOTES),
+                            'last_sender' => $result->last_sender
                             );
 
                 $ret[] = $element;
