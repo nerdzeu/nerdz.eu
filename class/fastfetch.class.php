@@ -106,6 +106,7 @@ final class FastFetch {
         
         foreach ($list as $row) {
             $row->message = html_entity_decode($row->message, ENT_QUOTES);
+            $row->timestamp = intval($row->timestamp);
         }
         
         return $list;
