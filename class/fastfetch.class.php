@@ -50,7 +50,7 @@ final class FastFetch {
                 
                 $element = array(
                             'name' => $conversation['from_n'],
-                            'last_timestamp' => $conversation['timestamp_n'],
+                            'last_timestamp' => intval($conversation['timestamp_n']),
                             'id' => $conversation['fromid_n'],
                             'last_message' => html_entity_decode($result->message, ENT_QUOTES),
                             'last_sender' => $result->last_sender
