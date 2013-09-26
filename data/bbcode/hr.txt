@@ -6,6 +6,7 @@
 [b]Podebljani tekst[/b]
 [cur]Italic text[/cur]
 [small]Small Text[/small]
+[big]Large Text[/big]
 [del]briše tekst[/del]
 [u]podcrtani tekst[/u]
 [hr]Norizontalno pravilo

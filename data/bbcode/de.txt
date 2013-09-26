@@ -5,7 +5,8 @@
 [img]Bild-URL[/img]
 [b]Fettschrift[/b]
 [cur]kursiven Text[/cur]
-[small]kleinen Text[/small]
+[small]kleine Textgröße[/small]
+[big]große Textgröße[/big]
 [del]gelöschter Text[/del]
 [hr]horizontal rule
 [u]unterstrichenen Text[/u]

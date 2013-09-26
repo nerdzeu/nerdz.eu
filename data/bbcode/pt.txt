@@ -6,6 +6,7 @@
 [b]Texto em negrito[/b]
 [cur]O texto em itálico[/cur]
 [small]texto pequeno[/small]
+[big]texto grande[/big]
 [del]texto excluído[/del]
 [hr]Régua horizontal
 [u]texto sublinhado[/u]

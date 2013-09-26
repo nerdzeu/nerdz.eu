@@ -6,6 +6,7 @@
 [b]textul bold[/b]
 [cur]Cursiv textul[/cur]
 [small]Text de mici dimensiuni[/small]
+[big]Text de mari dimensiuni[/big]
 [u]textul subliniat[/u]
 [del]eliminat textului[/del]
 [hr] Orizontală articolul

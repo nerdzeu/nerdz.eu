@@ -145,6 +145,8 @@ class messages extends phpCore
         $str = preg_replace('#\[u\](.+?)\[/u\]#im','<u>$1</u>',$str);
         $str = preg_replace('#\[hr\]#im','<hr style="clear:both" />',$str);
         $str = preg_replace('#\[small\](.+?)\[/small\]#im','<span style="font-size:7pt">$1</span>',$str);
+        $str = preg_replace('#\[big\](.+?)\[/big\]#im','<span style="font-size:14pt">$1</span>',$str);
+        $str = preg_replace('#\[wat\]#im','<span style="font-size:22pt">WAT</span>',$str); //easter egg
 
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#im',function($m) {
                 return '<a href="/'.phpCore::userLink($m[1])."\">{$m[1]}</a>";

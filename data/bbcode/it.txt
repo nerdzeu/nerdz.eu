@@ -6,6 +6,7 @@
 [b]Testo in grassetto[/b]
 [cur]Testo in corsivo[/cur]
 [small]Testo in piccolo[/small]
+[big]Testo in grande[/big]
 [del]Testo cancellato[/del]
 [u]Testo sottolineato[/u]
 [hr] Una riga orizzontale

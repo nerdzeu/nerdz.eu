@@ -5,6 +5,7 @@
 [img]Image url[/img]
 [b]Strong text[/b]
 [cur]Italic text[/cur]
+[big]Large text[/big]
 [small]Small text[/small]
 [del]Deleted text[/del]
 [u]Underlined text[/u]
