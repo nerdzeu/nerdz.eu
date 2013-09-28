@@ -115,6 +115,7 @@ class messages extends phpCore
         $domain = $ssl ? 'https://'.SITE_HOST : STATIC_DOMAIN;
 
         $validURL = function($m) {
+            $m[1] = trim($m[1]);
             if(!parent::isValidURL($m[1]))
             {
                 $m[1] = 'www.'.$m[1];
