@@ -23,7 +23,9 @@ final class banners
                     $elms = explode ('.', $line, 3);
                     $this->banners[] = array ($elms[0], $elms[1], $elms[2]);
                 }
-                apc_store($cache,serialize($this->banners),7200);
+                //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+                //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+                @apc_store($cache,serialize($this->banners),7200);
             }
         }
     }

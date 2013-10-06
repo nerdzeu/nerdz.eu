@@ -10,7 +10,9 @@ if(apc_exists('nerdz_stats'))
 else
 {
     exec($_SERVER['DOCUMENT_ROOT'].'/pages/executables/site_stats.ccgi',$ret); //ret[0,6]
-    apc_store($cache,serialize($ret),300); //5 min
+    //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+    //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+    @apc_store($cache,serialize($ret),300); //5 min
 }
 
 function apc_last_modified($key)

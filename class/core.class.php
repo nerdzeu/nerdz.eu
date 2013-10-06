@@ -193,7 +193,9 @@ class phpCore
             }
             fclose($fp);
             ksort($b);
-            apc_store($cache,serialize($b),3600);
+            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+            @apc_store($cache,serialize($b),3600);
 
             return $long ? $b : $a;
         }
@@ -321,7 +323,9 @@ class phpCore
         else
         {
             require_once $_SERVER['DOCUMENT_ROOT']."/languages/{$lang}.php";
-            apc_store($cache,serialize($_LANG),3600);
+            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+            @apc_store($cache,serialize($_LANG),3600);
         }
         return str_replace("\n",'<br />',htmlentities($_LANG[$index],ENT_QUOTES,'UTF-8'));
     }

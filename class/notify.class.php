@@ -250,7 +250,9 @@ class notify extends phpCore
                 return array();
         
             $ret = json_decode($o->notify_story,true);
-            apc_store($this->cachekey,serialize($ret),300); //5 secondi
+            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+            @apc_store($this->cachekey,serialize($ret),300); //5 secondi
             return $ret;
         }
     }
