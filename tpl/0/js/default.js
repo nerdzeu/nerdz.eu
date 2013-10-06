@@ -63,7 +63,7 @@ $(document).ready(function() {
     });
 
     /* il footersearch si mostra solo in alcune pagine */
-    var wrongPages = [ '/bbcode.php','/terms.php','/faq.php','/stats.php','/rank.php','/preferences.php', '/informations.php' ];
+    var wrongPages = [ '/bbcode.php','/terms.php','/faq.php','/stats.php','/rank.php','/preferences.php', '/informations.php', '/preview.php' ];
        if($.inArray(location.pathname,wrongPages) != -1) {
            $("#footersearch").hide();
        };
