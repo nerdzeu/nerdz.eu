@@ -444,7 +444,8 @@ class phpCore
             return '0'; //default
 
         if(!$id && $logged)
-            if(empty($_SESSION['nerdz_template']))
+        {
+            if(!isset($_SESSION['nerdz_template']))
             {
                 if(!($o = $this->query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
                     return false;
@@ -454,6 +455,7 @@ class phpCore
             }
             else
                 return $_SESSION['nerdz_template'];
+        }
         
         if(!($o = $this->query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
             return '0';
