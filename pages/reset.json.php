@@ -22,7 +22,7 @@ if(!($obj = $core->query(array('SELECT "username","counter" FROM "users" WHERE "
 
 $pass = Captcha::randomString(MIN_LENGTH_PASS);
 
-if(db::NO_ERR != $core->query(array('UPDATE "users" SET "password" = SHA1(:pass) WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),db::FETCH_ERR))
+if(db::NO_ERR != $core->query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),db::FETCH_ERR))
     die($core->jsonResponse('error',$core->lang('ERROR').': retry'));
 
 $subject = 'NERDZ PASSWORD';
