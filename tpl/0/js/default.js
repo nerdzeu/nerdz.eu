@@ -13,7 +13,7 @@ $(document).ready(function() {
         append_theme = "?skin=sons-of-obsidian";
     var prettify = document.createElement ("script");
     prettify.type = "text/javascript";
-    prettify.src  = document.location.protocol + '//cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.js' + append_theme;
+    prettify.src  = 'https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.js' + append_theme;
     _h.append (prettify);
     if (append_theme != "")
         _h.append ('<style type="text/css">.nerdz-code-wrapper { background-color: #000; color: #FFF; }</style>');
