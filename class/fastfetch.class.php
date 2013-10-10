@@ -38,7 +38,7 @@ final class FastFetch {
         
         if($list !== NULL) {
             
-            $ret = array();
+            $ret = [];
 
             foreach($list as $conversation) {
                 
@@ -48,13 +48,13 @@ final class FastFetch {
                     throw new FFException(FFErrCode::SERVER_FAILURE);
                 }
                 
-                $element = array(
+                $element = [
                             'name' => html_entity_decode($conversation['from_n'], ENT_QUOTES),
                             'last_timestamp' => intval($conversation['timestamp_n']),
                             'id' => $conversation['fromid_n'],
                             'last_message' => html_entity_decode($result->message, ENT_QUOTES),
                             'last_sender' => $result->last_sender
-                            );
+                           ];
 
                 $ret[] = $element;
 

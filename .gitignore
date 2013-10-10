@@ -1,6 +1,5 @@
 tmp/*
 ssltmp/*
-pages/executables/*
 *.cssmin.css
 *.jsmin.js
 data/errlog.txt
@@ -8,7 +7,7 @@ class/config/index.php
 utils/*
 google*
 mobile/*
-pages/cache/*
+pages/cache/*.json
 BingSiteAuth.xml
 smapxml
 .DS_Store

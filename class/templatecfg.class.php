@@ -36,7 +36,9 @@ final class templateCfg extends phpCore
         else
         {
             $valuestime = filemtime($templatepath);
-            apc_store($cachevaluestime,serialize($valuestime),3600);
+            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+            @apc_store($cachevaluestime,serialize($valuestime),3600);
         }
 
         if($control)
@@ -45,7 +47,9 @@ final class templateCfg extends phpCore
             if($newtime != $valuestime)
             {
                 apc_delete($cachename);
-                apc_store($cachevaluestime,serialize($newtime),3600);
+                //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+                //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+                @apc_store($cachevaluestime,serialize($newtime),3600);
             }
         }
 
@@ -59,7 +63,9 @@ final class templateCfg extends phpCore
             $ret = json_decode (preg_replace ('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);
             if (!is_array ($ret))
                 $ret = array ( 'js' => array(), 'css' => array() );
-            apc_store($cachename,serialize($ret),3600); //1h
+            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+            @apc_store($cachename,serialize($ret),3600); //1h
         }
 
         if($page != null)

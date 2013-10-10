@@ -97,7 +97,9 @@ else
             $a = stuff::stupid($n);
             $a['n'] = $n;
 
-            apc_store($apc_name,serialize($a),300);
+            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
+            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
+            @apc_store($apc_name,serialize($a),300);
         }
         else
             $a = unserialize(apc_fetch($apc_name));
