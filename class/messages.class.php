@@ -634,9 +634,9 @@ class messages extends phpCore
 
     public function stripTags($message)
     {
-        return     str_ireplace('[url="','',
-                   str_ireplace('[url=','',
-                   str_ireplace('"]',' ',
+        return  str_ireplace('[url="','',
+                str_ireplace('[url=','',
+                str_replace('"]',' ',
                 str_replace(']',' ',
                 str_ireplace('[url]','',
                 str_ireplace('[img]','',
@@ -657,7 +657,7 @@ class messages extends phpCore
                 str_ireplace('[list]','',
                 str_ireplace('[/list]','',
                 str_ireplace('[gist]','',
-                str_ireplace('[*]','',
+                str_replace('[*]','',
                 str_ireplace('[quote]','',
                 str_ireplace('[user]','',
                 str_ireplace('[/user]','',
@@ -673,8 +673,13 @@ class messages extends phpCore
                 str_ireplace('[/math]','',
                 str_ireplace('[wiki=','',
                 str_ireplace('[/wiki]','',
+                str_ireplace('[u]','',
+                str_ireplace('[big]','',
+                str_ireplace('[/u]','',
+                str_ireplace('[/big]','',
                 str_ireplace('[hr]','',
-                str_ireplace('[quote=','',$message)))))))))))))))))))))))))))))))))))))))));
+                str_ireplace('[wat]','',
+                str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))));
     }    
 }
 ?>
