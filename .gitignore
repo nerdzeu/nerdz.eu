@@ -8,6 +8,7 @@ utils/*
 google*
 mobile/*
 pages/cache/*.json
+pages/executables/*
 BingSiteAuth.xml
 smapxml
 .DS_Store
