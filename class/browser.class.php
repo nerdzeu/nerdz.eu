@@ -27,7 +27,7 @@ final class Browser
         private $_browser_name = '';
         private $_version = '';
         private $_platform = '';
-        private $_os = '';
+        private $_platver = '';
         private $_is_aol = false;
         private $_is_mobile = false;
         private $_is_robot = false;
@@ -96,7 +96,24 @@ final class Browser
         const PLATFORM_OPENSOLARIS = 'OpenSolaris';
         const PLATFORM_ANDROID = 'Android';
         
-        const OPERATING_SYSTEM_UNKNOWN = 'unknown';
+        const WINVER_XP = 'XP';
+        const WINVER_VISTA = 'Vista';
+        const WINVER_7 = '7';
+        const WINVER_8 = '8';
+        const WINVER_81 = '8.1';
+        
+        const LINARCH_IA32 = 'IA32';
+        const LINARCH_x86_64 = 'x86_64';
+        const LINARCH_ARM = 'ARM';
+        
+        const ANDRVER_GB = 'Gingerbread';
+        const ANDRVER_ICS = 'Ice Cream Sandwich';
+        const ANDRVER_JB = 'Jelly Bean';
+        const ANDRVER_KK = 'KitKat';
+        
+        const PLATVER_UNKNOWN = '';
+        
+        const OPERATING_SYSTEM_UNKNOWN = 'Unknown OS';
 
         public function __construct($useragent= NULL)
         {
@@ -114,7 +131,7 @@ final class Browser
             $this->_browser_name = self::BROWSER_UNKNOWN;
             $this->_version = self::VERSION_UNKNOWN;
             $this->_platform = self::PLATFORM_UNKNOWN;
-            $this->_os = self::OPERATING_SYSTEM_UNKNOWN;
+            $this->_platver = self::PLATVER_UNKNOWN;
             $this->_is_aol = false;
             $this->_is_mobile = false;
             $this->_is_robot = false;
@@ -156,6 +173,18 @@ final class Browser
         public function getPlatform()
         {
             return $this->_platform;
+        }
+        
+        /**
+        * Platform version, if available.
+        * @return string Name of the version or architecture of the platform you're running
+        */
+        public function getPlatformVersion() {
+            return $this->_platver;
+        }
+        
+        public function setPlatformVersion($platver) {
+            $this->_platver = $platver;
         }
         
         /**
@@ -301,7 +330,7 @@ final class Browser
          */
         public function getArray()
         {
-            return array('name' => $this->getBrowser(), 'version' => $this->getVersion(),'platform' => $this->getPlatform());
+            return ['name' => $this->getBrowser(), 'version' => $this->getVersion(),'platform' => $this->getPlatform(), 'platver' => $this->getPlatformVersion()];
         }
         
         /**
@@ -523,12 +552,12 @@ final class Browser
                 {
                     $aresult = explode(' ',stristr(str_replace(';','; ',$this->_agent),'MSN'));
                     $this->setBrowser( self::BROWSER_MSN );
-                    $this->setVersion(str_replace(array('(',')',';'),'',$aresult[1]));
+                    $this->setVersion(str_replace(['(',')',';'],'',$aresult[1]));
                     return true;
                 }
                 $aresult = explode(' ',stristr(str_replace(';','; ',$this->_agent),'msie'));
                 $this->setBrowser( self::BROWSER_IE );
-                $this->setVersion(str_replace(array('(',')',';'),'',$aresult[1]));
+                $this->setVersion(str_replace(['(',')',';'],'',$aresult[1]));
                 return true;
             }
             // Test for Pocket IE
@@ -1099,10 +1128,13 @@ final class Browser
          */
         private function checkPlatform()
         {
-                if( stripos($this->_agent, 'IEMobile') !== false )
+            if( stripos($this->_agent, 'IEMobile') !== false ) {
                 $this->_platform = self::PLATFORM_WINDOWS_PHONE;
+                return;
+            }
+            
             if( stripos($this->_agent, 'windows') !== false )
-                $this->_platform = self::PLATFORM_WINDOWS;
+                $this->checkWindowsVersion();
             
             else if( stripos($this->_agent, 'iPad') !== false )
                 $this->_platform = self::PLATFORM_IPAD;
@@ -1119,10 +1151,9 @@ final class Browser
             elseif( stripos($this->_agent, 'android') !== false )
                 $this->_platform = self::PLATFORM_ANDROID;
             
-            elseif( stripos($this->_agent, 'linux') !== false )
-                $this->_platform = self::PLATFORM_LINUX;
-            
-            else if( stripos($this->_agent, 'Nokia') !== false )
+            elseif( stripos($this->_agent, 'linux') !== false ) {
+                $this->checkLinuxArchitecture();        
+            } else if( stripos($this->_agent, 'Nokia') !== false )
                 $this->_platform = self::PLATFORM_NOKIA;
             
             else if( stripos($this->_agent, 'BlackBerry') !== false )
@@ -1151,6 +1182,52 @@ final class Browser
             
             elseif( stripos($this->_agent, 'win') !== false )
                 $this->_platform = self::PLATFORM_WINDOWS;
+        }
+        
+        /**
+         * Determine the architecture of the Linux system the user is using.
+         */
+        private function checkLinuxArchitecture() {
+            
+            $this->_platform = self::PLATFORM_LINUX; 
+            
+            if (stripos($this->_agent, 'Linux x86_64') != false) {
+                $this->_platver = self::LINARCH_x86_64;
+            } elseif (stripos($this->_agent, 'Linux i686') != false) {
+                $this->_platver = self::LINARCH_IA32;            
+            } elseif (stripos($this->_agent, 'Linux arm') != false) {
+                $this->_platver = self::LINARCH_ARM;
+            }
+        }
+        
+        /**
+         * Finds what version of Windows the user is using.
+         */
+        private function checkWindowsVersion() {
+            
+            $this->_platform = self::PLATFORM_WINDOWS;
+            
+            $matches = null;
+            if(preg_match("/Windows NT (.*?);/", $this->_agent, $matches)) {
+                switch (trim($matches[1])) {
+                    case '5.1':
+                        $this->_platver = self::WINVER_XP;
+                        break;
+                    case '6.0':
+                        $this->_platver = self::WINVER_VISTA;
+                        break;
+                    case '6.1':
+                        $this->_platver = self::WINVER_7;
+                        break;
+                    case '6.2':
+                        $this->_platver = self::WINVER_8;
+                        break;
+                    case '6.3':
+                        $this->_platver = self::WINVER_81;
+                        break;
+                }
+            }
+            
         }
 }
 ?>
