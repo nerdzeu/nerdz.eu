@@ -1208,7 +1208,7 @@ final class Browser
             $this->_platform = self::PLATFORM_WINDOWS;
             
             $matches = null;
-            if(preg_match("/Windows NT (.*?);/", $this->_agent, $matches)) {
+            if(preg_match("/Windows NT (.*?)(;|\\))/", $this->_agent, $matches)) {
                 switch (trim($matches[1])) {
                     case '5.1':
                         $this->_platver = self::WINVER_XP;
