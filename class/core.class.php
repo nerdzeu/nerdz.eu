@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL);
 if(isset($_COOKIE['SEXYID']) && !preg_match('#^[a-z0-9\-,]{32}$#i',$_COOKIE['SEXYID']))
     unset($_COOKIE['SEXYID']);
 
