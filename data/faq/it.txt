@@ -74,3 +74,6 @@ Q: Ho visto nelle preferenze, nella sezione Profilo, un campo chiamato userscrip
 A: E' un campo in cui puoi aggiungere un url ad un file di puro testo (caricato ad esempio su un nopaste come pastebin).
 Il file di testo dev'essere un sorgente javascript. Questa url verrà poi inclusa nell'header di ogni pagina all'interno di un tag script.
 In questo modo hai a disposizione un sorgente incluso in ogni pagina ideale per fare modifiche a nerdz.
+Q: Come è possible cambiare l'immagine profilo?
+A: Le immagini profilo sono quelle presenti su: https://www.gravatar.com/. Se il tuo indirizzo è collegato ad un account Gravatar, allora vedrai il tuo Gravatar come immagine profilo.
+Quindi, se vuoi cambiare immagine profilo e non hai un account gravatar, associa il tuo indirizzo email su gravatar.com
