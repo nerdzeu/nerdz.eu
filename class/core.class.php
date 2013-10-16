@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 if(isset($_COOKIE['SEXYID']) && !preg_match('#^[a-z0-9\-,]{32}$#i',$_COOKIE['SEXYID']))
     unset($_COOKIE['SEXYID']);
 
@@ -354,15 +355,6 @@ class phpCore
     public function closedProfile($id)
     {
         return $this->query(array('SELECT "counter" FROM "closed_profiles" WHERE "counter" = :id',array(':id' => $id)),db::ROW_COUNT);
-       }
-
-    public function hasGravatarEnabled($id)
-   {
-        if($this->isLogged() && $id == $_SESSION['nerdz_id'] && isset($_SESSION['nerdz_gravatar']))
-            return $_SESSION['nerdz_gravatar'];
-
-        $_SESSION['nerdz_gravatar'] = $this->query(array('SELECT "counter" FROM "gravatar_profiles" WHERE "counter" = :id',array(':id' => $id)),db::ROW_COUNT);
-        return $_SESSION['nerdz_gravatar'];
     }
 
     public function getBlacklist()

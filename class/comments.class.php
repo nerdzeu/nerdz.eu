@@ -98,7 +98,7 @@ class comments extends project
         return $members;
     }
 
-    private function getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravatar,$gravurl,$users,$cg,$times,$lkd,$glue)
+    private function getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
     {
         $i = 0;
         $ret = array();
@@ -113,7 +113,7 @@ class comments extends project
                 $canremoveusers = array($o->from,$o->to);
 
             $ret[$i]['fromid_n'] = $o->from;
-            $ret[$i]['gravatarurl_n'] = $gravatar ? $gravurl[$o->from] : '';
+            $ret[$i]['gravatarurl_n'] = $gravurl[$o->from];
             $ret[$i]['toid_n'] = $o->to;
             $ret[$i]['from_n'] = $users[$o->from];
             $ret[$i]['uid_n'] = "c1{$o->from}{$o->to}{$o->time}";
@@ -189,24 +189,15 @@ class comments extends project
         if (!$useLimitedQuery)
             $blist = $r->fetchAll(PDO::FETCH_COLUMN);
         
-        if(($gravatar = parent::hasGravatarEnabled($_SESSION['nerdz_id'])))
-        {
-            require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
-            $grav = new gravatar();
+        require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
+        $grav = new gravatar();
 
-            while(($o = $f->fetch(PDO::FETCH_OBJ)))
-            {
-                $users[$o->from] = parent::getUserName($o->from);
-                $gravurl[$o->from] = $grav->getURL($o->from);
-                $nonot[] = $o->from;
-            }
+        while(($o = $f->fetch(PDO::FETCH_OBJ)))
+        {
+            $users[$o->from] = parent::getUserName($o->from);
+            $gravurl[$o->from] = $grav->getURL($o->from);
+            $nonot[] = $o->from;
         }
-        else
-            while(($o = $f->fetch(PDO::FETCH_OBJ)))
-            {
-                $users[$o->from] = parent::getUserName($o->from);
-                $nonot[] = $o->from;
-            }
 
         $nonot[] = $from;
         $nonot[] = $to;
@@ -220,7 +211,7 @@ class comments extends project
         
         $canremoveusers = $prj ? $this->getProjectMembersAndOwner($hpid) : array();
 
-        $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravatar,$gravurl,$users,$cg,$times,$lkd,$glue);
+        $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         
         /* Per il beforeHcid, nel caso in cui nella fase di posting si siano uniti gli ultimi messaggi
            allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty e fuck off*/
@@ -228,7 +219,7 @@ class comments extends project
         {
             if(!($res = parent::query(array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe)),db::FETCH_STMT)))
                 return false;
-            $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravatar,$gravurl,$users,$cg,$times,$lkd,$glue);
+            $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         }
 
         return $ret;

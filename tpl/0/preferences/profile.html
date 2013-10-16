@@ -119,22 +119,6 @@
 			<input type="text" name="skype" value="{$skype_n}" />
 		</td>
     </tr>
-{if="!$gravatar_b"}
-    <tr>
-		<td>
-			<br />
-			{$photo}:
-			<br />
-			<p class="small">
-				{$inserturl}
-			</p>
-		</td>
-		<td>
-			<br />
-			<input type="text" name="photo" value="{$photo_n}" />
-		</td>
-    </tr>
-{/if}
     <tr>
 		<td>
 			<br />
@@ -191,17 +175,6 @@
 		</td>
     </tr>
 {/if}
-    <tr>
-		<td>
-			<br />
-			Gravatar: [<a href="http://gravatar.com">?</a>]
-		</td>
-		<td>
-			<br />
-			<input type="checkbox" name="gravatar" value="1" {if="$gravatar_b"} checked {/if}/>
-		</td>
-    </tr>
-
 	<tr>
 		<td>
 			<br />

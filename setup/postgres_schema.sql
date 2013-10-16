@@ -66,12 +66,6 @@ CREATE TABLE closed_profiles (
   CONSTRAINT fkUser FOREIGN KEY (counter) REFERENCES users (counter)
 );
 
-CREATE TABLE gravatar_profiles (
-  counter int8 NOT NULL,
-  PRIMARY KEY (counter),
-  CONSTRAINT fkgrav FOREIGN KEY (counter) REFERENCES users (counter)
-);
-
 --END user tables
 
 --BEGIN post tables
@@ -604,8 +598,6 @@ CREATE FUNCTION before_delete_user() RETURNS TRIGGER AS $func$
 
         DELETE FROM "bookmarks" WHERE "from" = OLD.counter;
         DELETE FROM "groups_bookmarks" WHERE "from" = OLD.counter;
-
-        DELETE FROM "gravatar_profiles" WHERE "counter" = OLD.counter;
 
         DELETE FROM "posts" WHERE "to" = OLD.counter;
         

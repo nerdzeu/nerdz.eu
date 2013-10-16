@@ -91,6 +91,9 @@ Or
   Then run:
   `$ groovy -cp "path/to/jdbc/mysql/postgresql/drivers/jars/*" nerdz_my2pg.groovy myuser mypass mydb myport pguser pgpass pgdb pgport`
 
+- If you have an old version of the database (with gravatar table yet), please remove this table and related trigger in this way: `psql -h localhost -d nerdz -U nerdz -f setup/gravatar_migration.sql`.
+  Assuming that your database name is nerdz and your user is nerdz also.
+
 - It works? Yay! It doesn't work? See the next section.
 
 Troubleshooting

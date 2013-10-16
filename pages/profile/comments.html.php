@@ -26,7 +26,6 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if (empty ($_list) && !$doShowForm)
             die();
         $vals = array();
-        $vals['gravatar_b'] = $core->hasGravatarEnabled($_SESSION['nerdz_id']);
         $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/red_x.png';
         $vals['list_a'] = $_list;
         $vals['showform_b'] = $doShowForm;

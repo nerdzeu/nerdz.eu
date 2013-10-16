@@ -5,9 +5,9 @@
 {/if}
 {loop="list_a"}
 <div id="{$value.uid_n}" data-hcid="{$value.hcid_n}" class="singlecomment">
-	{if="$gravatar_b"}<a href="/{$value.from4link_n}" style="vertical-align:top">
+	<a href="/{$value.from4link_n}" style="vertical-align:top">
 		<img src="{$value.gravatarurl_n}&s=30#" alt="{$value.from_n}" height="30" width="30" onerror="this.src = '{$onerrorimgurl_n}'" style="float:left; padding-right:2px; padding-top: 3px" />
-	</a>{/if}
+	</a>
 	<div class="nerdz_from">
 		<a href="/{$value.from4link_n}" style="vertical-align:top">
 			{$value.from_n}
@@ -24,7 +24,7 @@
 			<img width="16" height="16" src="images/quote.png" alt="quote" class="qu_ico" data-hcid="{$value.hcid_n}" data-type="u" data-refto="commentto{$value.hpid_n}" onclick="" />
 		</span>
 	</div>
-	<div class="nerdz_comments"{if="$gravatar_b"} style="width:auto"{/if}>
+	<div class="nerdz_comments" style="width:auto">
 		{if="$value.canremove_b"}
 			<img alt="" src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAYAAAAPU20uAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABpSURBVHjaZM8xEYQwFIThbzgFsYAFLJwnWvTEAligvQ4LYIFmmUm4bfJm82ezDyZUvcZ4ZcCOC3MDVGzxQcGBb8B3Irk8cOYBGBpgz9lFfxpgwS+lr8x/8SVA901b8FFXtL5WfLRivgcA4j4XjQ65yfkAAAAASUVORK5CYII=' class="delcomment" data-hcid="{$value.hcid_n}" data-refto="{$value.uid_n}" style="float: right; cursor: pointer; margin-top: 3px;">
 		{/if}
@@ -36,9 +36,9 @@
 {ignore}Il form non viene caricato, quando si gettano i commenti dopo uno specifico hcid{/ignore}
 {if="$showform_b"}
 <div>
-	{if="$gravatar_b"}
-	<div style="width:30px; float:left">&nbsp;</div>
-	{/if}
+	<div style="width:30px; float:left">
+        &nbsp;
+    </div>
 	<form style="overflow:hidden; width:auto" class="frmcomment" data-hpid="{$hpid_n}">
 		<textarea id="commentto{$hpid_n}" name="message" style="width: 99.5%; height: 60px"></textarea>
 		<input type="submit" value="{$nerdzit}" style="float: right;margin-top:5px" />
