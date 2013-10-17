@@ -469,7 +469,7 @@ class comments extends project
     {
         if(!($o = parent::query(array('SELECT "message" FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
             return '(null)';
-        return parent::bbcode($o->message,db::FETCH_OBJ);
+        return parent::bbcode($o->message,1);
     }
 
     private function appendProjectComment($oldMsgObj,$newMessage)
