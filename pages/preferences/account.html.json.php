@@ -160,7 +160,7 @@ if(count(array_filter($user)) != count($user))
 
 if(($ut = $core->query("SELECT counter FROM users WHERE email = '{$user['email']}'",db::FETCH_OBJ)))
     if($ut->counter != $obj->counter)
-        die($core->jsonResponse('error',$core->lang('MAIL_EXITS')));
+        die($core->jsonResponse('error',$core->lang('MAIL_EXISTS')));
 
 if(!isset($user['username'][MIN_LENGTH_USER]))
     die($core->jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.(MIN_LENGTH_USER +1)));

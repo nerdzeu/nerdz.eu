@@ -330,7 +330,12 @@ final class Browser
          */
         public function getArray()
         {
-            return ['name' => $this->getBrowser(), 'version' => $this->versionTrim($this->getVersion()),'platform' => $this->getPlatform(), 'platver' => $this->getPlatformVersion()];
+            return [
+                'name' => $this->getBrowser(),
+                'version' => $this->versionTrim($this->getVersion()),
+                'platform' => $this->getPlatform(),
+                'platver' => $this->getPlatformVersion()
+             ];
         }
         
         /**
@@ -1232,7 +1237,7 @@ final class Browser
         
         private function versionTrim($string) {
             $elems = explode('.', $string);
-            return count($elems) > 1 ? $elems[0].(($elems[1] !== '0') ? '.'.$elems[1] : '') : $elems;
+            return count($elems) > 1 ? $elems[0].(($elems[1] !== '0') ? '.'.$elems[1] : '') : $string;
         }
 }
 ?>
