@@ -186,9 +186,13 @@
 		</div>
 		<br />
 	{/if}
-	{if="!empty($jabber_n) || !empty($yahoo_n) || !empty($skype_n) || !empty($steam_n) || !empty($facebook_n) || !empty($twitter_n)"}
+	{if="!empty($jabber_n) || !empty($yahoo_n) || !empty($skype_n) || !empty($steam_n) || !empty($facebook_n) || !empty($twitter_n) || !empty($github_n)"}
 		<div class="title">{$contactinfo}</div>
 		<div class="box">
+		{if="!empty($github_n)"}
+			<span class="light">{$github}:<br /></span>
+				<a href="{$github_n}">{$github_n}</a><br /><br />
+		{/if}
 		{if="!empty($jabber_n)"}
 			<span class="light">{$jabber}:<br /></span>
 				{$jabber_n}<br /><br />

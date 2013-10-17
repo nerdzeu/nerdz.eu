@@ -177,8 +177,8 @@ def closures = [ "migrate_users" : {
 
     forEachRowInTable("profiles", rowNum) { GroovyResultSet row ->
 
-        //fields: "counter", "remote_addr", "http_user_agent", "website", "quotes", "biography", "interests", "photo", "skype", "jabber", "yahoo", "userscript", "template", "dateformat", "facebook", "twitter", "steam"
-        pgSql.execute("INSERT INTO profiles VALUES (${row.counter.longValue()}, ${row.remote_addr ?: null }::inet, ${row.http_user_agent}, ${row.website}, ${row.quotes}, ${row.biography},${row.interests},${row.photo},${row.skype},${row.jabber},${row.yahoo},${row.userscript},${row.template},${row.dateformat},${row.facebook},${row.twitter},${row.steam})")
+        //fields: "counter", "remote_addr", "http_user_agent", "website", "quotes", "biography", "interests", "skype", "jabber", "yahoo", "userscript", "template", "dateformat", "facebook", "twitter", "steam"
+        pgSql.execute("INSERT INTO profiles VALUES (${row.counter.longValue()}, ${row.remote_addr ?: null }::inet, ${row.http_user_agent}, ${row.website}, ${row.quotes}, ${row.biography},${row.interests},${row.skype},${row.jabber},${row.yahoo},${row.userscript},${row.template},${row.dateformat},${row.facebook},${row.twitter},${row.steam})")
 
     }
 

@@ -45,7 +45,7 @@ CREATE TABLE profiles (
   quotes text NOT NULL DEFAULT '',
   biography text NOT NULL DEFAULT '',
   interests text NOT NULL DEFAULT '',
-  photo varchar(350) NOT NULL DEFAULT '',
+  github varchar(350) NOT NULL DEFAULT '',
   skype varchar(350) NOT NULL DEFAULT '',
   jabber varchar(350) NOT NULL DEFAULT '',
   yahoo varchar(350) NOT NULL DEFAULT '',

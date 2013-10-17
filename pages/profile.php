@@ -221,6 +221,8 @@ else
         }
 
         $vals['contactinfo'] = $core->lang('CONTACT_INFO');
+        $vals['github'] = 'GitHub';
+        $vals['github_n'] = $info->github;
         $vals['yahoo'] = $core->lang('YAHOO');
         $vals['yahoo_n'] = $vals['logged_b'] ? $info->yahoo : '';
         $vals['jabber_n'] = $vals['logged_b'] ? $info->jabber: '';

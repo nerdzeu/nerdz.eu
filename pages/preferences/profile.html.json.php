@@ -13,19 +13,19 @@ if(!$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
     
-$user['interests']  = isset($_POST['interests'])  ? trim($_POST['interests'])     : '';
-$user['biography']  = isset($_POST['biography'])  ? trim($_POST['biography'])     : '';
-$user['quotes']     = isset($_POST['quotes'])     ? trim($_POST['quotes'])         : '';
+$user['interests']  = isset($_POST['interests'])  ? trim($_POST['interests'])               : '';
+$user['biography']  = isset($_POST['biography'])  ? trim($_POST['biography'])               : '';
+$user['quotes']     = isset($_POST['quotes'])     ? trim($_POST['quotes'])                  : '';
 $user['website']    = isset($_POST['website'])    ? strip_tags(trim($_POST['website']))     : '';
-$user['jabber']     = isset($_POST['jabber'])     ? trim($_POST['jabber'])         : '';
-$user['yahoo']      = isset($_POST['yahoo'])      ? trim($_POST['yahoo'])         : '';
-$user['facebook']   = isset($_POST['facebook'])   ? trim($_POST['facebook'])         : '';
-$user['twitter']    = isset($_POST['twitter'])    ? trim($_POST['twitter'])         : '';
-$user['steam']      = isset($_POST['steam'])      ? trim($_POST['steam'])         : '';
-$user['skype']      = isset($_POST['skype'])      ? trim($_POST['skype'])         : '';
-$user['photo']      = isset($_POST['photo'])      ? trim($_POST['photo'])         : '';
+$user['jabber']     = isset($_POST['jabber'])     ? trim($_POST['jabber'])                  : '';
+$user['yahoo']      = isset($_POST['yahoo'])      ? trim($_POST['yahoo'])                   : '';
+$user['facebook']   = isset($_POST['facebook'])   ? trim($_POST['facebook'])                : '';
+$user['twitter']    = isset($_POST['twitter'])    ? trim($_POST['twitter'])                 : '';
+$user['steam']      = isset($_POST['steam'])      ? trim($_POST['steam'])                   : '';
+$user['skype']      = isset($_POST['skype'])      ? trim($_POST['skype'])                   : '';
+$user['github']     = isset($_POST['github'])     ? trim($_POST['github'])                  : '';
 $user['userscript'] = isset($_POST['userscript']) ? strip_tags(trim($_POST['userscript']))  : '';
-$user['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])  : '';
+$user['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])              : '';
 $closed             = isset($_POST['closed']);
 $flag = true;
 
@@ -35,17 +35,8 @@ if(!empty($user['website']) && !$core->isValidURL($user['website']))
 if(!empty($user['userscript']) && !$core->isValidURL($user['userscript']))
     die($core->jsonResponse('error','Userscript: '.$core->lang('INVALID_URL')));
 
-if(!empty($user['photo']))
-{
-    if(!$core->isValidURL($user['photo']))
-        die($core->jsonResponse('error',$core->lang('PHOTO').':'.$core->lang('INVALID_URL')));
-
-    if(!($head = get_headers($_POST['photo'],db::FETCH_OBJ)) || !isset($head['Content-Type']))
-        die($core->jsonResponse('error','Something wrong with your profile image'));
-        
-    if(!is_string($head['Content-Type']) || false === strpos($head['Content-Type'],'image'))
-        die($core->jsonResponse('error','Your profile image, is not a photo or is protected, change it'));
-}
+if(!empty($user['github']) && !preg_match('#^https?://(www\.)?github\.com/[a-z0-9]+$#i',$user['github']))
+    die($core->jsonResponse('error','GitHub: '.$core->lang('INVALID_URL')));
 
 if(false == ($obj = $core->getUserObject($_SESSION['nerdz_id'])))
     die($core->jsonResponse('error',$core->lang('ERROR')));
@@ -79,7 +70,7 @@ $par = array(':interests' => $user['interests'],
              ':quotes'  => $user['quotes'],
              ':website' => $user['website'],
              ':dateformat' => $user['dateformat'],
-             ':photo' => $user['photo'],
+             ':github' => $user['github'],
              ':jabber' => $user['jabber'],
              ':yahoo' => $user['yahoo'],
              ':userscript' => $user['userscript'],
@@ -91,7 +82,7 @@ $par = array(':interests' => $user['interests'],
     
 if(
     db::NO_ERR != $core->query(array('UPDATE profiles SET "interests" = :interests, "biography" = :biography, "quotes" = :quotes, "website" = :website, "dateformat" = :dateformat,
-      "photo" = :photo, "jabber" = :jabber, "yahoo" = :yahoo,
+      "github" = :github, "jabber" = :jabber, "yahoo" = :yahoo,
       "userscript" = :userscript, "facebook" = :facebook, "twitter" = :twitter, "steam" = :steam, "skype" = :skype WHERE "counter" = :counter',$par),db::FETCH_ERR)
  )
     die($core->jsonResponse('error',$core->lang('ERROR')));

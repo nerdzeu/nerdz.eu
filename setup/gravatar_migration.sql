@@ -61,5 +61,9 @@ CREATE TRIGGER before_delete_user BEFORE DELETE ON users FOR EACH ROW EXECUTE PR
 
 --END before_delete_user
 
+UPDATE profiles SET photo = '';
+
+ALTER TABLE profiles RENAME COLUMN photo to github;
+
 --end transaction
 COMMIT;
