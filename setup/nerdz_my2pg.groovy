@@ -46,7 +46,7 @@ pgSql.execute("SET TIMEZONE TO 'UTC'")
 
 pgSql.connection.autoCommit = false
 
-def tables = ["ban", "blacklist", "bookmarks", "closed_profiles", "comments", "comments_no_notify", "comments_notify", "follow", "gravatar_profiles", "groups", "groups_bookmarks", "groups_comments", "groups_comments_no_notify", "groups_comments_notify", "groups_followers", "groups_lurkers", "groups_members", "groups_notify", "groups_posts", "groups_posts_no_notify", "lurkers", "pms", "posts", "posts_no_notify", "profiles", "users", "whitelist"]. each {
+def tables = ["ban", "blacklist", "bookmarks", "closed_profiles", "comments", "comments_no_notify", "comments_notify", "follow", "groups", "groups_bookmarks", "groups_comments", "groups_comments_no_notify", "groups_comments_notify", "groups_followers", "groups_lurkers", "groups_members", "groups_notify", "groups_posts", "groups_posts_no_notify", "lurkers", "pms", "posts", "posts_no_notify", "profiles", "users", "whitelist"]. each {
 
     print "Cleaning table \"${it}\"..."
 
@@ -194,19 +194,6 @@ def closures = [ "migrate_users" : {
 
         //fields: "counter"
         pgSql.execute("INSERT INTO closed_profiles VALUES (${row.counter.longValue()})")
-
-    }
-
-}
-
-, "migrate_gravatar_profiles" : {
-
-    def rowNum = reportValues("gravatar_profiles")
-
-    forEachRowInTable("gravatar_profiles", rowNum) { GroovyResultSet row ->
-
-        //fields: "counter"
-        pgSql.execute("INSERT INTO gravatar_profiles VALUES (${row.counter.longValue()})")
 
     }
 

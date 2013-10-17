@@ -42,14 +42,8 @@ else
 
     if($enter)
     {
-        $vals['gravatar_b'] = $vals['logged_b'] && $core->hasGravatarEnabled($_SESSION['nerdz_id']);
-        if($vals['gravatar_b'])
-        {
-            require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
-            $vals['photo_n'] = (new gravatar())->getURL($info->counter);
-        }
-        else
-            $vals['photo_n'] = $info->photo;
+        require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
+        $vals['gravatarurl_n'] = (new gravatar())->getURL($info->counter);
 
         $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/onErrorImg.php';
         $vals['website'] = $core->lang('WEBSITE');

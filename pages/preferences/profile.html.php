@@ -42,7 +42,6 @@ $vals['skype'] = 'Skype';
 $vals['skype_n'] = $obj->skype;
 $vals['photo'] = $core->lang('PHOTO');
 $vals['inserturl'] = $core->lang('INSERT_URL');
-$vals['photo_n'] = $obj->photo;
 $vals['userscript'] = 'Userscript';
 $vals['userscript_n'] = $obj->userscript;
 $vals['closedprofile'] = $core->lang('CLOSED_PROFILE');
@@ -53,7 +52,6 @@ $wl = $core->getWhitelist($_SESSION['nerdz_id']);
 $i = 0;
 foreach($wl as &$val)
     $vals['whitelist_a'][$i++] = $core->getUsername($val);
-$vals['gravatar_b'] = $core->hasGravatarEnabled($_SESSION['nerdz_id']);
 $vals['edit'] = $core->lang('EDIT');
 $vals['tok_n'] = $core->getCsrfToken('edit');
 $vals['dateformat'] = $core->lang('DATE_FORMAT');

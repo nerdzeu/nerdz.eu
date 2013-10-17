@@ -27,7 +27,6 @@ $user['photo']      = isset($_POST['photo'])      ? trim($_POST['photo'])       
 $user['userscript'] = isset($_POST['userscript']) ? strip_tags(trim($_POST['userscript']))  : '';
 $user['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])  : '';
 $closed             = isset($_POST['closed']);
-$gravatar           = isset($_POST['gravatar']);
 $flag = true;
 
 if(!empty($user['website']) && !$core->isValidURL($user['website']))
@@ -107,20 +106,6 @@ else
     if( db::NO_ERR != $core->query(array('DELETE FROM "closed_profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR) )
         die($core->jsonResponse('error',$core->lang('ERROR')));
 
-if($gravatar)
-{
-    if(!$core->hasGravatarEnabled($_SESSION['nerdz_id']))
-        if(db::NO_ERR != $core->query(array('INSERT INTO "gravatar_profiles"("counter") VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
-            die($core->jsonResponse('error',$core->lang('ERROR')));
-
-    $_SESSION['nerdz_gravatar'] = true;
-}
-else
-{
-    if(db::NO_ERR != $core->query(array('DELETE FROM "gravatar_profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
-        die($core->jsonResponse('error',$core->lang('ERROR')));
-    $_SESSION['nerdz_gravatar'] = false;
-}
 $_SESSION['nerdz_dateformat'] = $user['dateformat'];
 
 if(isset($_POST['whitelist']))
