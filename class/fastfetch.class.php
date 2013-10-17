@@ -112,6 +112,25 @@ final class FastFetch {
         return $list;
 
     }
+    
+    public function getIdFromUsername($userName) {
+        
+        $userName = htmlentities($userName,ENT_QUOTES,'UTF-8');
+        
+        $idObj = $this->mPm->query(
+            [
+                'SELECT counter FROM users WHERE LOWER(username) = LOWER(:user)',
+                [ ':user' => $userName ]
+            ],
+            db::FETCH_OBJ
+        );
+        
+        if (!is_object($idObj)) {
+           throw new FFException(FFErrCode::USER_NOT_FOUND);
+        }
+        
+        return ['id' => $idObj->counter];
+    }
 
 }
 

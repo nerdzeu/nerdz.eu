@@ -49,6 +49,11 @@ final class FFErrCode {
      * The user has provided a limit which is higher than the max.
      */
     const LIMIT_EXCEEDED = 0x7;
+    
+    /**
+     * The given username has not been found.
+     */
+    const USER_NOT_FOUND = 0x8;
 
 }
 

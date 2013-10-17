@@ -9,18 +9,14 @@ function jsonResponse($object) {
     exit(json_encode($object, JSON_UNESCAPED_UNICODE));
 }
 
-function bakeError($exception) {
+function bakeError(FFException $exception) {
     
-    $code = FFErrCode::UNKNOWN;
-    
-    if ($exception instanceof FFException) {
-        $code = $exception->code;
-    }
+    $code = $exception->code;
         
     return ['error' => $code];
 }
 
-
+$response = NULL;
 
 $ff = new FastFetch();
 try {
@@ -32,8 +28,6 @@ try {
     if(!isset($_GET['action'])) {
         throw new FFException(FFErrCode::NO_ACTION);
     }
-    
-    $response = NULL;
 
     switch($_GET['action']) {    
 
@@ -66,6 +60,17 @@ try {
 
             break;
         }
+        
+        case 'getid': {
+            if(!isset($_GET['username'])) {
+                throw new FFException(FFErrCode::WRONG_REQUEST);
+            }
+            
+            $response = $ff->getIdFromUsername($_GET['username']);
+            
+            break;
+        }
+        
         default:
             throw new FFException(FFErrCode::INVALID_ACTION);
 
