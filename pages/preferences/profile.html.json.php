@@ -28,10 +28,10 @@ $user['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])  
 $closed             = isset($_POST['closed']);
 $flag = true;
 
-if(!empty($user['website']) && !$core->isValidURL($user['website']))
+if(!empty($user['website']) && !phpCore::isValidURL($user['website']))
     die($core->jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
     
-if(!empty($user['userscript']) && !$core->isValidURL($user['userscript']))
+if(!empty($user['userscript']) && !phpCore::isValidURL($user['userscript']))
     die($core->jsonResponse('error','Userscript: '.$core->lang('INVALID_URL')));
 
 if(!empty($user['github']) && !preg_match('#^https?://(www\.)?github\.com/[a-z0-9]+$#i',$user['github']))

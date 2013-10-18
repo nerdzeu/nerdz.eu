@@ -117,6 +117,13 @@ final class RainTPL
         }
     }
 
+    public function getActualTemplateNumber()
+    {
+        $str = '/' == self::$tpl_dir[strlen(self::$tpl_dir) -1] ? substr(self::$tpl_dir, 0 , -1) : self::$tpl_dir;
+        $e = explode('/', $str);
+        return is_array($e) ? $e[count($e) - 1] : '0';
+    }
+
     /**
      * Assign variable
      * eg.     $t->assign('name','mickey');

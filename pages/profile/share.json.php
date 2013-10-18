@@ -13,7 +13,7 @@ $url      = empty($_POST['url'])     ? false : trim($_POST['url']);
 $comment = empty($_POST['comment']) ? false : trim($_POST['comment']);
 $to      = empty($_POST['to'])         ? false : trim($_POST['to']);
 
-if(!$url || !$core->isValidURL($url))
+if(!$url || !phpCore::isValidURL($url))
     die($core->jsonResponse('error',$core->lang('INVALID_URL')));
 
 if($to)

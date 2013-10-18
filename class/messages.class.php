@@ -116,10 +116,10 @@ class messages extends phpCore
 
         $validURL = function($m) {
             $m[1] = trim($m[1]);
-            if(!parent::isValidURL($m[1]))
+            if(!phpCore::isValidURL($m[1]))
             {
                 $m[1] = 'www.'.$m[1];
-                if(!parent::isValidURL($m[1]))
+                if(!phpCore::isValidURL($m[1]))
                     return 'http://www.nerdz.eu';
             }
             $url = preg_match('#^(http(s)?:\/\/)|(ftp:\/\/)#im',$m[1]) ? $m[1] : 'http://'.$m[1];
@@ -281,7 +281,7 @@ class messages extends phpCore
 
         $imgValidUrl = function($m,$domain,$ssl) {
             return 
-                (!parent::isValidURL($m[1]) ?
+                (!phpCore::isValidURL($m[1]) ?
                 $domain.'/static/images/invalidImgUrl.php' :
                 (
                     $ssl ? 

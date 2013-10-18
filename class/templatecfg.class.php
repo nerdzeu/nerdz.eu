@@ -7,20 +7,18 @@
  * (file che sono in template.values)
  * 
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-final class templateCfg extends phpCore
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
+
+final class templateCfg
 {
     private $tpl_no;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->tpl_no = parent::getTemplate();
-    }
-
     public function getTemplateVars($page = null)
     {
+        $tpl = (new phpCore())->getTPL();
+        $this->tpl_no = $tpl->getActualTemplateNumber();
         $templatepath = $_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/template.values";
 
         $cachename = "tpl-{$this->tpl_no}-vars".SITE_HOST;
@@ -85,7 +83,7 @@ final class templateCfg extends phpCore
         //controllo per le modifiche ai file
         foreach($ret as $id => &$arr)
             foreach($arr as &$path)
-                if(!parent::isValidURL($path))
+                if(!phpCore::isValidURL($path))
                 {
                     $userfile = "{$_SERVER['DOCUMENT_ROOT']}/tpl/{$this->tpl_no}/{$path}";
                     if(!file_exists($userfile))

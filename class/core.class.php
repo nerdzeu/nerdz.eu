@@ -580,7 +580,7 @@ class phpCore
         return true;
     }
 
-    public function isValidURL($url)
+    public static function isValidURL($url)
     {
         return preg_match("#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#im",$url);
     }

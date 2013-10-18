@@ -33,7 +33,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         
         if(!empty($_POST['website']))
         {
-            if(!$core->isValidURL($_POST['website']))
+            if(!phpCore::isValidURL($_POST['website']))
                 die($core->jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
         }
         else
@@ -41,7 +41,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             
         if(!empty($_POST['photo']))
         {
-            if(!$core->isValidURL($_POST['photo']))
+            if(!phpCore::isValidURL($_POST['photo']))
                 die($core->jsonResponse('error',$core->lang('PHOTO').': '.$core->lang('INVALID_URL')));
                 
             if(!($head = get_headers($_POST['photo'],db::FETCH_OBJ)) || !isset($head['Content-Type']))
