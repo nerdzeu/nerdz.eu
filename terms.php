@@ -4,7 +4,7 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
     $core = new phpCore();
-    $tplcfg = new templateCfg();
+    $tplcfg = new templateCfg($core);
 
     ob_start(array('phpCore','minifyHtml'));
 ?>

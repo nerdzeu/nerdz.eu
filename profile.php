@@ -4,7 +4,7 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
     $core = new messages();
-    $tplcfg = new templateCfg();
+    $tplcfg = new templateCfg($core);
     
     $id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : false;
     $pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? $_GET['pid'] : false;

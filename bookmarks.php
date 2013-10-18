@@ -6,7 +6,7 @@
     $core = new project();
     if(!$core->isLogged())
         die(header('Location: /'));
-    $tplcfg = new templateCfg();
+    $tplcfg = new templateCfg($core);
     
     ob_start(array('phpCore','minifyHtml'));
 ?>

@@ -4,7 +4,7 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
     $core = new project();
-    $tplcfg = new templateCfg();
+    $tplcfg = new templateCfg($core);
     
     $gid = isset($_GET['gid']) && is_numeric($_GET['gid']) ? $_GET['gid'] : false;
     $pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? $_GET['pid'] : false;

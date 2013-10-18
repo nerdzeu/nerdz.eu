@@ -14,10 +14,16 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
 final class templateCfg
 {
     private $tpl_no;
+    private $core;
+
+    public function __construct($phpCore)
+    {
+        $this->core = $phpCore;
+    }
 
     public function getTemplateVars($page = null)
     {
-        $tpl = (new phpCore())->getTPL();
+        $tpl = $this->core->getTPL();
         $this->tpl_no = $tpl->getActualTemplateNumber();
         $templatepath = $_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/template.values";
 
