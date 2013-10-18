@@ -16,6 +16,6 @@ $txt = file_get_contents($lcon);
 $exp = explode("\n",$txt);
 $vals = array();
 $vals['informations_n'] = $txt;
-$tpl->assign($vals);
-$tpl->draw('base/informations');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/informations');
 ?>

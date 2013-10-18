@@ -8,6 +8,6 @@ $vals['captcha'] = $core->lang('CAPTCHA');
 $vals['reloadcaptcha'] = $core->lang('RELOAD_CAPTCHA');
 $vals['create'] = $core->lang('CREATE');
 
-$tpl->assign($vals);
-$tpl->draw('project/create');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('project/create');
 ?>

@@ -56,11 +56,11 @@ $singlepostvals['postcomments_n'] = $comments->countProjectComments($o->hpid);
 $singlepostvals['hpid_n'] = $o->hpid;
 $singlepostvals['news_b'] = $o->news;
 
-$tpl->assign($singlepostvals);
+$core->getTPL()->assign($singlepostvals);
     
 if($draw)
-    $tpl->draw('project/post');
+    $core->getTPL()->draw('project/post');
 else
-    $singlepost = $tpl->draw('project/post',true);
+    $singlepost = $core->getTPL()->draw('project/post',true);
 
 ?>

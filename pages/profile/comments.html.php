@@ -45,8 +45,8 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals['commentcount_n'] = $core->countComments ($hpid);
         $vals['needmorebtn_b'] = $doShowForm && $vals['commentcount_n'] > 10;
         $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20;
-        $tpl->assign($vals);
-        $tpl->draw('profile/comments');
+        $core->getTPL()->assign($vals);
+        $core->getTPL()->draw('profile/comments');
     break;
 default:
     die($core->lang('ERROR'));

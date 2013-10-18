@@ -2,12 +2,12 @@
 //TEMPLATE: OK
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-$tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
+$core = new project();
+$core->getTPL()->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
 ob_start(array('phpCore','minifyHtml'));
 
 $id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
 
-$core = new project();
 if(!$core->isLogged() || !$id || !($info = $core->getProjectObject($id)) || $info->owner != $_SESSION['nerdz_id'] )
     die($core->lang('ERROR'));
     
@@ -76,6 +76,6 @@ $vals['delete'] = $core->lang('DELETE');
 $vals['captcha'] = $core->lang('CAPTCHA');
 $vals['reloadcaptcha'] = $core->lang('RELOAD_CAPTCHA');
 
-$tpl->assign($vals);
-$tpl->draw('preferences/projects/manage');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('preferences/projects/manage');
 ?>

@@ -14,7 +14,7 @@ $vals['to'] = $core->lang('TO');
 $vals['send'] = $core->lang('SEND');
 $vals['preview'] = $core->lang('PREVIEW');
 $vals['message'] = $core->lang('MESSAGE');
-$tpl->assign($vals);
+$core->getTPL()->assign($vals);
 $vals = array();
 
 switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
@@ -46,8 +46,8 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         $vals['needmorebtn_b'] = $doShowForm && $vals['pmcount_n'] > 10;
         $vals['needeverymsgbtn_b'] = $doShowForm && $vals['pmcount_n'] > 20;
         $vals['showform_b'] = $doShowForm;
-        $tpl->assign($vals);
-        $tpl->draw('pm/conversation');
+        $core->getTPL()->assign($vals);
+        $core->getTPL()->draw('pm/conversation');
     break;
     default:
         die($core->lang('ERROR'));

@@ -3,7 +3,6 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
-$tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
 
 $core = new project();
 

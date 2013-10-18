@@ -17,6 +17,6 @@ $vals['send'] = $core->lang('SEND');
 $vals['nopmdescr'] = $core->lang('NO_PM');
 $vals['list_a'] = $core->getList();
 
-$tpl->assign($vals);
-$tpl->draw('pm/inbox');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('pm/inbox');
 ?>

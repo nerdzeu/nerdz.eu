@@ -39,7 +39,7 @@ else
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.lang.php';
     //includo il loop in $mess
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/postlist.html.php';
-    $tpl->assign($vals);
-    $tpl->draw('profile/postlist');
+    $core->getTPL()->assign($vals);
+    $core->getTPL()->draw('profile/postlist');
 }
 ?>

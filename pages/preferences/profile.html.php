@@ -2,10 +2,10 @@
 //TEMPLATE: OK
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
+$core = new phpCore();
+$core->getTPL()->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
 ob_start(array('phpCore','minifyHtml'));
 
-$core = new phpCore();
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
 
@@ -59,6 +59,6 @@ $vals['dateformat'] = $core->lang('DATE_FORMAT');
 $vals['dateformat_descr'] = $core->lang('DATE_FORMAT_DESCR');
 $vals['dateformat_n'] = $obj->dateformat;
 
-$tpl->assign($vals);
-$tpl->draw('preferences/profile');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('preferences/profile');
 ?>

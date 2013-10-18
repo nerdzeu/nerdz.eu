@@ -54,11 +54,11 @@ $singlepostvals['postcomments_n'] = $blisted ? '0' : $comments->countComments($o
 $singlepostvals['hpid_n'] = $o->hpid;
 $singlepostvals['news_b'] = isset($o->news) ? $o->news : false;
 
-$tpl->assign($singlepostvals);
+$core->getTPL()->assign($singlepostvals);
     
 if($draw)
-    $tpl->draw('profile/post');
+    $core->getTPL()->draw('profile/post');
 else
-    $singlepost = $tpl->draw('profile/post',true);
+    $singlepost = $core->getTPL()->draw('profile/post',true);
 
 ?>

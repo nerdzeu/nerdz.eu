@@ -130,8 +130,8 @@ if($core->isLogged())
         $vals['postedonyourboard'] = $core->lang('POSTED_ON_YOUR_BOARD');
         $vals['followingyou'] = $core->lang('FOLLOWING_YOU');
         
-        $tpl->assign($vals);
-        $tpl->draw('profile/notify');
+        $core->getTPL()->assign($vals);
+        $core->getTPL()->draw('profile/notify');
     }
     else
         for($i=0;$i<$y;++$i)

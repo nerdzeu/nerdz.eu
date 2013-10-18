@@ -15,8 +15,8 @@ if(($info->private && !$vals['logged_b']) || (!$info->visible && !$vals['logged_
     $vals['presentation_n'] = ''; //cancello la presentazione
     $vals['privateproject'] = $core->lang('PRIVATE_PROJECT');
     $vals['registercall'] = $core->lang('REGISTER_CALL');
-    $tpl->assign($vals);
-    $tpl->draw('project/private');
+    $core->getTPL()->assign($vals);
+    $core->getTPL()->draw('project/private');
 }
 else
 {
@@ -28,8 +28,8 @@ else
     if(!$icansee)
     {
         $vals['invisibleproject'] = $core->lang('INVISIBLE_PROJECT_DESCR');
-        $tpl->assign($vals);
-        $tpl->draw('project/invisible');
+        $core->getTPL()->assign($vals);
+        $core->getTPL()->draw('project/invisible');
     }
     else
     {
@@ -125,9 +125,9 @@ else
         {
             if(!($post = $core->query(array('SELECT "hpid" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),db::FETCH_OBJ)))
             {
-                $tpl->assign('banners_a',$vals['banners_a']);
-                $tpl->assign('postnotfound',$core->lang('POST_NOT_FOUND'));
-                $tpl->draw('project/postnotfound');
+                $core->getTPL()->assign('banners_a',$vals['banners_a']);
+                $core->getTPL()->assign('postnotfound',$core->lang('POST_NOT_FOUND'));
+                $core->getTPL()->draw('project/postnotfound');
             }
             else
             {
@@ -141,8 +141,8 @@ else
         }
         if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
         {
-            $tpl->assign($vals);
-            $tpl->draw('project/layout');
+            $core->getTPL()->assign($vals);
+            $core->getTPL()->draw('project/layout');
         }
     }
 }

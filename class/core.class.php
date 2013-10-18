@@ -3,6 +3,7 @@ if(isset($_COOKIE['SEXYID']) && !preg_match('#^[a-z0-9\-,]{32}$#i',$_COOKIE['SEX
     unset($_COOKIE['SEXYID']);
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/db.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
 
 //Per la condivisione delle sessioni (tramite redis) con node.js. L'inclusione ha session_start();
 if(REDIS_ENABLED)
@@ -10,22 +11,13 @@ if(REDIS_ENABLED)
 else
     session_start();
 
-//l'uso delle sessioni, devono essere dopo il session start
-if(isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu')
-    $_SESSION['nerdz_template'] = '1'; //mobile
-
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
-
 if(isset($_GET['id']) && !is_numeric($_GET['id']) && !is_array($_GET['id']))
     $_GET['id'] = (new phpCore())->getUserId(trim($_GET['id']));
-    
-$tpl = new RainTPL();
-
-$tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.(empty($_SESSION['nerdz_template']) ? '0' : $_SESSION['nerdz_template']).'/');
 
 class phpCore
 {
     private $db;
+    private $tpl;
 
     public function __construct()
     {
@@ -40,7 +32,13 @@ class phpCore
             die();
         }
 
-        $this->autoLogin();
+        $this->autoLogin(); //set nerdz_template value on autologin
+
+        if(isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu')
+            $_SESSION['nerdz_template'] = '1'; //if mobile version, change nerdz_template
+
+        $this->tpl = new RainTPL();
+        $this->tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.($this->isLogged() ? $_SESSION['nerdz_template'] : '0').'/'); //fallback on default template
 
         if($this->isLogged() && (($motivation = $this->isInBanList($_SESSION['nerdz_id']))))
         {
@@ -56,6 +54,11 @@ class phpCore
     public function getDB()
     {
         return $this->db;
+    }
+
+    public function getTPL()
+    {
+        return $this->tpl;
     }
    
     public function dumpException($e, $moredata = false)

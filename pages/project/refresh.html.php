@@ -37,7 +37,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.lang.php';
 //includo il loop in $mess
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/postlist.html.php';
 
-$tpl->assign($vals);
-$tpl->draw('project/postlist');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('project/postlist');
 
 ?>

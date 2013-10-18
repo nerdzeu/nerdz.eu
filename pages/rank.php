@@ -52,7 +52,7 @@ $vals['monthly_b'] = !$mo;
 $vals['lastupdate'] = $core->lang('LAST_UPDATE');
 $vals['lastupdate_n'] = $core->getDateTime(filemtime($path));
 
-$tpl->assign($vals);
+$core->getTPL()->assign($vals);
 
-$tpl->draw('base/rank');
+$core->getTPL()->draw('base/rank');
 ?>

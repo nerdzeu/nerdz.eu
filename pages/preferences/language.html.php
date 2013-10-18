@@ -2,10 +2,10 @@
 //TEMPLATE: OK
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
+$core = new phpCore();
+$core->getTPL()->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
 ob_start(array('phpCore','minifyHtml'));
 
-$core = new phpCore();
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
     
@@ -27,6 +27,6 @@ $vals['mylang_n'] = $core->getUserLanguage($_SESSION['nerdz_id']);
 $vals['myboardlang_n'] = $core->getBoardLanguage($_SESSION['nerdz_id']);
 $vals['description2'] = $core->lang('LANGUAGE_DESCR1');
 
-$tpl->assign($vals);
-$tpl->draw('preferences/language');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('preferences/language');
 ?>

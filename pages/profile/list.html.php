@@ -52,6 +52,6 @@ $vals['name'] = $core->lang('NAME');
 $vals['surname'] = $core->lang('SURNAME');
 $vals['id'] = 'ID';
 
-$tpl->assign($vals);
-$tpl->draw('profile/list');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('profile/list');
 ?>

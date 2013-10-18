@@ -14,6 +14,6 @@ $txt = file_get_contents($f ? $lcon : $_SERVER['DOCUMENT_ROOT'].'/data/bbcode/'.
 $vals = array();
 $arr = explode("\n",$txt);
 $vals['list_a'] = $arr;
-$tpl->assign($vals);
-$tpl->draw('base/bbcode');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/bbcode');
 ?>

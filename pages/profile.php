@@ -32,8 +32,8 @@ if($vals['logged_b'] && (true === $core->isInBlacklist($_SESSION['nerdz_id'],$in
         die($core->lang('ERROR'));
         
     $vals['motivation_n'] = (new messages())->bbcode($o->motivation);
-    $tpl->assign($vals);
-    $tpl->draw('profile/blacklisted');
+    $core->getTPL()->assign($vals);
+    $core->getTPL()->draw('profile/blacklisted');
 }
 else
 {
@@ -249,9 +249,9 @@ else
         {
             if(!($post = $core->query(array('SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array(':pid' => $pid, ':id' => $info->counter)),db::FETCH_OBJ)))
             {
-                $tpl->assign('banners_a',$vals['banners_a']);
-                $tpl->assign('postnotfound',$core->lang('POST_NOT_FOUND'));
-                $tpl->draw('profile/postnotfound');
+                $core->getTPL()->assign('banners_a',$vals['banners_a']);
+                $core->getTPL()->assign('postnotfound',$core->lang('POST_NOT_FOUND'));
+                $core->getTPL()->draw('profile/postnotfound');
             }
             else
             {
@@ -265,8 +265,8 @@ else
         }
         if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
         {
-            $tpl->assign($vals);
-            $tpl->draw('profile/layout');
+            $core->getTPL()->assign($vals);
+            $core->getTPL()->draw('profile/layout');
         }
     }
     else
@@ -274,8 +274,8 @@ else
         $included = true;
         require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
         $vals['presentation_n'] = ''; //cancello la presentazione
-        $tpl->assign($vals);
-        $tpl->draw('profile/closed');
+        $core->getTPL()->assign($vals);
+        $core->getTPL()->draw('profile/closed');
     }
 }
 ?>

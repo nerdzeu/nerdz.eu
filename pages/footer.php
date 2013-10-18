@@ -9,8 +9,8 @@ $vals['informations'] = $core->lang('INFORMATIONS');
 $vals['bugtitle'] = $core->lang('BUG_TITLE');
 $vals['search'] = $core->lang('SEARCH');
 
-$tpl->assign($vals);
-$tpl->draw('base/footer');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/footer');
 
 $fl = in_array($_SERVER['SCRIPT_NAME'], array('/profile.php','/project.php'));
 $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';

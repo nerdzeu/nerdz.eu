@@ -9,6 +9,6 @@ $vals['reloadcaptcha'] = $core->lang('RELOAD_CAPTCHA');
 $vals['send'] = $core->lang('SEND');
 $vals['captcha'] = $core->lang('CAPTCHA');
 $vals['email'] = $core->lang('EMAIL');
-$tpl->assign($vals);
-$tpl->draw('base/reset');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/reset');
 ?>

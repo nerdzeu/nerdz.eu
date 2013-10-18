@@ -84,6 +84,6 @@ else
     //fa tutto il loop e assegna tutte le variabili corrette in $vals, comprese quelle di lingua comuni a entrabbi i loops
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/postlist.html.php';
 
-$tpl->assign($vals);
-$tpl->draw('home/postlist');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('home/postlist');
 ?>

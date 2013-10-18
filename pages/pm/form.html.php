@@ -15,7 +15,7 @@ $vals['send'] = $core->lang('SEND');
 $vals['preview'] = $core->lang('PREVIEW');
 $vals['tok_n'] = $core->getCsrfToken('pm');
 
-$tpl->assign($vals);
-$tpl->draw('pm/form');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('pm/form');
 
 ?>

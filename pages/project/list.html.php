@@ -42,6 +42,6 @@ $vals['search'] = $core->lang('SEARCH');
 $vals['description'] = $core->lang('DESCRIPTION');
 $vals['name'] = $core->lang('NAME');
 
-$tpl->assign($vals);
-$tpl->draw('project/list');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('project/list');
 ?>

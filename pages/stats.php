@@ -49,6 +49,6 @@ $vals['totalcommentsprojects'] = $core->lang('TOTAL_COMMENTS_PROJECTS');
 $vals['totalonlineusers'] = $core->lang('TOTAL_ONLINE_USERS');
 $vals['tothiddenusers'] = $core->lang('HIDDEN_USERS');
 
-$tpl->assign($vals);
-$tpl->draw('base/stats');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/stats');
 ?>

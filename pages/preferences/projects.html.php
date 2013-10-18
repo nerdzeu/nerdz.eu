@@ -2,10 +2,9 @@
 //TEMPLATE: OK
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
-ob_start(array('phpCore','minifyHtml'));
-
 $core = new phpCore();
+$core->getTPL()->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
+ob_start(array('phpCore','minifyHtml'));
     
 if(!$core->refererControl())
     die($core->lang('ERROR'));
@@ -33,6 +32,6 @@ else
         ++$i;
     }
 }
-$tpl->assign($vals);
-$tpl->draw('preferences/projects');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('preferences/projects');
 ?>

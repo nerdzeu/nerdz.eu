@@ -45,8 +45,8 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals['everycomment_label'] = $core->lang ('EVERY_COMMENT'); 
         $vals['needmorebtn_b'] = $doShowForm && $vals['commentcount_n'] > 10;
         $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20; 
-        $tpl->assign($vals);
-        $tpl->draw('project/comments');
+        $core->getTPL()->assign($vals);
+        $core->getTPL()->draw('project/comments');
     break;
 default:
     die($core->lang('ERROR'));

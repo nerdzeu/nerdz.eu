@@ -19,7 +19,7 @@ if(!($txt = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/data/terms/'.($f ? $lc
 $txt = nl2br($txt);
 $vals = array();
 $vals['terms_n'] = $txt;
-$tpl->assign($vals);
-$tpl->draw('base/terms');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/terms');
 
 ?>

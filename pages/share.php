@@ -3,6 +3,6 @@
 $vals = array();
 $vals['nerdzit'] = $core->lang('NERDZ_IT');
 $vals['comments'] = $core->lang('COMMENTS');
-$tpl->assign($vals);
-$tpl->draw('base/share');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/share');
 ?>

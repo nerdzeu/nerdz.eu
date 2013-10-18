@@ -8,6 +8,6 @@ if(!$core->isLogged() || empty($_GET['message']))
 
 $vals = array();
 $vals['message_n'] = $core->parseCommentQuotes($core->bbcode(htmlentities($_GET['message'],ENT_QUOTES,'UTF-8')));
-$tpl->assign($vals);
-$tpl->draw('base/preview');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/preview');
 ?>

@@ -36,7 +36,7 @@ $vals['timezones_a'] = DateTimeZone::listIdentifiers();
 
 if(!isset($included))
 {
-    $tpl->assign($vals);
-    $tpl->draw('base/register');
+    $core->getTPL()->assign($vals);
+    $core->getTPL()->draw('base/register');
 }
 ?>

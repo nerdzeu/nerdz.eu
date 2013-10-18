@@ -2,7 +2,6 @@
 //TEMPLATE: OK
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
 
 $core = new phpCore();
 

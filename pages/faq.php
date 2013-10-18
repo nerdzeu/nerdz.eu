@@ -21,6 +21,6 @@ foreach($exp as $v)
     $vals['list_a'][$c]['line_n'] = htmlentities($v,ENT_QUOTES,'UTF-8');
     ++$c;
 }
-$tpl->assign($vals);
-$tpl->draw('base/faq');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/faq');
 ?>

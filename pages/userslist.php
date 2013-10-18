@@ -102,6 +102,6 @@ else
     $vals['prev_url'] = $url."&amp;lim={$limitprev}";
 }
 
-$tpl->assign($vals);
-$tpl->draw('base/userslist');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/userslist');
 ?>

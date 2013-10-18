@@ -120,6 +120,6 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
     ++$i;
 }
 
-$tpl->assign($vals);
-$tpl->draw('home/layout');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('home/layout');
 ?>

@@ -27,6 +27,6 @@ else
 $vals['tok_n'] = $core->getCsrfToken();
 $vals['loading'] = $core->lang('LOADING');
 
-$tpl->assign($vals);
-$tpl->draw('base/header');
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('base/header');
 ?>
