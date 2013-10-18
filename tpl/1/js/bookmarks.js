@@ -31,8 +31,8 @@ $(document).ready(function() {
                 $("#"+me.data('refto')).hide();
             }
         }
-		  
-		  N.json[$("#center_col").data('type')].unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
+          
+          N.json[$("#center_col").data('type')].unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
 
     });
 

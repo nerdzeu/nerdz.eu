@@ -159,8 +159,8 @@ $(document).ready(function() {
             }
     });
 
-	//Questo evento deve essere qui e non in index.js (che ora viene eliminato), dato che un utente può registrarsi anche dal
-	//form di registrazione, che appare quando un profilo/progetto è chiuso 
+    //Questo evento deve essere qui e non in index.js (che ora viene eliminato), dato che un utente può registrarsi anche dal
+    //form di registrazione, che appare quando un profilo/progetto è chiuso 
     $("#regfrm").on('submit',function(event) {
         event.preventDefault();
         N.json.register($("#regfrm").serialize(),function(obj) {
@@ -218,7 +218,7 @@ $(document).ready(function() {
         var refto = $('#' + $(this).data('refto'));
         refto.html(loading+'...');
 
-		  N.json[plist.data('type')].delComment({ hcid: $(this).data('hcid') },function(d) {
+          N.json[plist.data('type')].delComment({ hcid: $(this).data('hcid') },function(d) {
             if(d.status == 'ok')
             {
                 refto.remove();
@@ -390,25 +390,25 @@ $(document).ready(function() {
         var post = refto.html();
         var hpid = $(this).data('hpid');
 
-		  N.json[plist.data('type')].delPostConfirm({ hpid: hpid },function(m) {
-			  if(m.status == 'ok') {
-				  refto.html('<div style="text-align:center">' + m.message + '<br /><span id="delPostOk' + hpid +'" style="cursor:pointer">YES</span>|<span id="delPostNo'+hpid+'" style="cursor:pointer">NO</span></div>');
-				  refto.on('click','#delPostOk'+hpid,function() {
-						N.json[plist.data('type')].delPost({ hpid: hpid    },function(j) {
-							 if(j.status == 'ok') {
-								  refto.hide();
-							 }
-							 else {
-								  refto.html(j.message);
-							 }
-						});
-				  });
+          N.json[plist.data('type')].delPostConfirm({ hpid: hpid },function(m) {
+              if(m.status == 'ok') {
+                  refto.html('<div style="text-align:center">' + m.message + '<br /><span id="delPostOk' + hpid +'" style="cursor:pointer">YES</span>|<span id="delPostNo'+hpid+'" style="cursor:pointer">NO</span></div>');
+                  refto.on('click','#delPostOk'+hpid,function() {
+                        N.json[plist.data('type')].delPost({ hpid: hpid    },function(j) {
+                             if(j.status == 'ok') {
+                                  refto.hide();
+                             }
+                             else {
+                                  refto.html(j.message);
+                             }
+                        });
+                  });
 
-				  refto.on('click','#delPostNo'+hpid,function() {
-						refto.html(post);
-				  });
-			 }
-		});
+                  refto.on('click','#delPostNo'+hpid,function() {
+                        refto.html(post);
+                  });
+             }
+        });
     });
 
     plist.on('click',".editpost",function(e) {
@@ -423,32 +423,32 @@ $(document).ready(function() {
                                '<button type="button" style="float:left; margin-top:5px" onclick="window.open(\'/bbcode.php\')">BBCode</button>' +
                            '</form>';
                     };
-			N.json[plist.data('type')].getPost({hpid: hpid},function(d) {
-				 var fid = refto.attr('id') + 'editform';
-				 refto.html(form(fid,hpid,d.message,editlang,$(".preview").html()));
+            N.json[plist.data('type')].getPost({hpid: hpid},function(d) {
+                 var fid = refto.attr('id') + 'editform';
+                 refto.html(form(fid,hpid,d.message,editlang,$(".preview").html()));
 
-				 $('#'+fid).on('submit',function(e) {
-					  e.preventDefault();
-					  N.json[plist.data('type')].editPost(
-							{
-								 hpid: $(this).data('hpid'),
-								 message: $(this).children('textarea').val()
-							},function(d)
-							{
-								 if(d.status == 'ok')
-								 {
-									  refto.slideToggle("slow");
-									  N.html[plist.data('type')].getPost({hpid: hpid}, function(o) {
-											refto.html(o);
-											refto.slideToggle("slow");
-									  });
-								 }
-								 else {
-									  alert(d.message);
-								 }
-					  });
-				 });
-			});
+                 $('#'+fid).on('submit',function(e) {
+                      e.preventDefault();
+                      N.json[plist.data('type')].editPost(
+                            {
+                                 hpid: $(this).data('hpid'),
+                                 message: $(this).children('textarea').val()
+                            },function(d)
+                            {
+                                 if(d.status == 'ok')
+                                 {
+                                      refto.slideToggle("slow");
+                                      N.html[plist.data('type')].getPost({hpid: hpid}, function(o) {
+                                            refto.html(o);
+                                            refto.slideToggle("slow");
+                                      });
+                                 }
+                                 else {
+                                      alert(d.message);
+                                 }
+                      });
+                 });
+            });
     });
 
     plist.on('click',".imglocked",function() {
@@ -461,13 +461,13 @@ $(document).ready(function() {
                 me.attr('title',d.message);
             }
         }
-		  
-		  if($(this).data('silent')) { //nei commenti
-		      N.json[plist.data('type')].reNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
-		  }
-		  else {
-				 N.json[plist.data('type')].reNotifyForThisPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-		  }
+          
+          if($(this).data('silent')) { //nei commenti
+              N.json[plist.data('type')].reNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
+          }
+          else {
+                 N.json[plist.data('type')].reNotifyForThisPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
+          }
     });
 
     plist.on('click',".imgunlocked",function() {
@@ -499,8 +499,8 @@ $(document).ready(function() {
                 me.attr('title',d.message);
             }
         }
-		  
-		  N.json[plist.data('type')].lurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
+          
+          N.json[plist.data('type')].lurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
 
     });
 
@@ -514,8 +514,8 @@ $(document).ready(function() {
                 me.attr('title',d.message);
             }
         }
-		  
-		  N.json[plist.data('type')].unlurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
+          
+          N.json[plist.data('type')].unlurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
     });
 
     plist.on('click',".bookmark",function() {
@@ -528,8 +528,8 @@ $(document).ready(function() {
                 me.attr('title',d.message);
             }
         }
-		  
-		  N.json[plist.data('type')].bookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
+          
+          N.json[plist.data('type')].bookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
 
     });
 

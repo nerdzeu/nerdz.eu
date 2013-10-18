@@ -1,43 +1,43 @@
 <div style="margin: auto;text-align:center">
-	<hr />
-	{$description}
-	<hr />
-	<br />
-	<form class="page" id="delfrm">
-		<table>
-			<tr>
-				<td>
-					<div>
-						<img alt="captcha" id="captcha" style="border:1px solid #FFF;width:90px;height:30px" />&nbsp;&nbsp;
-						<span onclick="N.reloadCaptcha()" style="font-size:6pt;cursor:pointer">{$reloadcaptcha}</span>
-					</div>
-					<div>
-						<input type="text" name="captcha" id="frmdelcpt" />
-					</div>
-				</td>
-		    </tr>
-		</table>
-		<input type="submit" value="{$delete}" />
-	</form>
-	<div id="res"></div>
+    <hr />
+    {$description}
+    <hr />
+    <br />
+    <form class="page" id="delfrm">
+        <table>
+            <tr>
+                <td>
+                    <div>
+                        <img alt="captcha" id="captcha" style="border:1px solid #FFF;width:90px;height:30px" />&nbsp;&nbsp;
+                        <span onclick="N.reloadCaptcha()" style="font-size:6pt;cursor:pointer">{$reloadcaptcha}</span>
+                    </div>
+                    <div>
+                        <input type="text" name="captcha" id="frmdelcpt" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="{$delete}" />
+    </form>
+    <div id="res"></div>
 </div>
 <script type="application/javascript">
-	$(document).ready(function() {
-		$("#delfrm").submit(function(e) {
-			e.preventDefault();
-			N.json.post('/pages/preferences/delete.html.json.php', { captcha: $("#frmdelcpt").val() }, function(data) {
-				if(data.status == 'ok')
-				{
-					setTimeout(function() {
-						document.location.reload();
-					},500);
-				}
-				else
-				{
-					N.reloadCaptcha();
-				}
-				$("#res").html(data.message);
-			});
-		});
-	});
+    $(document).ready(function() {
+        $("#delfrm").submit(function(e) {
+            e.preventDefault();
+            N.json.post('/pages/preferences/delete.html.json.php', { captcha: $("#frmdelcpt").val() }, function(data) {
+                if(data.status == 'ok')
+                {
+                    setTimeout(function() {
+                        document.location.reload();
+                    },500);
+                }
+                else
+                {
+                    N.reloadCaptcha();
+                }
+                $("#res").html(data.message);
+            });
+        });
+    });
 </script>

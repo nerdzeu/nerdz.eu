@@ -1,41 +1,41 @@
 <div id="left_col">&nbsp;</div>
 <article id="center_col" data-type="{if="$project_b"}project{else}profile{/if}">
-	<table style="margin: auto" class="page">
-		<tr style="cursor: pointer">
-			<th style="width:10%" style="cursor: default">{$url}</th>
-			<th style="width:80%" id="preview">{$preview}</th>
-			<th style="width:10%" id="time">{$when}</th>
-		</tr>
-	{loop="list_a"}
-		<tr id="tr{$key}">
-			<td><a href="{$value.link_n}">{$value.name_n} [{$value.pid_n}]</a></td>
-			<td>
-				<div class="nerdz_message">
-						{$value.preview_n}
-					<div class="small" style="clear:both; padding-top: 5px">&nbsp;
-						<span style="margin-right:3px; float: right">
-							<img class="unbookmark" data-hpid="{$value.hpid_n}" src="images/unbookmark.png" alt="" width="16" height="16" title="Unbookmark" style="float:right; margin-left:5px" onclick="" data-refto="tr{$key}" />
-						</span>
-					</div>
-				</div>
-			</td>
-			<td>
-				{$value.datetime_n}
-			</td>
-		</tr>
-	{/loop}
-	</table>
+    <table style="margin: auto" class="page">
+        <tr style="cursor: pointer">
+            <th style="width:10%" style="cursor: default">{$url}</th>
+            <th style="width:80%" id="preview">{$preview}</th>
+            <th style="width:10%" id="time">{$when}</th>
+        </tr>
+    {loop="list_a"}
+        <tr id="tr{$key}">
+            <td><a href="{$value.link_n}">{$value.name_n} [{$value.pid_n}]</a></td>
+            <td>
+                <div class="nerdz_message">
+                        {$value.preview_n}
+                    <div class="small" style="clear:both; padding-top: 5px">&nbsp;
+                        <span style="margin-right:3px; float: right">
+                            <img class="unbookmark" data-hpid="{$value.hpid_n}" src="images/unbookmark.png" alt="" width="16" height="16" title="Unbookmark" style="float:right; margin-left:5px" onclick="" data-refto="tr{$key}" />
+                        </span>
+                    </div>
+                </div>
+            </td>
+            <td>
+                {$value.datetime_n}
+            </td>
+        </tr>
+    {/loop}
+    </table>
 
-	{if="!empty($prev_url)"}
-		<div style="float:left; margin-left:5%">
-			<a href="{$prev_url}">&lt;&lt;&lt;</a>
-		</div>
-	{/if}
-	{if="!empty($next_url)"}
-		<div style="float:right; margin-right:5%">
-			<a href="{$next_url}">&gt;&gt;&gt;</a>
-		</div>
-	{/if}
+    {if="!empty($prev_url)"}
+        <div style="float:left; margin-left:5%">
+            <a href="{$prev_url}">&lt;&lt;&lt;</a>
+        </div>
+    {/if}
+    {if="!empty($next_url)"}
+        <div style="float:right; margin-right:5%">
+            <a href="{$next_url}">&gt;&gt;&gt;</a>
+        </div>
+    {/if}
 
-	<br /><br /><br />
+    <br /><br /><br />
 </article>

@@ -6,11 +6,11 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
 class flood extends phpCore
 {
-	const PM_TIMEOUT = 5;
-	const PROFILE_POST_TIMEOUT = 20;
-	const PROJECT_POST_TIMEOUT = 20;
-	const PROFILE_COMMENT_TIMEOUT = 5;
-	const PROJECT_COMMENT_TIMEOUT = 5;
+    const PM_TIMEOUT = 5;
+    const PROFILE_POST_TIMEOUT = 20;
+    const PROJECT_POST_TIMEOUT = 20;
+    const PROFILE_COMMENT_TIMEOUT = 5;
+    const PROJECT_COMMENT_TIMEOUT = 5;
 
     public function __construct()
     {

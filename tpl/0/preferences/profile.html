@@ -4,209 +4,209 @@
 <form id="edprofrm">
 <table class="intable">
     <tr>
-		<td style="width: 50%; vertical-align: top">
-			{$interests}:
-			<p class="small">
-				{$oneperline}
-			</p>
-		</td>
-		<td style="width: 50%">
-			<textarea name="interests" rows="8" cols="26">
-				{loop="interests_a"}
-					{$value}&#13;
-				{/loop}
-			</textarea>
-		</td>
+        <td style="width: 50%; vertical-align: top">
+            {$interests}:
+            <p class="small">
+                {$oneperline}
+            </p>
+        </td>
+        <td style="width: 50%">
+            <textarea name="interests" rows="8" cols="26">
+                {loop="interests_a"}
+                    {$value}&#13;
+                {/loop}
+            </textarea>
+        </td>
     </tr>
     <tr>
-		<td style="vertical-align: top">
-			<br />
-			{$biography}:
-		    <p class="small">
-				{$biographysub}
-			</p>
-		</td>
-		<td>
-			<br />
-			<textarea name="biography" rows="8" cols="26">
-			{$biography_n}
-			</textarea>
-		</td>
+        <td style="vertical-align: top">
+            <br />
+            {$biography}:
+            <p class="small">
+                {$biographysub}
+            </p>
+        </td>
+        <td>
+            <br />
+            <textarea name="biography" rows="8" cols="26">
+            {$biography_n}
+            </textarea>
+        </td>
     </tr>
     <tr>
-		<td style="vertical-align: top">
-			{$quotes}:
-			<p class="small">
-				{$oneperline}
-			</p>
-		</td>
-		<td>
-			<br />
-			<textarea name="quotes" rows="8" cols="26">
-				{loop="quotes_a"}
-					{$value}&#13;&#10;
-				{/loop}
-			</textarea>
-		</td>
+        <td style="vertical-align: top">
+            {$quotes}:
+            <p class="small">
+                {$oneperline}
+            </p>
+        </td>
+        <td>
+            <br />
+            <textarea name="quotes" rows="8" cols="26">
+                {loop="quotes_a"}
+                    {$value}&#13;&#10;
+                {/loop}
+            </textarea>
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$website}:
-		</td>
-		<td>
-			<br />
-			<input type="text" name="website" value="{$website_n}" />
-		</td>
+        <td>
+            <br />
+            {$website}:
+        </td>
+        <td>
+            <br />
+            <input type="text" name="website" value="{$website_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$github}:
-		</td>
-		<td>
-			<br />
-			<input type="text" name="github" value="{$github_n}" />
-		</td>
+        <td>
+            <br />
+            {$github}:
+        </td>
+        <td>
+            <br />
+            <input type="text" name="github" value="{$github_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$jabber}:
-		</td>
-		<td>
-			<br />
-			<input type="text" name="jabber" value="{$jabber_n}" />
-		</td>
+        <td>
+            <br />
+            {$jabber}:
+        </td>
+        <td>
+            <br />
+            <input type="text" name="jabber" value="{$jabber_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$yahoo}:
-		</td>
-		<td>
-			<br />
-			<input type="text" name="yahoo" value="{$yahoo_n}" />
-		</td>
+        <td>
+            <br />
+            {$yahoo}:
+        </td>
+        <td>
+            <br />
+            <input type="text" name="yahoo" value="{$yahoo_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$facebook}:<br /><p class="small">{$inserturl}</p>
-		</td>
-		<td>
-			<br />
-			<input type="text" name="facebook" value="{$facebook_n}" />
-		</td>
+        <td>
+            <br />
+            {$facebook}:<br /><p class="small">{$inserturl}</p>
+        </td>
+        <td>
+            <br />
+            <input type="text" name="facebook" value="{$facebook_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$twitter}:<br /><p class="small">{$inserturl}</p>
-		</td>
-		<td>
-			<br />
-			<input type="text" name="twitter" value="{$twitter_n}" />
-		</td>
+        <td>
+            <br />
+            {$twitter}:<br /><p class="small">{$inserturl}</p>
+        </td>
+        <td>
+            <br />
+            <input type="text" name="twitter" value="{$twitter_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$steam}:
-		</td>
-		<td>
-			<br />
-			<input type="text" name="steam" value="{$steam_n}" />
-		</td>
+        <td>
+            <br />
+            {$steam}:
+        </td>
+        <td>
+            <br />
+            <input type="text" name="steam" value="{$steam_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$skype}:
-		</td>
-		<td>
-			<br />
-			<input type="text" name="skype" value="{$skype_n}" />
-		</td>
+        <td>
+            <br />
+            {$skype}:
+        </td>
+        <td>
+            <br />
+            <input type="text" name="skype" value="{$skype_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$userscript}: [<a href="/faq.php#q19" onclick="window.open(this.href); return false;">?</a>]
-			<br />
-			<p class="small">
-				{$inserturl}
-			</p>
-		</td>
-		<td>
-			<br />
-			<input type="text" name="userscript" value="{$userscript_n}" />
-		</td>
+        <td>
+            <br />
+            {$userscript}: [<a href="/faq.php#q19" onclick="window.open(this.href); return false;">?</a>]
+            <br />
+            <p class="small">
+                {$inserturl}
+            </p>
+        </td>
+        <td>
+            <br />
+            <input type="text" name="userscript" value="{$userscript_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$dateformat}:
-			<br />
-			<p class="small">
-				{$dateformat_descr}
-			</p>
-		</td>
-		<td>
-			<br />
-			<input type="text" name="dateformat" value="{$dateformat_n}" />
-		</td>
+        <td>
+            <br />
+            {$dateformat}:
+            <br />
+            <p class="small">
+                {$dateformat_descr}
+            </p>
+        </td>
+        <td>
+            <br />
+            <input type="text" name="dateformat" value="{$dateformat_n}" />
+        </td>
     </tr>
     <tr>
-		<td>
-			<br />
-			{$closedprofile}:
-		</td>
-		<td>
-			<br />
-			<input type="checkbox" name="closed" value="1" {if="$closedprofile_b"} checked {/if}/>
-		</td>
+        <td>
+            <br />
+            {$closedprofile}:
+        </td>
+        <td>
+            <br />
+            <input type="checkbox" name="closed" value="1" {if="$closedprofile_b"} checked {/if}/>
+        </td>
     </tr>
 {if="$canshowwhitelist_b"}
     <tr>
-		<td style="vertical-align: top">
-			{$whitelist}: [<a href="/faq.php#q17">?</a>]
-			<p class="small">
-				{$oneperline}
-			</p>
-		</td>
-		<td>
-			<br />
-			<textarea name="whitelist" rows="8" cols="26">
-				{loop="whitelist_a"}
-					{$value}&#13;&#10;
-				{/loop}
-			</textarea>
-		</td>
+        <td style="vertical-align: top">
+            {$whitelist}: [<a href="/faq.php#q17">?</a>]
+            <p class="small">
+                {$oneperline}
+            </p>
+        </td>
+        <td>
+            <br />
+            <textarea name="whitelist" rows="8" cols="26">
+                {loop="whitelist_a"}
+                    {$value}&#13;&#10;
+                {/loop}
+            </textarea>
+        </td>
     </tr>
 {/if}
-	<tr>
-		<td>
-			<br />
-			<input type="submit" value="{$edit}" />
-			</td>
-		<td>
-			<div id="res"></div>
-		</td>
-	</tr>
-	</table>
-	<input type="hidden" name="tok" value="{$tok_n}" />
+    <tr>
+        <td>
+            <br />
+            <input type="submit" value="{$edit}" />
+            </td>
+        <td>
+            <div id="res"></div>
+        </td>
+    </tr>
+    </table>
+    <input type="hidden" name="tok" value="{$tok_n}" />
 </form>
 <br /><br />
 <script type="application/javascript">
-	$(document).ready(function() {
-		$('#edprofrm').submit(function(event) {
-			event.preventDefault();
-			var r = $("#res");
-			r.html($("#loadtxt").data('loading'));
-			N.json.post('/pages/preferences/profile.html.json.php',$(this).serialize(), function(data) {
-				r.html(data.message);
-			});
-		});
-	});
+    $(document).ready(function() {
+        $('#edprofrm').submit(function(event) {
+            event.preventDefault();
+            var r = $("#res");
+            r.html($("#loadtxt").data('loading'));
+            N.json.post('/pages/preferences/profile.html.json.php',$(this).serialize(), function(data) {
+                r.html(data.message);
+            });
+        });
+    });
 </script>

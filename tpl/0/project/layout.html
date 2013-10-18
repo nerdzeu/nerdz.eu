@@ -1,209 +1,209 @@
 <div id="main">
-	<aside id="left_col">
-		<div>
-			<div style="text-align: center; margin-bottom:17px">
+    <aside id="left_col">
+        <div>
+            <div style="text-align: center; margin-bottom:17px">
 {ignore} src="foto#" così facendo il parser di raintpl non sovrascrive l'url{/ignore}
-				<a href="/{$name4link_n}">
-				{if="empty($photo_n)"}
-					<img src="/images/noImage.jpg" alt="{$name}" style="max-width:100%; max-height:100%" width="180" height="180" />
-				{else}
-					<img src="{$photo_n}#" alt="{$name}" style="max-width:100%; max-height:100%" onerror="this.src='{$onerrorimgurl_n}'" />
-				{/if}
-				</a>
-			</div>
-			<div style="margin-top: -9px">
-				<hr />
-			</div>
-		{if="$canshowmenu_b"}
-			<table class="page">
-				<tr class="small">
-					<th>
-						<div class="g-plusone" data-size="small" data-count="1" data-href="http://www.nerdz.eu/{$name4link_n}"></div>
-					</th>
-					{if="$canifollow_b"}
-						<th id="follow" data-id="{$id_n}">{$follow}</th>
-					{else}
-						<th id="unfollow" data-id="{$id_n}">{$unfollow}</th>
-					{/if}
-				</tr>
-			</table>
-		{else}
-			<div style="text-align:center;margin-right:-15%">
-				<div class="g-plusone" data-size="small" data-count="1" data-href="http://www.nerdz.eu/{$name4link_n}"></div>
-			</div>
-		{/if}
-			<hr />
+                <a href="/{$name4link_n}">
+                {if="empty($photo_n)"}
+                    <img src="/images/noImage.jpg" alt="{$name}" style="max-width:100%; max-height:100%" width="180" height="180" />
+                {else}
+                    <img src="{$photo_n}#" alt="{$name}" style="max-width:100%; max-height:100%" onerror="this.src='{$onerrorimgurl_n}'" />
+                {/if}
+                </a>
+            </div>
+            <div style="margin-top: -9px">
+                <hr />
+            </div>
+        {if="$canshowmenu_b"}
+            <table class="page">
+                <tr class="small">
+                    <th>
+                        <div class="g-plusone" data-size="small" data-count="1" data-href="http://www.nerdz.eu/{$name4link_n}"></div>
+                    </th>
+                    {if="$canifollow_b"}
+                        <th id="follow" data-id="{$id_n}">{$follow}</th>
+                    {else}
+                        <th id="unfollow" data-id="{$id_n}">{$unfollow}</th>
+                    {/if}
+                </tr>
+            </table>
+        {else}
+            <div style="text-align:center;margin-right:-15%">
+                <div class="g-plusone" data-size="small" data-count="1" data-href="http://www.nerdz.eu/{$name4link_n}"></div>
+            </div>
+        {/if}
+            <hr />
 
-			<div class="title">{$informations}</div><br />
+            <div class="title">{$informations}</div><br />
 
-			<span class="light">{$name}:<br /></span>
-			{$name_n}<br />
-			{if="!empty($website_n)"}
-				<br />
-				<span class="light">{$website}:<br /></span>
-				<span style="font-size: 8pt;">
-					<a href="{$website4link_n}#" onclick="window.open(this.href); return false">{$website_n}</a>
-				<br />
-				</span>
-			{/if}
-			<br />
+            <span class="light">{$name}:<br /></span>
+            {$name_n}<br />
+            {if="!empty($website_n)"}
+                <br />
+                <span class="light">{$website}:<br /></span>
+                <span style="font-size: 8pt;">
+                    <a href="{$website4link_n}#" onclick="window.open(this.href); return false">{$website_n}</a>
+                <br />
+                </span>
+            {/if}
+            <br />
 
-			<span class="light">{$id}:<br /></span>
-			{$id_n}<br />
-			<span class="light">{$members}:<br /></span>
-			{$members_n}<br />
-			<span class="light">{$users}:<br /></span>
-			{$users_n}<br /><br />
+            <span class="light">{$id}:<br /></span>
+            {$id_n}<br />
+            <span class="light">{$members}:<br /></span>
+            {$members_n}<br />
+            <span class="light">{$users}:<br /></span>
+            {$users_n}<br /><br />
 
-			<span class="light">{$owner}:<br /></span>
-			<a href="/{$owner4link_n}">{$owner_n}</a><br />
-	
-			{if="!empty($users_a)"}
-				<span class="light"><br />
-					{$users}	({$users_n})
-				</span><br />
-				<div style="max-height:250px; overflow: auto">
-				{loop="users_a"}
-					<a href="/{$value.username4link_n}">{$value.username_n}</a><br />
-				{/loop}
-				</div>
-			{/if}
-			{if="!empty($members_a)"}
-				<span class="light"><br />
-					{$members}	({$members_n})
-				</span><br />
-				<div style="max-height:250px; overflow: auto">
-				{loop="members_a"}
-					<a href="/{$value.username4link_n}">{$value.username_n}</a><br />
-				{/loop}
-				</div>
-			{/if}
-		</div>
-		<br /><br />
-	</aside>
-	<article id="center_col" class="page">
-	{if="$canwrite_b"}
-		<div id="fast_nerdz">
-		    <div>
-		    	<form id="stdfrm" data-to="{$id_n}">
-					<textarea id="frmtxt" name="message" style="width: 99.5%; height: 60px"></textarea>
-					<input type="submit" value="{$nerdzit}" style="float: right;margin-top:5px" />
-					<button type="button" style="float:right; margin-top: 5px" class="preview" data-refto="#frmtxt">{$preview}</button>
-					<button type="button" style="float:left; margin-top:5px" onclick="window.open('/bbcode.php')">BBCode</button>
-					{if="$canwritenews_b"}
-						<span style="float:left; margin-top:5px"><input type="checkbox" name="news" value="1" id="sendnews" />&nbsp;<label for="sendnews">News</label></span>
-					{/if}
-					<div id="pmessage" class="error"></div>
-				</form>
-			</div>
-			<br />
-		</div>
-	{/if}
-		<div id="postlist" data-type="project" data-projectid="{$id_n}" data-location="project" data-limit="0" data-mode="std">
-			{ignore} Data type == project è un progetto, parte da limit 0 a fare le richieste{/ignore}
-			{if="$singlepost_b"}
-				{$post_n}
-			{/if}
-		</div>
-		<br /><br />
-	</article>
-	<aside id="right_col" class="page">
+            <span class="light">{$owner}:<br /></span>
+            <a href="/{$owner4link_n}">{$owner_n}</a><br />
+    
+            {if="!empty($users_a)"}
+                <span class="light"><br />
+                    {$users}    ({$users_n})
+                </span><br />
+                <div style="max-height:250px; overflow: auto">
+                {loop="users_a"}
+                    <a href="/{$value.username4link_n}">{$value.username_n}</a><br />
+                {/loop}
+                </div>
+            {/if}
+            {if="!empty($members_a)"}
+                <span class="light"><br />
+                    {$members}    ({$members_n})
+                </span><br />
+                <div style="max-height:250px; overflow: auto">
+                {loop="members_a"}
+                    <a href="/{$value.username4link_n}">{$value.username_n}</a><br />
+                {/loop}
+                </div>
+            {/if}
+        </div>
+        <br /><br />
+    </aside>
+    <article id="center_col" class="page">
+    {if="$canwrite_b"}
+        <div id="fast_nerdz">
+            <div>
+                <form id="stdfrm" data-to="{$id_n}">
+                    <textarea id="frmtxt" name="message" style="width: 99.5%; height: 60px"></textarea>
+                    <input type="submit" value="{$nerdzit}" style="float: right;margin-top:5px" />
+                    <button type="button" style="float:right; margin-top: 5px" class="preview" data-refto="#frmtxt">{$preview}</button>
+                    <button type="button" style="float:left; margin-top:5px" onclick="window.open('/bbcode.php')">BBCode</button>
+                    {if="$canwritenews_b"}
+                        <span style="float:left; margin-top:5px"><input type="checkbox" name="news" value="1" id="sendnews" />&nbsp;<label for="sendnews">News</label></span>
+                    {/if}
+                    <div id="pmessage" class="error"></div>
+                </form>
+            </div>
+            <br />
+        </div>
+    {/if}
+        <div id="postlist" data-type="project" data-projectid="{$id_n}" data-location="project" data-limit="0" data-mode="std">
+            {ignore} Data type == project è un progetto, parte da limit 0 a fare le richieste{/ignore}
+            {if="$singlepost_b"}
+                {$post_n}
+            {/if}
+        </div>
+        <br /><br />
+    </article>
+    <aside id="right_col" class="page">
 
-	{if="!empty($description_n)"}
-		<div class="title">{$description}</div>
-		<div class="box">
-			{$description_n}
-		</div>
-		<br />
-	{/if}
+    {if="!empty($description_n)"}
+        <div class="title">{$description}</div>
+        <div class="box">
+            {$description_n}
+        </div>
+        <br />
+    {/if}
 
-	{if="!empty($goal_n)"}
-		<div class="title">{$goal}</div>
-		<div class="box">
-			{$goal_n}
-		</div>
-		<br />
-	{/if}
-		<div class="title">{$advertisement}</div>
-		<div class="box">
-			{$banners_a.120x600}
-		</div>
-	<br /><br />
-	</aside>
-	<div id="showpostlist" style="display:none"></div>
+    {if="!empty($goal_n)"}
+        <div class="title">{$goal}</div>
+        <div class="box">
+            {$goal_n}
+        </div>
+        <br />
+    {/if}
+        <div class="title">{$advertisement}</div>
+        <div class="box">
+            {$banners_a.120x600}
+        </div>
+    <br /><br />
+    </aside>
+    <div id="showpostlist" style="display:none"></div>
 {if="!$singlepost_b"}
-	<script type="application/javascript">
-		$(document).ready(function() {
-			var plist = $("#postlist");
-			var num = 10; {ignore} TODO PARAM? {/ignore}
-			var load = false;
-			var sl = 'searchLoad'; {ignore}search label {/ignore}
-			var loading = $("#loadtxt").data('loading'); {ignore} in header {/ignore}
-			var divId = 'scrtxt';
-			var append = '<h3 id="'+divId+'">'+loading+'...</h3>';
+    <script type="application/javascript">
+        $(document).ready(function() {
+            var plist = $("#postlist");
+            var num = 10; {ignore} TODO PARAM? {/ignore}
+            var load = false;
+            var sl = 'searchLoad'; {ignore}search label {/ignore}
+            var loading = $("#loadtxt").data('loading'); {ignore} in header {/ignore}
+            var divId = 'scrtxt';
+            var append = '<h3 id="'+divId+'">'+loading+'...</h3>';
 
-			$("#showpostlist").on('click',function() {
-				plist.html(loading);
-				load = false;
-				N.html.project.getPostList(num, $("#postlist").data('projectid'),function(data) {
-					plist.html(data);
-					load = true;
-					sessionStorage.setItem(sl,"0");
-				});
-			});
-			
-			$("#showpostlist").click();
-			
-			{ignore} Autoload vecchi post allo scrolldown {/ignore}
+            $("#showpostlist").on('click',function() {
+                plist.html(loading);
+                load = false;
+                N.html.project.getPostList(num, $("#postlist").data('projectid'),function(data) {
+                    plist.html(data);
+                    load = true;
+                    sessionStorage.setItem(sl,"0");
+                });
+            });
+            
+            $("#showpostlist").click();
+            
+            {ignore} Autoload vecchi post allo scrolldown {/ignore}
 
-			$(window).scroll(function() {
-				if($(this).scrollTop()+200 >= ( $(document).height() - $(this).height() ) )
-				{
-					var hpid = null;
-					if((load || ("1" == sessionStorage.getItem(sl)) && !$("#"+divId).length))
-					{
-						plist.append(append);
-						hpid = plist.find("div[id^='post']").last().data('hpid');
-					}
+            $(window).scroll(function() {
+                if($(this).scrollTop()+200 >= ( $(document).height() - $(this).height() ) )
+                {
+                    var hpid = null;
+                    if((load || ("1" == sessionStorage.getItem(sl)) && !$("#"+divId).length))
+                    {
+                        plist.append(append);
+                        hpid = plist.find("div[id^='post']").last().data('hpid');
+                    }
 
-					if(load)
-					{
-						load = false;
+                    if(load)
+                    {
+                        load = false;
 
-						if(plist.data('mode') == 'std') {
-							N.html.project.getPostListBeforeHpid(num, plist.data('projectid'), hpid,function(data) {
-								$("#"+divId).remove();
-								if(data.length > 0) {
-									plist.append(data);
-									load = true;
-									sessionStorage.setItem(sl,"0");
-								}
-							});
-						}
-					}
-					
-					if(sessionStorage.getItem(sl) == "1")
-					{
-						sessionStorage.setItem(sl,"0");
-						N.html.search.specificProfilePostsBeforeHpid(num, $("#footersearch input[name=q]").val(), plist.data('projectid'), hpid, function(data) {
-							$("#"+divId).remove();
-							if(data.length > 0) {
-								plist.append(data);
-								load = false;
-								sessionStorage.setItem(sl,"1");
-							}
-						});
-					}
-				}
-			});
-		});
-	</script>
+                        if(plist.data('mode') == 'std') {
+                            N.html.project.getPostListBeforeHpid(num, plist.data('projectid'), hpid,function(data) {
+                                $("#"+divId).remove();
+                                if(data.length > 0) {
+                                    plist.append(data);
+                                    load = true;
+                                    sessionStorage.setItem(sl,"0");
+                                }
+                            });
+                        }
+                    }
+                    
+                    if(sessionStorage.getItem(sl) == "1")
+                    {
+                        sessionStorage.setItem(sl,"0");
+                        N.html.search.specificProfilePostsBeforeHpid(num, $("#footersearch input[name=q]").val(), plist.data('projectid'), hpid, function(data) {
+                            $("#"+divId).remove();
+                            if(data.length > 0) {
+                                plist.append(data);
+                                load = false;
+                                sessionStorage.setItem(sl,"1");
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
 {else}
-	<script type="application/javascript">
-	$(document).ready(function() {
-			$(".showcomments").click();
-	});
-	</script>
-	{ignore} tanto se il post è singolo ne esiste solo uno di elemento con questa classe{/ignore}
+    <script type="application/javascript">
+    $(document).ready(function() {
+            $(".showcomments").click();
+    });
+    </script>
+    {ignore} tanto se il post è singolo ne esiste solo uno di elemento con questa classe{/ignore}
 {/if}
 </div>

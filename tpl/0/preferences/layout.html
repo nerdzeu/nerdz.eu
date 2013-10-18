@@ -1,33 +1,33 @@
 <div id="left_col">&nbsp;</div>
 <div id="center_col">
-	<div class="page" style="cursor: pointer">
-		<table>
-			<tr id="prefbar">
-				<th id="account">{$account}</th>
-				<th id="profile">{$profile}</th>
-				<th id="guests">{$guests}</th>
-				<th id="projects">{$projects}</th>
-				<th id="language">{$language}</th>
-				<th id="delete">{$delete}</th>
-			</tr>
-		</table>
-	</div>
-	<br />
-	<div id="content" class="page">
-		<br />
-		<h3 style="text-align:center;margin:auto;width:60%">
-			{$description_n}
-		</h3>
-	</div>
+    <div class="page" style="cursor: pointer">
+        <table>
+            <tr id="prefbar">
+                <th id="account">{$account}</th>
+                <th id="profile">{$profile}</th>
+                <th id="guests">{$guests}</th>
+                <th id="projects">{$projects}</th>
+                <th id="language">{$language}</th>
+                <th id="delete">{$delete}</th>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div id="content" class="page">
+        <br />
+        <h3 style="text-align:center;margin:auto;width:60%">
+            {$description_n}
+        </h3>
+    </div>
 </div>
 <script type="application/javascript">
-	$(document).ready(function() {
-		$("#prefbar").click(function(event) {
-			var c = $("#content");
-			c.html($("#loadtxt").data('loading'));
-			N.html.post('/pages/preferences/'+ event.target.id +'.html.php',{},function(data) {
-				c.html(data);
-			});
-		});
-	});
+    $(document).ready(function() {
+        $("#prefbar").click(function(event) {
+            var c = $("#content");
+            c.html($("#loadtxt").data('loading'));
+            N.html.post('/pages/preferences/'+ event.target.id +'.html.php',{},function(data) {
+                c.html(data);
+            });
+        });
+    });
 </script>

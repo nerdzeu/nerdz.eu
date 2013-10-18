@@ -46,12 +46,12 @@ $vals['description'] = $core->lang('DESCRIPTION');
 $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 
 if(empty($q))
-	$query = "SELECT name, description,counter FROM groups ORDER BY {$orderby} {$order} LIMIT {$newlim}";
+    $query = "SELECT name, description,counter FROM groups ORDER BY {$orderby} {$order} LIMIT {$newlim}";
 else
 {
-	$orderbycounter = $orderby == 'counter';
-	$query = array("SELECT name,description, counter FROM groups WHERE {$orderby} ".($orderbycounter ? '=' : 'LIKE')." ? ORDER BY {$orderby} {$order} LIMIT {$newlim}",
-			$orderbycounter ? array($q) : array("%{$q}%"));
+    $orderbycounter = $orderby == 'counter';
+    $query = array("SELECT name,description, counter FROM groups WHERE {$orderby} ".($orderbycounter ? '=' : 'LIKE')." ? ORDER BY {$orderby} {$order} LIMIT {$newlim}",
+            $orderbycounter ? array($q) : array("%{$q}%"));
 }
 
 $vals['list_a'] = array();

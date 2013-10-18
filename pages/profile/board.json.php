@@ -24,11 +24,11 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             
         $retval = $core->addMessage($to,$message);
         if($retval === 0)
-		{
-			require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-			$flood = new flood();
+        {
+            require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
+            $flood = new flood();
             die($core->jsonResponse('error','Flood! '.$core->lang('WAIT').': '.($_SESSION['nerdz_ProfileFlood'] + $flood::PROFILE_POST_TIMEOUT - time().'s')));
-		}
+        }
         else if($retval === false)
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;

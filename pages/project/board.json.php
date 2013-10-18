@@ -23,11 +23,11 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $retval = $core->addProjectMessage($_POST['to'],$_POST['message'],$news);
 
         if($retval === 0)
-		{
-			require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-			$flood = new flood();
+        {
+            require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
+            $flood = new flood();
             die($core->jsonResponse('error','Flood! '.$core->lang('WAIT').': '.($_SESSION['nerdz_ProjectFlood']+ $flood::PROJECT_POST_TIMEOUT - time().'s')));
-		}
+        }
         else if($retval === false || $retval === null)
             die($core->jsonResponse('error',$core->lang('ERROR')));
         

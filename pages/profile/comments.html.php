@@ -26,6 +26,10 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if (empty ($_list) && !$doShowForm)
             die();
         $vals = array();
+        
+        $vals['currentuserprofile_n'] = phpCore::userLink($_SESSION['nerdz_id']);
+        $vals['currentusergravatar_n'] = (new gravatar())->getURL($_SESSION['nerdz_id']);
+        $vals['currentusername_n'] = $core->getUserName();
         $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/red_x.png';
         $vals['list_a'] = $_list;
         $vals['showform_b'] = $doShowForm;

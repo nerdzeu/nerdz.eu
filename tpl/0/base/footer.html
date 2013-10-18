@@ -1,24 +1,24 @@
 <footer id="footer_main">
 {if="!$logged_b"}
-	<div id="footer_left">
-		<div style="font-size: 7pt; margin-bottom: 5px;">
-			<a href="/informations.php">{$informations}</a> | <a href="/stats.php">{$stats}</a> | <a href="/terms.php">{$terms}</a>
-		</div>
-	</div>
-	<span id="share">
-		<a href="http://www.w3.org/html/logo/">
-			<img src="images/offline/html5.png" title="HTML 5" width="16" height="16" alt="HTML 5" />
-		</a>
-	</span>
+    <div id="footer_left">
+        <div style="font-size: 7pt; margin-bottom: 5px;">
+            <a href="/informations.php">{$informations}</a> | <a href="/stats.php">{$stats}</a> | <a href="/terms.php">{$terms}</a>
+        </div>
+    </div>
+    <span id="share">
+        <a href="http://www.w3.org/html/logo/">
+            <img src="images/offline/html5.png" title="HTML 5" width="16" height="16" alt="HTML 5" />
+        </a>
+    </span>
 {else}
-	<span id="bug_bar">
-		<a href="/NERDZilla:">
-			<img alt="bug_report" src="images/online/ladyicon.png" title="{$bugtitle}" width="16" height="15">
-		</a>
-	</span>
-	<form id="footersearch">
-		<input type="text" name="q" style="width: 55%" placeholder="{$search}" />
-	</form>
+    <span id="bug_bar">
+        <a href="/NERDZilla:">
+            <img alt="bug_report" src="images/online/ladyicon.png" title="{$bugtitle}" width="16" height="15">
+        </a>
+    </span>
+    <form id="footersearch">
+        <input type="text" name="q" style="width: 55%" placeholder="{$search}" />
+    </form>
 {/if}
-	<a id="notifycounter" accesskey="x"></a>
+    <a id="notifycounter" accesskey="x"></a>
 </footer>

@@ -3,46 +3,46 @@
 <form id="srclist" data-limit="20">
     <table style="margin: auto" class="page">
     <tr style="cursor: pointer">
-		<th style="width:15%">{$name}</th>
-		<th style="width:84%">{$description}</th>
-	</tr>
-	{loop="list_a"}
-		{if="$counter%2"}
-		<tr>
-		{else}
-		<tr style="color:#00FFFF">
-		{/if}
-			<td>{$value.counter_n}</td>
-			<td>
-				<a href="/{$value.username4link_n}">{$value.username_n}</a>
-			</td>
-			<td>{$value.name_n}</td>
-			<td>{$value.surname_n}</td>
-			<td>{$value.birthdate_n}</td>
-		</tr>
-	{else}
-		<tr><td></td><td></td><td style="text-align:right">No search result</td></tr>
-	{/loop}
-	<tr>
-		<td>
-			<input type="text" name="name" />
-		</td>
-		<td>
-			<input type="text" name="description" />
-		</td>
-		<td>
-			<input type="submit" value="{$search}" />
-		</td>
-	</tr>
+        <th style="width:15%">{$name}</th>
+        <th style="width:84%">{$description}</th>
+    </tr>
+    {loop="list_a"}
+        {if="$counter%2"}
+        <tr>
+        {else}
+        <tr style="color:#00FFFF">
+        {/if}
+            <td>{$value.counter_n}</td>
+            <td>
+                <a href="/{$value.username4link_n}">{$value.username_n}</a>
+            </td>
+            <td>{$value.name_n}</td>
+            <td>{$value.surname_n}</td>
+            <td>{$value.birthdate_n}</td>
+        </tr>
+    {else}
+        <tr><td></td><td></td><td style="text-align:right">No search result</td></tr>
+    {/loop}
+    <tr>
+        <td>
+            <input type="text" name="name" />
+        </td>
+        <td>
+            <input type="text" name="description" />
+        </td>
+        <td>
+            <input type="submit" value="{$search}" />
+        </td>
+    </tr>
 </table>
 </form>
 <script type="application/javascript">
-	$(document).ready(function() {
-		$("#srclst").submit(function(event) {
-			event.preventDefault();
-			N.html.project.getList($(this).data('limit')+20);
-				
-			}
-		});
-	});
+    $(document).ready(function() {
+        $("#srclst").submit(function(event) {
+            event.preventDefault();
+            N.html.project.getList($(this).data('limit')+20);
+                
+            }
+        });
+    });
 </script>

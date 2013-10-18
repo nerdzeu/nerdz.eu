@@ -1,59 +1,59 @@
 <hr />
 {$description2}
 <span style="float:right; margin-right:10%">
-	<form id="langfrm">
-		<select name="lang">
-		{loop="langs_a"}
-			<option value="{$value.shortlang_n}" {if="$value.shortlang_n == $mylang_n"} selected {/if}>{$value.longlang_n}</option>
-		{/loop}
-		</select>&nbsp;&nbsp;
-		<input type="submit" value="{$edit}" />&nbsp;
-		<input type="hidden" name="tok" value="{$tok_n}" />
-	</form>
+    <form id="langfrm">
+        <select name="lang">
+        {loop="langs_a"}
+            <option value="{$value.shortlang_n}" {if="$value.shortlang_n == $mylang_n"} selected {/if}>{$value.longlang_n}</option>
+        {/loop}
+        </select>&nbsp;&nbsp;
+        <input type="submit" value="{$edit}" />&nbsp;
+        <input type="hidden" name="tok" value="{$tok_n}" />
+    </form>
 </span>
 
 <hr style="margin-top: 20px; margin-bottom:20px" />
 {$description}
 <span style="float:right; margin-right:10%">
-	<form id="boardfrm">
-		<select name="lang">
-		{loop="langs_a"}
-			<option value="{$value.shortlang_n}" {if="$value.shortlang_n == $myboardlang_n"} selected {/if}>{$value.longlang_n}</option>
-		{/loop}
-		</select>&nbsp;&nbsp;
-		<input type="submit" value="{$edit}" />&nbsp;
-		<input type="hidden" name="tok" value="{$tok_n}" />
-	</form>
+    <form id="boardfrm">
+        <select name="lang">
+        {loop="langs_a"}
+            <option value="{$value.shortlang_n}" {if="$value.shortlang_n == $myboardlang_n"} selected {/if}>{$value.longlang_n}</option>
+        {/loop}
+        </select>&nbsp;&nbsp;
+        <input type="submit" value="{$edit}" />&nbsp;
+        <input type="hidden" name="tok" value="{$tok_n}" />
+    </form>
 </span>
 <br /><br />
 
 <script type="application/javascript">
-	$(document).ready(function() {
-		$("#langfrm").submit(function(event) {
-			event.preventDefault();
-			N.json.post('/pages/preferences/language.html.json.php?action=userlang',$(this).serialize(),function(obj) {
-				$("#langfrm input[type=submit]").val(obj.message+'...');
-				$("#res").html('...');
-				if(obj.status == 'ok')
-				{
-					setTimeout(function() {
-						document.location.reload();
-					},1500);
-				}
-			});
-		});
-		$("#boardfrm").submit(function(event) {
-			event.preventDefault();
-			N.json.post('/pages/preferences/language.html.json.php?action=boardlang',$(this).serialize(),function(obj) {
-				$("#boardfrm input[type=submit]").val(obj.message+'...');
-				$("#res").html('...');
-				if(obj.status == 'ok')
-				{
-					setTimeout(function() {
-						document.location.reload();
-					},1500);
-				}
-			});
-		});
-	});
+    $(document).ready(function() {
+        $("#langfrm").submit(function(event) {
+            event.preventDefault();
+            N.json.post('/pages/preferences/language.html.json.php?action=userlang',$(this).serialize(),function(obj) {
+                $("#langfrm input[type=submit]").val(obj.message+'...');
+                $("#res").html('...');
+                if(obj.status == 'ok')
+                {
+                    setTimeout(function() {
+                        document.location.reload();
+                    },1500);
+                }
+            });
+        });
+        $("#boardfrm").submit(function(event) {
+            event.preventDefault();
+            N.json.post('/pages/preferences/language.html.json.php?action=boardlang',$(this).serialize(),function(obj) {
+                $("#boardfrm input[type=submit]").val(obj.message+'...');
+                $("#res").html('...');
+                if(obj.status == 'ok')
+                {
+                    setTimeout(function() {
+                        document.location.reload();
+                    },1500);
+                }
+            });
+        });
+    });
 </script>
