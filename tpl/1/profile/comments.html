@@ -36,8 +36,10 @@
 {ignore}Il form non viene caricato, quando si gettano i commenti dopo uno specifico hcid{/ignore}
 {if="$showform_b"}
 <div>
-    <div style="width:30px; float:left">
-        &nbsp;
+    <div style="width:33px; float:left; ">
+        <a href="/{$currentuserprofile_n}" style="vertical-align:top">
+            <img src="{$currentusergravatar_n}?s=30#" alt="{$currentusername_n}" height="30" width="30" onerror="this.src = '{$onerrorimgurl_n}'" style="float:left; padding-right:2px" />
+        </a>
     </div>
     <form style="overflow:hidden; width:auto" class="frmcomment" data-hpid="{$hpid_n}">
         <textarea id="commentto{$hpid_n}" name="message" style="width: 99.5%; height: 60px"></textarea>
