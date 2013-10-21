@@ -9,12 +9,8 @@ fi
 
 echo -n "Dropping if existing nerdz user and database... "
 
-if test $(echo "SELECT rolname FROM pg_roles WHERE rolname='nerdz';" | psql postgres "$1" | grep -c nerdz) -gt 0 ; then
-
-    dropdb -U "$1" nerdz 
-    dropuser -U "$1" nerdz 
-
-fi
+dropdb -U "$1" nerdz || true
+dropuser -U "$1" nerdz || true
 
 echo "Done." ; echo
 

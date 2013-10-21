@@ -109,6 +109,22 @@ final class FastFetch {
             $row->timestamp = intval($row->timestamp);
         }
         
+        if(db::NO_ERR != 
+            $this->mPm->query(
+                [
+                    'UPDATE "pms" SET "read" = FALSE WHERE "from" = :from AND "to" = :id',
+                    [
+                        ':from' => $otherId, 
+                        ':id' => $me
+                    ]
+                ],
+                db::FETCH_ERR
+            )
+        ) {
+            throw new FFException(FFErrCode::SERVER_FAILURE);
+        }
+            
+        
         return $list;
 
     }
