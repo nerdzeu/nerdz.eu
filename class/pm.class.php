@@ -142,15 +142,15 @@ final class pm extends messages
         if(is_numeric($otherId)) {
             
             $res = parent::query(
-                array(
-                    'WITH thisconv AS (SELECT "from",time,message FROM pms WHERE("from" = :me AND "to" = :other) OR  ("from" = :otheragain AND  "to" = :meagain)) SELECT "from" as last_sender,message FROM thisconv WHERE time = (SELECT MAX(time) FROM thisconv)',
-                    array(
+                [
+                    'WITH thisconv AS (SELECT "from",time,message,read FROM pms WHERE("from" = :me AND "to" = :other) OR  ("from" = :otheragain AND  "to" = :meagain)) SELECT "from" as last_sender,message,read FROM thisconv WHERE time = (SELECT MAX(time) FROM thisconv)',
+                    [
                         ':me' => $_SESSION['nerdz_id'],
                         ':meagain' => $_SESSION['nerdz_id'],
                         ':other' => $otherId,
                         ':otheragain' => $otherId
-                    )                    
-                ), db::FETCH_OBJ                
+                    ]                    
+                ], db::FETCH_OBJ                
             );
             
             if (isset($res->message)) {
