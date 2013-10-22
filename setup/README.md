@@ -45,11 +45,10 @@ Sorry about that.
 REMEMBER TO SET timezone = 'UTC' IN postgresql.conf OR NOTHING WILL WORK!
   
   After a bit of output, you'll be left with a fully initialized database.
-- Move into 'static/js/' directory and download the following files:
+- Move into 'static/js/' directory and download the following file:
     - http://static.nerdz.eu/static/js/gistBlogger.jsmin.js
-    - http://static.nerdz.eu/static/js/sh.jsmin.js
   
-  You can safely delete 'gistBlogger.js'.
+  You can safely delete 'gistBlogger.js' or avoid to download gistBlogger.jsmin.js copying gistBlogger.js to gistBlogger.jsmin.js
 - Configure NERDZ properly: copy setup/config.skel.php to class/config/index.php and edit the vars.
   Don't forget to disable minification if you haven't got csstidy / uglifyjs.
 - Enable the following rewrite rules on your webserver.
