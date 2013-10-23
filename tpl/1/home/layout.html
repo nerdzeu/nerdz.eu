@@ -1,20 +1,29 @@
 <div id="main">
+	<div id="reloadmessage"></div>
+
     <aside id="left_col">
         <div>
             <div class="title" style="width: 99%">
                 NERDZ
-            </div><br />
-            <div id="leftmenu">
-                <ul style="color: #AFAFAF">
+            </div>
+            <div id="leftmenu" class="box_menu">
+                <ul style="color: #AFAFAF">{ignore}
+					<li>
+					  <form id="footersearch" style="position:relative;">
+						<input type="text" style="position:absolute; top:0px; left:0px; height:40px; width:100%; font-size:30px;border:none;">
+						<img id="searchbutton" src="../base/images/online/search.png" style="width:40px;height:40px;position:absolute; top:0px;right:0px">
+					  </form>
+					</li>
+					//TODO: reimplementare qui la ricerca, al momento non funziona e non è una cosa vitale quindi lascio un po' a morire
+					{/ignore}
                     <li><a id="profilePostList" href="#">NERDZ</a>
+                        <img style="margin-right:1px; margin-left: 10px; cursor:pointer; float:right;height:30px" id="nerdzselect" src="../base/images/online/expand.png" title="[{$from}...]">
                         <span style="float:right">
                             <a href="/feed.php">
                                 <img src="images/rss.gif" width="16" height="17" alt="Users RSS" />
                             </a>
                         </span>
-                        <br />
-                        <span class="small" style="margin-left:15px; cursor:pointer" id="nerdzselect">[{$from}...]</span>
-                        <div id="nerdzlist" style="display:none; margin-left:20px">
+                        <div id="nerdzlist" style="display:none;">
                             <ul>
                                 <li class="selectlang" data-lang="*">{$everybody}</li>
                                 <li class="selectlang" data-lang="usersifollow">{$usersifollow}</li>
@@ -22,18 +31,16 @@
                                 <li class="selectlang" data-lang="{$value.shortlang_n}">{$value.longlang_n}</li>
                                 {/loop}
                             </ul>
-                            <br />
                         </div>
                     </li>
                     <li><a id="projectPostList" href="#">{$projects}</a>
+                        <img style="margin-right:1px; margin-left: 10px; cursor:pointer; float:right;height:30px" id="projselect" src="../base/images/online/expand.png" title="[{$from}...]">
                         <span style="float:right">
                             <a href="/feed.php?project=1">
                                 <img src="images/rss.gif" width="16" height="17" alt="Project RSS" />
                             </a>
                         </span>
-                        <br />
-                        <span class="small" style="margin-left:15px; cursor:pointer" id="projselect">[{$from}...]</span>
-                        <div id="projlist" style="display:none; margin-left:20px">
+                        <div id="projlist" style="display:none; ">
                             <ul>
                                 <li class="projlang" data-lang="*">{$everybody}</li>
                                 <li class="projlang" data-lang="usersifollow">{$usersifollow}</li>
@@ -41,9 +48,7 @@
                                 <li class="projlang" data-lang="{$value.shortlang_n}">{$value.longlang_n}</li>
                                 {/loop}
                             </ul>
-                            <br />
                         </div>
-                        <br /><br />
                     </li>
                     <li><a href="/userslist.php">{$userslist}</a></li>
                     <li><a href="/projectslist.php">{$projectslist}</a><br /><br /></li>
@@ -57,13 +62,15 @@
                 </ul><br />
             </div>
         </div>
+        {ignore}
+        nessy giuro che gli trovo una posizione migliore, ma qui è invivibile
         <div class="title">
             {$advertisement}
         </div>
         <div class="box">
             {$banners_a.120x60}
         </div>
-        <br /><br />
+        {/ignore}
     </aside>
     <article id="center_col" class="page">
         <div id="fast_nerdz">
@@ -84,14 +91,22 @@
                 mode è li per indicare al gestore dello scrolldown se deve caricare normalemente (std) oppure scrollare la pagina di ricerca (search)
         {/ignore}
     </article>
-    <aside id="right_col" class="page">
-    {if="!empty($followed_a)"}
-        <div style="width:99%" class="title">
+    <aside id="right_col" class="page">	 
+	<div class="title">{noparse}{$usermenu}{/noparse}</div> 
+	<div class="box_menu">
+	  <ul>
+		<a href="/"><li><img src="../base/images/online/home-dark.png">Home</li></a>
+		<a href="/{$myusername4link_n}"><li><img src="../base/images/online/prof.png">{$profile}</li></a>
+		<a href="/preferences.php" accesskey="z"><li><img src="../base/images/online/settings.png">{$preferences}</li></a>
+		<a href="/" id="logout" data-tok="{$tok_n}"><li><img src="../base/images/online/exit.png">{$logout}</li></a>
+	  </ul>
+	</div>
+	{if="!empty($followed_a)"}
+        <div class="title">
             {$youfollow}
             <div style="font-style: italic" class="small">[{$followedonlinetot_n}/{$followedtot_n}]</div>
         </div>
-        <br />
-        <div id="rightmenu">
+        <div id="rightmenu" class="box_menu">
             <ul id="followedlist" style="color: #AFAFAF">
             {loop="followed_a"}
                 <li>
@@ -114,7 +129,6 @@
             {/loop}
             </ul>
         </div>
-        <br />
     {/if}
     {if="!empty($memberof_a)"}
         <div class="title">{$memberof}</div>

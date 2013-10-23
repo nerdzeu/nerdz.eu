@@ -1,12 +1,21 @@
+body 
+{ 
+	overflow-x: hidden; 
+	font-size: 150%; 
+}
 #site_title
 {
     color: #000;
-    margin: 0 auto 1.5% auto;
     width: 100%;
     background-color: #AFAFAF;
-    display: block;
     overflow: hidden;
     height: 50px;
+    position:fixed; 
+    z-index:100; 
+    top:0px; 
+    left:0px; 
+    padding:0px !important; 
+    margin: 0px !important;
 }
 
 #site_title a:visited, #site_title a:active, #site_title a:link, .nerdz_comments a:hover, .nerdz_comments a:visited, .nerdz_comments a:active, .nerdz_comments a:link, #footer_main a:visited, #footer_main a:active, #footer_main a:link
@@ -16,29 +25,61 @@
     text-decoration: none;
     cursor: pointer;
 }
-
+"#title_left, #title_right {
+	padding:0px !important; 
+	display:inline;
+	margin: 0px !important; 
+	background-image: url(../images/online/column.png); 
+	height:50px; 
+	width:50px; 
+}
 #title_left
 {
-    display: inline;
     float: left;
-    font-size: 200%;
-    margin: 0.5%;
 }
 
 #title_right
 {
-    display: inline;
     float: right;
-    margin: 0.5% 1% 0.1% 0.5%;
 }
 
+#title_icons 
+{
+	margin:auto; 
+	width:auto; 
+	max-width:160px; 
+	text-align:center;
+}
+.rIcon 
+{ 
+	float:left; 
+	width:40px !important; 
+	height:27px !important; 
+	border-radius:50%; 
+	margin:5px !important; 
+	font-size:100%;
+	background-size:cover;
+	background-color: #EEE;
+	padding-top:13px !important; 
+}
 #left_col
 {
     float: left;
-    width: 12.5%;
+    width: 0px;
     margin-right: 1%;
-    display: none;
     overflow-x: hidden;
+}
+
+#reloadmessage 
+{
+	overflow:hidden; 
+	width:100%; 
+	background-color: #ccc; 
+	color: #696969; 
+	height:0px; 
+	text-align: center; 
+	font-size:150%; 
+	margin: 0px
 }
 
 #center_col
@@ -53,39 +94,29 @@
 
 #right_col
 {
-    width: 12.5%;
-    float: left;
+    width: 0px;
+    float: right;
     display: none;
     margin-left: 1%;
 }
 
 #left_col ul, #right_col ul
 {
-    list-style-type: square;
+    list-style-type: none;
     list-style-position: inside;
-    border: 0;
-    padding: 0;
-    margin: 0;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
 }
 
 #notify_list
 {
     position: fixed;
     display: block;
-    top: 41px;
+    top: 50px;
     width: 100%;
     background-color: #000;
-    border: 1px solid #FFF;
-}
-
-#notifycounter
-{
-    background-color: #FFF;
-    color: #000;
-    text-align:center;
-    width: 60px;
-    margin-top: 1%;
-    margin-bottom: 1%;
+    border: none;
 }
 
 #main
@@ -118,14 +149,30 @@
     height:310px;
 }
 
-#leftmenu li, #rightmenu li
+.box_menu li
 {
-    margin-top: 5%;
+	margin:0px;
+	height:auto;
+	min-height:40px;
+	line-height:40px;
+	font-size:30px;
+	border: 1px inset #666;
+	padding-left:5px;
+}
+
+.box_menu li img 
+{
+	padding:0px;
+	margin-right: 5px;
+	height: 35px;
+	width:32px;
+	float:left;
 }
 
 #fast_nerdz
 {
     margin-bottom: 15px;
+    height: 90px;
 }
 
 a:hover, a:visited, a:active, a:link, .qu_user a:visited, .qu_user a:active, .qu_user a:link, .atilda
@@ -186,10 +233,10 @@ iframe
     overflow: hidden;
 }
 
-html, #body
+#body
 {
     width: 100%;
-    height: 100%;
+    margin-top: 51px;
 }
 
 .box
@@ -255,7 +302,6 @@ html, #body
 
 .nerdz_message, .nerdz_comments, .news
 {
-    width: 99%;
     background-color: #000;
     border-radius: 2.5px;
     font-size: 90%;

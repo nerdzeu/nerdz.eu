@@ -118,6 +118,15 @@
         <br /><br />
     </article>
     <aside id="right_col" class="page">
+	<div class="title">{noparse}{$usermenu}{/noparse}</div> 
+	<div class="box_menu">
+	  <ul>
+		<a href="/"><li>Home</li></a>
+		<a href="/{$myusername4link_n}"><li>{$profile}</li></a>
+		<a href="/preferences.php" accesskey="z"><li>{$preferences}</li></a>
+		<a href="/" id="logout" data-tok="{$tok_n}"><li>{$logout}</li></a>
+	  </ul>
+	</div>
 {ignore}
         <div class="title">{$aboutme}</div>
 {/ignore}

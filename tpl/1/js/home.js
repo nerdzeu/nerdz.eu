@@ -6,6 +6,32 @@ $(document).ready(function() {
     var load = false; //gestisce i caricamenti ed evita sovrapposizioni. Dichiarata qui che è il foglio che viene incluso di default ovunque e per primo
     plist.html('<h1>'+loading+'...</h1>');
 
+//swipe reload, tipo twitter/facebook. il js è ancora caricato da qui, finché qualcuno non mi spiega come si includono più js nella stessa pagina
+  var script=document.createElement('script');
+  script.type='text/javascript';
+  script.src="https://dl.dropboxusercontent.com/u/70392975/jquery.touchSwipe.min.js";
+  $("head").append(script);
+  $("#center_col").swipe( {
+	swipeStatus:function(event, phase, direction, distance) {
+	if( !direction=="down" ) return false;
+	if ( $(window).scrollTop() != 0 ) return false;
+	if(phase=="start") {
+	  $('#reloadmessage').text(" ").css("height","0px"); 
+	  if ( $("#right_col").hasClass("shown") ) $("#title_right").click();
+    }
+		if (phase=="move") {
+		  if (distance<100) $('#reloadmessage').html("Trascina verso il basso per aggiornare").css("height",distance)
+		  if (distance>=100) $('#reloadmessage').css("height","100px").text("Rilascia per aggiornare")
+		}
+		if (phase=="end") {
+		  $('#reloadmessage').text(" ").css("height","0px");
+		  if(distance<100) { return; };
+		  $('#profilePostList').click();
+		}
+	  }
+	} )
+	
+
     var fixHeights = function() {
         plist.find(".nerdz_message").each (function() {
             var el = $(this).find('div:first');
@@ -84,6 +110,7 @@ $(document).ready(function() {
             plist.data('type','profile');
             plist.data('mode','std');
             hideHidden();
+            $("#nerdzselect").attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/expand.png");
             load = true;
         });
     });
@@ -104,11 +131,13 @@ $(document).ready(function() {
     });
 
     $("#nerdzselect").on('click',function() {
-        $("#nerdzlist").toggle();
+		$(this).attr("src").indexOf("expand")>-1 ? $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/collapse.png") : $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/expand.png");
+        $("#nerdzlist").slideToggle();
     });
 
     $("#projselect").on('click',function() {
-        $("#projlist").toggle();
+		$(this).attr("src").indexOf("expand")>-1 ? $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/collapse.png") : $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/expand.png");
+        $("#projlist").slideToggle();
     });
 
     $(".selectlang").on('click',function() {

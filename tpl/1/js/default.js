@@ -1,6 +1,29 @@
 $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
-
+	//mostrare le barre laterali
+	  $('#title_left').click(function() {
+	if( $("#right_col").hasClass("shown") ) $("#right_col").removeClass("shown").animate({ width : "0px" }, 500);
+	if( ! $("#left_col").hasClass("shown") ) {
+	  $("#left_col").css("width","0px").addClass("shown").animate({ width : "70%" }, 500); 
+	  $("#center_col").css("position","absolute").css("left","2%").animate({ left : "72%" }, 500);
+	} else {
+	  $("#left_col").animate({ width : "0px" }, 500).removeClass("shown");
+	  $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") } )
+	}
+  return false;
+  } )
+  
+  $('#title_right').click(function() {
+	if( $("#left_col").hasClass("shown") ) $("#left_col").removeClass("shown").animate({ width : "0px" }, 500);
+	if( ! $("#right_col").hasClass("shown") ) {
+	  $("#right_col").css("width","0px").show().addClass("shown").animate({ width : "70%" }, 500); 
+	  $("#center_col").css("position","absolute").css("left","2%").animate({ left : "-72%" }, 500);
+	} else {
+	  $("#right_col").animate({ width : "0px" }, 500).removeClass("shown");
+	  $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") } )
+	}
+  return false;
+  } )
     //elementi singoli
     $("iframe").attr('scrolling','no'); //dato che il validatore non li vuole e con i css overflow:hidden non funge
     $("body").append($('<br />')); //per fare funzionare infinte scrolling sempre
@@ -138,12 +161,12 @@ $(document).ready(function() {
         });
     });
 
-    $("#gotopm").on('click',function(e) {
+    $("#pmcounter").on('click',function(e) {
             e.preventDefault();
 
             var href = $(this).attr('href');
 
-            if($('#pmcounter').html() != '0') {
+            if($(this).html() != '0') {
 
                 if(href == window.location.pathname ) {
                     location.hash = "new";
@@ -557,10 +580,10 @@ $(document).ready(function() {
     //end plist into events
     setInterval(function() {
         var nc = $("#notifycounter"), val = parseInt(nc.html());
-        nc.css('background-color',val == 0 || isNaN(val) ? '#FFF' : '#FF0000');
+        nc.css('background-color',val == 0 || isNaN(val) ? '#eee' : '#2C98C9');
         var pc = $("#pmcounter");
         val = parseInt(pc.html());
-        pc.css('background-color',val == 0 || isNaN(val) ? '#AFAFAF' : '#FF0000');
+        pc.css('background-color',val == 0 || isNaN(val) ? '#eee' : '#2C98C9');
     },200);
 
 });
