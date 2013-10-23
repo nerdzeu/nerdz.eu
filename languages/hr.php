@@ -204,6 +204,7 @@ $_LANG = array(
     'BACK_TO_THE_BOTTOM' => 'Natrag niz',
     'EXPAND' => 'Proširiti',
     'EVERY_COMMENT' => 'Svi komentari',
-    'EVERY_MSG' => 'Svi postovi'
+    'EVERY_MSG' => 'Svi postovi',
+    'USER_MENU' => 'korisnički izbornik'
 );
 ?>

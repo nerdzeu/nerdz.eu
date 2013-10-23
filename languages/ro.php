@@ -202,6 +202,7 @@ $_LANG = array(
     'BACK_TO_THE_BOTTOM' => 'Înapoi la partea de jos',
     'EXPAND' => 'Extinde',
     'EVERY_COMMENT' => 'Toate comentariile',
-    'EVERY_MSG' => 'Toate posturile'
+    'EVERY_MSG' => 'Toate posturile',
+    'USER_MENU' => 'meniul de utilizator'
 );
 ?>

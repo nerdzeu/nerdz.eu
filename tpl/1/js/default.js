@@ -1,5 +1,6 @@
 $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
+    if(!!!$("#left_col").length) $("#title_left").remove();
 	//mostrare le barre laterali
 	  $('#title_left').click(function() {
 	if( $("#right_col").hasClass("shown") ) $("#right_col").removeClass("shown").animate({ width : "0px" }, 500);
@@ -88,7 +89,7 @@ $(document).ready(function() {
     /* il footersearch si mostra solo in alcune pagine */
     var wrongPages = [ '/bbcode.php','/terms.php','/faq.php','/stats.php','/rank.php','/preferences.php', '/informations.php', '/preview.php' ];
        if($.inArray(location.pathname,wrongPages) != -1) {
-           $("#footersearch").hide();
+           $("#footersearch").parent().remove();
        };
 
     $("#footersearch").on('submit',function(e) {

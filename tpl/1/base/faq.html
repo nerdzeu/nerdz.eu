@@ -1,4 +1,4 @@
-<div id="left_col">&nbsp;</div>
+{ignore}<div id="left_col">&nbsp;</div>{/ignore}
 <article id="center_col">
     {loop="list_a"}
         {if="$value.title_b"}
@@ -15,3 +15,6 @@
     {/loop}
     <br />
 </article>
+<aside id="right_col">
+  {$user_menu_m}
+</aside>

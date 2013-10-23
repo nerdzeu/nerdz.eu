@@ -3,6 +3,15 @@ body
 	overflow-x: hidden; 
 	font-size: 150%; 
 }
+
+aside 
+{ 
+  width: 0px; 
+  height:auto; 
+  overflow:auto;
+  overflow-x: hidden !important;
+}
+
 #site_title
 {
     color: #000;
@@ -25,14 +34,11 @@ body
     text-decoration: none;
     cursor: pointer;
 }
-"#title_left, #title_right {
-	padding:0px !important; 
-	display:inline;
-	margin: 0px !important; 
-	background-image: url(../images/online/column.png); 
-	height:50px; 
-	width:50px; 
+
+#title_left, #title_right {
+	background-image: url(../base/images/column.png); 
 }
+
 #title_left
 {
     float: left;
@@ -65,7 +71,6 @@ body
 #left_col
 {
     float: left;
-    width: 0px;
     margin-right: 1%;
     overflow-x: hidden;
 }
@@ -94,7 +99,6 @@ body
 
 #right_col
 {
-    width: 0px;
     float: right;
     display: none;
     margin-left: 1%;
@@ -191,9 +195,11 @@ input, option, select, textarea, button, .page th, .title
 {
     border: 0.5px #000 solid;
     text-align: left;
+    min-height:30px;
+    font-size: 20px;
     background-color: #FFF; 
     color: #000;
-    border-radius: 2.5px;
+    border-radius: 5px;
 }
 
 button, input[type=submit], .page th, .title

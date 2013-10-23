@@ -7,20 +7,18 @@
                 NERDZ
             </div>
             <div id="leftmenu" class="box_menu">
-                <ul style="color: #AFAFAF">{ignore}
-					<li>
-					  <form id="footersearch" style="position:relative;">
-						<input type="text" style="position:absolute; top:0px; left:0px; height:40px; width:100%; font-size:30px;border:none;">
-						<img id="searchbutton" src="../base/images/search.png" style="width:40px;height:40px;position:absolute; top:0px;right:0px">
-					  </form>
-					</li>
-					//TODO: reimplementare qui la ricerca, al momento non funziona e non è una cosa vitale quindi lascio un po' a morire
-					{/ignore}
+                <ul style="color: #AFAFAF">
+                    <li style="padding:0px;">
+                      <form id="footersearch" style="position:relative">
+                        <input type="text" name="q" placeholder="{$search}" style="height:40px!important; width:100% !important; position:absolute; top:0px; left:0px; border:none; padding:0px; border-radius:0px "/>
+                        <input type="image" src="http://mobile.nerdz.eu/tpl/1/base/images/search.png" style="position:absolute; top:0px; right:0px; height:40px;width:40px" id="search_btn">
+                      </form>
+                    </li>
                     <li><a id="profilePostList" href="#">NERDZ</a>
                         <img style="margin-right:1px; margin-left: 10px; cursor:pointer; float:right;height:30px" id="nerdzselect" src="../base/images/expand.png" title="[{$from}...]">
                         <span style="float:right">
                             <a href="/feed.php">
-                                <img src="images/rss.gif" width="16" height="17" alt="Users RSS" />
+                                <img src="images/rss.gif" style="width:16px;height:17px" alt="Users RSS" />
                             </a>
                         </span>
                         <div id="nerdzlist" style="display:none;">
@@ -37,7 +35,7 @@
                         <img style="margin-right:1px; margin-left: 10px; cursor:pointer; float:right;height:30px" id="projselect" src="../base/images/expand.png" title="[{$from}...]">
                         <span style="float:right">
                             <a href="/feed.php?project=1">
-                                <img src="images/rss.gif" width="16" height="17" alt="Project RSS" />
+                                <img src="images/rss.gif" style="width:16px;height:17px" alt="Project RSS" />
                             </a>
                         </span>
                         <div id="projlist" style="display:none; ">
@@ -51,11 +49,11 @@
                         </div>
                     </li>
                     <li><a href="/userslist.php">{$userslist}</a></li>
-                    <li><a href="/projectslist.php">{$projectslist}</a><br /><br /></li>
+                    <li><a href="/projectslist.php">{$projectslist}</a></li>
                     <li><a href="/bookmarks.php">{$bookmarks} [{$users}]</a></li>
-                    <li><a href="/bookmarks.php?project=1">{$bookmarks} [{$projects}]</a><br /><br /></li>
+                    <li><a href="/bookmarks.php?project=1">{$bookmarks} [{$projects}]</a></li>
                     <li><a href="/rank.php">Top 100</a></li>
-                    <li><a href="/rank.php?top=thismonth">Monthly 100</a><br /><br /></li>
+                    <li><a href="/rank.php?top=thismonth">Monthly 100</a></li>
                     <li><a href="/last.php">{$lastuser}</a></li>
                     <li><a href="/stats.php">{$stats}</a></li>
                     <li><a href="/faq.php">F.A.Q.</a></li>
@@ -92,15 +90,7 @@
         {/ignore}
     </article>
     <aside id="right_col" class="page">	 
-	<div class="title">{noparse}{$usermenu}{/noparse}</div> 
-	<div class="box_menu">
-	  <ul>
-		<a href="/"><li><img src="../base/images/home-dark.png">Home</li></a>
-		<a href="/{$myusername4link_n}"><li><img src="../base/images/prof.png">{$profile}</li></a>
-		<a href="/preferences.php" accesskey="z"><li><img src="../base/images/settings.png">{$preferences}</li></a>
-		<a href="/" id="logout" data-tok="{$tok_n}"><li><img src="../base/images/exit.png">{$logout}</li></a>
-	  </ul>
-	</div>
+    {$user_menu_m}
 	{if="!empty($followed_a)"}
         <div class="title">
             {$youfollow}
