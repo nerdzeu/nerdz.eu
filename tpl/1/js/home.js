@@ -110,7 +110,7 @@ $(document).ready(function() {
             plist.data('type','profile');
             plist.data('mode','std');
             hideHidden();
-            $("#nerdzselect").attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/expand.png");
+            $("#nerdzselect").attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
             load = true;
         });
     });
@@ -131,12 +131,12 @@ $(document).ready(function() {
     });
 
     $("#nerdzselect").on('click',function() {
-		$(this).attr("src").indexOf("expand")>-1 ? $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/collapse.png") : $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/expand.png");
+		$(this).attr("src").indexOf("expand")>-1 ? $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/collapse.png") : $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
         $("#nerdzlist").slideToggle();
     });
 
     $("#projselect").on('click',function() {
-		$(this).attr("src").indexOf("expand")>-1 ? $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/collapse.png") : $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/online/expand.png");
+		$(this).attr("src").indexOf("expand")>-1 ? $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/collapse.png") : $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
         $("#projlist").slideToggle();
     });
 
