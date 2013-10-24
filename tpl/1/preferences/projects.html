@@ -1,0 +1,40 @@
+<hr />
+{$description}
+<span style="float:right; margin-right:5%">
+    <button onclick="location.href='/project.php'">{$create}</button>
+</span>
+<hr />
+{$listdescription}
+<div id="cont">
+<table class="intable">
+    <tr>
+        <td style="width:50%">
+        </td>
+        <td style="width:50%">
+        </td>
+    </tr>
+    {loop="myprojects_a"}
+    <tr>
+        <td>
+            <a href="/{$value.name4link_n}">{$value.name_n}</a>
+        </td>
+        <td>
+            <button class="manage" data-id="{$value.id_n}">{$manage}</button>
+        </td>
+    </tr>
+    {/loop}
+</table>
+</div>
+<br /><br />
+
+<script type="application/javascript">
+$(document).ready(function() {
+    $(".manage").on('click',function(e){
+        e.preventDefault();
+        $("#cont").html($("#loadtxt").data('loading'));
+        N.html.post('/pages/preferences/projects.html.html.php',{id: $(this).data('id')},function(data) {
+            $("#cont").html(data);
+        });
+    });
+});
+</script>

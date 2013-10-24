@@ -1,8 +1,14 @@
 $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
-    if(!!!$("#left_col").length) $("#title_left").remove();
-	//mostrare le barre laterali
-	  $('#title_left').click(function() {
+ var viewPortTag=document.createElement('meta');
+  viewPortTag.id="viewport";
+  viewPortTag.name = "viewport";
+  viewPortTag.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0";
+  document.getElementsByTagName('head')[0].appendChild(viewPortTag);
+  
+if(!!!$("#left_col").length) $("#title_left").css("background-image","url(tpl/1/base/images/back.png)").click(function(){history.back(-1);});
+else
+$('#title_left').click(function() {
 	if( $("#right_col").hasClass("shown") ) $("#right_col").removeClass("shown").animate({ width : "0px" }, 500);
 	if( ! $("#left_col").hasClass("shown") ) {
 	  $("#left_col").css("width","0px").addClass("shown").animate({ width : "70%" }, 500); 
@@ -12,9 +18,9 @@ $(document).ready(function() {
 	  $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") } )
 	}
   return false;
-  } )
+} )
   
-  $('#title_right').click(function() {
+$('#title_right').click(function() {
 	if( $("#left_col").hasClass("shown") ) $("#left_col").removeClass("shown").animate({ width : "0px" }, 500);
 	if( ! $("#right_col").hasClass("shown") ) {
 	  $("#right_col").css("width","0px").show().addClass("shown").animate({ width : "70%" }, 500); 
@@ -85,12 +91,6 @@ $(document).ready(function() {
         }
         $(this).html(isNaN(nold) ? old : '0');
     });
-
-    /* il footersearch si mostra solo in alcune pagine */
-    var wrongPages = [ '/bbcode.php','/terms.php','/faq.php','/stats.php','/rank.php','/preferences.php', '/informations.php', '/preview.php' ];
-       if($.inArray(location.pathname,wrongPages) != -1) {
-           $("#footersearch").parent().remove();
-       };
 
     $("#footersearch").on('submit',function(e) {
         e.preventDefault();
