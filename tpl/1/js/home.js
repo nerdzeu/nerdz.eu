@@ -35,7 +35,7 @@ $(document).ready(function() {
 		   }
            else if (phase == "end") {
                $('#reloadmessage').text(" ").css("height","0px");
-               if(distance<100) {
+               if(distance<100) { 
                    return;
                };
                $('#profilePostList').click();
