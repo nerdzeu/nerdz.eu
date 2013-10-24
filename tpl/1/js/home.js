@@ -35,12 +35,18 @@ $(document).ready(function() {
                 $('#reloadmessage').css("height","100px").text("Release to update");
               }
             }
-            else if (phase == "end") {
+            else if (phase == "end" || phase == "cancel") {
               $('#reloadmessage').text(" ").css("height","0px");
               if(distance<100) { 
-                return;
+                return false;
               };
               $('#profilePostList').click();
+            }
+          }
+          else {
+            if(phase != "start") {
+              $('#reloadmessage').text(" ").css("height","0px");
+              return false;
             }
           }
         },
