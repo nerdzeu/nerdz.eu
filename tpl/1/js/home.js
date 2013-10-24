@@ -43,7 +43,8 @@ $(document).ready(function() {
               $('#profilePostList').click();
             }
           }
-        }
+        },
+        allowPageScroll:"vertical"
       });
 
     var fixHeights = function() {
