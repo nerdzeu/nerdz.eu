@@ -7,7 +7,6 @@
     $tplcfg = new templateCfg($core);
     
     ob_start(array('phpCore','minifyHtml'));
-    $core->getTPL()->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
 ?>
 <!DOCTYPE html>
 <html lang="en">
