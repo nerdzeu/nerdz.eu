@@ -1,17 +1,3 @@
-body 
-{ 
-	overflow-x: hidden; 
-	font-size: 150%; 
-}
-
-aside 
-{ 
-  width: 0px; 
-  height:auto; 
-  overflow:auto;
-  overflow-x: hidden !important;
-}
-
 #site_title
 {
     color: #000;
@@ -63,18 +49,20 @@ aside
 	height:27px !important; 
 	border-radius:50%; 
 	margin:5px !important; 
-	font-size:100%;
+	font-size:50%;
 	background-size:cover;
 	background-color: #EEE;
 	padding-top:13px !important; 
+    font-weight: bold;
 }
+
 #left_col
 {
     float: left;
     margin-right: 1%;
     overflow-x: hidden;
 }
-
+/*
 #reloadmessage 
 {
 	overflow:hidden; 
@@ -86,7 +74,7 @@ aside
 	font-size:150%; 
 	margin: 0px
 }
-
+*/
 #center_col
 {
     width: 98%;
@@ -219,13 +207,21 @@ body
 {
     background-color: #1D1B1B;
     color: #FFF;
-    font-size: 80%;
+    font-size: 200%;
     font-family: "Lucida Grande", Arial, Helvetica, Sans-serif;
     font-weight: lighter;
     width: 100%;
     height: 100%;
     margin: auto;
     Z-index: 0;
+}
+
+aside 
+{ 
+  width: 0px; 
+  height:auto; 
+  overflow:auto;
+  overflow-x: hidden !important;
 }
 
 img
