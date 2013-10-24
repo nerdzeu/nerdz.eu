@@ -27,7 +27,7 @@ lock.png  rss.gif  unlock.png
 ./pm: [cartella dei pm]
 conversation.html  form.html  inbox.html  main.html
 
-./preferences: [Esistente solo per il template di default. Negli altri non è esistente per motivi di sicurezza]
+./preferences: 
 account.html  friends.html  language.html  profile.html
 delete.html   guests.html   layout.html    projects.html
 
