@@ -1,46 +1,61 @@
 $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
- var viewPortTag=document.createElement('meta');
-  viewPortTag.id="viewport";
-  viewPortTag.name = "viewport";
-  viewPortTag.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0";
-  document.getElementsByTagName('head')[0].appendChild(viewPortTag);
-  
-if(!!!$("#left_col").length) $("#title_left").css("background-image","url(tpl/1/base/images/back.png)").click(function(){history.back(-1);});
-else
-$('#title_left').click(function() {
-	if( $("#right_col").hasClass("shown") ) $("#right_col").removeClass("shown").animate({ width : "0px" }, 500);
-	if( ! $("#left_col").hasClass("shown") ) {
-	  $("#left_col").css("width","0px").addClass("shown").animate({ width : "70%" }, 500); 
-	  $("#center_col").css("position","absolute").css("left","2%").animate({ left : "72%" }, 500);
-	} else {
-	  $("#left_col").animate({ width : "0px" }, 500).removeClass("shown");
-	  $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") } )
-	}
-  return false;
-} )
-  
-$('#title_right').click(function() {
-	if( $("#left_col").hasClass("shown") ) $("#left_col").removeClass("shown").animate({ width : "0px" }, 500);
-	if( ! $("#right_col").hasClass("shown") ) {
-	  $("#right_col").css("width","0px").show().addClass("shown").animate({ width : "70%" }, 500); 
-	  $("#center_col").css("position","absolute").css("left","2%").animate({ left : "-72%" }, 500);
-	} else {
-	  $("#right_col").animate({ width : "0px" }, 500).removeClass("shown");
-	  $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") } )
-	}
-  return false;
-  } )
+
+    var viewPortTag=document.createElement('meta');
+    viewPortTag.id="viewport";
+    viewPortTag.name = "viewport";
+    viewPortTag.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0";
+    document.getElementsByTagName('head')[0].appendChild(viewPortTag);
+    
+    if(!!!$("#left_col").length) {
+        $("#title_left").css("background-image","url(tpl/1/base/images/back.png)").click(function(){history.back(-1);});
+    }
+    else
+    {
+        $('#title_left').click(function() {
+            if( $("#right_col").hasClass("shown") ) {
+                $("#right_col").removeClass("shown").animate({ width : "0px" }, 500);
+            }
+            if( ! $("#left_col").hasClass("shown") ) {
+                $("#left_col").css("width","0px").addClass("shown").animate({ width : "70%" }, 500); 
+                $("#center_col").css("position","absolute").css("left","2%").animate({ left : "72%" }, 500);
+            } else {
+                $("#left_col").animate({ width : "0px" }, 500).removeClass("shown");
+                $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") });
+	        }
+          return false;
+          });
+    }
+
+   $('#title_right').click(function() {
+       if( $("#left_col").hasClass("shown") ) {
+           $("#left_col").removeClass("shown").animate({ width : "0px" }, 500);
+       }
+       if( ! $("#right_col").hasClass("shown") ) {
+           $("#right_col").css("width","0px").show().addClass("shown").animate({ width : "70%" }, 500);
+           $("#center_col").css("position","absolute").css("left","2%").animate({ left : "-72%" }, 500);
+       }
+       else
+       {
+           $("#right_col").animate({ width : "0px" }, 500).removeClass("shown");
+           $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") } );
+       }
+       return false;
+    });
+
     //elementi singoli
     $("iframe").attr('scrolling','no'); //dato che il validatore non li vuole e con i css overflow:hidden non funge
     $("body").append($('<br />')); //per fare funzionare infinte scrolling sempre
     // append version information
-    if ($("#left_col").length && window.location.pathname == "/home.php")
+    if ($("#left_col").length && window.location.pathname == "/home.php") {
         $("#left_col .title").eq (0).append (" <span style='font-weight: normal'><a href='/NERDZilla:690' style='color: #000 !important'>[" + N.getVersion() + "]</a></span>");
+    }
+
     // load the prettyprinter
     var append_theme = "", _h = $("head");
-    if (localStorage.getItem ("has-dark-theme") == 'yep')
+    if (localStorage.getItem ("has-dark-theme") == 'yep') {
         append_theme = "?skin=sons-of-obsidian";
+    }
     var prettify = document.createElement ("script");
     prettify.type = "text/javascript";
     prettify.src  = 'https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.js' + append_theme;
