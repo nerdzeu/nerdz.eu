@@ -49,7 +49,7 @@ $vals['totalcommentsprojects'] = $core->lang('TOTAL_COMMENTS_PROJECTS');
 $vals['totalonlineusers'] = $core->lang('TOTAL_ONLINE_USERS');
 $vals['tothiddenusers'] = $core->lang('HIDDEN_USERS');
 
-$vals['user_menu_m']= ('<div class="title">'.$core->lang('USER_MENU').'</div><div class="box_menu"> <ul><a href="/"><li><img src="tpl/1/base/images/home-dark.png">Home</li></a><a href="/'.phpCore::userLink($core->getUserName()).'"><li><img src="tpl/1/base/images/prof.png">'.$core->lang('PROFILE').'</li></a><a href="/preferences.php"><li><img src="tpl/1/base/images/settings.png">'.$core->lang('PREFERENCES').'</li></a><a href="/" id="logout" data-tok="'.$core->getCsrfToken().'"><li><img src="tpl/1/base/images/exit.png">'.$core->lang('LOGOUT').'</li></a></ul></div>');
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
 
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('base/stats');
