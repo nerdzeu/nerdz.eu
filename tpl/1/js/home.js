@@ -6,42 +6,45 @@ $(document).ready(function() {
     var load = false; //gestisce i caricamenti ed evita sovrapposizioni. Dichiarata qui che è il foglio che viene incluso di default ovunque e per primo
     plist.html('<h1>'+loading+'...</h1>');
     
-    //swipe reload, tipo twitter/facebook [caricato da cdn]
-    var script=document.createElement('script');
-    script.type='application/javascript';
-    script.src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js";
-    $("head").append(script);
-    $("#center_col").swipe({
+      //swipe reload, tipo twitter/facebook [caricato da cdn]
+      var script=document.createElement('script');
+      script.type='application/javascript';
+      script.src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js";
+      $("head").append(script);
+      $("#center_col").swipe({
         swipeStatus:function(event, phase, direction, distance) {
-            if( direction!="down" ) {
-                return false;
-            }
+          if( direction=="down" ) {
             if ( $(window).scrollTop() != 0 ) {
-                return false;
+              return false;
             }
             if(phase == "start") {
-                $('#reloadmessage').text(" ").css("height","0px");
-                if ( $("#right_col").hasClass("shown") ) {
-                    $("#title_right").click();
-                }
-           }
-           else if (phase == "move") {
-               if (distance<100) {
-                   $('#reloadmessage').html("Scrolldown to reload").css("height",distance);
-               }
-               else {
-                   $('#reloadmessage').css("height","100px").text("Release to update");
-               }
-		   }
-           else if (phase == "end") {
-               $('#reloadmessage').text(" ").css("height","0px");
-               if(distance<100) { 
-                   return;
-               };
-               $('#profilePostList').click();
-           }
+              $('#reloadmessage').text(" ").css("height","0px");
+              if ( $("#right_col").hasClass("shown") ) {
+                $("#title_right").click();
+              }
+              if ( $("#left_col").hasClass("shown") ) {
+                $("#title_left").click();
+              }
+              
+            }
+            else if (phase == "move") {
+              if (distance<100) {
+                $('#reloadmessage').html("Scrolldown to reload").css("height",distance);
+              }
+              else {
+                $('#reloadmessage').css("height","100px").text("Release to update");
+              }
+            }
+            else if (phase == "end") {
+              $('#reloadmessage').text(" ").css("height","0px");
+              if(distance<100) { 
+                return;
+              };
+              $('#profilePostList').click();
+            }
+          }
         }
-    });
+      });
 
     var fixHeights = function() {
         plist.find(".nerdz_message").each (function() {
