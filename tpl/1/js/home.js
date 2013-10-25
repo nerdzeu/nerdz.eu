@@ -40,7 +40,29 @@ $(document).ready(function() {
               if(distance<100) { 
                 return false;
               };
-              $('#profilePostList').click();
+              //il rilascio fa aggiornare la pagina corrente, che può 
+              //essere home, project o search. contemplo tutti i casi
+              //e le lingue possibili
+              plist = $("#postlist");
+              if ( plist.data("mode") == "std" ) {
+                if ( plist.data("type") == "profile" ) {
+                  $("#profilePostList").click();
+                }
+                else if ( plist.data("type") == "project" ) {
+                  $("#projectPostList").click();
+                }
+              }
+              else if ( plist.data("mode") == "language" || plist.data("mode") == "followed" ) {
+                if ( plist.data("type") == "profile" ) {
+                  $(".active-lang").click();       
+                } 
+                else if ( plist.data("type") == "project" ) {
+                  $(".active-plang").click()
+                }
+              }
+              else if ( plist.data("mode") ==  "search" ) {
+                $("footersearch").submit();
+              }
             }
           }
           else {
@@ -123,7 +145,7 @@ $(document).ready(function() {
         plist.html('<h1>'+loading+'...</h1>');
         $("#fast_nerdz").show();
         $("#nerdzlist").hide();
-        $(".selectlang").css('color','');
+        $(".active-lang").removeClass('active-lang');
         localStorage.removeItem("autolang");
         load = false;
         N.html.profile.getHomePostList(0,function(data) {
@@ -140,7 +162,8 @@ $(document).ready(function() {
         plist.html('<h1>'+loading+'...</h1>');
         $("#fast_nerdz").hide();
         $("#projlist").hide();
-        $(".projlang").css('color','');
+        $("#projselect").attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
+        $(".active-plang").removeClass('active-plang');
         load = false;
         N.html.project.getHomePostList(0,function(data) {
             plist.html(data);
@@ -165,8 +188,8 @@ $(document).ready(function() {
         plist.html('<h1>'+loading+'...</h1>');
         lang = $(this).data('lang');
         localStorage.setItem("autolang",lang);
-        $(".selectlang").css('color','');
-        $(this).css('color','#2370B6');
+        $(".active-lang").removeClass('active-lang');
+        $(this).addClass('active-lang');
         load = false;
         if(lang == 'usersifollow')
         {
@@ -203,8 +226,8 @@ $(document).ready(function() {
         $("#fast_nerdz").hide();
         plist.html('<h1>'+loading+'...</h1>');
         lang = $(this).data('lang');
-        $(".projlang").css('color','');
-        $(this).css('color','#2370B6');
+        $(".active-plang").removeClass("active-plang")
+        $(this).addClass('active-plang');
         load = false;
         if(lang == 'usersifollow')
         {
@@ -272,7 +295,7 @@ $(document).ready(function() {
         $("#nerdzselect").click();
         var el = $("#nerdzlist").find("ul").find("[data-lang='"+localStorage.getItem("autolang")+"']");
         el.click();
-        el.css('color','#2370B6');
+        el.addClass("active-lang");
     }
     else
     {

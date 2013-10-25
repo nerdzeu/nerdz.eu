@@ -13,6 +13,10 @@
     margin: 0px !important;
 }
 
+.active-lang, .active-plang {
+  color:#2370B6;
+}
+
 #site_title a:visited, #site_title a:active, #site_title a:link, .nerdz_comments a:hover, .nerdz_comments a:visited, .nerdz_comments a:active, .nerdz_comments a:link, #footer_main a:visited, #footer_main a:active, #footer_main a:link
 {
     color: #000;
