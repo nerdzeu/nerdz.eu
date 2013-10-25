@@ -94,6 +94,7 @@ aside{
 #center_col
 {
     width: 98.5%;
+    min-height: 500px;
     height: auto;
     position:absolute;
     top:50px;
