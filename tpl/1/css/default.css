@@ -58,14 +58,7 @@
 	background-size:cover;
 	background-color: #EEE;
 	padding-top:13px !important; 
-    font-weight: bold;
-}
-
-#left_col
-{
-    float: left;
-    margin-right: 1%;
-    overflow-x: hidden;
+  font-weight: bold;
 }
 
 #reloadmessage 
@@ -80,20 +73,45 @@
 	margin: 0px
 }
 
+aside{
+  width:70%;
+  height:auto; 
+  overflow:auto;
+  display: none;
+  overflow-x: hidden !important;
+  background-color: #1D1B1B;
+}
+
+#left_col
+{
+    z-index:1;
+    position:absolute;
+    top:50px;
+    left:0px;
+    overflow-x: hidden;
+}
+
 #center_col
 {
-    width: 98%;
-    float:left;
+    width: 98.5%;
+    height: auto;
+    position:absolute;
+    top:50px;
+    left:0px;
     display: inline;
-    padding-left: 0.5px;
-    padding-right: 0.5px;
+    padding-left: 1%;
+    padding-right: 0.5%;
     font-size: 105%;
+    z-index: 2;
+    background-color: #1D1B1B;
 }
 
 #right_col
 {
-    float: right;
-    display: none;
+    z-index:1;
+    position:absolute;
+    top:50px;
+    right:0px;
     margin-left: 1%;
 }
 
@@ -114,14 +132,6 @@
     width: 100%;
     background-color: #000;
     border: none;
-}
-
-#main
-{
-    margin: auto;
-    width: 98%;
-    margin-right: 0.2%;
-    word-wrap: break-word;
 }
 
 #gotopm
@@ -219,14 +229,6 @@ body
     height: 100%;
     margin: auto;
     Z-index: 0;
-}
-
-aside 
-{ 
-  width: 0px; 
-  height:auto; 
-  overflow:auto;
-  overflow-x: hidden !important;
 }
 
 img

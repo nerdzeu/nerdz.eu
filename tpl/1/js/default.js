@@ -7,38 +7,43 @@ $(document).ready(function() {
     viewPortTag.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0";
     document.getElementsByTagName('head')[0].appendChild(viewPortTag);
     
+    //impedisce il sovrapporsi degli slide
+    var moving = 0;
+    
     if(!!!$("#left_col").length) {
         $("#title_left").css("background-image","url(tpl/1/base/images/back.png)").click(function(){history.back(-1);});
     }
     else
     {
         $('#title_left').click(function() {
+          if(moving)return;
+          moving=1;
             if( $("#right_col").hasClass("shown") ) {
-                $("#right_col").removeClass("shown").animate({ width : "0px" }, 500);
+                $("#right_col").removeClass("shown").hide();
             }
             if( ! $("#left_col").hasClass("shown") ) {
-                $("#left_col").css("width","0px").addClass("shown").animate({ width : "70%" }, 500); 
-                $("#center_col").css("position","absolute").css("left","2%").animate({ left : "72%" }, 500);
+                $("#left_col").show();
+                $("#center_col").animate({ left : "70%" }, 500, function() { $("#left_col").addClass("shown"); moving=0; } );
             } else {
-                $("#left_col").animate({ width : "0px" }, 500).removeClass("shown");
-                $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") });
-	        }
+              $("#center_col").animate({ left: "0px" }, 500 , function() { $("#left_col").removeClass("shown").hide(); moving=0; } );
+            }
           return false;
           });
     }
 
    $('#title_right').click(function() {
+     if(moving) return;
+     moving=1;
        if( $("#left_col").hasClass("shown") ) {
-           $("#left_col").removeClass("shown").animate({ width : "0px" }, 500);
+           $("#left_col").removeClass("shown").hide();
        }
        if( ! $("#right_col").hasClass("shown") ) {
-           $("#right_col").css("width","0px").show().addClass("shown").animate({ width : "70%" }, 500);
-           $("#center_col").css("position","absolute").css("left","2%").animate({ left : "-72%" }, 500);
+          $("#right_col").show();
+          $("#center_col").animate({ left : "-70%" }, 500, function() { $("#right_col").addClass("shown"); moving=0; } );
        }
        else
        {
-           $("#right_col").animate({ width : "0px" }, 500).removeClass("shown");
-           $("#center_col").animate({ left: "2%" }, 500 , function() { $(this).css("position", "static") } );
+           $("#center_col").animate({ left: "0px" }, 500 , function() { $("#right_col").removeClass("shown").hide(); moving=0; } );
        }
        return false;
     });
