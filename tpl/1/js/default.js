@@ -20,6 +20,7 @@ $(document).ready(function() {
           moving=1;
             if( $("#right_col").hasClass("shown") ) {
                 $("#right_col").removeClass("shown").hide();
+                $("#center_col").css("left","0");
             }
             if( ! $("#left_col").hasClass("shown") ) {
                 $("#left_col").show();
@@ -35,7 +36,8 @@ $(document).ready(function() {
      if(moving) return;
      moving=1;
        if( $("#left_col").hasClass("shown") ) {
-           $("#left_col").removeClass("shown").hide();
+          $("#left_col").removeClass("shown").hide();
+          $("#center_col").css("left","0");
        }
        if( ! $("#right_col").hasClass("shown") ) {
           $("#right_col").show();
