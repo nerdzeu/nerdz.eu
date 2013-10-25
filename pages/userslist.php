@@ -102,6 +102,8 @@ else
     $vals['prev_url'] = $url."&amp;lim={$limitprev}";
 }
 
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('base/userslist');
 ?>

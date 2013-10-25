@@ -1,26 +1,13 @@
 <form id="convfrm">
-    <table class="page" style="width:80%" id="compose">
-    <tr>
-        <td style="width:50%">
-            {$to}
-        </td>
-        <td style="width:50%">
-            <input type="text" name="to" id="to" />
-        </td>
-    </tr>
-    </table>
-    <table class="page" style="width:80%">
-        <tr>
-            <td>
-                {$message}
-                <br />
-                <textarea style="width:100%;height:150px" name="message" id="message"></textarea>
-                <br />
-                <input type="submit" style="float:right; margin-top:5px" value="{$send}" />
-                <button type="button" style="float:left; margin-top:5px" onclick="window.open('/bbcode.php')">BBCode</button>
-                <span id="res"></span>
-            </td>
-        </tr>
-    </table>
+  <div id="compose">
+    <input type="text" name="to" id="to" placeholder="{$to}" style="width:94%; padding-left:2%; margin-left:2%"/>
+    <div style="width:96%; margin:auto; padding-top:10px">
+      <textarea placeholder="{$message}" style="width:98%;padding-left:2%;height:150px" name="message" id="message"></textarea>
+      <br />
+      <input type="submit" style="float:right; margin-top:5px" value="{$send}" />
+      <button type="button" style="float:left; margin-top:5px" onclick="window.open('/bbcode.php')">BBCode</button>
+      <span id="res"></span>
+    </div>
+  </div>
 </form>
 <br /><br />

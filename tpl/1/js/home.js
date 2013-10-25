@@ -5,6 +5,75 @@ $(document).ready(function() {
     var lang = null; /* globale dato che la uso anche altrove */
     var load = false; //gestisce i caricamenti ed evita sovrapposizioni. Dichiarata qui che è il foglio che viene incluso di default ovunque e per primo
     plist.html('<h1>'+loading+'...</h1>');
+    
+      //swipe reload, tipo twitter/facebook [caricato da cdn]
+      var script=document.createElement('script');
+      script.type='application/javascript';
+      script.src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js";
+      $("head").append(script);
+      $("#center_col").swipe({
+        swipeStatus:function(event, phase, direction, distance) {
+          if( direction=="down" ) {
+            if ( $(window).scrollTop() != 0 ) {
+              return false;
+            }
+            if(phase == "start") {
+              $('#reloadmessage').text(" ").css("height","0px");
+              if ( $("#right_col").hasClass("shown") ) {
+                $("#title_right").click();
+              }
+              if ( $("#left_col").hasClass("shown") ) {
+                $("#title_left").click();
+              }
+              
+            }
+            else if (phase == "move") {
+              if (distance<100) {
+                $('#reloadmessage').html("Scrolldown to reload").css("height",distance);
+              }
+              else {
+                $('#reloadmessage').css("height","100px").text("Release to update");
+              }
+            }
+            else if (phase == "end" || phase == "cancel") {
+              $('#reloadmessage').text(" ").css("height","0px");
+              if(distance<100) { 
+                return false;
+              };
+              //il rilascio fa aggiornare la pagina corrente, che può 
+              //essere home, project o search. contemplo tutti i casi
+              //e le lingue possibili
+              plist = $("#postlist");
+              if ( plist.data("mode") == "std" ) {
+                if ( plist.data("type") == "profile" ) {
+                  $("#profilePostList").click();
+                }
+                else if ( plist.data("type") == "project" ) {
+                  $("#projectPostList").click();
+                }
+              }
+              else if ( plist.data("mode") == "language" || plist.data("mode") == "followed" ) {
+                if ( plist.data("type") == "profile" ) {
+                  $(".active-lang").click();       
+                } 
+                else if ( plist.data("type") == "project" ) {
+                  $(".active-plang").click()
+                }
+              }
+              else if ( plist.data("mode") ==  "search" ) {
+                $("footersearch").submit();
+              }
+            }
+          }
+          else {
+            if(phase != "start") {
+              $('#reloadmessage').text(" ").css("height","0px");
+              return false;
+            }
+          }
+        },
+        allowPageScroll:"vertical"
+      });
 
     var fixHeights = function() {
         plist.find(".nerdz_message").each (function() {
@@ -76,7 +145,7 @@ $(document).ready(function() {
         plist.html('<h1>'+loading+'...</h1>');
         $("#fast_nerdz").show();
         $("#nerdzlist").hide();
-        $(".selectlang").css('color','');
+        $(".active-lang").removeClass('active-lang');
         localStorage.removeItem("autolang");
         load = false;
         N.html.profile.getHomePostList(0,function(data) {
@@ -84,6 +153,7 @@ $(document).ready(function() {
             plist.data('type','profile');
             plist.data('mode','std');
             hideHidden();
+            $("#nerdzselect").attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
             load = true;
         });
     });
@@ -92,7 +162,8 @@ $(document).ready(function() {
         plist.html('<h1>'+loading+'...</h1>');
         $("#fast_nerdz").hide();
         $("#projlist").hide();
-        $(".projlang").css('color','');
+        $("#projselect").attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
+        $(".active-plang").removeClass('active-plang');
         load = false;
         N.html.project.getHomePostList(0,function(data) {
             plist.html(data);
@@ -104,19 +175,21 @@ $(document).ready(function() {
     });
 
     $("#nerdzselect").on('click',function() {
-        $("#nerdzlist").toggle();
+		$(this).attr("src").indexOf("expand")>-1 ? $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/collapse.png") : $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
+        $("#nerdzlist").slideToggle();
     });
 
     $("#projselect").on('click',function() {
-        $("#projlist").toggle();
+		$(this).attr("src").indexOf("expand")>-1 ? $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/collapse.png") : $(this).attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
+        $("#projlist").slideToggle();
     });
 
     $(".selectlang").on('click',function() {
         plist.html('<h1>'+loading+'...</h1>');
         lang = $(this).data('lang');
         localStorage.setItem("autolang",lang);
-        $(".selectlang").css('color','');
-        $(this).css('color','#2370B6');
+        $(".active-lang").removeClass('active-lang');
+        $(this).addClass('active-lang');
         load = false;
         if(lang == 'usersifollow')
         {
@@ -153,8 +226,8 @@ $(document).ready(function() {
         $("#fast_nerdz").hide();
         plist.html('<h1>'+loading+'...</h1>');
         lang = $(this).data('lang');
-        $(".projlang").css('color','');
-        $(this).css('color','#2370B6');
+        $(".active-plang").removeClass("active-plang")
+        $(this).addClass('active-plang');
         load = false;
         if(lang == 'usersifollow')
         {
@@ -222,7 +295,7 @@ $(document).ready(function() {
         $("#nerdzselect").click();
         var el = $("#nerdzlist").find("ul").find("[data-lang='"+localStorage.getItem("autolang")+"']");
         el.click();
-        el.css('color','#2370B6');
+        el.addClass("active-lang");
     }
     else
     {

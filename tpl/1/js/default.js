@@ -1,16 +1,68 @@
 $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
 
+    var viewPortTag=document.createElement('meta');
+    viewPortTag.id="viewport";
+    viewPortTag.name = "viewport";
+    viewPortTag.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0";
+    document.getElementsByTagName('head')[0].appendChild(viewPortTag);
+    
+    //impedisce il sovrapporsi degli slide
+    var moving = 0;
+    
+    if(!!!$("#left_col").length) {
+        $("#title_left").css("background-image","url(tpl/1/base/images/back.png)").click(function(){history.back(-1);});
+    }
+    else
+    {
+        $('#title_left').click(function() {
+          if(moving)return;
+          moving=1;
+            if( $("#right_col").hasClass("shown") ) {
+                $("#right_col").removeClass("shown").hide();
+                $("#center_col").css("left","0");
+            }
+            if( ! $("#left_col").hasClass("shown") ) {
+                $("#left_col").show();
+                $("#center_col").animate({ left : "70%" }, 500, function() { $("#left_col").addClass("shown"); moving=0; } );
+            } else {
+              $("#center_col").animate({ left: "0px" }, 500 , function() { $("#left_col").removeClass("shown").hide(); moving=0; } );
+            }
+          return false;
+          });
+    }
+
+   $('#title_right').click(function() {
+     if(moving) return;
+     moving=1;
+       if( $("#left_col").hasClass("shown") ) {
+          $("#left_col").removeClass("shown").hide();
+          $("#center_col").css("left","0");
+       }
+       if( ! $("#right_col").hasClass("shown") ) {
+          $("#right_col").show();
+          $("#center_col").animate({ left : "-70%" }, 500, function() { $("#right_col").addClass("shown"); moving=0; } );
+       }
+       else
+       {
+           $("#center_col").animate({ left: "0px" }, 500 , function() { $("#right_col").removeClass("shown").hide(); moving=0; } );
+       }
+       return false;
+    });
+
     //elementi singoli
     $("iframe").attr('scrolling','no'); //dato che il validatore non li vuole e con i css overflow:hidden non funge
     $("body").append($('<br />')); //per fare funzionare infinte scrolling sempre
     // append version information
-    if ($("#left_col").length && window.location.pathname == "/home.php")
+    if ($("#left_col").length && window.location.pathname == "/home.php") {
         $("#left_col .title").eq (0).append (" <span style='font-weight: normal'><a href='/NERDZilla:690' style='color: #000 !important'>[" + N.getVersion() + "]</a></span>");
+    }
+
     // load the prettyprinter
     var append_theme = "", _h = $("head");
-    if (localStorage.getItem ("has-dark-theme") == 'yep')
+    if (localStorage.getItem ("has-dark-theme") == 'yep') {
         append_theme = "?skin=sons-of-obsidian";
+    }
     var prettify = document.createElement ("script");
     prettify.type = "text/javascript";
     prettify.src  = 'https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.js' + append_theme;
@@ -61,12 +113,6 @@ $(document).ready(function() {
         }
         $(this).html(isNaN(nold) ? old : '0');
     });
-
-    /* il footersearch si mostra solo in alcune pagine */
-    var wrongPages = [ '/bbcode.php','/terms.php','/faq.php','/stats.php','/rank.php','/preferences.php', '/informations.php', '/preview.php' ];
-       if($.inArray(location.pathname,wrongPages) != -1) {
-           $("#footersearch").hide();
-       };
 
     $("#footersearch").on('submit',function(e) {
         e.preventDefault();
@@ -138,12 +184,12 @@ $(document).ready(function() {
         });
     });
 
-    $("#gotopm").on('click',function(e) {
+    $("#pmcounter").on('click',function(e) {
             e.preventDefault();
 
             var href = $(this).attr('href');
 
-            if($('#pmcounter').html() != '0') {
+            if($(this).html() != '0') {
 
                 if(href == window.location.pathname ) {
                     location.hash = "new";
@@ -557,10 +603,10 @@ $(document).ready(function() {
     //end plist into events
     setInterval(function() {
         var nc = $("#notifycounter"), val = parseInt(nc.html());
-        nc.css('background-color',val == 0 || isNaN(val) ? '#FFF' : '#FF0000');
+        nc.css('background-color',val == 0 || isNaN(val) ? '#eee' : '#2C98C9');
         var pc = $("#pmcounter");
         val = parseInt(pc.html());
-        pc.css('background-color',val == 0 || isNaN(val) ? '#AFAFAF' : '#FF0000');
+        pc.css('background-color',val == 0 || isNaN(val) ? '#eee' : '#2C98C9');
     },200);
 
 });

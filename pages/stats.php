@@ -49,6 +49,8 @@ $vals['totalcommentsprojects'] = $core->lang('TOTAL_COMMENTS_PROJECTS');
 $vals['totalonlineusers'] = $core->lang('TOTAL_ONLINE_USERS');
 $vals['tothiddenusers'] = $core->lang('HIDDEN_USERS');
 
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('base/stats');
 ?>

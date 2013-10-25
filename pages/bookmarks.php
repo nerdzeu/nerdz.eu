@@ -102,6 +102,9 @@ else
     $vals['next_url'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
     $vals['prev_url'] = $url."&amp;lim={$limitprev}";
 }
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('profile/bookmarks');
 ?>

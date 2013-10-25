@@ -52,6 +52,8 @@ $vals['monthly_b'] = !$mo;
 $vals['lastupdate'] = $core->lang('LAST_UPDATE');
 $vals['lastupdate_n'] = $core->getDateTime(filemtime($path));
 
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+
 $core->getTPL()->assign($vals);
 
 $core->getTPL()->draw('base/rank');

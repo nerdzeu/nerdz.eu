@@ -8,6 +8,8 @@ $enter = true;
 
 $vals['logged_b'] = $core->isLogged();
 
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+
 if(($info->private && !$vals['logged_b']) || (!$info->visible && !$vals['logged_b']))
 {
     $included = true;

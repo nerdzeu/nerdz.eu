@@ -205,6 +205,7 @@ $_LANG = array(
     'BACK_TO_THE_BOTTOM' => 'Back to the bottom',
     'EXPAND' => 'Expand',
     'EVERY_COMMENT' => 'All comments',
-    'EVERY_MSG' => 'All messages'
+    'EVERY_MSG' => 'All messages',
+    'USER_MENU' => 'User Menu'
 );
 ?>

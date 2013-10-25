@@ -9,6 +9,10 @@ $vals['id_n'] = $info->counter;
 $vals['unfollow'] = $core->lang('UNFOLLOW');
 $vals['follow'] = $core->lang('FOLLOW');
 
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+
+
 $vals['advertisement'] = $core->lang('ADVERTISEMENT');
 $banners = (new banners())->getBanners();
 shuffle($banners);

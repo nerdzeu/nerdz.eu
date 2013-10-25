@@ -1,0 +1,46 @@
+{ignore}<div id="left_col">&nbsp;</div>{/ignore}
+<article id="center_col">
+    <div class="page" style="cursor: pointer">
+        <table>
+            <tr id="prefbar">
+                <th id="account">{$account}</th>
+                <th id="profile">{$profile}</th>
+                <th id="guests">{$guests}</th>
+                <th id="projects">{$projects}</th>
+                <th id="language">{$language}</th>
+                <th id="delete">{$delete}</th>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div id="content" class="page">
+        <br />
+        <h3 style="text-align:center;margin:auto;width:60%">
+            {$description_n}
+        </h3>
+    </div>
+</article>
+<aside id="right_col">
+  <div class="title">
+      {$usermenu}
+  </div>
+  <div class="box_menu">
+      <ul>
+          <a href="/"><li><img src="images/home-dark.png">Home</li></a>
+          <a href="/{$myusername4link_n}"><li><img src="images/prof.png">{$profile}</li></a>
+          <a href="/preferences.php"><li><img src="images/settings.png">{$preferences}</li></a>
+          <a href="/" id="logout" data-tok="{$tok_n}"><li><img src="images/exit.png">{$logout}</li></a>
+      </ul>
+  </div>
+</aside>
+<script type="application/javascript">
+    $(document).ready(function() {
+        $("#prefbar").click(function(event) {
+            var c = $("#content");
+            c.html($("#loadtxt").data('loading'));
+            N.html.post('/pages/preferences/'+ event.target.id +'.html.php',{},function(data) {
+                c.html(data);
+            });
+        });
+    });
+</script>

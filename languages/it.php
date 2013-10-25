@@ -204,6 +204,7 @@
     'BACK_TO_THE_BOTTOM' => 'Torna giù',
     'EXPAND' => 'Espandi',
     'EVERY_COMMENT' => 'Tutti i commenti',
-    'EVERY_MSG' => 'Tutti i messaggi'
+    'EVERY_MSG' => 'Tutti i messaggi',
+    'USER_MENU' => 'Menù Utente'
     );
 ?>

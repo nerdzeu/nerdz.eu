@@ -8,14 +8,11 @@ Esempio: about.html, viene disegnato andando su /about.php]
 about.html     error.html   header.html  rank.html      reset.html  stats.html
 codelist.html  footer.html  images       register.html  share.html  terms.html
 
-./base/images: [cartella contenente le immagini per i file di base, organizzati per on/offline]
-offline  online
-
-./base/images/offline:
+./base/images: 
 chromeicon.jpeg  firefoxicon.jpeg
-
-./base/images/online:
 chatofficon.png  chatonicon.png  ladyicon.png
+exit.png  home.png  home-dark.png mail.png 
+settings.png  warn.png  columns.png
 
 ./css: [la cartella contiene i css. Per specificare in che pagina incluederli vedere: "template.values"]
 
@@ -30,7 +27,7 @@ lock.png  rss.gif  unlock.png
 ./pm: [cartella dei pm]
 conversation.html  form.html  inbox.html  main.html
 
-./preferences: [Esistente solo per il template di default. Negli altri non è esistente per motivi di sicurezza]
+./preferences: 
 account.html  friends.html  language.html  profile.html
 delete.html   guests.html   layout.html    projects.html
 
@@ -55,7 +52,7 @@ Così facendo è possibile ad esempio definire regole css generali, nel file di 
 della pagina in questione, ridefinirle in altri file o modificarle lievemente.
 
 # API JAVASCRIPT #
-Sono a disposizione AuPI JS per una facile creazione dei template.
+Sono a disposizione API JS per una facile creazione dei template.
 (quasi) Sempre incluso jquery in ogni pagina, sempre aggiornato all'ultima versione.
 
 Per la guida alle api, vedere il file README_JAPI
@@ -74,3 +71,4 @@ verrà usato quel tag (home, profile, project)
 Obbligatoria la class "spoiler", che è la classe css che verrà attribuita ai tag:
 [spoiler]text nascoste[/spoiler]
 (quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui
+verrà usato quel tag (home, profile, project)

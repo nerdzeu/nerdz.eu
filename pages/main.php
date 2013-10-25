@@ -13,6 +13,10 @@ foreach($banners as $ban)
 
 $vals['advertisement'] = $core->lang('ADVERTISEMENT');
 
+$vals['search'] = $core->lang('SEARCH');
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+
 $limit = isset($_GET['limit']) && $core->limitControl($_GET['limit'],10) ? $_GET['limit'] : 10;
 $vals['lastuser'] = $core->lang('LAST_USER');
 $vals['stats'] = $core->lang('STATS');

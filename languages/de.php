@@ -204,6 +204,7 @@ $_LANG = array(
     'BACK_TO_THE_BOTTOM' => 'Zurück zum unteren',
     'EXPAND' => 'Erweitern',
     'EVERY_COMMENT' => 'Alle kommentare',
-    'EVERY_MSG' => 'Alle beiträge'
+    'EVERY_MSG' => 'Alle beiträge',
+    'USER_MENU' => 'Benutzermenü'
 );
 ?>

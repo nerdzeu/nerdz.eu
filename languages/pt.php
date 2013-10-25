@@ -204,6 +204,7 @@ $_LANG = array(
     'BACK_TO_THE_BOTTOM' => 'Volta para o fundo',
     'EXPAND' => 'Expandir',
     'EVERY_COMMENT' => 'Todos os comentários',
-    'EVERY_MSG' => 'Todos os posts'
+    'EVERY_MSG' => 'Todos os posts',
+    'USER_MENU' => 'menu do usuário'
 );
 ?>
