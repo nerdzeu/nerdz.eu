@@ -1,6 +1,4 @@
-<div id="reloadmessage"></div>
-
-  <aside id="left_col">
+ <aside id="left_col">
       <div>
           <div class="title" style="width: 99%">
               NERDZ
@@ -9,21 +7,7 @@
               <ul style="color: #AFAFAF">
                   <li style="padding:0px;">
                     <form id="footersearch" style="position:relative">
-                      <input type="text" name="q" placeholder="{$search}" style="height:40px!important; width:100% !important; position:absolute; top:0px; left:0px; border:none; padding:0px; border-radius:0px "/>
-                      <input type="image" src="http://mobile.nerdz.eu/tpl/1/base/images/search.png" style="position:absolute; top:0px; right:0px; height:40px;width:40px" id="search_btn">
-                    </form>
-                  </li>
-                  <li><a id="profilePostList" href="#">NERDZ</a>
-                      <img style="margin-right:1px; margin-left: 10px; cursor:pointer; float:right;height:30px" id="nerdzselect" src="../base/images/expand.png" title="[{$from}...]">
-                      <span style="float:right">
-                          <a href="/feed.php">
-                              <img src="images/rss.gif" style="width:16px;height:17px" alt="Users RSS" />
-                          </a>
-                      </span>
-                      <div id="nerdzlist" style="display:none;">
-                          <ul>
-                              <li class="selectlang" data-lang="*">{$everybody}</li>
-                              <li class="selectlang" data-lang="usersifollow">{$usersifollow}</li>
+                      <input type="text" name="q" placeholder="{$search}" style="sersifollow}</li>
                               {loop="langs_a"}
                               <li class="selectlang" data-lang="{$value.shortlang_n}">{$value.longlang_n}</li>
                               {/loop}
@@ -70,6 +54,7 @@
       {/ignore}
   </aside>
   <article id="center_col" class="page">
+     <div id="reloadmessage"></div>
       <div id="fast_nerdz">
           <div>
               <form id="stdfrm">
