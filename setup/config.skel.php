@@ -4,6 +4,8 @@
 
 // PostgreSQL hostname.
 $Rpostgresql_host = 'localhost';
+// PostgreSQL port.
+$Rpostgresql_port = '5432';
 // Desidered PostgreSQL database to use.
 $Rpostgresql_db = 'nerdz';
 // PostgreSQL username/password to use.

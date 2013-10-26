@@ -16,8 +16,7 @@ class db
 
     private function __construct()
     {
-        //no host specified; will connect through UNIX sockets or fallback on localhost
-        $this->dbh = new PDO('pgsql:dbname='.POSTGRESQL_DATA_NAME,POSTGRESQL_USER,POSTGRESQL_PASS);
+        $this->dbh = new PDO('pgsql:host='.POSTGRESQL_HOST.';dbname='.POSTGRESQL_DATA_NAME.';port='.POSTGRESQL_PORT, POSTGRESQL_USER, POSTGRESQL_PASS);
         $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
         $this->dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
     }

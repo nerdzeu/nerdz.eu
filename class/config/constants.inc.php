@@ -8,6 +8,7 @@ define('POSTGRESQL_DATA_NAME',$class->postgresql_db);
 define('POSTGRESQL_USER',$class->postgresql_user);
 define('POSTGRESQL_PASS',$class->postgresql_pass);
 define('POSTGRESQL_DUP_KEY',7);
+define('POSTGRESQL_PORT',$class->postgresql_port);
 #end postgresql constants
 
 #begin user constants
