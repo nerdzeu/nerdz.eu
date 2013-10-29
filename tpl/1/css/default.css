@@ -127,6 +127,7 @@ aside{
 
 #notify_list
 {
+    z-index:3;
     position: fixed;
     display: block;
     top: 50px;
