@@ -134,7 +134,7 @@ aside{
     top: 50px;
     width: 100%;
     background-color: #000;
-    border: none;
+    border: 1px solid white;
 }
 
 #gotopm
