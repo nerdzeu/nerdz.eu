@@ -153,7 +153,7 @@ $(document).ready(function() {
             plist.data('type','profile');
             plist.data('mode','std');
             hideHidden();
-            $("#nerdzselect").attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
+            $("#nerdzselect").attr("src","/tpl/1/base/images/expand.png");
             load = true;
         });
     });
@@ -162,7 +162,7 @@ $(document).ready(function() {
         plist.html('<h1>'+loading+'...</h1>');
         $("#fast_nerdz").hide();
         $("#projlist").hide();
-        $("#projselect").attr("src","http://mobile.nerdz.eu/tpl/1/base/images/expand.png");
+        $("#projselect").attr("src","/tpl/1/base/images/expand.png");
         $(".active-plang").removeClass('active-plang');
         load = false;
         N.html.project.getHomePostList(0,function(data) {

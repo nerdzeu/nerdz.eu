@@ -50,15 +50,16 @@
 .rIcon 
 { 
 	float:left; 
-	width:40px !important; 
-	height:27px !important; 
+	width:40px; 
+	height:40px; 
 	border-radius:50%; 
-	margin:5px !important; 
-	font-size:50%;
+	margin:5px; 
+	font-size:30px;
+	line-height: 40px;
 	background-size:cover;
 	background-color: #EEE;
-	padding-top:13px !important; 
-  font-weight: bold;
+	font-weight: bold;
+	text-align: center;
 }
 
 #reloadmessage 
@@ -125,7 +126,7 @@ aside{
     margin: 0px;
 }
 
-#notify_list
+#notify_list, #pm_list
 {
     z-index:3;
     position: fixed;
@@ -321,6 +322,54 @@ iframe
     border: 1px #FFFFFF solid;
     word-wrap: break-word;
     margin-bottom: 10px;
+}
+
+#notify_list .nerdz_comments
+{
+	height: 30px !important; 
+	font-size: 15px;
+	white-space:nowrap;
+}
+
+#pm_list .box 
+{
+	border:none;
+	background-color: #bdbdbd;
+	border-radius: 0px;
+	margin: 0px;
+	color: black;
+}
+
+#pm_list .more_btn, #pm_list .all_msgs_hidden
+{
+	display:none;
+}
+
+#pm_list_t, #pm_list_f
+{
+	text-align:center;
+	padding: 5px;
+	height: 30px;
+}
+
+#pm_list_t img
+{
+	height:30px;
+	margin-right:10px;
+	float:right;
+	cursor:pointer;
+}
+
+#pm_from
+{
+	float:left;
+	height: 30px;
+	font-size: 20px;
+}
+
+#pm_conv, #pm_reply
+{
+	display: none;
 }
 
 .news

@@ -93,7 +93,7 @@
             <br /><br />
         </div>
     </aside>
-    <article id="center_col" class="page">
+    <article id="center_col">
     {if="$canwrite_b"}
         <div id="fast_nerdz">
             <div>
@@ -116,13 +116,14 @@
         </div>
         <br /><br />
     </article>
-    <aside id="right_col" class="page">
+    <aside id="right_col">
         <div class="title">
             {$usermenu}
         </div>
         <div class="box_menu">
             <ul>
                 <a href="/"><li><img src="images/home-dark.png">Home</li></a>
+                <a href="/pm.php"><li><img src="images/pm-dark.png">{$messages}</li></a>
                 <a href="/{$myusername4link_n}"><li><img src="images/prof.png">{$profile}</li></a>
                 <a href="/preferences.php"><li><img src="images/settings.png">{$preferences}</li></a>
                 <a href="/" id="logout" data-tok="{$tok_n}"><li><img src="images/exit.png">{$logout}</li></a>
