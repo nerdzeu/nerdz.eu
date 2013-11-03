@@ -66,8 +66,9 @@ $(document).ready(function() {
     });
 
     $("#profilepm").on('click',function() {
-        var me = $(this), txt = me.html();
+        var me = $(this);
         if(oldPlist == "") {
+			txt = me.html();
             me.html('...');
             N.html.pm.getForm(function(data) {
                 oldPlist = $("#postlist").html();
@@ -75,6 +76,7 @@ $(document).ready(function() {
                 $("#to").val($("#username").html());
                 $("#fast_nerdz").hide();
             });
+            $("#title_left").click();
         }
         else
         {

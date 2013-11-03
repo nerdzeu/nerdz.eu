@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
-
+	_me = $("#site_title").data("me");
     var viewPortTag=document.createElement('meta');
     viewPortTag.id="viewport";
     viewPortTag.name = "viewport";
@@ -73,6 +73,7 @@ $(document).ready(function() {
         _h.append ('<style type="text/css">.nerdz-code-wrapper { background-color: #FFF; color: #000; }</style>');
     
     $("#notifycounter").on('click',function(e) {
+		if($("#pm_list").length) $("#pm_list").remove();
         e.preventDefault();
         var list = $("#notify_list"), old = $(this).html();
         var nold = parseInt(old);
@@ -164,7 +165,7 @@ $(document).ready(function() {
 
     $("#logout").on('click',function(event) {
         event.preventDefault();
-        var t = $("#title_right");
+        var t = $("#logout");
         N.json.logout( { tok: $(this).data('tok') }, function(r) {
             var tmp = t.html();
             if(r.status == 'ok')
@@ -183,6 +184,8 @@ $(document).ready(function() {
             }
         });
     });
+    
+    /*
 
     $("#pmcounter").on('click',function(e) {
             e.preventDefault();
@@ -203,6 +206,136 @@ $(document).ready(function() {
             {
                 location.href = href;
             }
+    });
+    */
+    
+    //*PM *//
+		pm_default_f = '<a href="pm.php" id="pm_all">See All Conversations</a>';
+	    var c_from, c_to;
+        $("#pmcounter").on('click',function(e) {
+		if($("#notify_list").length) $("#notify_list").remove();
+        e.preventDefault();
+        var list = $("#pm_list"), old = $(this).html();
+        var nold = parseInt(old);
+        if(list.length) {
+		    b = $("#pm_list_b");
+            if(isNaN(nold) || nold == 0)
+            {
+                list.remove();
+            }
+            else if(nold > 0) {
+                b.html(loading)
+				N.html.pm.getInbox(function(data) {
+					b.html(data);
+					$(b.children()[0]).children().slice(0,nold).css("background-color","#EEE")
+					$(b.children()[0]).children().slice(5).remove()
+				});
+            }
+        }
+        else {
+            var l = $(document.createElement("div"));
+            l.attr('id',"pm_list");
+            t = $('<div id="pm_list_t">').html('<div id="pm_from">Conversations</div><img src="tpl/1/base/images/pm_conv.png" id="pm_conv">'+
+											   '<img src="tpl/1/base/images/pm_reply.png" id="pm_reply"><img src="tpl/1/base/images/pm_new.png" id="pm_new">');
+            b = $('<div id="pm_list_b">'+loading+'</div>');
+            f = $('<div id="pm_list_f">'+pm_default_f+'</div>');
+            l.append(t).append(b).append(f);
+            $("body").append(l)
+			N.html.pm.getInbox(function(data) {
+				b.html(data.replace(/(\<br \/\>)*/g,""));
+				$(b.children()[0]).children().slice(0,nold).css("background-color","#EEE")
+				$(b.children()[0]).children().slice(5).remove()
+			});
+			t.on("click","#pm_new",function(){
+				b.html(loading);
+				N.html.pm.getForm(function(data) {
+					b.html(data);
+					$("#to").focus();
+				});
+			    c_from=false;
+				$("#pm_new").hide();
+				$("#pm_conv").show();
+			});
+			t.on("click","#pm_conv",function(){
+				b.html(loading);
+				N.html.pm.getInbox(function(data) {
+					b.html(data.replace(/(\<br \/\>)*/g,""));
+				});
+				$("#pm_new").show();
+				$("#pm_reply, #pm_conv").hide();
+			})
+			t.on("click","#pm_reply",function(data){
+				b.html(loading);
+				N.html.pm.getForm(function(data) {
+					b.html(data);
+					$("#to").val( $("#pm_from").text() ).attr("disabled","disabled")
+					$("#message").focus();
+				});
+				$("#pm_new").hide();
+				$("#pm_conv").show();
+			})
+
+			b.on('click',".getconv",function(e) {
+				b.html(loading);
+				e.preventDefault();
+				c_from = $(this).data('from');
+				c_to = $(this).data('to');
+				$("#pm_from").text( $(this).text() )
+				N.html.pm.getConversation({ from: c_from, to: c_to, start: 0, num: 4 },function(data) {
+					b.html(data);
+					$("#pm_new").hide();
+					$("#pm_reply, #pm_conv").show();
+					b.children("#convfrm").remove();
+				});
+			});
+			
+			b.on('keydown',"textarea",function(e) {
+				if(e.which==13) $("#convfrm").submit();
+			})
+			
+			b.on('submit',"#convfrm",function(e){
+				e.preventDefault();
+				setTimeout(function() { f.html(pm_default_f) },1500)
+				if( !$("#to").val() ) { f.text("Missing Adressee"); return }
+				if( !$("#message").val() ) { f.text("Missing Message"); return }
+				N.json.pm.send({ to: $("#to").val(), message: $("#message").val() },function(d) {
+					f = $("#pm_list_f");
+					f.text(d.status);
+					if(d.status == 'ok') {
+                        f.text("Message Send")
+						if(c_from) {
+							N.html.pm.getConversation({ from: c_from, to: c_to, start: 0, num: 4 },function(data) {
+								b.html(data);
+								$("#pm_new").hide();
+								$("#pm_reply, #pm_conv").show();
+								b.children("#convfrm").remove();
+							});
+						} else {
+							$("#message").val("");
+						}
+                    }
+				});
+			})
+			
+			f.on("click","#pm_all",function(e){
+				e.preventDefault();
+				var href = $(this).attr('href');
+				if(nold) {
+					if(href == window.location.pathname ) {
+						location.hash = "new";
+						location.reload();
+					}
+					else {
+						location.href='/pm.php#new';
+					}
+				}
+				else
+				{
+					location.href = href;
+				}
+			}) 
+        }
+        $(this).html(isNaN(nold) ? old : '0');
     });
 
     //Questo evento deve essere qui e non in index.js (che ora viene eliminato), dato che un utente può registrarsi anche dal

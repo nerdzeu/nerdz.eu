@@ -1,5 +1,7 @@
 <?php
     ob_start('ob_gzhandler');
+    error_reporting(E_ALL);
+	ini_set('display_errors', '1');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
