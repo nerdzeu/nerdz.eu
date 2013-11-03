@@ -10,6 +10,7 @@
         die(header('Location: home.php'));
 
     ob_start(array('phpCore','minifyHtml'));
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
