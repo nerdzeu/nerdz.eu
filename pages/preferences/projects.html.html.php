@@ -3,7 +3,6 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 $core = new project();
-$core->getTPL()->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/0/');
 ob_start(array('phpCore','minifyHtml'));
 
 $id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;

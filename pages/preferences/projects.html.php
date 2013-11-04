@@ -3,7 +3,6 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 $core = new phpCore();
-$core->getTPL();
 ob_start(array('phpCore','minifyHtml'));
     
 if(!$core->refererControl())
