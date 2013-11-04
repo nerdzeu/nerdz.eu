@@ -1,199 +1,161 @@
 <hr />
 <div>{$description}</div>
 <hr />
-<form id="edprofrm">
-<table class="intable">
-    <tr>
-        <td style="width: 50%; vertical-align: top">
+<form id="edprofrm" class="table page">
+    <div class="t_row">
+        <div class="t_cell" style="width:25%">
             {$interests}:
-            <p class="small">
-                {$oneperline}
-            </p>
-        </td>
-        <td style="width: 50%">
-            <textarea name="interests" rows="8" cols="26">
+        </div>
+        <div class="t_cell" style="width:75%">
+            <textarea name="interests" rows="4" cols="20" placeholder="{$oneperline}">
                 {loop="interests_a"}
                     {$value}&#13;
                 {/loop}
             </textarea>
-        </td>
-    </tr>
-    <tr>
-        <td style="vertical-align: top">
-            <br />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             {$biography}:
-            <p class="small">
-                {$biographysub}
-            </p>
-        </td>
-        <td>
-            <br />
-            <textarea name="biography" rows="8" cols="26">
+        </div>
+        <div class="t_cell">
+            <textarea name="biography" rows="4" cols="20" placeholder="{$biographysub}">
             {$biography_n}
             </textarea>
-        </td>
-    </tr>
-    <tr>
-        <td style="vertical-align: top">
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell" style="vertical-align: top">
             {$quotes}:
-            <p class="small">
-                {$oneperline}
-            </p>
-        </td>
-        <td>
-            <br />
-            <textarea name="quotes" rows="8" cols="26">
+        </div>
+        <div class="t_cell">
+            <textarea name="quotes" rows="4" cols="20" placeholder="{$oneperline}">
                 {loop="quotes_a"}
                     {$value}&#13;&#10;
                 {/loop}
             </textarea>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             {$website}:
-        </td>
-        <td>
-            <br />
-            <input type="text" name="website" value="{$website_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
+        </div>
+        <div class="t_cell">
+            <input type="text" name="website" value="{$website_n}" placeholder="{$inserturl}" />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             {$github}:
-        </td>
-        <td>
-            <br />
+        </div>
+        <div class="t_cell">
             <input type="text" name="github" value="{$github_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             {$jabber}:
-        </td>
-        <td>
-            <br />
+        </div>
+        <div class="t_cell">
             <input type="text" name="jabber" value="{$jabber_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             {$yahoo}:
-        </td>
-        <td>
-            <br />
+        </div>
+        <div class="t_cell">
             <input type="text" name="yahoo" value="{$yahoo_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
-            {$facebook}:<br /><p class="small">{$inserturl}</p>
-        </td>
-        <td>
-            <br />
-            <input type="text" name="facebook" value="{$facebook_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
-            {$twitter}:<br /><p class="small">{$inserturl}</p>
-        </td>
-        <td>
-            <br />
-            <input type="text" name="twitter" value="{$twitter_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
+            {$facebook}:
+        </div>
+        <div class="t_cell">
+            <input type="text" name="facebook" value="{$facebook_n}" placeholder="{$inserturl}" />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
+            {$twitter}:<br />
+        </div>
+        <div class="t_cell">
+            <input type="text" name="twitter" value="{$twitter_n}" placeholder="{$inserturl}" />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             {$steam}:
-        </td>
-        <td>
-            <br />
+        </div>
+        <div class="t_cell">
             <input type="text" name="steam" value="{$steam_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             {$skype}:
-        </td>
-        <td>
-            <br />
+        </div>
+        <div class="t_cell">
             <input type="text" name="skype" value="{$skype_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             {$userscript}: [<a href="/faq.php#q19" onclick="window.open(this.href); return false;">?</a>]
+        </div>
+        <div class="t_cell">
             <br />
-            <p class="small">
-                {$inserturl}
-            </p>
-        </td>
-        <td>
-            <br />
-            <input type="text" name="userscript" value="{$userscript_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
+            <input type="text" name="userscript" value="{$userscript_n}" placeholder="{$inserturl}" />
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             <br />
             {$dateformat}:
             <br />
             <p class="small">
                 {$dateformat_descr}
             </p>
-        </td>
-        <td>
+        </div>
+        <div class="t_cell">
             <br />
             <input type="text" name="dateformat" value="{$dateformat_n}" />
-        </td>
-    </tr>
-    <tr>
-        <td>
+        </div>
+    </div>
+    <div class="t_row">
+        <div class="t_cell">
             <br />
             {$closedprofile}:
-        </td>
-        <td>
+        </div>
+        <div class="t_cell">
             <br />
             <input type="checkbox" name="closed" value="1" {if="$closedprofile_b"} checked {/if}/>
-        </td>
-    </tr>
+        </div>
+    </div>
 {if="$canshowwhitelist_b"}
-    <tr>
-        <td style="vertical-align: top">
+    <div class="t_row">
+        <div class="t_cell" style="vertical-align: top">
             {$whitelist}: [<a href="/faq.php#q17">?</a>]
-            <p class="small">
-                {$oneperline}
-            </p>
-        </td>
-        <td>
-            <br />
-            <textarea name="whitelist" rows="8" cols="26">
+        </div>
+        <div class="t_cell">
+            <textarea name="whitelist" rows="4" cols="20" placeholder="{$oneperline}">
                 {loop="whitelist_a"}
                     {$value}&#13;&#10;
                 {/loop}
             </textarea>
-        </td>
-    </tr>
+        </div>
+    </div>
 {/if}
-    <tr>
-        <td>
+    <div class="t_row">
+        <div class="t_cell">
             <br />
             <input type="submit" value="{$edit}" />
-            </td>
-        <td>
+            </div>
+        <div class="t_cell">
             <div id="res"></div>
-        </td>
-    </tr>
+        </div>
+    </div>
     </table>
     <input type="hidden" name="tok" value="{$tok_n}" />
 </form>

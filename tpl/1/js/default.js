@@ -1,6 +1,8 @@
 $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
-	_me = $("#site_title").data("me");
+	
+    if(localStorage["font-size"]) $("body").css("font-size",localStorage["font-size"]+"px");
+    
     var viewPortTag=document.createElement('meta');
     viewPortTag.id="viewport";
     viewPortTag.name = "viewport";

@@ -3,20 +3,10 @@
     {$description}
     <hr />
     <br />
-    <form class="page" id="delfrm">
-        <table>
-            <tr>
-                <td>
-                    <div>
-                        <img alt="captcha" id="captcha" style="border:1px solid #FFF;width:90px;height:30px" />&nbsp;&nbsp;
-                        <span onclick="N.reloadCaptcha()" style="font-size:6pt;cursor:pointer">{$reloadcaptcha}</span>
-                    </div>
-                    <div>
-                        <input type="text" name="captcha" id="frmdelcpt" />
-                    </div>
-                </td>
-            </tr>
-        </table>
+    <form class="page" id="delfrm" style="text-align:center">
+        <img alt="captcha" id="captcha" style="border:1px solid #FFF;width:90px;height:30px" />&nbsp;&nbsp;
+        <span onclick="N.reloadCaptcha()" style="font-size:6pt;cursor:pointer">{$reloadcaptcha}</span>
+        <input type="text" name="captcha" id="frmdelcpt" /><br>
         <input type="submit" value="{$delete}" />
     </form>
     <div id="res"></div>

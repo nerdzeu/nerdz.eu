@@ -9,8 +9,8 @@
     z-index:100; 
     top:0px; 
     left:0px; 
-    padding:0px !important; 
-    margin: 0px !important;
+    padding:0px; 
+    margin: 0px;
 }
 
 .active-lang, .active-plang {
@@ -197,41 +197,34 @@ label, .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang
     cursor: pointer;
 }
 
-input, option, select, textarea, button, .page th, .title
+input[type=text], input[type=password], input[type=submit], option, select, textarea, button, .title
 {
     border: 0.5px #000 solid;
     text-align: left;
     min-height:30px;
-    font-size: 20px;
+    line-height: 30px;
     background-color: #FFF; 
     color: #000;
-    border-radius: 5px;
-}
-
-button, input[type=submit], .page th, .title
-{
-    padding-left: 1%;
-    padding-right: 1%;
-    border: 0.5px #000 solid;
+    border-radius: 2px;
+    margin: 2px;
     font-weight: bold;
     white-space: nowrap;
     word-wrap: normal;
-    vertical-align: middle;
     cursor: pointer;
-    border-radius: 2px;
 }
 
 body
 {
     background-color: #1D1B1B;
     color: #FFF;
-    font-size: 80%;
     font-family: 'Helvetica Neue', Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
     font-weight: lighter;
     width: 100%;
     height: 100%;
     margin: auto;
-    Z-index: 0;
+    overflow-x: hidden;
+    font-size: 15px;
+    padding:0px;
 }
 
 img
@@ -283,33 +276,44 @@ iframe
 
 .page
 {
+    float:left;
     width: 99%;
     margin: auto;
 }
 
-.page table
+ul.page
 {
-    margin: auto;
-    width: 100%;
+    list-style: none;
+    width:100%; 
 }
 
-.page .intable
+ul.page li
 {
-    margin-top: 3%;
-    width: 100%;
-    margin-bottom: 3%;
+    float:left;
+    padding:5px;
+    min-width:100px;
+    display:inline-block;
+    text-align:center;
 }
 
-.title
-{
-    cursor: default;
-    text-align: center;
+.table {
+    display: table;
+    table-layout: fixed;
 }
 
-.page th
-{
-    width: 10%;
-    text-align: center;
+.table .t_row {
+    width:99%;
+    display: table-row;
+}
+
+.t_cell {
+    vertical-align:top;
+    display: table-cell;
+    overflow:hidden;    
+}
+
+.t_cell > * {
+    max-width: 99%;
 }
 
 .nerdz_message, .nerdz_comments, .news
