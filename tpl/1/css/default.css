@@ -75,19 +75,21 @@
 }
 
 aside{
+  position:fixed;
   width:70%;
-  height:auto; 
-  overflow:auto;
+  height:-moz-calc(100% - 50px);
+  height:-webkit-calc(100% - 50px);
+  height:-o-calc(100% - 50px);
+  height:calc(100% - 50px);
   display: none;
   overflow-x: hidden !important;
   background-color: #1D1B1B;
+  top: 50px; 
+  z-index: 1;
 }
 
 #left_col
 {
-    z-index:1;
-    position:absolute;
-    top:50px;
     left:0px;
     overflow-x: hidden;
 }
@@ -110,11 +112,7 @@ aside{
 
 #right_col
 {
-    z-index:1;
-    position:absolute;
-    top:50px;
     right:0px;
-    margin-left: 1%;
 }
 
 #left_col ul, #right_col ul
@@ -200,7 +198,6 @@ label, .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang
 input[type=text], input[type=password], input[type=submit], option, select, textarea, button, .title
 {
     border: 0.5px #000 solid;
-    text-align: center;
     min-height:30px;
     background-color: #FFF; 
     color: #000;
@@ -210,6 +207,11 @@ input[type=text], input[type=password], input[type=submit], option, select, text
     white-space: nowrap;
     word-wrap: normal;
     cursor: pointer;
+}
+
+.title, button, input[type=submit] 
+{
+    text-align: center;
 }
 
 body
@@ -284,6 +286,7 @@ ul.page
 {
     list-style: none;
     width:100%; 
+    padding: 0px;
 }
 
 ul.page li
@@ -431,6 +434,12 @@ ul.page li
     width: 95%;
     border: solid #AFAFAF 1px;
     overflow: hidden;
+    height: 16px;
+}
+
+.qu_main:active 
+{
+  height: auto;
 }
 
 .error
