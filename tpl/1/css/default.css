@@ -200,9 +200,8 @@ label, .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang
 input[type=text], input[type=password], input[type=submit], option, select, textarea, button, .title
 {
     border: 0.5px #000 solid;
-    text-align: left;
+    text-align: center;
     min-height:30px;
-    line-height: 30px;
     background-color: #FFF; 
     color: #000;
     border-radius: 2px;
