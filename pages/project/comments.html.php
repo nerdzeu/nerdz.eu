@@ -28,6 +28,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals = array();
         
         $vals['currentuserprofile_n'] = phpCore::userLink($_SESSION['nerdz_id']);
+        require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
         $vals['currentusergravatar_n'] = (new gravatar())->getURL($_SESSION['nerdz_id']);
         $vals['currentusername_n'] = $core->getUserName();
         $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/red_x.png';
