@@ -6,9 +6,10 @@
                     <img src="{$gravatarurl_n}?s=180#" alt="{$username}" style="max-width:100%; max-height:100%" onerror="this.src='{$onerrorimgurl_n}'" />
                 </a>
             </div>
-            <table style="border-spacing:1px" class="small">
-            <tr>
-                <td style="width:50%">
+            
+            <table class="page">
+              <tr>
+                <td style="width:34%">
                 {if="$online_b"}
                     <span style="float:left; margin-left:1px;color:#00FF00">{$online}</span>
                 {else}
@@ -16,38 +17,41 @@
                 {/if}
                 </td>
                 <td>
-                    <img src="/images/flags/{$lang_n}.png" alt="{$lang_n}" title="{$lang_n}" style="border: 1px solid #FFF; margin-left:10%" width="18" height="12" />
+                  <img src="/images/flags/{$lang_n}.png" alt="{$lang_n}" title="{$lang_n}" style="border: 1px solid #FFF; margin-left:10%" width="18" height="12" />
                 </td>
-                <td style="width:50%">
-                    <div style="float:right;margin-right:-21%">
-                        <div class="g-plusone" data-size="small" data-count="1" data-href="http://www.nerdz.eu/{$username4link_n}"></div>
-                    </div>
+                <td style="width:34%">
+                  <div class="g-plusone" data-size="small" data-count="1" data-href="http://www.nerdz.eu/{$username4link_n}"></div>
                 </td>
-            </tr>
-            </table>
-            <div style="margin-top: -9px">
-                <hr />
-            </div>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <hr />
+                </td>
+              </tr>
         {if="$canshowmenu_b"}
-            <table class="page">
-            <tr class="small">
-                <th id="profilepm">
+              <tr class="small">
+                <td id="profilepm" class="title">
                     {$pm}
-                </th>
+                </td>
                 {if="$canifollow_b"}
-                    <th id="follow" data-id="{$id_n}">{$follow}</th>
+                    <td id="follow" class="t_cell title" data-id="{$id_n}">{$follow}</td>
                 {else}
-                    <th id="unfollow" data-id="{$id_n}">{$unfollow}</th>
+                    <td id="unfollow" class="t_cell title" data-id="{$id_n}">{$unfollow}</td>
                 {/if}
                     {if="$caniblacklist_b"}
-                    <th id="blacklist" data-id="{$id_n}">Blacklist</th>
+                    <td id="blacklist" class="t_cell title" data-id="{$id_n}">Blacklist</td>
                 {else}
-                    <th id="unblacklist" data-id="{$id_n}">Unblacklist</th>
+                    <td id="unblacklist" class="t_cell title" data-id="{$id_n}">Unblacklist</td>
                 {/if}
             </tr>
-            </table>
-            <hr />
+              <tr>
+                <td colspan="3">
+                  <hr />
+                </td>
+              </tr>
         {/if}
+        
+        </table>
             <div class="title">{$aboutme}</div><br />
             <span class="light">{$username}:<br /></span>
             <span id="username">{$username_n}</span><br /><br />

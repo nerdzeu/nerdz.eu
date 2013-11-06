@@ -1,7 +1,6 @@
 $(document).ready(function() {
     var c_from, c_to;
     var loadtxt = $("#loadtxt").data('loading')+'...';
-
     $("#content").on('submit',"#convfrm",function(e) {
         e.preventDefault();
         $("#res").html(loadtxt);
@@ -176,7 +175,14 @@ $(document).ready(function() {
             newpm = true;
             $("#inbox").click();
         }
-    },500);
-
+        if(window.location.hash == '#inbox') {
+            window.location.hash = '';
+            $("#inbox").click();
+        }
+        if(window.location.hash == '#write') {
+            window.location.hash = '';
+            $("#form").click();
+        }
+    },250);
 });
 

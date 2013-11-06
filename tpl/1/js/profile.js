@@ -66,42 +66,8 @@ $(document).ready(function() {
     });
 
     $("#profilepm").on('click',function() {
-        var me = $(this);
-        if(oldPlist == "") {
-			txt = me.html();
-            me.html('...');
-            N.html.pm.getForm(function(data) {
-                oldPlist = $("#postlist").html();
-                $("#postlist").html(data);
-                $("#to").val($("#username").html());
-                $("#fast_nerdz").hide();
-            });
-            $("#title_left").click();
-        }
-        else
-        {
-            me.html(txt);
-            $("#fast_nerdz").show();
-            $("#postlist").html(oldPlist);
-            oldPlist = "";
-        }
+        $("#pmcounter").click();
+        $("#pm_reply").data("to", $("#username").html()).click();
     });
 
-    $("#postlist").on('submit',"#convfrm",function(e) { //per i pm
-        e.preventDefault();
-        $("#res").html('...');
-        N.json.pm.send({
-            tok: $(this).data('tok'),
-            to: $("#to").val(),
-            message: $("#message").val(),
-            },function(d) {
-                $('#res').html(d.message);
-                if(d.status == 'ok') {
-                    setTimeout(function() {
-                        $("#fast_nerdz").show();
-                        $("#postlist").html(oldPlist);
-                    },500);
-                }
-        });
-    });
 });

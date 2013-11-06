@@ -181,32 +181,8 @@ $(document).ready(function() {
         });
     });
     
-    /*
-
-    $("#pmcounter").on('click',function(e) {
-            e.preventDefault();
-
-            var href = $(this).attr('href');
-
-            if($(this).html() != '0') {
-
-                if(href == window.location.pathname ) {
-                    location.hash = "new";
-                    location.reload();
-                }
-                else {
-                    location.href='/pm.php#new';
-                }
-            }
-            else
-            {
-                location.href = href;
-            }
-    });
-    */
-    
     //*PM *//
-		pm_default_f = '<a href="pm.php" id="pm_all">See All Conversations</a>';
+		pm_default_f = '<a href="/pm.php#inbox" id="pm_all">See All Conversations</a>';
 	    var c_from, c_to;
         $("#pmcounter").on('click',function(e) {
 		if($("#notify_list").length) $("#notify_list").remove();
@@ -215,18 +191,18 @@ $(document).ready(function() {
         var nold = parseInt(old);
         if(list.length) {
 		    b = $("#pm_list_b");
-            if(isNaN(nold) || nold == 0)
-            {
+          if(isNaN(nold) || nold == 0)
+          {
                 list.remove();
-            }
-            else if(nold > 0) {
-                b.html(loading)
-				N.html.pm.getInbox(function(data) {
-					b.html(data);
-					$(b.children()[0]).children().slice(0,nold).css("background-color","#EEE")
-					$(b.children()[0]).children().slice(5).remove()
-				});
-            }
+          }
+          else if(nold > 0) {
+            b.html(loading)
+            N.html.pm.getInbox(function(data) {
+              b.html(data);
+              $(b.children()[0]).children().slice(0,nold).css("background-color","#EEE")
+              $(b.children()[0]).children().slice(5).remove()
+            });
+          }
         }
         else {
             var l = $(document.createElement("div"));
@@ -243,7 +219,7 @@ $(document).ready(function() {
 				$(b.children()[0]).children().slice(5).remove()
 			});
 			t.on("click","#pm_new",function(){
-				b.html(loading);
+        b.html(loading);
 				N.html.pm.getForm(function(data) {
 					b.html(data);
 					$("#to").focus();
@@ -256,6 +232,7 @@ $(document).ready(function() {
 				b.html(loading);
 				N.html.pm.getInbox(function(data) {
 					b.html(data.replace(/(\<br \/\>)*/g,""));
+          $(b.children()[0]).children().slice(5).remove()
 				});
 				$("#pm_new").show();
 				$("#pm_reply, #pm_conv").hide();
@@ -264,7 +241,8 @@ $(document).ready(function() {
 				b.html(loading);
 				N.html.pm.getForm(function(data) {
 					b.html(data);
-					$("#to").val( $("#pm_from").text() ).attr("disabled","disabled")
+          to = $("#pm_reply").data("to");
+					$("#to").val( to ).attr("disabled","disabled")
 					$("#message").focus();
 				});
 				$("#pm_new").hide();
@@ -277,6 +255,7 @@ $(document).ready(function() {
 				c_from = $(this).data('from');
 				c_to = $(this).data('to');
 				$("#pm_from").text( $(this).text() )
+        $("#pm_reply").data("to",$(this).text());
 				N.html.pm.getConversation({ from: c_from, to: c_to, start: 0, num: 4 },function(data) {
 					b.html(data);
 					$("#pm_new").hide();
@@ -317,7 +296,7 @@ $(document).ready(function() {
 				e.preventDefault();
 				var href = $(this).attr('href');
 				if(nold) {
-					if(href == window.location.pathname ) {
+					if(href.split("#")[0] == window.location.pathname ) {
 						location.hash = "new";
 						location.reload();
 					}

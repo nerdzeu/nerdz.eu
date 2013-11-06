@@ -16,7 +16,7 @@
         <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
         <meta name="robots" content="index,follow" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>NERDZ - F.A.Q.</title>
+        <title><?= $core->getSiteName(); ?> - F.A.Q.</title>
 <?php
     $headers = $tplcfg->getTemplateVars('faq');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
