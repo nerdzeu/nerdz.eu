@@ -2,13 +2,7 @@ $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
 	
     if(localStorage["font-size"]) $("body").css("font-size",localStorage["font-size"]+"px");
-    
-    var viewPortTag=document.createElement('meta');
-    viewPortTag.id="viewport";
-    viewPortTag.name = "viewport";
-    viewPortTag.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0";
-    document.getElementsByTagName('head')[0].appendChild(viewPortTag);
-    
+
     //impedisce il sovrapporsi degli slide
     var moving = 0;
     
@@ -338,29 +332,6 @@ $(document).ready(function() {
 			}) 
         }
         $(this).html(isNaN(nold) ? old : '0');
-    });
-
-    //Questo evento deve essere qui e non in index.js (che ora viene eliminato), dato che un utente può registrarsi anche dal
-    //form di registrazione, che appare quando un profilo/progetto è chiuso 
-    $("#regfrm").on('submit',function(event) {
-        event.preventDefault();
-        N.json.register($("#regfrm").serialize(),function(obj) {
-            
-            if(obj.status == 'error')
-            {
-                $("#error").html(obj.message.replace(/\n/g,"<br />"));
-                $("#cptxt").html('');
-                N.reloadCaptcha();
-            }
-            else if(obj.status == 'ok')
-            {
-                $("#error").hide();
-                $("#done").html(obj.message);
-                setTimeout(function() {
-                    window.location.reload();
-                }, 1500);
-            }
-        });
     });
 
     $(".preview").on('click',function(){

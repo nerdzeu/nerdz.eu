@@ -12,7 +12,7 @@
     <head>
         <meta name="author" content="Paolo Galeone" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>NERDZ - Homepage</title>
+        <title><?=$core->getSiteName(); ?> - Homepage</title>
 <?php
     $headers = $tplcfg->getTemplateVars('home');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

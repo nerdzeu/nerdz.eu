@@ -34,11 +34,12 @@ class phpCore
 
         $this->autoLogin(); //set nerdz_template value on autologin
 
-        if(isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu')
+        if($this->isMobile()) {
             $_SESSION['nerdz_template'] = '1'; //if mobile version, change nerdz_template
+            $TPLDefault = '1'; } else $TPLDefault='0';
 
         $this->tpl = new RainTPL();
-        $this->tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.($this->isLogged() ? $_SESSION['nerdz_template'] : '0').'/'); //fallback on default template
+        $this->tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.($this->isLogged() ? $_SESSION['nerdz_template'] : $TPLDefault).'/'); //fallback on default template
 
         if($this->isLogged() && (($motivation = $this->isInBanList($_SESSION['nerdz_id']))))
         {
@@ -49,6 +50,16 @@ class phpCore
         $idiots = [];
         if(!empty($idiots) && $this->isLogged() && in_array($_SESSION['nerdz_id'], $idiots))
             $this->logout();
+    }
+    
+    public function isMobile() 
+    {
+      return (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu');
+    }
+    
+    public function getSiteName()
+    {
+      if($this->isMobile()) return 'NERDZmobile'; else return 'NERDZ';
     }
 
     public function getDB()
@@ -439,7 +450,7 @@ class phpCore
         $logged = $this->isLogged();
 
         if(!$id && !$logged)
-            return '0'; //default
+            return (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu') ? '1' : '0'; //default
 
         if(!$id && $logged)
         {

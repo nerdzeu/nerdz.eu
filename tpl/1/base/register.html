@@ -1,85 +1,66 @@
-    <aside id="left_col">
+    <article id="center_col" style="text-align:center">
+    <form id="presentation" class="page" style="display:none">
         <p>{$presentation_n}</p>
-    </aside>
-    <article id="center_col">
-    <form id="regfrm">
-        <table style="width: 60%; margin: auto">
-            <tr>
-                <td style="width:40%;vertical-align: middle">
-                    {$username}:
-                </td>
-                <td style="width:40%;vertical-align: middle">
-                    <input type="text" name="username" required /><br />
-                </td>
-            </tr>
-            <tr>
-                <td>{$name}:</td>
-                <td>
-                    <input type="text" name="name" required /><br />
-                </td>
-            </tr>
-            <tr>
-                <td>{$surname}:</td>
-                <td>
-                    <input type="text" name="surname" required /><br />
-                </td>
-            </tr>
-            <tr>
-                <td>{$email}:</td>
-                <td>
-                    <input type="text" name="email" required /><br />
-                </td>
-            </tr>
-            <tr>
-                <td>{$password}:</td>
-                <td>
-                    <input type="password" name="password" required /><br />
-                </td>
-            </tr>
-            <tr>
-                <td>{$gender}:</td>
-                <td>
-                    <select name="gender">
-                        <option value="1">{$male}</option>
-                        <option value="2">{$female}</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>{$birthdate}:</td>
-                <td>
-                    <select name="birth_day">
-                        <option value="-1">{$day}</option>
-                        {loop="days_a"}
-                            <option value="{$value}">{$value}</option>
-                        {/loop}
-                    </select>
-                    <select name="birth_month">
-                        <option value="-1">{$month}</option>
-                        {loop="months_a"}
-                            <option value="{$value}">{$value}</option>
-                        {/loop}
-                    </select>
-                    <select name="birth_year">
-                        <option value="-1">{$year}</option>
-                        {loop="years_a"}
-                            <option value="{$value}">{$value}</option>
-                        {/loop}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>{$timezone}:</td>
-                <td>
-                    <select name="timezone">
-                    {loop="timezones_a"}
-                        <option value="{$value}">{$value}</option>
-                    {/loop}
-                    </select>
-            </tr>
-            <tr>
-                <td>{$captcha}:</td>
-                <td>
+        <p><a href="#" class="register">{$register}</a> o <a href="#" class="login">{$login}</a></p>
+    </form>
+      <form id="loginfrm" class="page">
+        <p>Benvenuto su Nerdz!<br />
+        <a href="#" class="wutsnerdz"><small>Cos'è NERDZ?</small></a></p>
+        
+        <input type="text" name="username" placeholder="{$username}" style="width:80%" required /><br />
+        <input type="password" name="password" placeholder="*******" style="width:80%" required /><br />
+        
+        <div style="text-align: left; width: 80%; margin: auto;">
+          <span style="float:left"><input type="checkbox" name="setcookie" id="remember" style="margin:0" checked="checked"> <label for="remember">&nbsp;{$remember}</label></span>
+          <span style="float:right"><input type="checkbox" name="offline" id="markoffline" style="margin:0"> <label for="markoffline">&nbsp;{$hidestatus}</label></span>
+        </div>
+        
+        <input type="submit" value="{$login}" />
+        <input type="hidden" value="{$tok_n}" name="tok" /><br />
+        <span id="login_msg"></span>
+        <br />
+        
+        <a href="/reset.php">{$forgot}</a><br />
+        <a href="#" class="register">{$register}!</a>
+      </form>
+      
+    <form id="regfrm" class="page" style="display: none">
+      <p>{$register}</p>
+        <input type="text" name="username" placeholder="{$username}" required /><br />
+        <input type="text" name="name" placeholder="{$name}" required /><br />
+        <input type="text" name="surname" placeholder="{$surname}" required /><br />
+        <input type="text" name="email" placeholder="{$email}" required /><br />
+        <input type="password" name="password" placeholder="{$password}" required /><br />
+{$gender}:<select name="gender">
+            <option value="1">{$male}</option>
+            <option value="2">{$female}</option>
+          </select><br/>
+{$birthdate}:<select name="birth_day">
+               <option value="-1">{$day}</option>
+               {loop="days_a"}
+               <option value="{$value}">{$value}</option>
+               {/loop}
+             </select>
+             <select name="birth_month">
+               <option value="-1">{$month}</option>
+               {loop="months_a"}
+               <option value="{$value}">{$value}</option>
+               {/loop}
+              </select>
+              <select name="birth_year">
+                <option value="-1">{$year}</option>
+                {loop="years_a"}
+                <option value="{$value}">{$value}</option>
+                {/loop}
+              </select><br />
+              <br />
+              {$timezone}:<br/>
+                <select name="timezone">
+                  {loop="timezones_a"}
+                  <option value="{$value}">{$value}</option>
+                  {/loop}
+                </select><br />
+              {$captcha}:
                     <div>
                         <img src="{$captchaurl_n}#" alt="" id="captcha" title="captcha" style="border: 1px solid #FFF" width="90" height="30" />
                         &nbsp;<span onclick="N.reloadCaptcha()" style="font-size:6pt; cursor: pointer">{$reloadcaptcha}</span>
@@ -87,18 +68,76 @@
                     <div>
                         <input type="text" id="cptxt" name="captcha" required />
                     </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="submit" value="{$register}" />
-                </td>
-                <td></td>
-            </tr>
-        </table>
+                    <br />
+                <input type="submit" value="{$register}" />
+                <br/>
+                <div class="error" id="error"></div>
+                <div id="done" class="error" style="color: #00FF00"></div>
+                <a href="#" class="login">{$login}</a>
     </form>
+    
     </article>
-    <aside id="right_col">
-        <div class="error" id="error"></div>
-        <div id="done" class="error" style="color: #00FF00"></div>
-    </aside>
+
+    
+   <script type="application/javascript">
+    $(".register").click(function(e) {
+      e.preventDefault();
+      $("form").hide();
+      $("#regfrm").show();
+    });
+    
+    $(".wutsnerdz").click(function(e) {
+      e.preventDefault();
+      $("form").hide();
+      $("#presentation").show();
+    });
+    
+    $(".login").click(function(e) {
+      e.preventDefault();
+      $("form").hide();
+      $("#loginfrm").show();
+    });
+    
+    $("#regfrm").on('submit',function(event) {
+        event.preventDefault();
+        N.json.register($("#regfrm").serialize(),function(obj) {
+            
+            if(obj.status == 'error')
+            {
+                $("#error").html(obj.message.replace(/\n/g,"<br />"));
+                $("#cptxt").val("");
+                N.reloadCaptcha();
+            }
+            else if(obj.status == 'ok')
+            {
+                $("#error").hide();
+                $("#done").html(obj.message);
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            }
+        });
+    });
+          $("#loginfrm").on('submit',function(event) {
+                event.preventDefault();
+                var t = $("#login_msg");
+                N.json.login($("#loginfrm").serialize(), function(r) {
+                    if(r.status == 'ok')
+                    {
+                        t.html(r.message);
+                        setTimeout(function() {
+                            document.location.reload();
+                        },1500);
+                    }
+                    else
+                    {
+                        t.html('<h2 class="error">'+ r.message + '</h2>');
+                        setTimeout(function() {
+                            t.html("");
+                        },1500);
+                    }
+                });
+            });
+        </script>
+        <style>input[type=text], input[type=password] {width:80%} input[type=submit]{width: 70%; font-size: 23px; height: 40px; border-radius: 5px;}</style>
+

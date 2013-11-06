@@ -9,67 +9,7 @@
     </div>
   <a id="title_right" class="rIcon"></a>
 {else}
-	<form id="loginfrm">
-	<table>
-		<tr>
-			<td>
-				<table style="width: 100%;" class="small">
-					<tr>
-						<th style="float: left">
-							<input type="checkbox" name="setcookie" id="remember" style="margin:0" checked="checked">
-						</th>
-						<th style="float: left">
-							<label for="remember">&nbsp;{$remember}</label>
-						</th>
-						<th style="float: left; margin-left:3px">
-							<input type="checkbox" name="offline" id="markoffline" style="margin:0">
-						</th>
-						<th style="float: left">
-							<label for="markoffline">&nbsp;{$hidestatus}</label>
-						</th>
-						<th style="float: right">
-							<a href="/reset.php">{$forgot}</a>
-						</th>
-					</tr>
-				</table>    
-				<input type="text" name="username" placeholder="{$username}" required autofocus />
-				<input type="password" name="password" placeholder="*******" required />
-			</td>
-			<td>
-				<br />
-				<input type="submit" value="{$login}" style="margin-top:13%" />
-				<input type="hidden" value="{$tok_n}" name="tok" />
-			</td>
-		</tr>
-	</table>
-	</form>
-{ignore} lo metto qui e non in un js esterno (che dovrebbe essere quello di default visto che c'è in tutte la pagine il form)
-        affinché gli utenti loggati non debbano avere nel js questo codice che non sarebbe mai usato{/ignore}
-            <script type="application/javascript">
-            $("#loginfrm").on('submit',function(event) {
-                event.preventDefault();
-                var t = $("#title_right");
-                N.json.login($("#loginfrm").serialize(), function(r) {
-                    var tmp = t.html();
-                    if(r.status == 'ok')
-                    {
-                        t.html(r.message);
-                        setTimeout(function() {
-                            document.location.reload();
-                        },1500);
-                    }
-                    else
-                    {
-                        t.html('<h2 class="error">'+ r.message + '</h2>');
-                        setTimeout(function() {
-                            t.html(tmp);
-                        },1500);
-                    }
-                });
-            });
-        </script>
+<div id="title_icons" style="padding-top: 1em; font-weight: bold"><a href="/">NERDZ <small>mobile</small></a></div>
 {/if}
-        </nav>
-    </div>
 </header>
 <div id="loadtxt" data-loading="{$loading}"></div>

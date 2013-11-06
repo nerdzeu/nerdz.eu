@@ -23,15 +23,15 @@
 <hr style="margin-top: 20px; margin-bottom:20px" />
 Font-Size [px] (default: 15) <br />
 <form id="fsfrm">
-<input type="text" id="font_size" /> px
-<input type="submit">
+<input type="text" id="font_size" /> px &nbsp;&nbsp;&nbsp;&nbsp;
+<input type="submit" value="{$edit}">
 </form>
 
     <div id="res"></div>
 
 <script type="application/javascript">
     $(document).ready(function() {
-		fs = localStorage["font-size"] ? localStorage["font-size"] : "15";
+		fs = localStorage["font-size"] ? localStorage["font-size"] : "16";
 		$("#font_size").val( fs );
 		$("#fsfrm").submit(function(e) {
 			e.preventDefault();

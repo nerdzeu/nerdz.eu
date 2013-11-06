@@ -77,7 +77,6 @@
 aside{
   position:fixed;
   width:70%;
-  height:-moz-calc(100% - 50px);
   height:-webkit-calc(100% - 50px);
   height:-o-calc(100% - 50px);
   height:calc(100% - 50px);
@@ -224,7 +223,7 @@ body
     height: 100%;
     margin: auto;
     overflow-x: hidden;
-    font-size: 15px;
+    font-size: 1em;
     padding:0px;
 }
 
@@ -346,7 +345,7 @@ ul.page li
 	color: black;
 }
 
-#pm_list .more_btn, #pm_list .all_msgs_hidden
+.ninja, #pm_list .more_btn, #pm_list .all_msgs_hidden
 {
 	display:none;
 }

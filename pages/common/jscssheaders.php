@@ -14,6 +14,9 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';
 $uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
 // da includere in ogni pagine, nell'header, dopo aver creato $core  e creato la variabile $headers
 $tno = $core->getTemplate();
+if($core->isMobile()) { ?>
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<?php }    
 if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //se ssl è attivo uso l'url senza static, dato che non ho il certificato per quel sottodominio
 {
 ?>

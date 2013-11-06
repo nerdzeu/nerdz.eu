@@ -21,7 +21,7 @@
         <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
         <meta name="robots" content="index,follow" />
         <meta name="google-site-verification" content="dRirpMHbSmUiPDrNohR5kmUyUnrii1fkWmTADXmksQY" />
-        <title>NERDZ</title>
+        <title><?= $core->getSiteName(); ?></title>
 <?php
     $headers = $tplcfg->getTemplateVars('index');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
