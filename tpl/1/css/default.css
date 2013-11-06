@@ -151,7 +151,7 @@ aside{
 {
     overflow-y: auto;
     overflow-x: hidden;
-    height:310px;
+    height:auto;
 }
 
 .box_menu li
