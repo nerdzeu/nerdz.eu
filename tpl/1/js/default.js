@@ -2,7 +2,8 @@ $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
 	
     if(localStorage["font-size"]) $("body").css("font-size",localStorage["font-size"]+"px");
-
+    
+    $("aside").css("height","calc(100% - 50px)");
     //impedisce il sovrapporsi degli slide
     var moving = 0;
     
