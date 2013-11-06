@@ -436,9 +436,9 @@ ul.nav li
     height: 16px;
 }
 
-.qu_main:active 
+.open
 {
-  height: auto;
+  height: auto !important;
 }
 
 .error

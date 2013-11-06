@@ -110,6 +110,11 @@ $(document).ready(function() {
         }
         $(this).html(isNaN(nold) ? old : '0');
     });
+    
+    $("#postlist").on('click','.qu_main', function(e) {
+      e.preventDefault();
+      $(this).toggleClass("open");
+    });
 
     $("#footersearch").on('submit',function(e) {
         e.preventDefault();
@@ -226,7 +231,7 @@ $(document).ready(function() {
 				});
 			    c_from=false;
 				$("#pm_new").hide();
-				$("#pm_conv").show();
+				$("#pm_conv").show(); 
 			});
 			t.on("click","#pm_conv",function(){
 				b.html(loading);
