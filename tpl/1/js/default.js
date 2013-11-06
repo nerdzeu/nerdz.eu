@@ -2,8 +2,12 @@ $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
 	
     if(localStorage["font-size"]) $("body").css("font-size",localStorage["font-size"]+"px");
+
+    $("aside").css("height",$(window).height()-50);
+    $(window).resize(function() {
+      $("aside").css("height",$(window).height()-50);
+    })
     
-    $("aside").css("height","calc(100% - 50px)");
     //impedisce il sovrapporsi degli slide
     var moving = 0;
     
