@@ -16,7 +16,7 @@
         <meta name="description" content="nerdz share system, tha share web pages from other sites" />
         <meta name="robots" content="index,follow" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>NERDZ <?php echo $core->lang('SHARE');?></title>
+        <title><?= $core->getSiteName(); ?> <?php echo $core->lang('SHARE');?></title>
 <?php
     $headers = $tplcfg->getTemplateVars('share');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

@@ -16,7 +16,7 @@
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
     <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
     <meta name="robots" content="index,follow" />
-    <title>NERDZ - <?php echo $core->lang('USERS_LIST'); ?></title>
+    <title><?= $core->getSiteName(); ?> - <?php echo $core->lang('USERS_LIST'); ?></title>
 <?php
     $headers = $tplcfg->getTemplateVars('userslist');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

@@ -17,7 +17,7 @@
     <meta name="author" content="Paolo Galeone" />
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
     <meta name="robots" content="index,follow" />
-    <title>NERDZ - Bookmarks </title>
+    <title><?= $core->getSiteName(); ?> - Bookmarks </title>
 <?php
     $headers = $tplcfg->getTemplateVars('bookmarks');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

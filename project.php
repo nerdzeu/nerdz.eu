@@ -72,7 +72,7 @@
             echo $name;
         if($pid)
             echo ' #', $pid;
-        echo ' @ NERDZ';
+        echo ' @ '.$core->getSiteName();
     ?></title>
         <link rel="alternate" type="application/atom+xml" title="<?php echo $name; ?>" href="http://<?php echo SITE_HOST; ?>/feed.php?id=<?php echo $gid; ?>&amp;project=1" />
 <?php
