@@ -1,4 +1,6 @@
+window.onscroll = function() {$(window).scrollLeft("0px");}
 $(document).ready(function() {
+     
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
 	
     if(localStorage["font-size"]) $("body").css("font-size",localStorage["font-size"]+"px");
