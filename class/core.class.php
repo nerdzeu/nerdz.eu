@@ -450,7 +450,7 @@ class phpCore
         $logged = $this->isLogged();
 
         if(!$id && !$logged)
-            return (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu') ? '1' : '0'; //default
+            return ($this->isMobile()) ? '1' : '0'; //default
 
         if(!$id && $logged)
         {
