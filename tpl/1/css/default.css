@@ -93,7 +93,7 @@ aside{
 
 #center_col
 {
-    width: 98.5%;
+    width: 98%;
     min-height: 500px;
     height: auto;
     position:absolute;
@@ -185,9 +185,14 @@ aside{
 
 #fast_nerdz
 {
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
     margin-bottom: 15px;
     height: 110px;
 }
+
+
 
 a:hover, a:visited, a:active, a:link, .qu_user a:visited, .qu_user a:active, .qu_user a:link, .atilda
 {
@@ -201,7 +206,7 @@ label, .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang
     cursor: pointer;    
 }
 
-input[type=text], input[type=password], input[type=submit], option, select, textarea, button, .title
+input[type=text], input[type=password], input[type=submit], option, select, button, .title
 {
     border: 0.5px #000 solid;
     min-height:30px;
