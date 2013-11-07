@@ -16,7 +16,6 @@ $(document).ready(function() {
             {
                 el.addClass("compressed");
                 var n = el.next();
-                //n.addClass("shadowed")
                 n.append ('<a class="more">&gt;&gt; ' + n.data ('expand') + ' &lt;&lt;</a>');
             }
             el.attr('data-parsed','1');
