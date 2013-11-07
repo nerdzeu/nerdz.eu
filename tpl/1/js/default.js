@@ -602,17 +602,14 @@ $(document).ready(function() {
             });
     });
 
-    plist.on('click',".imglocked",function() {
+    plist.on('click',".imglocked",function(e) {
+      e.preventDefault();
         var me = $(this);
         var tog = function(d) {
             if(d.status == 'ok') {
-                var newsrc = me.attr('src');
-                me.attr('class','imgunlocked');
-                me.attr('src',newsrc.replace('/lock.png','/unlock.png'));
-                me.attr('title',d.message);
+                me.attr('class','imgunlocked').attr('title',d.message);
             }
-        }
-          
+        }          
           if($(this).data('silent')) { //nei commenti
               N.json[plist.data('type')].reNotifyFromUserInPost({ hpid: $(this).data('hpid'), from: $(this).data('silent') },function(d) {tog(d);});
           }
@@ -621,14 +618,12 @@ $(document).ready(function() {
           }
     });
 
-    plist.on('click',".imgunlocked",function() {
+    plist.on('click',".imgunlocked",function(e) {
+      e.preventDefault();
         var me = $(this);
         var tog = function(d) {
             if(d.status == 'ok') {
-                var newsrc = me.attr('src');
-                me.attr('class','imglocked');
-                me.attr('src',newsrc.replace('/unlock.png','/lock.png'));
-                me.attr('title',d.message);
+                me.attr('class','imglocked').attr('title',d.message);
             }
         }
 
@@ -640,63 +635,44 @@ $(document).ready(function() {
         }
     });
 
-    plist.on('click',".lurk",function() {
+    plist.on('click',".lurk",function(e) {
         var me = $(this);
         var tog = function(d) {
-            if(d.status == 'ok') {
-                var newsrc = me.attr('src');
-                me.attr('class','unlurk');
-                me.attr('src',newsrc.replace('/lurk.png','/unlurk.png'));
-                me.attr('title',d.message);
-            }
+            if(d.status == 'ok') 
+                me.attr('class','unlurk').attr('title',d.message);
         }
-          
-          N.json[plist.data('type')].lurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-
+      e.preventDefault();
+      N.json[plist.data('type')].lurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
     });
 
-    plist.on('click',".unlurk",function() {
+    plist.on('click',".unlurk",function(e) {
         var me = $(this);
         var tog = function(d) {
-            if(d.status == 'ok') {
-                var newsrc = me.attr('src');
-                me.attr('class','lurk');
-                me.attr('src',newsrc.replace('/unlurk.png','/lurk.png'));
-                me.attr('title',d.message);
-            }
+            if(d.status == 'ok') 
+                me.attr('class','lurk').attr('title',d.message);
         }
-          
-          N.json[plist.data('type')].unlurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
+      e.preventDefault();
+      N.json[plist.data('type')].unlurkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
     });
 
-    plist.on('click',".bookmark",function() {
+    plist.on('click',".bookmark",function(e) {
         var me = $(this);
         var tog = function(d) {
-            if(d.status == 'ok') {
-                var newsrc = me.attr('src');
-                me.attr('class','unbookmark');
-                me.attr('src',newsrc.replace('/bookmark.png','/unbookmark.png'));
-                me.attr('title',d.message);
-            }
+            if(d.status == 'ok') 
+                me.attr('class','unbookmark').attr('title',d.message);
         }
-          
-          N.json[plist.data('type')].bookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-
+      e.preventDefault();
+      N.json[plist.data('type')].bookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
     });
 
-    plist.on('click',".unbookmark",function() {
+    plist.on('click',".unbookmark",function(e) {
         var me = $(this);
         var tog = function(d) {
-            if(d.status == 'ok') {
-                var newsrc = me.attr('src');
-                me.attr('class','bookmark');
-                me.attr('src',newsrc.replace('/unbookmark.png','/bookmark.png'));
-                me.attr('title',d.message);
-            }
+            if(d.status == 'ok') 
+                me.attr('class','bookmark').attr('title',d.message);
         }
-
-        N.json[plist.data('type')].unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});
-        
+      e.preventDefault();
+      N.json[plist.data('type')].unbookmarkPost({hpid: $(this).data('hpid') },function(d) {tog(d);});   
     });
 
     plist.on ('click', '.nerdz-code-title', function() {

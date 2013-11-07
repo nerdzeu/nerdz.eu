@@ -22,8 +22,12 @@ function N() /* THE FATHER of God (class/object/function)*/
     };
     
     this.imgErr = function(obj) {
+      $(obj).attr("src","/static/images/onErrorImg.php"); //non dovrebbe farlo in automatico?
+    }
+    
+    this.imgLoad = function(obj) {
       src = obj.src;
-      if(/invalidImgUrl.php/i.test(src)) {
+      if(/invalidImgUrl.php|onErrorImg.php/i.test(src)) {
         $(obj).prev().remove();
         p = $(obj).parent().removeClass().removeAttr("onclick");
       } else {
