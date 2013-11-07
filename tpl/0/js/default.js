@@ -1,14 +1,3 @@
-function imgErr(obj) {
-  src = obj.src;
-  if(/invalidImgUrl.php/i.test(src)) {
-    $(obj).prev().remove();
-    p = $(obj).parent().removeClass().removeAttr("onclick");
-    console.log($(obj))
-  } else {
-    $(obj).css("margin-top", (132-$(obj).prev().height()-$(obj).height())/2 )
-  }
-}
-
 $(document).ready(function() {
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
 

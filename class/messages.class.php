@@ -332,7 +332,7 @@ class messages extends phpCore
                                     <span>
                                         '.parent::lang('IMAGES').'
                                     </span>
-                                    <img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" onload="imgErr(this)" />
+                                    <img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" onload="N.imgErr(this)" />
                                 </a>';
                     },$str,10);
         }
