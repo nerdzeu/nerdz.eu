@@ -34,9 +34,12 @@ class phpCore
 
         $this->autoLogin(); //set nerdz_template value on autologin
 
-        if($this->isMobile()) {
+        $TPLDefault = '0';
+        if($this->isMobile())
+        {
             $_SESSION['nerdz_template'] = '1'; //if mobile version, change nerdz_template
-            $TPLDefault = '1'; } else $TPLDefault='0';
+            $TPLDefault = '1';
+        }
 
         $this->tpl = new RainTPL();
         $this->tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.($this->isLogged() ? $_SESSION['nerdz_template'] : $TPLDefault).'/'); //fallback on default template
@@ -59,7 +62,7 @@ class phpCore
     
     public function getSiteName()
     {
-      if($this->isMobile()) return 'NERDZmobile'; else return 'NERDZ';
+      return $this->isMobile() ? 'NERDZmobile' : 'NERDZ';
     }
 
     public function getDB()
