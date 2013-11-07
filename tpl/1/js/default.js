@@ -1,4 +1,5 @@
 window.onscroll = function() {$(window).scrollLeft("0px");}
+_mobileVersion = "2.0.2";
   
 $(document).ready(function() {
 
@@ -58,10 +59,6 @@ $(document).ready(function() {
     //elementi singoli
     $("iframe").attr('scrolling','no'); //dato che il validatore non li vuole e con i css overflow:hidden non funge
     $("body").append($('<br />')); //per fare funzionare infinte scrolling sempre
-    // append version information
-    if ($("#left_col").length && window.location.pathname == "/home.php") {
-        $("#left_col .title").eq (0).append (" <span style='font-weight: normal'><a href='/NERDZilla:690' style='color: #000 !important'>[" + N.getVersion() + "]</a></span>");
-    }
 
     // load the prettyprinter
     var append_theme = "", _h = $("head");

@@ -1,4 +1,7 @@
 $(document).ready(function() {
+      // append version information
+     $("#left_col .title").eq (0).html ("NERDZ<small>mobile</small> <span style='font-weight: normal'><a href='/Mobile+Nerdz:' style='color: #000 !important'>[" + _mobileVersion + "]</a></span>");
+
     //tutti gli eventi ajax che evvengono in plist sono nel formato pilst.on(evento,[selettore],function(...){...});
     var plist = $("#postlist");
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
@@ -6,86 +9,15 @@ $(document).ready(function() {
     var load = false; //gestisce i caricamenti ed evita sovrapposizioni. Dichiarata qui che è il foglio che viene incluso di default ovunque e per primo
     plist.html('<h1>'+loading+'...</h1>');
     
-      //swipe reload, tipo twitter/facebook [caricato da cdn]
-      var script=document.createElement('script');
-      script.type='application/javascript';
-      script.src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.4/jquery.touchSwipe.min.js";
-      $("head").append(script);
-      $("#center_col").swipe({
-        swipeStatus:function(event, phase, direction, distance) {
-          if( direction=="down" ) {
-            if ( $(window).scrollTop() != 0 ) {
-              return false;
-            }
-            if(phase == "start") {
-              $('#reloadmessage').text(" ").css("height","0px");
-              if ( $("#right_col").hasClass("shown") ) {
-                $("#title_right").click();
-              }
-              if ( $("#left_col").hasClass("shown") ) {
-                $("#title_left").click();
-              }
-              
-            }
-            else if (phase == "move") {
-              if (distance<100) {
-                $('#reloadmessage').html("Scrolldown to reload").css("height",distance);
-              }
-              else {
-                $('#reloadmessage').css("height","100px").text("Release to update");
-              }
-            }
-            else if (phase == "end" || phase == "cancel") {
-              $('#reloadmessage').text(" ").css("height","0px");
-              if(distance<100) { 
-                return false;
-              };
-              //il rilascio fa aggiornare la pagina corrente, che può 
-              //essere home, project o search. contemplo tutti i casi
-              //e le lingue possibili
-              plist = $("#postlist");
-              if ( plist.data("mode") == "std" ) {
-                if ( plist.data("type") == "profile" ) {
-                  $("#profilePostList").click();
-                }
-                else if ( plist.data("type") == "project" ) {
-                  $("#projectPostList").click();
-                }
-              }
-              else if ( plist.data("mode") == "language" || plist.data("mode") == "followed" ) {
-                if ( plist.data("type") == "profile" ) {
-                  $(".active-lang").click();       
-                } 
-                else if ( plist.data("type") == "project" ) {
-                  $(".active-plang").click()
-                }
-              }
-              else if ( plist.data("mode") ==  "search" ) {
-                $("footersearch").submit();
-              }
-            }
-          }
-          else {
-            if(phase != "start") {
-              $('#reloadmessage').text(" ").css("height","0px");
-              return false;
-            }
-          }
-        },
-        allowPageScroll:"vertical"
-      });
-
     var fixHeights = function() {
         plist.find(".nerdz_message").each (function() {
             var el = $(this).find('div:first');
-            if ((el.height() > 200 || el.find ('.gistLoad').length > 0) && !el.attr('data-parsed'))
+            if ((el.height() >= 200 || el.find ('.gistLoad').length > 0) && !el.attr('data-parsed'))
             {
-                el.height (200);
-                el.find (".userimage").slice (1).hide();
-                var n = el.parent().find ('div:last');
-                n.append ('<div class="more">&gt;&gt; ' + n.data ('expand') + ' &lt;&lt;</div>');
-                n.css ('background-color', '#000');
-                n.css ('position', 'relative');
+                el.addClass("compressed");
+                var n = el.next();
+                //n.addClass("shadowed")
+                n.append ('<a class="more">&gt;&gt; ' + n.data ('expand') + ' &lt;&lt;</a>');
             }
             el.attr('data-parsed','1');
         });
@@ -108,17 +40,12 @@ $(document).ready(function() {
     };
 
     plist.on('click','.more',function() {
-        var me = $(this), par = me.parent(), jenk = par.parent().find ('div:first');
-        jenk.css ('height', '100%'); var fHeight = jenk.height();
-        jenk.height (200).animate ({ height: fHeight }, 500, function() {
-            jenk.css ('height', 'auto');
-            par.css('background-color', '#000');
-            par.css('color', '#FFF');
-            me.slideUp ('slow', function() {
-                me.remove();
-            });
+        var me = $(this), par = me.parent(), jenk = par.prev();
+        par.removeClass("shadowed");
+        jenk.removeClass("compressed")
+        me.slideUp ('slow', function() {
+            me.remove();
         });
-        jenk.find (".userimage").slideDown();
     });
 
     plist.on('click',".hide",function() {

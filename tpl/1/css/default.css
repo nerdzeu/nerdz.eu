@@ -209,6 +209,7 @@ input[type=text], input[type=password], input[type=submit], option, select, text
 .title, button, input[type=submit] 
 {
     text-align: center;
+    line-height: 30px;
 }
 
 body
@@ -248,16 +249,6 @@ iframe
     margin-top:3px;
     padding: 3px;
     border-radius: 5.5px;
-}
-
-.more
-{
-    position: relative;
-    top: -12px;
-    margin-bottom: -10px;
-    padding-bottom: 5px;
-    text-align: center;
-    box-shadow: 0 0 25px #000;
 }
 
 .nitem
@@ -327,6 +318,26 @@ ul.nav li
     margin-bottom: 10px;
 }
 
+.nerdz_message > div
+{
+    max-height: 10000px;
+    transition: max-height 10s;
+    box-shadow: 0 0 0 #000;
+}
+
+.nerdz_message > div.shadowed
+{
+    box-shadow: 0px -1px 30px #FFF;
+}
+
+.nerdz_message > div.compressed
+{
+    transition: 0s;
+    max-height:200px;
+    overflow:hidden;
+    box-shadow: inset 0 -30px 30px -30px #ccc;
+}
+
 #notify_list .nerdz_comments
 {
 	height: 30px !important; 
@@ -343,9 +354,14 @@ ul.nav li
 	color: black;
 }
 
-.ninja, #pm_list .more_btn, #pm_list .all_msgs_hidden
+#pm_list .more_btn, #pm_list .all_msgs_hidden
 {
 	display:none;
+}
+
+.ninja {
+  display:none;
+  transition: 1s;
 }
 
 #pm_list_t, #pm_list_f
@@ -446,10 +462,11 @@ ul.nav li
   text-align: center;
   float:left;
   margin-top:0px; 
+  padding:0px;
   cursor: pointer; 
   border: 1px solid #FFF;
-  min-width: 132px;
-  min-height: 132px;
+  width: 132px;
+  height: 132px;
 }
 
 .img_frame span
@@ -465,13 +482,15 @@ ul.nav li
 .img_frame img
 {
     display: inline;
-    max-height:130px;
+    max-height:115px;
     max-width:130px;
     margin: auto;
 }
 
 .img_frame-extended
 {
+  width: auto;
+  height: auto;
   border: none;
 }
 

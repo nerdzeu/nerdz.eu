@@ -26,9 +26,10 @@ function N() /* THE FATHER of God (class/object/function)*/
       if(/invalidImgUrl.php/i.test(src)) {
         $(obj).prev().remove();
         p = $(obj).parent().removeClass().removeAttr("onclick");
-        console.log($(obj))
       } else {
-        $(obj).css("margin-top", (132-$(obj).prev().height()-$(obj).height())/2 )
+        m = (132-$(obj).prev().height()-$(obj).height())/2;
+        if (m>0)
+          $(obj).css("margin-top", m)
       }
     }
 
