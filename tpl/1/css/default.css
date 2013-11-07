@@ -201,7 +201,7 @@ a:hover, a:visited, a:active, a:link, .qu_user a:visited, .qu_user a:active, .qu
     text-decoration: none;
 }
 
-label, .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang, .more, .bookmark, .unbookmark
+label, .qu_ico, .qu_user, .imglocked, .imgunlocked, .lurk, .unlurk, .selectlang, .projlang, .more, .bookmark, .unbookmark
 {
     cursor: pointer;    
 }
@@ -488,17 +488,17 @@ ul.nav li
 
 .qu_main
 {
-    margin-left: 3%;
-    margin-right: 1%;
-    width: 95%;
+    margin-left: 2%;
+    width: 97%;
     border: solid #AFAFAF 1px;
     overflow: hidden;
-    height: 16px;
+    max-height: 16px;
 }
 
 .qu_main-extended
 {
-  height: auto !important;
+    transition: 10s;
+    max-height: 10000px;
 }
 
 .img_frame
