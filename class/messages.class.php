@@ -328,12 +328,12 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[yt\]http:\/\/youtu.be\/(.{11})\[\/yt\]#im',$callBack1Param,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl,$imgValidUrl) {
-                    return     '<span style="float:left; margin-top:0px; cursor: pointer; border: 1px solid #FFF" onclick="N.imgBig(this)">
-                                    <span style="display:block;background-color: #FFF;text-align:center;width:132px;color:#000;font-weight: bold">
+                    return     '<a class="img_frame" href="'.strip_tags($m[1]).'" target="_blank" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
+                                    <span>
                                         '.parent::lang('IMAGES').'
                                     </span>
-                                    <img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" width="130" height="130" style="float:left" onerror="var par = $(this).parent(); par.removeAttr(\'style\'); par.removeAttr(\'onclick\'); par.html(\'<span class=\\\'error\\\'>['.parent::lang('ERROR').': '.parent::lang('LOADING').'] -&gt; <a href=\\\''.strip_tags($m[1]).'\\\' onclick=\\\'window.open(this.href); return false\\\'>Link</a></span><br />\');" />
-                                </span>';
+                                    <img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" onload="imgErr(this)" />
+                                </a>';
                     },$str,10);
         }
         else

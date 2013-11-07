@@ -72,3 +72,7 @@ Obbligatoria la class "spoiler", che è la classe css che verrà attribuita ai t
 [spoiler]text nascoste[/spoiler]
 (quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui
 verrà usato quel tag (home, profile, project)
+Obbligatoria la class ".img_frame", che è la classe CSS che sarà attribuita alle miniature
+delle immagini ([img]url[/img])
+Obbligatoria la class ".img_frame-extended", che è la classe CSS attribuita alle 
+immagini ingrandite. Tendenzialmente elimina le limitazioni di dimensione delle miniature

@@ -365,6 +365,36 @@ html, #body
     overflow: hidden;
 }
 
+.img_frame img
+{
+    display: inline;
+    max-height:130px;
+    max-width:130px;
+    margin: auto;
+}
+
+.img_frame-extended
+{
+  border: none;
+}
+
+.img_frame-extended span
+{
+  display: none;
+}
+
+.img_frame-extended img
+{
+  max-height: 1000px;
+  max-width:100%;
+  margin-top: 0px !important;
+}
+
+.img_frame, .img_frame *, .img_frame-extended, .img_frame-extended * {
+  transition: all .3s;
+}
+
+
 .error
 {
     color: #FF0000;

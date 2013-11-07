@@ -20,23 +20,6 @@ function N() /* THE FATHER of God (class/object/function)*/
         a.attr('onclick','');
         a.css('cursor','default');
     };
-    
-    this.imgBig = function(th)
-    {
-        var img = th.getElementsByTagName("img").item(0).src;
-        if(th.getAttribute("style").indexOf("float") != -1)
-        {
-            N.tmp = th.getElementsByTagName("span").item(0).innerHTML;
-            th.innerHTML = '';
-            th.setAttribute("style","cursor: pointer");
-            th.innerHTML = '<img src="'+img+'" style="max-width: 100%; max-height: 100%" alt="" />';
-        }
-        else
-        {
-            th.setAttribute("style","float: left; margin-top:0px; cursor: pointer");
-            th.innerHTML = '<span style="display:block;background-color: #FFF;text-align:center;width:132px;color:#000;font-weight: bold">'+N.tmp+'</span><img src="'+img+'" alt="" style="width: 130px; height: 130px; float:left;border: 1px solid #FFF" />';
-        }
-    };
 
     /**
      * getVersion
