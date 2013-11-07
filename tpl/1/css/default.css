@@ -210,8 +210,6 @@ input[type=text], input[type=password], input[type=submit], option, select, text
     border-radius: 2px;
     margin: 2px;
     font-weight: bold;
-    white-space: nowrap;
-    word-wrap: normal;
     cursor: pointer;
 }
 

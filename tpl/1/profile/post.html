@@ -37,35 +37,23 @@
             {/if}
             {if="$canshowlock_b"}
                 {if="$lock_b"}
-                    <span style="margin-right:3px; float: right">
-                        <img class="imglocked" width="16" height="16" data-hpid="{$hpid_n}" src="images/lock.png" alt="" title="{$receivenotifications}" onclick="" />
-                    </span>
+                <a style="margin-right:3px; float: right" href="#" class="imglocked" data-hpid="{$hpid_n}" title="{$receivenotifications}"></a>
                 {else}
-                    <span style="margin-right:3px; float: right">
-                        <img class="imgunlocked" width="16" height="16" data-hpid="{$hpid_n}" src="images/unlock.png" alt="" title="{$dontreceivenotifications}" onclick="" />
-                    </span>
+                <a style="margin-right:3px; float: right" href="#" class="imgunlocked" data-hpid="{$hpid_n}" title="{$dontreceivenotifications}"></a>
                 {/if}
             {/if}
             {if="$canshowlurk_b"}
                 {if="$lurk_b"}
-                    <span style="margin-right:3px; float: right">
-                        <img class="unlurk" data-hpid="{$hpid_n}" src="images/unlurk.png" alt="" width="16" height="16" title="Unlurk" style="float:right; margin-left:5px" onclick="" />
-                    </span>
+                <a style="margin-right:3px; float: right" href="#" class="unlurk" data-hpid="{$hpid_n}" title="Unlurk"></a>
                 {else}
-                    <span style="margin-right:3px; float: right">
-                        <img class="lurk" data-hpid="{$hpid_n}" src="images/lurk.png" alt="" width="16" height="16" title="Lurk" style="float:right; margin-left:5px" onclick="" />
-                    </span>
+                <a style="margin-right:3px; float: right" href="#" class="lurk" data-hpid="{$hpid_n}" title="Lurk"></a>
                 {/if}
             {/if}
             {if="$canshowbookmark_b"}
                 {if="$bookmark_b"}
-                    <span style="margin-right:3px; float: right">
-                        <img class="unbookmark" data-hpid="{$hpid_n}" src="images/unbookmark.png" alt="" width="16" height="16" title="Unbookmark" style="float:right; margin-left:5px" onclick="" />
-                    </span>
+                <a style="margin-right:3px; float: right" href="#" class="unbookmark" data-hpid="{$hpid_n}" title="Unbookmark"></a>
                 {else}
-                    <span style="margin-right:3px; float: right">
-                        <img class="bookmark" data-hpid="{$hpid_n}" src="images/bookmark.png" alt="" width="16" height="16" title="Bookmark" style="float:right; margin-left:5px" onclick="" />
-                    </span>
+                <a style="margin-right:3px; float: right" href="#" class="bookmark" data-hpid="{$hpid_n}" title="Bookmark"></a>
                 {/if}
             {/if}
         </div>
