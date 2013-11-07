@@ -1,4 +1,8 @@
-window.onscroll = function() {$(window).scrollLeft("0px");}
+window.onscroll = function() {
+  $(window).scrollLeft("0px");
+  ($(window).scrollTop()>51) ? $("#footer_main").fadeIn() : $("#footer_main").fadeOut();
+  }
+  
 _mobileVersion = "2.0.2";
   
 $(document).ready(function() {
@@ -11,6 +15,11 @@ $(document).ready(function() {
     $("aside").css("height",$(window).height()-50);
     $(window).resize(function() {
       $("aside").css("height",$(window).height()-50);
+    })
+    
+    //back to top
+    $("#footer_main").click(function(){
+      $(window).scrollTop(0);
     })
 
     //impedisce il sovrapporsi degli slide

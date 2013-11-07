@@ -121,6 +121,15 @@ aside{
     margin: 0px;
 }
 
+#footer_main {
+    position: fixed;
+    z-index:3;
+    bottom: 5px;
+    right: 10px;
+    cursor: pointer;
+    display: none;
+}
+
 #notify_list, #pm_list
 {
     z-index:3;
