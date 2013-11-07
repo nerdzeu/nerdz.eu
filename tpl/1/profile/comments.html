@@ -18,12 +18,12 @@
             <a href="#{$value.uid_n}" title="Permalink" style="color: #fff !important" data-refto="post{$value.hpid_n}" id="nd{$value.uid_n}{$value.hcid_n}">{$value.datetime_n}</a>
             {if="$value.canshowlock_b"}
                 {if="$value.lock_b"}
-                    <a class="imglocked" data-hpid="{$value.hpid_n}" data-silent="{$value.fromid_n}" title="{$receivenotifications}"></a>
+                    <a class="imglocked" data-hpid="{$value.hpid_n}" data-silent="{$value.fromid_n}" title="{$receivenotifications}">&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 {else}
-                    <a class="imgunlocked" data-hpid="{$value.hpid_n}" data-silent="{$value.fromid_n}" title="{$dontreceivenotifications}"></a>
+                    <a class="imgunlocked" data-hpid="{$value.hpid_n}" data-silent="{$value.fromid_n}" title="{$dontreceivenotifications}">&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 {/if}
             {/if}
-            <a class="qu_ico" data-hcid="{$value.hcid_n}" data-type="u" data-refto="commentto{$value.hpid_n}"></a>
+            <a class="qu_ico" data-hcid="{$value.hcid_n}" data-type="u" data-refto="commentto{$value.hpid_n}">&nbsp;&nbsp;&nbsp;&nbsp;</a>
         </span>
     </div>
     <div class="nerdz_comments" style="width:auto">

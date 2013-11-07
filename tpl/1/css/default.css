@@ -265,6 +265,8 @@ iframe
 
 .qu_ico, .imglocked, .imgunlocked, .lurk, .unlurk, .bookmark, .unbookmark
 {
+    float: right;
+    display: block;
     margin-bottom: -4px;
     margin-top: -3px;
     margin-left: 3px;

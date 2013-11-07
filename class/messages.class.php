@@ -328,12 +328,12 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[yt\]http:\/\/youtu.be\/(.{11})\[\/yt\]#im',$callBack1Param,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl,$imgValidUrl) {
-                    return     '<div class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\');">
+                    return     '<a href="'.$m[1].'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
                                     <span>
                                         '.parent::lang('IMAGES').'
                                     </span>
                                     <img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" onload="N.imgLoad(this)" onerror="N.imgErr(this)" />
-                                </div>';
+                                </a>';
                     },$str,10);
         }
         else
