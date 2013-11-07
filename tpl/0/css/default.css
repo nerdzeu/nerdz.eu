@@ -365,6 +365,29 @@ html, #body
     overflow: hidden;
 }
 
+.img_frame
+{
+  display: table-cell;
+  vertical-align: bottom;
+  text-align: center;
+  float:left;
+  margin-top:0px; 
+  cursor: pointer; 
+  border: 1px solid #FFF;
+  min-width: 132px;
+  min-height: 132px;
+}
+
+.img_frame span
+{
+  display:block;
+  background-color: #FFF;
+  text-align:center;
+  width:132px;
+  color:#000;
+  font-weight: bold;
+}
+
 .img_frame img
 {
     display: inline;
@@ -389,11 +412,6 @@ html, #body
   max-width:100%;
   margin-top: 0px !important;
 }
-
-.img_frame, .img_frame *, .img_frame-extended, .img_frame-extended * {
-  transition: all .3s;
-}
-
 
 .error
 {
