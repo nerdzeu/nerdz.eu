@@ -1,7 +1,7 @@
-window.onscroll = function() {
+/*window.onscroll = function() {
   $(window).scrollLeft("0px");
   ($(window).scrollTop()>51) ? $("#footer_main").fadeIn() : $("#footer_main").fadeOut();
-  }
+  }*/
   
 _mobileVersion = "2.0.2";
   

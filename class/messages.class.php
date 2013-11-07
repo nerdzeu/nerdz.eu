@@ -332,7 +332,7 @@ class messages extends phpCore
                                     <span>
                                         '.parent::lang('IMAGES').'
                                     </span>
-                                    <img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" onload="N.imgErr(this)" onerror="var par = $(this).parent(); par.removeAttr(\'onclick\'); par.removeClass(\'img_frame\'); par.html(\'<span class=\\\'error\\\'>['.parent::lang('ERROR').': '.parent::lang('LOADING').'] -&gt; <a href=\\\''.strip_tags($m[1]).'\\\' onclick=\\\'window.open(this.href); return false\\\'>Link</a></span><br />\');" />
+                                    <img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" onload="N.imgLoad(this)" onerror="N.imgErr(this)" />
                                 </div>';
                     },$str,10);
         }
