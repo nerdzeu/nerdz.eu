@@ -27,7 +27,7 @@ function N() /* THE FATHER of God (class/object/function)*/
         $(obj).prev().remove();
         p = $(obj).parent().removeClass().removeAttr("onclick");
       } else {
-        m = (132-$(obj).prev().height()-$(obj).height())/2;
+        m = (117-$(obj).height())/2;
         if (m>0)
           $(obj).css("margin-top", m)
       }

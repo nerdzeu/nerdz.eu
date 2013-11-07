@@ -374,12 +374,13 @@ html, #body
   margin-top:0px; 
   cursor: pointer; 
   border: 1px solid #FFF;
-  min-width: 132px;
-  min-height: 132px;
+  width: 132px;
+  height: 132px;
 }
 
 .img_frame span
 {
+  height: 15px;
   display:block;
   background-color: #FFF;
   text-align:center;
@@ -391,13 +392,15 @@ html, #body
 .img_frame img
 {
     display: inline;
-    max-height:130px;
+    max-height:115px;
     max-width:130px;
     margin: auto;
 }
 
 .img_frame-extended
 {
+  width: auto;
+  height: auto;
   border: none;
 }
 
