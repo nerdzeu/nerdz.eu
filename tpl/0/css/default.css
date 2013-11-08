@@ -402,6 +402,8 @@ html, #body
   width: auto;
   height: auto;
   border: none;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .img_frame-extended span
