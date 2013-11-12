@@ -100,24 +100,24 @@
               <a href="/" id="logout" data-tok="{$tok_n}"><li><img src="images/exit.png">{$logout}</li></a>
           </ul>
       </div>
-{if="!empty($followed_a)"}
-      <div class="title">
-          {$youfollow}
-          <div style="font-style: italic" class="small">[{$followedonlinetot_n}/{$followedtot_n}]</div>
-      </div>
-      <div id="rightmenu" class="box_menu">
-          <ul id="followedlist" style="color: #AFAFAF">
-          {loop="followed_a"}
-              <li>
-                  <a href="/{$value.username4link_n}" {if="!$value.online_b"} style="color: #AFAFAF"{/if}>{$value.username_n}</a>
-                  {if="$value.birthday_b"}
-                      <img src="images/gift.gif" alt="gift" style="float: right; margin-right: 5px; border: 0px" width="12" height="12" />
-                  {/if}
-              </li>
-          {/loop}
-          </ul>
-      </div>
-      <br />
+  {if="!empty($followed_a)"}
+    <div class="title" id="rightmenu_title">
+        {$youfollow}
+        <div style="font-style: italic" class="small">[{$followedonlinetot_n}/{$followedtot_n}]</div>
+    </div>
+    <div id="rightmenu" class="box_menu ninja">
+        <ul id="followedlist" style="color: #AFAFAF">
+        {loop="followed_a"}
+            <li>
+                <a href="/{$value.username4link_n}" {if="!$value.online_b"} style="color: #AFAFAF"{/if}>{$value.username_n}</a>
+                {if="$value.birthday_b"}
+                    <img src="images/gift.gif" alt="gift" style="float: right; margin-right: 5px; border: 0px" width="12" height="12" />
+                {/if}
+            </li>
+        {/loop}
+        </ul>
+    </div>
+    <br />
   {/if}
   {if="!empty($ownerof_a)"}
       <div class="title">{$yourprojects}</div>

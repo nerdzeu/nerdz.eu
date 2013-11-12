@@ -21,7 +21,7 @@ $(function () {
     });
 });
     
-_mobileVersion = "2.0.2 R1";
+_mobileVersion = "2.0.3";
   
 $(document).ready(function() {
 
@@ -86,7 +86,8 @@ $(document).ready(function() {
     //elementi singoli
     $("iframe").attr('scrolling','no'); //dato che il validatore non li vuole e con i css overflow:hidden non funge
     $("body").append($('<br />')); //per fare funzionare infinte scrolling sempre
-
+    $("#rightmenu_title").click(function() {$("#rightmenu").toggleClass("ninja");});
+    
     // load the prettyprinter
     var append_theme = "", _h = $("head");
     if (localStorage.getItem ("has-dark-theme") == 'yep') {

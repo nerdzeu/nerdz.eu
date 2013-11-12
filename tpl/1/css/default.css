@@ -153,6 +153,7 @@ aside{
 
 #postlist
 {
+    clear:both;
     margin-bottom: 4%;
 }
 
@@ -189,7 +190,6 @@ aside{
     padding: 0px;
     margin: 0px;
     margin-bottom: 15px;
-    height: 110px;
 }
 
 
@@ -359,6 +359,7 @@ ul.nav li
 
 .nerdz_message, .nerdz_comments, .news
 {
+    clear:both;
     background-color: #000;
     border-radius: 2.5px;
     font-size: 90%;
