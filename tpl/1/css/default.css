@@ -125,7 +125,8 @@ aside{
     position: fixed;
     z-index:3;
     bottom: 5px;
-    right: 10px;
+    right: 50%;
+    margin-left: -24px;
     cursor: pointer;
     display: none;
 }
@@ -186,9 +187,9 @@ aside{
 
 #fast_nerdz
 {
-    width: 100%;
+    width: 99.5%;
     padding: 0px;
-    margin: 0px;
+    margin: auto;
     margin-bottom: 15px;
 }
 
