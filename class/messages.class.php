@@ -361,7 +361,7 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[yt\]http:\/\/youtu.be\/(.{11})\[\/yt\]#im',$callBack1Param,$str);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl,$imgValidUrl) {
-                    return '<img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="$(this).html(\'<span class=\\\'error\\\'>['.parent::lang('ERROR').': '.parent::lang('LOADING').'] -&gt; <a href=\\\''.strip_tags($m[1]).'\\\' onclick=\\\'window.open(this.href); return false\\\'>Link</a></span><br />\');" />';
+                    return '<img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
                 },$str);
         }
 
