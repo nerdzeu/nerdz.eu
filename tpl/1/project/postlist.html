@@ -18,23 +18,16 @@
                 </span>
                 {$value.message_n}
             </div>
-            <div style="clear:both; padding-top: 5px" class="small">
+            <div class="post_footer">
                 <a href="/{$value.to4link_n}{$value.pid_n}">Link</a>&nbsp;&nbsp;
                 <a class="showcomments" style="width:60%" data-hpid="{$value.hpid_n}" data-refto="commentlist{$value.hpid_n}">
                     {$comments} ({$value.postcomments_n})
                 </a>
-                {if="$value.canremovepost_b || $value.caneditpost_b"}
-                    <span style="float:right">
-                {/if}
                 {if="$value.canremovepost_b"}
-                    <a class="delpost" data-hpid="{$value.hpid_n}" data-refto="post{$value.hpid_n}">{$remove}</a>
+                    <a class="delpost" data-hpid="{$value.hpid_n}" data-refto="post{$value.hpid_n}" title="{$remove}"></a>
                 {/if}
-                {if="$value.canremovepost_b && $value.caneditpost_b"} | {/if}
                 {if="$value.caneditpost_b"}
-                    <a class="editpost" data-hpid="{$value.hpid_n}" data-refto="post{$value.hpid_n}">{$edit}</a>
-                {/if}
-                {if="$value.canremovepost_b || $value.caneditpost_b"}
-                </span>
+                    <a class="editpost" data-hpid="{$value.hpid_n}" data-refto="post{$value.hpid_n}" title="{$edit}"></a>
                 {/if}
 
                   {if="$value.canshowlock_b"}

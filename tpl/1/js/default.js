@@ -7,7 +7,7 @@ $(function () {
         window.clearTimeout(scroll_timer);
         scroll_timer = window.setTimeout(function () {
             $w.scrollLeft("0px");
-            if($w.scrollTop() <= 50)
+            if($w.scrollTop() <= 42)
             {
                 displayed = false;
                 $m.fadeOut(500);
@@ -21,25 +21,19 @@ $(function () {
     });
 });
     
-_mobileVersion = "2.0.3";
+_mobileVersion = "2.0.4";
   
 $(document).ready(function() {
 
-     
     var loading = $("#loadtxt").data('loading'); //il div è nell'header
 	
     if(localStorage["font-size"]) $("body").css("font-size",localStorage["font-size"]+"px");
 
-    $("aside").css("height",$(window).height()-50);
+    $("aside").css("height",$(window).height()-42);
     $(window).resize(function() {
-      $("aside").css("height",$(window).height()-50);
+      $("aside").css("height",$(window).height()-42);
     })
     
-    //back to top
-    $("#footer_main").click(function(){
-      $(window).scrollTop(0);
-    })
-
     //impedisce il sovrapporsi degli slide
     var moving = 0;
     
@@ -359,9 +353,19 @@ $(document).ready(function() {
         }
     });
     
+    var keys = [];
     $("textarea").on('keydown', function(e) {
         if( e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13) ) {
-            $(this).parent().trigger('submit');
+          e.preventDefault(); 
+          $(this).parent().trigger('submit');
+        }
+        keys.push ( e.keyCode );
+        if( keys.toString().indexOf('38,38,40,40,37,39,37,39,66,65') >= 0 )
+        {
+          e.preventDefault();
+          alert("STOP CHEATING");
+          $("body").html('<iframe width="100%" height="'+($(window).height()-50)+'" src="//www.youtube.com/embed/mwV4Ff2YdXg?rel=0&autoplay=1" frameborder="0" allowfullscreen></iframe><br><a href="http://konamicodesites.com/" target="_blank">KONAMI CODE SITES</a>');
+          keys.length = 0;
         }
     });
 
@@ -584,12 +588,11 @@ $(document).ready(function() {
     plist.on('click',".editpost",function(e) {
         e.preventDefault();
         var refto = $('#' + $(this).data('refto')), hpid = $(this).data('hpid');
-        var editlang = $(this).html();
+        var editlang = $(this).attr("title");
         var form = function(fid,hpid,message,edlang,prev) {
                     return     '<form style="margin-bottom:40px" id="' +fid+ '" data-hpid="'+hpid+'">' +
                                '<textarea id="'+fid+'abc" autofocus style="width:99%; height:125px">' +message+ '</textarea><br />' +
                                '<input type="submit" value="' + edlang +'" style="float: right; margin-top:5px" />' +
-                                '<button type="button" style="float:right; margin-top: 5px" class="preview" data-refto="#'+fid+'abc">'+prev+'</button>'+
                                '<button type="button" style="float:left; margin-top:5px" onclick="window.open(\'/bbcode.php\')">BBCode</button>' +
                            '</form>';
                     };

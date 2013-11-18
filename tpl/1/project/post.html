@@ -22,18 +22,11 @@
             <a class="showcomments" style="width:60%" data-hpid="{$hpid_n}" data-refto="commentlist{$hpid_n}">
                 {$comments} ({$postcomments_n})
             </a>
-            {if="$canremovepost_b || $caneditpost_b"}
-                <span style="float:right">
-            {/if}
             {if="$canremovepost_b"}
-                <a class="delpost" data-hpid="{$hpid_n}" data-refto="post{$hpid_n}">{$remove}</a>
+                <a class="delpost" data-hpid="{$hpid_n}" data-refto="post{$hpid_n}" title="{$remove}"></a>
             {/if}
-            {if="$canremovepost_b && $caneditpost_b"} | {/if}
             {if="$caneditpost_b"}
-                <a class="editpost" data-hpid="{$hpid_n}" data-refto="post{$hpid_n}">{$edit}</a>
-            {/if}
-            {if="$canremovepost_b || $caneditpost_b"}
-            </span>
+                <a class="editpost" data-hpid="{$hpid_n}" data-refto="post{$hpid_n}" title="{$edit}"></a>
             {/if}
             {if="$canshowlock_b"}
                 {if="$lock_b"}
