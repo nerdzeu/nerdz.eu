@@ -345,13 +345,6 @@ $(document).ready(function() {
         }
         $(this).html(isNaN(nold) ? old : '0');
     });
-
-    $(".preview").on('click',function(){
-        var txt = $($(this).data('refto')).val();
-        if(undefined != txt && txt != '') {
-            window.open('/preview.php?message='+encodeURIComponent(txt));
-        }
-    });
     
     var keys = [];
     $("textarea").on('keydown', function(e) {
@@ -369,16 +362,6 @@ $(document).ready(function() {
 
     //begin plist into events (common to: homepage, projects, profiles)
     var plist = $("#postlist");
-
-    plist.on('click','.preview',function(){
-        var txtarea = $($(this).data('refto'));
-        txtarea.val(txtarea.val()+' '); //workaround
-        var txt = txtarea.val();
-        txtarea.val($.trim(txtarea.val()));
-        if(undefined != txt && $.trim(txt) != '') {
-            window.open('/preview.php?message='+encodeURIComponent(txt));
-        }
-    });
 
     plist.on('keydown',"textarea", function(e) {
         if( e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13) ) {
@@ -596,7 +579,7 @@ $(document).ready(function() {
                     };
             N.json[plist.data('type')].getPost({hpid: hpid},function(d) {
                  var fid = refto.attr('id') + 'editform';
-                 refto.html(form(fid,hpid,d.message,editlang,$(".preview").html()));
+                 refto.html(form(fid,hpid,d.message,editlang,""));
 
                  $('#'+fid).on('submit',function(e) {
                       e.preventDefault();
@@ -612,6 +595,7 @@ $(document).ready(function() {
                                       N.html[plist.data('type')].getPost({hpid: hpid}, function(o) {
                                             refto.html(o);
                                             refto.slideToggle("slow");
+                                            $(refto.find(".post_footer")[0]).prepend('<a class="hide" data-postid="post'+hpid+'" title="'+refto.data("hide")+'"></a>');
                                       });
                                  }
                                  else {

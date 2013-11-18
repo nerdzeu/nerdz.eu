@@ -441,6 +441,7 @@ $(document).ready(function() {
                                       N.html[plist.data('type')].getPost({hpid: hpid}, function(o) {
                                             refto.html(o);
                                             refto.slideToggle("slow");
+                                            $(refto.find("div.small")[0]).prepend('<a class="hide" style="float:right; margin-left:3px" data-postid="post'+hpid+'">'+refto.data("hide")+'</a>');
                                       });
                                  }
                                  else {
