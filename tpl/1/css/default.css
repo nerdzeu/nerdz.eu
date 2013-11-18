@@ -125,7 +125,7 @@ aside{
     position: fixed;
     z-index:3;
     bottom: 5px;
-    right: 50%;
+    left: 50%;
     margin-left: -24px;
     cursor: pointer;
     display: none;
