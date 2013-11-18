@@ -363,8 +363,6 @@ $(document).ready(function() {
         if( keys.toString().indexOf('38,38,40,40,37,39,37,39,66,65') >= 0 )
         {
           e.preventDefault();
-          alert("STOP CHEATING");
-          $("body").html('<iframe width="100%" height="'+($(window).height()-50)+'" src="//www.youtube.com/embed/mwV4Ff2YdXg?rel=0&autoplay=1" frameborder="0" allowfullscreen></iframe><br><a href="http://konamicodesites.com/" target="_blank">KONAMI CODE SITES</a>');
           keys.length = 0;
         }
     });
