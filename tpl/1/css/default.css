@@ -243,6 +243,12 @@ label, .qu_user, .selectlang, .projlang, .more
   margin: 0px;
 }
 
+.commentlist
+{
+  width:99%;
+  margin-top:.5em; 
+  margin-bottom:15px;
+}
 input[type=text], input[type=password], input[type=submit], option, select, button, .title
 {
     border: 0.5px #000 solid;
