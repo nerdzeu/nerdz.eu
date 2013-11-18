@@ -15,7 +15,9 @@ $uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER
 // da includere in ogni pagine, nell'header, dopo aver creato $core  e creato la variabile $headers
 $tno = $core->getTemplate();
 if($core->isMobile()) { ?>
+    <title>NERDZmobile</title>
     <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="mobile-web-app-capable" content="yes">
 <?php }    
 if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //se ssl è attivo uso l'url senza static, dato che non ho il certificato per quel sottodominio
 {
@@ -29,9 +31,12 @@ if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //se ssl è attivo u
         <meta name="msapplication-TileImage" content="/static/images/winicon.png" />
 <?php
     }
-?>
-    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico" />
+  if($core->isMobile()) { ?>
+        <link rel="shortcut icon" sizes="196x196" href="/static/images/droidico.png"/>
+<?php } else { ?>
+        <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico" />
 <?php
+      }
     foreach($headers['css'] as $var)
         if(filter_var($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
             echo '<link rel="stylesheet" type="text/css" href="',$var,'" />';
@@ -75,9 +80,12 @@ else //ssl non attivo
         <meta name="msapplication-TileImage" content="/static/images/winicon.png" />
 <?php
     }
-?>
+
+if($core->isMobile()) { ?>
+    <link rel="shortcut icon" sizes="196x196" href="<?php echo STATIC_DOMAIN;?>/static/images/droidico.png">
+<?php } else { ?>
     <link rel="icon" type="image/x-icon" href="<?php echo STATIC_DOMAIN;?>/static/images/favicon.ico" />
-<?php
+<?php }
     foreach($headers['css'] as $var)
         if(filter_var($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
             echo '<link rel="stylesheet" type="text/css" href="',$var,'" />';
