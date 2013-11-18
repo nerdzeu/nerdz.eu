@@ -21,7 +21,7 @@ $(function () {
     });
 });
     
-_mobileVersion = "2.1";
+_mobileVersion = "2.1 R1";
   
 $(document).ready(function() {
 

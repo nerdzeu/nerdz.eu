@@ -232,6 +232,17 @@ label, .qu_user, .selectlang, .projlang, .more
     cursor: pointer;    
 }
 
+.more
+{
+  float:left;
+  clear: both;
+  white-space:nowrap;
+  width: 100%;
+  text-align: center;
+  padding: 0px;
+  margin: 0px;
+}
+
 input[type=text], input[type=password], input[type=submit], option, select, button, .title
 {
     border: 0.5px #000 solid;
