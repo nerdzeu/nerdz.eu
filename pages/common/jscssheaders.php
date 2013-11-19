@@ -15,7 +15,6 @@ $uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER
 // da includere in ogni pagine, nell'header, dopo aver creato $core  e creato la variabile $headers
 $tno = $core->getTemplate();
 if($core->isMobile()) { ?>
-    <title>NERDZmobile</title>
     <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="mobile-web-app-capable" content="yes">
 <?php }    
