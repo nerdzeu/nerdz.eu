@@ -365,8 +365,9 @@ html, #body
     overflow: hidden;
 }
 
-.img_frame
+.img_frame, .yt_frame
 {
+  float:left;
   display: table-cell;
   vertical-align: bottom;
   text-align: center;
@@ -378,7 +379,7 @@ html, #body
   height: 132px;
 }
 
-.img_frame span
+.img_frame span, .yt_frame span
 {
   height: 17px;
   display:block;
@@ -389,7 +390,7 @@ html, #body
   font-weight: bold;
 }
 
-.img_frame img
+.img_frame img, .yt_frame img
 {
     display: inline;
     max-height:115px;

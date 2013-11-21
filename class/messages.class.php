@@ -304,24 +304,20 @@ class messages extends phpCore
                 if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
                     return $m[0];
 
-                return    '<span style="cursor:pointer" onclick="N.yt($(this),\''.$qsvar['v'].'\')">
-                            <span style="float:left; margin-top:0px">
-                                <span style="display:block; background-color: #FFF; text-align:center; width:132px; color:#000; font-weight: bold">'.parent::lang('VIDEO').'</span>
-                                <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$qsvar['v'].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; border: 1px solid #FFF" />
-                            </span>
-                        </span>';
+                return '<a class="yt_frame" data-vid="'.$qsvar['v'].'">
+                          <span>'.parent::lang('VIDEO').'</span>
+                          <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$qsvar['v'].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
+                        </a>';
             };
 
             $str = preg_replace_callback('#\[youtube\](.+?)youtube.com\/watch\?(.+?)\[\/youtube\]#im', $callBack2Param,$str,10);
             $str = preg_replace_callback('#\[yt\](.+?)youtube.com\/watch\?(.+?)\[\/yt\]#im', $callBack2Param,$str,10);
 
             $callBack1Param = function($m) use($ssl) {
-                return '<span style="cursor:pointer" onclick="N.yt($(this),\''.$m[1].'\')">
-                            <span style="float:left; margin-top:0px">
-                                <span style="display:block; background-color: #FFF; text-align:center; width:132px; color:#000; font-weight: bold">'.parent::lang('VIDEO').'</span>
-                                <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$m[1].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; border: 1px solid #FFF" />
-                            </span>
-                        </span>';
+                return '<a class="yt_frame" data-vid="'.$m[1].'">
+                            <span>'.parent::lang('VIDEO').'</span>
+                            <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$m[1].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
+                        </a>';
             };
 
             $str = preg_replace_callback('#\[youtube\]http:\/\/youtu.be\/(.{11})\[\/youtube\]#im',$callBack1Param,$str,10);

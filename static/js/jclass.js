@@ -16,8 +16,8 @@ function N() /* THE FATHER of God (class/object/function)*/
     
     this.yt = function(a,vid)
     {
+        a.removeClass("yt_frame");
         a.html('<div style="width:80%; margin: auto;text-align:center"><br /><iframe style="border:0px;width:560px; height:340px" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe></div>');
-        a.attr('onclick','');
         a.css('cursor','default');
     };
     
