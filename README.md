@@ -3,7 +3,7 @@ NERDZ
 *A mix between a Social Network and a forum*
 
 
-This is the code reposotiry for [nerdz.eu](http://www.nerdz.eu).
+This is the code repository for [nerdz.eu](http://www.nerdz.eu).
 
 About
 =====
