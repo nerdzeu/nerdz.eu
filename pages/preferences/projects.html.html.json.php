@@ -82,7 +82,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                 $toremove[] = $val;
 
          foreach($toremove as $val)
-             if(db::NO_ERR != $core->query(array('DELETE FROM groups_members WHERE "group" = :id AND user = :val',array(':id' => $id,':val' => $val)),db::FETCH_ERR))
+             if(db::NO_ERR != $core->query(array('DELETE FROM groups_members WHERE "group" = :id AND "user" = :val',array(':id' => $id,':val' => $val)),db::FETCH_ERR))
                 die($core->jsonResponse('error',$core->lang('ERROR').'4'));
         
         foreach($_POST as &$val)
