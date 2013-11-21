@@ -1,5 +1,32 @@
-Sorgenti di NERDZ, versione di sviluppo.
-Il reposotory ha anche i template in /tpl/, ma vorrei creare dei repository pubblici a parte in futuro per permettere di forkare il template di default e crearne di nuovi su quella base.
-Anche se prima bisognerebbe creare l'ambiente per testarli in locale.
-Sono stati esclusi dall'add i file temporanei, l'eseguibile c per le statistiche e il file con i dati sensibili per connessioni al database, email e quant'altro.
-Istruzioni per far andare decentemente NERDZ in locale in setup/README.md
+NERDZ
+=====
+*A mix between a Social Network and a forum*
+
+
+This is the code reposotiry for [nerdz.eu](http://www.nerdz.eu).
+
+About
+=====
+Nerdz is a mix between a forum and a social network. To understand what NERDZ really is, the easily way is to go on [nerdz.eu](http://www.nerdz.eu) and enjoy the experience.
+
+Development
+===========
+
+There is a lot of work to do:
+
+*  Move template to separate repositories: so designers can fork only the template and work on it.
+*  Improve the User Experience. So work on the design of template located in `tpl/`.
+*  Create a file containing associations between template number and name, and...
+*  Create option to make possible to switch template in User preference.
+*  Create REST APIs (in a new repo. And API will be written in TypeScript + node.js with OAuth2 ) and create necessary tables and options in this repo.
+*  On [nerdz.eu](http://www.nerdz.eu), once the API are ready, I reverse proxy nodeserver to api.nerdz.eu:80, so we can finally use API!
+*  And more...
+
+
+In this repo temporary files and C execuptables for stats are exclused.
+
+Contributing
+============
+You're welcome contribute via pull requests; only via pull requests.
+
+Before to send a pull request, you want to setup your local version of nerdz, thus you can (quite easily) have your copy of NERDZ following the instructions in `setup/README.md`
