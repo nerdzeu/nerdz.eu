@@ -10,6 +10,7 @@ mobile/*
 pages/cache/*.json
 pages/executables/*
 BingSiteAuth.xml
+NerdzMessenger.apk
 smapxml
 .DS_Store
 y_key_85b60785628865ce.html
