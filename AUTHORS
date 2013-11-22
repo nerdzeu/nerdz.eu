@@ -2,7 +2,7 @@ Nerdz is written by:
     Paolo Galeone
 
 With help of some libraries, including:
-    JQuery
-    RainTPL
-    MathJax
-    and others
+    JQuery,
+    RainTPL,
+    MathJax,
+    PHPMailer.
