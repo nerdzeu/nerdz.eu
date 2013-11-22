@@ -16,7 +16,7 @@ $c = 0;
 $questions = 0;
 foreach($exp as $v)
 {
-    $vals['list_a'][$c]['title_b'] = isset($v[0]) && ($v[0] == 'Q');
+    $vals['list_a'][$c]['title_b'] = isset($v[0]) && $v[0] == 'Q' && $v[1] == ':' && $v[2] == ' ';
     $vals['list_a'][$c]['questionid_n'] = $vals['list_a'][$c]['title_b'] ? ++$questions : 0;
     $vals['list_a'][$c]['line_n'] = htmlentities($v,ENT_QUOTES,'UTF-8');
     ++$c;
