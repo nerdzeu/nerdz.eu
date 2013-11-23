@@ -69,7 +69,7 @@ $(document).ready(function() {
     
     plist.on('click', ".yt_frame", function(e) {
       if( navigator.userAgent.match(/Android|iPhone|iPad|iPod|Blackberry|BB10; Touch|Mobi|Opera Mini|IEMobile/i) ) {
-        $(this).attr("href","http"+('https:' == document.location.protocol ? 's' : '')+"://m.youtube.com/watch?w="+$(this).data("vid"));
+        $(this).attr("href","http"+('https:' == document.location.protocol ? 's' : '')+"://m.youtube.com/watch?v="+$(this).data("vid"));
       } else {
         N.yt($(this), $(this).data("vid"))
       }
