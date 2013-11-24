@@ -49,44 +49,44 @@ offline  online
 FILE: template.values
 =====================
 Permette di specificare i file javascript e css da incluedere nelle differenti pagine, cioè in:
-codelist.php, error.php, faq.php, home.php, index.php, informations.php, list.php, pm.php
-preferences.php, profile.php, project.php, rank.php, reset.php, share.php, stats.php, terms.php
+> codelist.php, error.php, faq.php, home.php, index.php, informations.php, list.php, pm.php
+
+> preferences.php, profile.php, project.php, rank.php, reset.php, share.php, stats.php, terms.php
 
 @In particolare notare che è possible aggiungere nelle due sezioni css e javascript, il campo:
-default: css/css di default.css; (equivalentemente per js)
+`default: css/css di default.css;` (equivalentemente per js)
+
 Ed il seguente file verrà incluso in ogni pagina sopra citata, in ogni caso prima degli altri.
 Così facendo è possibile ad esempio definire regole css generali, nel file di default e poi a seconda
 della pagina in questione, ridefinirle in altri file o modificarle lievemente.
 
 API JAVASCRIPT
 ==============
-Sono a disposizione AuPI JS per una facile creazione dei template.
+Sono a disposizione API JS per una facile creazione dei template.
 (quasi) Sempre incluso jquery in ogni pagina, sempre aggiornato all'ultima versione.
 
-Per la guida alle api, vedere il file README\_JAPI
 
 Scrittura dei file
 =================
 Per la scrittura dei file .html, presenti nelle varie directory, vedere la guida a RAINTPL.
-Le variabili utilizzabili nei vari files, si trovano in <nomefile>.vars
-(che è presente nella stessa cartella in cui si trova anche <nomefile>.html che è la pagina d'esempio
-da usare nella stesura della nuova
+Le variabili utilizzabili nei vari files, si trovano in `nomefile.vars`
+(che è presente nella stessa cartella in cui si trova anche `nomefile.html` che è la pagina d'esempio da usare nella stesura della nuova
 
 CSS
 ===
 Obbligatoria la class "quote", che è la classe css che verrà attribuita ai tag:
 
-[quote=username]testo[\/quote]
+[quote=username]testo[/quote]
 
 Quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui verrà usato quel tag (home, profile, project)
 
 Obbligatoria la class `spoiler`, che è la classe css che verrà attribuita ai tag:
 
-[spoiler]text nascoste[\/spoiler]
+[spoiler]text nascoste[/spoiler]
 
 Quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui verrà usato quel tag (home, profile, project)
 
-Obbligatoria la class `.img\_frame`, che è la classe CSS che sarà attribuita alle miniature delle immagini ([img]url[/img])
+Obbligatoria la class `.img_frame`, che è la classe CSS che sarà attribuita alle miniature delle immagini ([img]url[/img])
 
-Obbligatoria la class `.img\_frame-extended`, che è la classe CSS attribuita alle immagini ingrandite. Tendenzialmente elimina le limitazioni di dimensione delle miniature
+Obbligatoria la class `.img_frame-extended`, che è la classe CSS attribuita alle immagini ingrandite. Tendenzialmente elimina le limitazioni di dimensione delle miniature
 
