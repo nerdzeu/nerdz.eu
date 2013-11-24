@@ -53,7 +53,7 @@ Permette di specificare i file javascript e css da incluedere nelle differenti p
 
 > preferences.php, profile.php, project.php, rank.php, reset.php, share.php, stats.php, terms.php
 
-@In particolare notare che è possible aggiungere nelle due sezioni css e javascript, il campo:
+In particolare notare che è possible aggiungere nelle due sezioni css e javascript, il campo:
 `default: css/css di default.css;` (equivalentemente per js)
 
 Ed il seguente file verrà incluso in ogni pagina sopra citata, in ogni caso prima degli altri.
