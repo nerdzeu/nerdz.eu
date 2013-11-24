@@ -33,10 +33,12 @@ offline  online
 
 `./preferences`: [Esistente solo per il template di default. Negli altri non è esistente per motivi di sicurezza]
 > account.html  friends.html  language.html  profile.html
+
 > delete.html   guests.html   layout.html    projects.html
 
 `./profile`:
 > blacklisted.html  comments.html  layout.html  postlist.html
+
 > closed.html       images         post.html    postnotfound.html
 
 `./profile/images`:
@@ -73,15 +75,18 @@ da usare nella stesura della nuova
 CSS
 ===
 Obbligatoria la class "quote", che è la classe css che verrà attribuita ai tag:
-[quote=username]testo[/quote]
-(quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui
-verrà usato quel tag (home, profile, project)
+
+[quote=username]testo[\/quote]
+
+Quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui verrà usato quel tag (home, profile, project)
+
 Obbligatoria la class `spoiler`, che è la classe css che verrà attribuita ai tag:
-[spoiler]text nascoste[/spoiler]
-(quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui
-verrà usato quel tag (home, profile, project)
-Obbligatoria la class `.img\_frame`, che è la classe CSS che sarà attribuita alle miniature
-delle immagini ([img]url[/img])
-Obbligatoria la class `.img\_frame-extended`, che è la classe CSS attribuita alle 
-immagini ingrandite. Tendenzialmente elimina le limitazioni di dimensione delle miniature
+
+[spoiler]text nascoste[\/spoiler]
+
+Quindi inserirla o in un css associato di default ad ogni file, oppure solo alle sole pagine in cui verrà usato quel tag (home, profile, project)
+
+Obbligatoria la class `.img\_frame`, che è la classe CSS che sarà attribuita alle miniature delle immagini ([img]url[/img])
+
+Obbligatoria la class `.img\_frame-extended`, che è la classe CSS attribuita alle immagini ingrandite. Tendenzialmente elimina le limitazioni di dimensione delle miniature
 
