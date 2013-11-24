@@ -6,6 +6,7 @@ Ogni template dovrà essere organizzato secondo la seguente struttura dei files/
 `./base`: [la cartella contiene le pagine "di base" e generiche, ogni file in questa cartella viene disegnato al momento del richiamo del file .php associato conf lo stesso nome. Esempio: about.html, viene disegnato andando su /about.php]
 
 > about.html     error.html   header.html  rank.html      reset.html  stats.html
+
 > codelist.html  footer.html  images       register.html  share.html  terms.html
 
 `./base/images`: [cartella contenente le immagini per i file di base, organizzati per on/offline]
