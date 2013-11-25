@@ -71,10 +71,6 @@ $(document).ready(function() {
             lock.eq(0).click();
         }
     });
-    
-    plist.on('click',".yt_frame",function(){
-      N.yt($(this),$(this).data("vid"));
-    });
 
     $("#profilePostList").on('click',function() {
         plist.html('<h1>'+loading+'...</h1>');

@@ -198,6 +198,11 @@ $(document).ready(function() {
     //begin plist into events (common to: homepage, projects, profiles)
     var plist = $("#postlist");
 
+    plist.on('click', ".yt_frame", function(e) {
+        e.preventDefault();
+        N.yt($(this), $(this).data("vid"));
+    });
+
     plist.on('click','.preview',function(){
         var txtarea = $($(this).data('refto'));
         txtarea.val(txtarea.val()+' '); //workaround

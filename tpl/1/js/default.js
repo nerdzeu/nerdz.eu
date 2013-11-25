@@ -363,6 +363,15 @@ $(document).ready(function() {
     //begin plist into events (common to: homepage, projects, profiles)
     var plist = $("#postlist");
 
+    plist.on('click', ".yt_frame", function(e) {
+        e.preventDefault();
+        if( navigator.userAgent.match(/Android|iPhone|iPad|iPod|Blackberry|BB10; Touch|Mobi|Opera Mini|IEMobile/i) ) {
+            $(this).attr("href","http"+('https:' == document.location.protocol ? 's' : '')+"://m.youtube.com/watch?v="+$(this).data("vid"));
+        } else {
+            N.yt($(this), $(this).data("vid"));
+        }
+    });
+
     plist.on('keydown',"textarea", function(e) {
         if( e.ctrlKey && (e.keyCode == 10 || e.keyCode == 13) ) {
             $(this).parent().trigger('submit');
