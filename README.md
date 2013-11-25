@@ -30,3 +30,7 @@ Contributing
 You're welcome contribute via pull requests; only via pull requests.
 
 Before to send a pull request, you want to setup your local version of nerdz, thus you can (quite easily) have your copy of NERDZ following the instructions in `setup/README.md`
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nerdzeu/nerdz.eu/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
