@@ -1,9 +1,10 @@
-@font-face
-{
-  font-family: "Roboto";
-  src: url('roboto.ttf'),
-       url('roboto.eot'); /* IE9 */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Roboto Regular'), local('Roboto-Regular'), url(http://themes.googleusercontent.com/static/fonts/roboto/v9/2UX7WLTfW3W8TclTUvlFyQ.woff) format('woff');
 }
+
 body
 {
     background-color: #1D1B1B;
