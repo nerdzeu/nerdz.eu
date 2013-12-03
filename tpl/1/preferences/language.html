@@ -1,7 +1,7 @@
 <hr />
 {$description2} <br />
     <form id="langfrm">
-        <select name="lang" data-act="userlang">
+        <select name="lang" class="langsel" data-act="userlang">
         {loop="langs_a"}
             <option value="{$value.shortlang_n}" {if="$value.shortlang_n == $mylang_n"} selected {/if}>{$value.longlang_n}</option>
         {/loop}
@@ -12,7 +12,7 @@
 <hr style="margin-top: 20px; margin-bottom:20px" />
 {$description} <br />
     <form id="boardfrm">
-        <select name="lang" data-act="boardlang">
+        <select name="lang" class="langsel" data-act="boardlang">
         {loop="langs_a"}
             <option value="{$value.shortlang_n}" {if="$value.shortlang_n == $myboardlang_n"} selected {/if}>{$value.longlang_n}</option>
         {/loop}
@@ -21,40 +21,24 @@
     </form>
     
 <hr style="margin-top: 20px; margin-bottom:20px" />
-Font-Size [px] (default: 15) <br />
+Font-Size [px] (default: 16px = 1em) <br />
 <form id="fsfrm">
 <input type="text" id="font_size" /> px &nbsp;&nbsp;&nbsp;&nbsp;
 <input type="submit" value="{$edit}">
 </form>
 
     <div id="res"></div>
-
-<script type="application/javascript">
-    $(document).ready(function() {
-		fs = localStorage["font-size"] ? localStorage["font-size"] : "16";
-		$("#font_size").val( fs );
-		$("#fsfrm").submit(function(e) {
-			e.preventDefault();
-			fs = $("#font_size").val();
-			if ( isNaN(fs) ) {
-				alert("Error"); return false;
-			}else{
-				localStorage["font-size"] = fs;
-				document.location.reload();
-			}
-				
-		});
-		
-        $("select").change(function() {
-            N.json.post('/pages/preferences/language.html.json.php?action='+$(this).data("act"),$(this).parent().serialize(),function(obj) {
-                $("#res").text(obj.message+'...');
-                if(obj.status == 'ok')
-                {
-                    setTimeout(function() {
-                        document.location.reload();
-                    },1500);
-                }
-            });
-        });
-    });
+<script>
+  fs = localStorage["font-size"] ? localStorage["font-size"] : "16";
+  $("#font_size").val( fs );
+  $("#fsfrm").submit(function(e) {
+    e.preventDefault();
+    fs = $("#font_size").val();
+    if ( isNaN(fs) ) {
+      alert("Error"); return false;
+    }else{
+      localStorage["font-size"] = fs;
+      document.location.reload();
+    }      
+  });
 </script>

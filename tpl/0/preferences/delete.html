@@ -21,23 +21,3 @@
     </form>
     <div id="res"></div>
 </div>
-<script type="application/javascript">
-    $(document).ready(function() {
-        $("#delfrm").submit(function(e) {
-            e.preventDefault();
-            N.json.post('/pages/preferences/delete.html.json.php', { captcha: $("#frmdelcpt").val() }, function(data) {
-                if(data.status == 'ok')
-                {
-                    setTimeout(function() {
-                        document.location.reload();
-                    },500);
-                }
-                else
-                {
-                    N.reloadCaptcha();
-                }
-                $("#res").html(data.message);
-            });
-        });
-    });
-</script>

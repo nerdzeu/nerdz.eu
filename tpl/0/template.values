@@ -12,6 +12,7 @@
 	"js": {
 		"default": "js/default.js",
 		"home": "js/home.js",
+    "preferences": "js/preferences.js",
 		"profile": "js/profile.js",
 		"project": "js/project.js",
 		"pm": "js/pm.js",

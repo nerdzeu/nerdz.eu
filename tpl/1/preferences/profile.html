@@ -160,15 +160,3 @@
     <input type="hidden" name="tok" value="{$tok_n}" />
 </form>
 <br /><br />
-<script type="application/javascript">
-    $(document).ready(function() {
-        $('#edprofrm').submit(function(event) {
-            event.preventDefault();
-            var r = $("#res");
-            r.html($("#loadtxt").data('loading'));
-            N.json.post('/pages/preferences/profile.html.json.php',$(this).serialize(), function(data) {
-                r.html(data.message);
-            });
-        });
-    });
-</script>

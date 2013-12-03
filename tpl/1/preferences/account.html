@@ -94,17 +94,3 @@
 <input type="hidden" name="tok" value="{$tok_n}" />
 <p id="res"></p>
 </form>
-<script type="application/javascript">
-    $(document).ready(function() {
-        $("#edaccfrm").submit(function(event) {
-            event.preventDefault();
-            var c = $('#res');
-            c.html('...');
-            N.json.post('/pages/preferences/account.html.json.php',$("#edaccfrm").serialize(), function(data) {
-                c.html(data.message);
-                if(data.status == 'error')
-                    N.reloadCaptcha();
-            });
-        });
-    });
-</script>

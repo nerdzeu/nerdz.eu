@@ -19,14 +19,3 @@
     </table>
 </form>
 <br /><br />
-<script type="application/javascript">
-    $(document).ready(function() {
-        $("#gufrm").submit(function(event) {
-            event.preventDefault();
-            var check = $("#gufrm input[name=check]:checked").val();
-            N.json.post('/pages/preferences/guests.html.json.php?action='+check, { tok: $(this).data('tok') }, function(data) {
-                $("#res").html(data.message);
-            });
-        })
-    });
-</script>
