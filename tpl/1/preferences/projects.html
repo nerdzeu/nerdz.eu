@@ -24,15 +24,3 @@
 </table>
 </div>
 <br /><br />
-
-<script type="application/javascript">
-$(document).ready(function() {
-    $(".manage").on('click',function(e){
-        e.preventDefault();
-        $("#cont").html($("#loadtxt").data('loading'));
-        N.html.post('/pages/preferences/projects.html.html.php',{id: $(this).data('id')},function(data) {
-            $("#cont").html(data);
-        });
-    });
-});
-</script>

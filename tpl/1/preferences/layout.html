@@ -30,14 +30,3 @@
       </ul>
   </div>
 </aside>
-<script type="application/javascript">
-    $(document).ready(function() {
-        $("#prefbar").click(function(event) {
-            var c = $("#content");
-            c.html($("#loadtxt").data('loading'));
-            N.html.post('/pages/preferences/'+ event.target.id +'.html.php',{},function(data) {
-                c.html(data);
-            });
-        });
-    });
-</script>

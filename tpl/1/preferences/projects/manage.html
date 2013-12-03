@@ -1,5 +1,5 @@
 <hr />
-<form id="edprofrm">
+<form id="edprojfrm">
 <table class="intable">
     <tr>
         <td style="width: 50%; vertical-align: top">
@@ -113,7 +113,7 @@
 </form>
 <br />
 <hr />
-<form id="delfrm">
+<form id="delprojfrm">
     <input type="hidden" name="tok" value="{$tok_n}" />
     <input type="hidden" name="id" value="{$id_n}" />
     <table class="intable">
@@ -139,28 +139,3 @@
 </form>
 <div id="res2"></div>
 <br /><br />
-<script type="application/javascript">
-    $(document).ready(function() {
-        $('#edprofrm').submit(function(event) {
-            event.preventDefault();
-            var r = $("#res");
-            r.html($("#loadtxt").data('loading'));
-            N.json.post('/pages/preferences/projects.html.html.json.php?action=update',$(this).serialize(), function(data) {
-                r.html(data.message);
-            });
-        });
-
-        $("#delfrm").submit(function(e) {
-            e.preventDefault();
-            var r = $("#res2");
-            r.html($("#loadtxt").data('loading'));
-            N.json.post('/pages/preferences/projects.html.html.json.php?action=del',$(this).serialize(), function(data) {
-                r.html(data.message);
-                if(data.status == 'ok') {
-                    setTimeout(function() { location.reload(); },1500);
-                }
-            });
-
-        });
-    });
-</script>
