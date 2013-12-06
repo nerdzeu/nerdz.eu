@@ -201,6 +201,7 @@ if(isset($user['username'][MIN_LENGTH_USER]))
                     $_SESSION['nerdz_username'] = $user;
                     $_SESSION['nerdz_lang'] = $core->getUserLanguage($o->counter);
                     $_SESSION['nerdz_board_lang'] = $core->getBoardLanguage($o->counter);
+                    $_SESSION['nerdz_template'] = $core->getTemplate($_SESSION['nerdz_id']);
 
                     die($core->jsonResponse('ok',$core->lang('LOGIN_OK')));
 

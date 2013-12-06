@@ -5,9 +5,6 @@ $vals = array();
 $vals['logged_b'] = $core->isLogged();
 if(!$vals['logged_b'])
 {
-    if(false !== strpos(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : getenv('HTTP_HOST') ? getenv('HTTP_HOST') : '','dyndns'))
-        die(header('Location: http://'.SITE_HOST.$_SERVER['REQUEST_URI']));
-
     $vals['remember'] = $core->lang('REMEMBER_ME');
     $vals['forgot'] = $core->lang('FORGOT_PASSWORD');
     $vals['hidestatus'] = $core->lang('HIDE_STATUS');
