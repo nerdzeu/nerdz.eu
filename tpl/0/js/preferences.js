@@ -56,7 +56,7 @@ $(document).ready(function() {
       }
     });
   }).on("submit","#langfrm",function(e){
-    event.preventDefault();
+    e.preventDefault();
     N.json.post('/pages/preferences/language.html.json.php?action=userlang',$(this).serialize(),function(obj) {
       $("#langfrm input[type=submit]").val(obj.message+'...');
       $("#res").html('...');
