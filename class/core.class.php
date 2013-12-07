@@ -1,6 +1,9 @@
 <?php
-if(isset($_COOKIE['SEXYID']) && !preg_match('#^[a-z0-9\-,]{32}$#i',$_COOKIE['SEXYID']))
-    unset($_COOKIE['SEXYID']);
+$sessionName = session_name();
+if(isset($_COOKIE[$sessionName]) && !preg_match('#^[a-z0-9\-,]{32}$#i',$_COOKIE[$sessionName])) {
+    unset($_COOKIE[$sessionName]);
+}
+unset($sessionName);
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/db.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
