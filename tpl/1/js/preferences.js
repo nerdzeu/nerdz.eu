@@ -55,18 +55,6 @@ $(document).ready(function() {
         setTimeout(function() { location.reload(); },1500);
       }
     });
-  }).on("submit","#langfrm",function(e){
-    e.preventDefault();
-    N.json.post('/pages/preferences/language.html.json.php?action=userlang',$(this).serialize(),function(obj) {
-      $("#langfrm input[type=submit]").val(obj.message+'...');
-      $("#res").html('...');
-      if(obj.status == 'ok')
-      {
-        setTimeout(function() {
-          document.location.reload();
-        },1500);
-      }
-    });
   }).on("submit","#delfrm",function(e){
     e.preventDefault();
     N.json.post('/pages/preferences/delete.html.json.php', { captcha: $("#frmdelcpt").val() }, function(data) {
