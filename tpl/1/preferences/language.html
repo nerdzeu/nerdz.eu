@@ -23,22 +23,22 @@
 <hr style="margin-top: 20px; margin-bottom:20px" />
 Font-Size [px] (default: 16px = 1em) <br />
 <form id="fsfrm">
-<input type="text" id="font_size" /> px &nbsp;&nbsp;&nbsp;&nbsp;
+<input type="text" id="font_size" /> px&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="submit" value="{$edit}">
 </form>
 
     <div id="res"></div>
-<script>
-  fs = localStorage["font-size"] ? localStorage["font-size"] : "16";
-  $("#font_size").val( fs );
-  $("#fsfrm").submit(function(e) {
-    e.preventDefault();
-    fs = $("#font_size").val();
-    if ( isNaN(fs) ) {
-      alert("Error"); return false;
-    }else{
-      localStorage["font-size"] = fs;
-      document.location.reload();
-    }      
+<script type="application/javascript">
+    fs = localStorage["font-size"] ? localStorage["font-size"] : "16";
+    $("#font_size").val( fs );
+    $("#fsfrm").submit(function(e) {
+        e.preventDefault();
+        fs = $("#font_size").val();
+        if ( isNaN(fs) ) {
+           alert("Error"); return false;
+       }else{
+           localStorage["font-size"] = fs;
+           document.location.reload();
+      }      
   });
 </script>
