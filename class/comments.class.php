@@ -358,10 +358,18 @@ class comments extends project
         if(!($stmt = parent::query(array('SELECT "hpid","from","hcid","message" FROM "comments" WHERE "hpid" = ? AND "hcid" = (SELECT MAX("hcid") FROM "comments" WHERE "hpid" = ?)',array($hpid,$hpid)),db::FETCH_STMT)))
             return false;
 
-        $user = $stmt->fetch(PDO::FETCH_OBJ);
+        //for possible multiple append bug fix+
+        if(($user = $stmt->fetch(PDO::FETCH_OBJ))) // if exists a previous message
+        {
+            $expl = explode('[hr]',$user->message);
+            $lastAppendedMessage = $expl[count($expl) - 1]; //equals to $user->message if no append done before
 
-        if($user && $user->from == $_SESSION['nerdz_id']) //append and notify
-            return $this->appendComment($user,$message) && $this->addControl($obj->from,$obj->to,$hpid);
+            if($lastAppendedMessage == $message)
+                return null; //null => flood error
+
+            if($user->from == $_SESSION['nerdz_id']) //append and notify
+                return $this->appendComment($user,$message) && $this->addControl($obj->from,$obj->to,$hpid);
+        }
 
 //            $msg = $this->explodeMessageInQuotes($o->message);
 //            $message = '';
