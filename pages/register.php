@@ -24,12 +24,15 @@ $vals['reloadcaptcha'] = $core->lang('RELOAD_CAPTCHA');
 $vals['register'] = $core->lang('REGISTER');
 $vals['timezone'] = 'Time zone';
 
-    $vals['remember'] = $core->lang('REMEMBER_ME');
-    $vals['forgot'] = $core->lang('FORGOT_PASSWORD');
-    $vals['hidestatus'] = $core->lang('HIDE_STATUS');
-    $vals['username'] = $core->lang('USERNAME');
-    $vals['login'] = $core->lang('LOGIN');
-    
+//For register form in mobile
+
+$vals['remember'] = $core->lang('REMEMBER_ME');
+$vals['forgot'] = $core->lang('FORGOT_PASSWORD');
+$vals['hidestatus'] = $core->lang('HIDE_STATUS');
+$vals['username'] = $core->lang('USERNAME');
+$vals['login'] = $core->lang('LOGIN');
+$vals['tok_n'] = $core->getCsrfToken();
+
 $now = intval(date('o'));
 
 $vals['years_a'] = range($now-100,$now-1);
