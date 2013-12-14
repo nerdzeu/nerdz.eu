@@ -30,15 +30,16 @@ if($result->rowCount() == 1)
     $obj = $result->fetch(PDO::FETCH_OBJ);
     if(isset($_POST['setcookie']))
     {
+        $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
         if($_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu')
         {
-            setcookie('nerdz_id',$obj->counter,time()+60*60*24*30,'/','.mobile.nerdz.eu',false,true);
-            setcookie('nerdz_u',md5($pass),time()+60*60*24*30,'/','.mobile.nerdz.eu',false,true);
+            setcookie('nerdz_id',$obj->counter,time()+60*60*24*30,'/','.mobile.nerdz.eu',$ssl,true);
+            setcookie('nerdz_u',md5($pass),time()+60*60*24*30,'/','.mobile.nerdz.eu',$ssl,true);
         }
         else
         {
-            setcookie('nerdz_id',$obj->counter,time()+60*60*24*30,'/','.'.SITE_HOST,false,true);
-            setcookie('nerdz_u',md5($pass),time()+60*60*24*30,'/','.'.SITE_HOST,false,true);
+            setcookie('nerdz_id',$obj->counter,time()+60*60*24*30,'/','.'.SITE_HOST,$ssl,true);
+            setcookie('nerdz_u',md5($pass),time()+60*60*24*30,'/','.'.SITE_HOST,$ssl,true);
         }
     }
     $_SESSION['nerdz_logged'] = true;
