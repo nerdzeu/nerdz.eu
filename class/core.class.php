@@ -100,19 +100,20 @@ class phpCore
     {
         if($this->isLogged())
         {
+            $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
             if($_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu')
             {
                 if(isset($_COOKIE['nerdz_id']))
-                    setcookie('nerdz_id','',time()-3600,'/','mobile.nerdz.eu');
+                    setcookie('nerdz_id','',time()-3600,'/','mobile.nerdz.eu',$ssl);
                 if(isset($_COOKIE['nerdz_u']))
-                    setcookie('nerdz_u','',time()-3600,'/','mobile.nerdz.eu');
+                    setcookie('nerdz_u','',time()-3600,'/','mobile.nerdz.eu',$ssl);
             }
             else
             {
                 if(isset($_COOKIE['nerdz_id']))
-                    setcookie('nerdz_id','',time()-3600,'/',SITE_HOST);
+                    setcookie('nerdz_id','',time()-3600,'/',SITE_HOST,$ssl);
                 if(isset($_COOKIE['nerdz_u']))
-                    setcookie('nerdz_u','',time()-3600,'/',SITE_HOST);
+                    setcookie('nerdz_u','',time()-3600,'/',SITE_HOST,$ssl);
             }
             session_destroy();
         }
