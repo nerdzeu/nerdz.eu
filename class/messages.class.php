@@ -338,7 +338,7 @@ class messages extends phpCore
             $callBack2Param = function($m) use($ssl) {
                 $qsvar = array();
                 parse_str(html_entity_decode($m[2],ENT_QUOTES,'UTF-8'),$qsvar);
-                if(empty($qsvar['v']) || !preg_match('#^[\w\-]{11}$#',$qsvar['v']))
+                if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
                     return $m[0];
                 return '<div style="width:80%; margin: auto;text-align:center">
                             <br /><iframe title="YouTube video" style="width:560px; height:340px; border:0px" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
