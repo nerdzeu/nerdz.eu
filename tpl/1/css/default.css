@@ -440,6 +440,12 @@ ul.nav li
 	display:none;
 }
 
+#pm_list
+{
+    height: 550px;
+    overflow: auto;
+}
+
 .ninja {
   display:none;
   transition: 1s;
