@@ -599,7 +599,9 @@ $(document).ready(function() {
                                       N.html[plist.data('type')].getPost({hpid: hpid}, function(o) {
                                             refto.html(o);
                                             refto.slideToggle("slow");
-                                            $(refto.find(".post_footer")[0]).prepend('<a class="hide" data-postid="post'+hpid+'" title="'+refto.data("hide")+'"></a>');
+                                            if(refto.data("hide").length) {
+                                                $(refto.find(".post_footer")[0]).prepend('<a class="hide" data-postid="post'+hpid+'" title="'+refto.data("hide")+'"></a>');
+                                            }
                                       });
                                  }
                                  else {
