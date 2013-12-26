@@ -1,5 +1,4 @@
 <?php
-//TEMPLATE: OK
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/pm.class.php';
 ob_start(array('phpCore','minifyHtml'));
@@ -7,15 +6,6 @@ ob_start(array('phpCore','minifyHtml'));
 $core = new pm();
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
-
-$vals = array();
-$vals['from'] = $core->lang('FROM');
-$vals['to'] = $core->lang('TO');
-$vals['send'] = $core->lang('SEND');
-$vals['preview'] = $core->lang('PREVIEW');
-$vals['message'] = $core->lang('MESSAGE');
-$core->getTPL()->assign($vals);
-$vals = array();
 
 switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 {
@@ -39,9 +29,6 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         $vals['to_n'] = ( $_SESSION['nerdz_id'] != $to ? $core->getUserName ($to) : $core->getUserName ($from) );
         if (!$vals['to_n']) die ($core->lang ('ERROR'));
         $vals['list_a'] = $conv;
-        $vals['morebtn_label'] = $core->lang ('MORE_MSGS');
-        $vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
-        $vals['everymsg_label'] = $core->lang ('EVERY_MSG');
         $vals['pmcount_n'] = $core->countPms ($from, $to);
         $vals['needmorebtn_b'] = $doShowForm && $vals['pmcount_n'] > 10;
         $vals['needeverymsgbtn_b'] = $doShowForm && $vals['pmcount_n'] > 20;

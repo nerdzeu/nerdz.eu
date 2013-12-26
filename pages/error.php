@@ -1,5 +1,4 @@
 <?php
-//Template: OK
 $code = isset($_GET['code']) ? $_GET['code'] : false;
 $errmsg[400] = 'Bad Request';
 $errmsg[401] = 'Authorization required';

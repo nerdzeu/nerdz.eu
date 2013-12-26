@@ -1,12 +1,12 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
     $core = new project();
     if(!$core->isLogged())
         die(header('Location: /'));
-    $tplcfg = new templateCfg($core);
+
+    $tplcfg = $core->getTemplateCfg();
     
     ob_start(array('phpCore','minifyHtml'));
 ?>

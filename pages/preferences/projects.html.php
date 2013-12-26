@@ -1,5 +1,4 @@
 <?php
-//TEMPLATE: OK
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 $core = new phpCore();
@@ -12,10 +11,6 @@ if(!$core->isLogged())
     die($core->lang('REGISTER'));
     
 $vals = array();
-$vals['description'] = $core->lang('PROJECTS_DESCR');
-$vals['create'] =  $core->lang('CREATE');
-$vals['listdescription'] = $core->lang('PROJECT_LIST');
-$vals['manage'] = $core->lang('MANAGE');
 $vals['tok_n'] = $core->getCsrfToken('edit');
 
 if(!($r = $core->query(array('SELECT "name","counter" FROM "groups" WHERE "owner" = ?',array($_SESSION['nerdz_id'])),db::FETCH_STMT)))

@@ -12,7 +12,6 @@ function parseLim($lim) {
 
 $limit = $core->limitControl(isset($_GET['lim']) ? $_GET['lim'] : 0 ,20) ? $_GET['lim'] : 20;
 
-//WTF? sscanf? strstr? What a shitty language! However, postgresql fix.
 if (strstr($limit, ',') != false)
     $newlim = parseLim($limit);
 else
@@ -50,12 +49,6 @@ $order = isset($_GET['desc']) && $_GET['desc'] == 1 ? 'DESC' : 'ASC';
 
 $vals = array();
 
-$vals['name'] = $core->lang('NAME');
-$vals['surname'] = $core->lang('SURNAME');
-$vals['id'] = 'ID';
-$vals['username'] = $core->lang('USERNAME');
-$vals['birthdate'] = $core->lang('BIRTH_DATE');
-
 $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 
 $db = $core->getDB();
@@ -85,8 +78,8 @@ $desc = $order == 'DESC' ? '1' : '0';
 $url = "?orderby={$orderby}&amp;desc={$desc}&amp;q={$q}";
 if(is_numeric($limit))
 {
-    $vals['prev_url'] = '';
-    $vals['next_url'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
+    $vals['prev_url_n'] = '';
+    $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
 }
 else
 {
@@ -98,11 +91,11 @@ else
         $limitprev = $prev >0 ? "{$prev},20" : '20';
     }
 
-    $vals['next_url'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
-    $vals['prev_url'] = $url."&amp;lim={$limitprev}";
+    $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
+    $vals['prev_url_n'] = $url."&amp;lim={$limitprev}";
 }
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('base/userslist');

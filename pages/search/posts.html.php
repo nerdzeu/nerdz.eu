@@ -73,8 +73,6 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 //variabile $mess necessaria per le pagine sotto
 $mess = $core->getPostsArray($k,$group);
 
-//includo file per variabili di lingua comuni
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.lang.php';
 //per le miniature!
 $miniature = true;
 if($group)

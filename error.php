@@ -1,10 +1,9 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
     $core = new phpCore();
-    $tplcfg = new templateCfg($core);
+    $tplcfg = $core->getTemplateCfg();
     
     ob_start(array('phpCore','minifyHtml'));
 ?>
@@ -15,13 +14,13 @@
         <meta name="author" content="Paolo Galeone" />
         <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
         <meta name="robots" content="index,follow" />
-        <title><?= $core->getSiteName(); ?> <?php $core->lang('ERROR');?></title>
+        <title><?= $core->getSiteName(), ' - ', $core->lang('ERROR');?></title>
 <?php
     $headers = $tplcfg->getTemplateVars('error');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
-    ob_flush();
 ?>
     </head>
+<?php ob_flush(); ?>
     <body>
         <div id="body">
 <?php

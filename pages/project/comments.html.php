@@ -1,5 +1,4 @@
 <?php
-//TEMPLATE: OK 
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 $core = new comments();
@@ -35,15 +34,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals['list_a'] = $_list;
         $vals['showform_b'] = $doShowForm;
         $vals['hpid_n'] = $hpid;
-        $vals['nerdzit'] = $core->lang('NERDZ_IT');
-        $vals['preview'] = $core->lang('PREVIEW');
-        $vals['areyousure'] = $core->lang('ARE_YOU_SURE');
-        $vals['receivenotifications'] = $core->lang('REVC_NOTIFY');
-        $vals['dontreceivenotifications'] = $core->lang('NOT_RECV_NOTIFY');
-        $vals['morebtn_label'] = $core->lang ('MORE_COMMENTS');
-        $vals['bottombtn_label'] = $core->lang ('BACK_TO_THE_BOTTOM');
         $vals['commentcount_n'] = $core->countProjectComments ($hpid);
-        $vals['everycomment_label'] = $core->lang ('EVERY_COMMENT'); 
         $vals['needmorebtn_b'] = $doShowForm && $vals['commentcount_n'] > 10;
         $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20; 
         $core->getTPL()->assign($vals);

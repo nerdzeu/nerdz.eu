@@ -1,5 +1,4 @@
 <?php
-//TEMPLATE: ok
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/notify.class.php';
 ob_start(array('phpCore','minifyHtml'));
@@ -123,12 +122,6 @@ if($core->isLogged())
         }
         
         $vals['list_a'] = $str;
-        $vals['newsonproject'] = $core->lang('NEWS_ON_PROJECT');
-        $vals['newcommentson'] = $core->lang('NEW_COMMENTS_ON');
-        $vals['project'] = $core->lang('PROJECT');
-        $vals['profile'] = $core->lang('PROFILE');
-        $vals['postedonyourboard'] = $core->lang('POSTED_ON_YOUR_BOARD');
-        $vals['followingyou'] = $core->lang('FOLLOWING_YOU');
         
         $core->getTPL()->assign($vals);
         $core->getTPL()->draw('profile/notify');

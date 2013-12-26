@@ -39,10 +39,6 @@ $order = isset($_GET['desc']) && $_GET['desc'] == 1 ? 'DESC' : 'ASC';
 
 $vals = array();
 
-$vals['name'] = $core->lang('NAME');
-$vals['id'] = 'ID';
-$vals['description'] = $core->lang('DESCRIPTION');
-
 $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 
 if(empty($q))
@@ -73,8 +69,8 @@ $desc = $order == 'DESC' ? '1' : '0';
 $url = "?orderby={$orderby}&amp;desc={$desc}&amp;q={$q}";
 if(is_numeric($limit))
 {
-    $vals['prev_url'] = '';
-    $vals['next_url'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
+    $vals['prev_url_n'] = '';
+    $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
 }
 else
 {
@@ -86,11 +82,11 @@ else
         $limitprev = $prev >0 ? "{$prev},20" : '20';
     }
 
-    $vals['next_url'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
-    $vals['prev_url'] = $url."&amp;lim={$limitprev}";
+    $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
+    $vals['prev_url_n'] = $url."&amp;lim={$limitprev}";
 }
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('base/projectslist');

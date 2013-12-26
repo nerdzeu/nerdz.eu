@@ -1,9 +1,0 @@
-<hr />
-<div>{$description}</div>
-<hr />
-<form id="gufrm" data-tok="{$tok_n}">
-    <input type="radio" name="check" value="public" id="public" {if="!$private_b"} checked {/if} /><label for="public">{$publicprofile}</label>
-    <br>
-    <input type="radio" name="check" value="private" id="private" {if="$private_b"} checked {/if} /><label for="private">{$privateprofile}</label>
-    <div id="res"></div>
-</form>

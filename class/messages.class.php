@@ -288,7 +288,12 @@ class messages extends phpCore
                         (
                           preg_match('#^https://#i',$m[1]) ?
                           strip_tags($m[1]) :
-                          'https://i0.wp.com/'.preg_replace('#^http://|^ftp://#i','',strip_tags($m[1]))
+                          'https://i0.wp.com/'.
+                          (
+                            preg_match("#^http://(i\.)?imgur\.com#i", $m[1]) ?
+                            'www.'.preg_replace('#^http://|^ftp://#i','', strip_tags($m[1])) :
+                            preg_replace('#^http://|^ftp://#i','',strip_tags($m[1]))
+                          )
                         )
                         :
                         strip_tags($m[1])

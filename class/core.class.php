@@ -1,12 +1,7 @@
 <?php
-$sessionName = session_name();
-if(isset($_COOKIE[$sessionName]) && !preg_match('#^[a-z0-9\-,]{32}$#i',$_COOKIE[$sessionName])) {
-    unset($_COOKIE[$sessionName]);
-}
-unset($sessionName);
-
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/db.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
 
 //Per la condivisione delle sessioni (tramite redis) con node.js. L'inclusione ha session_start();
 if(REDIS_ENABLED)
@@ -21,6 +16,9 @@ class phpCore
 {
     private $db;
     private $tpl;
+    private $lang;
+    private $tpl_no;
+    private $templateCfg;
 
     public function __construct()
     {
@@ -44,8 +42,14 @@ class phpCore
             $TPLDefault = '1';
         }
 
+        $this->lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['nerdz_id']) : $this->getBrowserLanguage();
+
         $this->tpl = new RainTPL();
         $this->tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.($this->isLogged() ? $_SESSION['nerdz_template'] : $TPLDefault).'/'); //fallback on default template
+
+        $this->tpl_no = $this->tpl->getActualTemplateNumber();
+
+        $this->templateCfg = new templateCfg($this);
 
         if($this->isLogged() && (($motivation = $this->isInBanList($_SESSION['nerdz_id']))))
         {
@@ -57,6 +61,40 @@ class phpCore
         if(!empty($idiots) && $this->isLogged() && in_array($_SESSION['nerdz_id'], $idiots))
             $this->logout();
     }
+
+    public function getTemplateCfg() {
+        return $this->templateCfg;
+    }
+
+    public function lang($index,$page = null)
+    {
+        //non ci preoccupiamo delle modifiche ai file di lingua dato che devono accadere MOLTO di rado e si attende che la cache si purghi da sola
+        $nullPage = !$page;
+        $cache = "language-file-{$this->lang}-{$this->tpl_no}".SITE_HOST.'-'.( $nullPage ? 'default' : $page );
+        if(apc_exists($cache))
+            $_LANG = unserialize(apc_fetch($cache));
+        else
+        {
+            $langFiles = $this->templateCfg->getTemplateVars($page)['langs'];
+
+            $default = $langFiles['default'];
+           
+            $defaultLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/{$default}"),true);
+            if($nullPage) {
+                $_LANG = $defaultLang;
+            }
+            else {
+                $page = isset($langFiles[$page]) ? $langFiles[$page] : null;
+                if($page !== null) {
+                    $pageLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/$page"),true);
+                    $_LANG = array_merge($defaultLang, $pageLang);
+                }
+            }
+            @apc_store($cache,serialize($_LANG),3600);
+        }
+        return nl2br(htmlentities($_LANG[$index],ENT_QUOTES,'UTF-8'));
+    }
+
     
     public function isMobile() 
     {
@@ -214,8 +252,6 @@ class phpCore
             }
             fclose($fp);
             ksort($b);
-            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
-            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
             @apc_store($cache,serialize($b),3600);
 
             return $long ? $b : $a;
@@ -332,25 +368,6 @@ class phpCore
         return empty($o->lang) ? $this->getBrowserLanguage() : $o->lang;
     }
 
-    public function lang($index)
-    {
-        $lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['nerdz_id']) : $this->getBrowserLanguage();
-        if(empty($lang))
-            $lang = 'en'; //non succede, ma se succede sono protetto
-        //non ci preoccupiamo delle modifiche ai file di lingua dato che devono accadere MOLTO di rado e si attende che la cache si purghi da sola
-        $cache = "language-file-{$lang}".SITE_HOST;
-        if(apc_exists($cache))
-            $_LANG = unserialize(apc_fetch($cache));
-        else
-        {
-            require_once $_SERVER['DOCUMENT_ROOT']."/languages/{$lang}.php";
-            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
-            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
-            @apc_store($cache,serialize($_LANG),3600);
-        }
-        return str_replace("\n",'<br />',htmlentities($_LANG[$index],ENT_QUOTES,'UTF-8'));
-    }
-
     public function getFollow($id)
     {
         if(!($stmt = $this->query(array('SELECT "to" FROM "follow" WHERE "from" = :id',array(':id' => $id)),db::FETCH_STMT)))
@@ -450,6 +467,20 @@ class phpCore
             return false;
 
         return $id->counter;
+    }
+
+    public function getAvailableTemplates()
+    {
+        $root = $_SERVER['DOCUMENT_ROOT'].'/tpl/';
+        $templates = array_diff(scandir($root), array('.','..','index.html'));
+        $ret = array();
+        $i = 0;
+        foreach($templates as $val) {
+            $ret[$i]['number'] = $val;
+            $ret[$i]['name'] = file_get_contents($root.$val.'/NAME');
+            ++$i;
+        }
+        return $ret;
     }
 
     public function getTemplate($id = null)
@@ -615,6 +646,7 @@ class phpCore
 
     public static function minifyHtml($str)
     {
+        return $str;
         $str = explode("\n",$str);
         foreach($str as &$val)
            $val = trim(str_replace("\t",'',$val));

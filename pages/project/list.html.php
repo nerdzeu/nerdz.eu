@@ -38,10 +38,6 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
     ++$i;
 }
 
-$vals['search'] = $core->lang('SEARCH');
-$vals['description'] = $core->lang('DESCRIPTION');
-$vals['name'] = $core->lang('NAME');
-
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('project/list');
 ?>

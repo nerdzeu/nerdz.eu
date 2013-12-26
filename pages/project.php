@@ -1,5 +1,4 @@
 <?php
-//Template: sistemabile
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';//ok qui
 $core = new project();
 
@@ -8,15 +7,12 @@ $enter = true;
 
 $vals['logged_b'] = $core->isLogged();
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
 if(($info->private && !$vals['logged_b']) || (!$info->visible && !$vals['logged_b']))
 {
     $included = true;
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
-    $vals['presentation_n'] = ''; //cancello la presentazione
-    $vals['privateproject'] = $core->lang('PRIVATE_PROJECT');
-    $vals['registercall'] = $core->lang('REGISTER_CALL');
     $core->getTPL()->assign($vals);
     $core->getTPL()->draw('project/private');
 }
@@ -29,7 +25,6 @@ else
 
     if(!$icansee)
     {
-        $vals['invisibleproject'] = $core->lang('INVISIBLE_PROJECT_DESCR');
         $core->getTPL()->assign($vals);
         $core->getTPL()->draw('project/invisible');
     }
@@ -42,23 +37,11 @@ else
 
         $vals['photo_n'] = $info->photo;
         $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/onErrorImg.php';
-        $vals['informations'] = $core->lang('INFORMATIONS');
-        $vals['project'] = $core->lang('PROJECT');
-
-        $vals['id'] = 'ID';
         $vals['id_n'] = $info->counter;
 
-        $vals['unfollow'] = $core->lang('UNFOLLOW');
-        $vals['follow'] = $core->lang('FOLLOW');
-
-        $vals['nerdzit'] = $core->lang('NERDZ_IT');
-        $vals['preview'] = $core->lang('PREVIEW');
-
-        $vals['name'] = $core->lang('PROJECT_NAME');
         $vals['name_n'] = $info->name;
         $vals['name4link_n'] =  phpCore::projectLink($info->name);
 
-        $vals['members'] = $core->lang('MEMBERS');
         $vals['members_n'] = count($mem);
         $vals['members_a'] = array();
         $i = 0;
@@ -73,7 +56,7 @@ else
 
         usort($vals['members_a'],'sortbyusername');
 
-        $vals['users'] = $core->lang('USERS');
+
         $fol = $core->getFollowers($info->counter);
         $vals['users_n'] = count($fol);
         $vals['users_a'] = array();
@@ -88,22 +71,16 @@ else
         }
         usort($vals['users_a'],'sortbyusername');
 
-        $vals['owner'] = $core->lang('OWNER');
         $vals['owner_n'] = $core->getUsername($info->owner);
         $vals['owner4link_n'] =  phpCore::userLink($vals['owner_n']);
 
-        $vals['description'] = $core->lang('DESCRIPTION');
         $vals['description_n'] = $core->bbcode($info->description);
 
-        $vals['goal'] = $core->lang('GOAL');
         $vals['goal_n'] = $core->bbcode($info->goal);
 
-        $vals['website'] = $core->lang('WEBSITE');
         $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://www.nerdz.eu/' : $info->website;
 
         $vals['openproject_b'] = $core->isProjectOpen($info->counter);
-        
-        $vals['advertisement'] = $core->lang('ADVERTISEMENT');
         
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';
         $banners = (new banners())->getBanners();
@@ -128,7 +105,6 @@ else
             if(!($post = $core->query(array('SELECT "hpid" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),db::FETCH_OBJ)))
             {
                 $core->getTPL()->assign('banners_a',$vals['banners_a']);
-                $core->getTPL()->assign('postnotfound',$core->lang('POST_NOT_FOUND'));
                 $core->getTPL()->draw('project/postnotfound');
             }
             else

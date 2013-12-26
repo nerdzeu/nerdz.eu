@@ -1,10 +1,9 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
     $core = new phpCore();
-    $tplcfg = new templateCfg($core);
+    $tplcfg = $core->getTemplateCfg();
     
     if(!$core->isLogged())
         die(header('Location: index.php'));

@@ -1,10 +1,9 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
     $core = new messages();
-    $tplcfg = new templateCfg($core);
+    $tplcfg = $core->getTemplateCfg();
     
     $id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : false;
     $pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? $_GET['pid'] : false;

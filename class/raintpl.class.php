@@ -9,7 +9,9 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/config/constants.inc.php';
  *  Distributed under GNU/LGPL 3 License
  *
  *  @version 2.6.4
- * 
+ *    
+ *     Modified a lots of times by: Paolo Galeone
+ *
  *     @Note: ho totalmente rimosso la cache, in quanto è impossibile usarla con tutto il dinamismo di nerdz
  *            ma ovviamente rimane la compilazione dei template
  */
@@ -163,6 +165,8 @@ final class RainTPL
 
         // Cache is off and, return_string is false
         // Rain just echo the template
+        require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+        $core = new phpCore();
         if(!$return_string)
         {
             extract( $this->var, EXTR_OVERWRITE );
@@ -178,6 +182,7 @@ final class RainTPL
             unset( $this->tpl );
             return $raintpl_contents;
         }
+        unset($core);
     }
     
     /**
@@ -255,7 +260,7 @@ final class RainTPL
         $template_code = preg_replace_callback ( "/##XML(.*?)XML##/s", array($this, 'xml_reSubstitution'), $template_code ); 
 
         //compile template
-        $template_compiled = "<?php if(!class_exists('raintpl')){exit;}?>" . $this->compileTemplate( $template_code, $tpl_basedir );
+        $template_compiled = "<?php if(!class_exists('raintpl') || !isset(\$core) ){die;}?>" . $this->compileTemplate( $template_code, $tpl_basedir );
         
 
         // fix the php-eating-newline-after-closing-tag-problem
@@ -744,7 +749,19 @@ final class RainTPL
                     if( isset( $function ) )
                         $php_var = $php_left_delimiter . ( !$is_init_variable && $echo ? 'echo ' : null ) . ( $params ? "( {$function}( {$php_var}, {$params} ) )" : "{$function}( {$php_var} )" ) . $php_right_delimiter;
                     else
-                        $php_var = $php_left_delimiter . ( !$is_init_variable && $echo ? 'echo ' : null ) . $php_var . $extra_var . $php_right_delimiter;
+                    {
+                        $arith = '(\s*(\+|\-|\*|\/|%)\s*[a-z0-9]*)?';
+                        $php_var = $php_left_delimiter .
+                            ( !$is_init_variable && $echo
+                                ? 'echo ' .
+                                (
+                                    preg_match('#\_[n|b]$|\_a(\[.+?\])?'.$arith.'$|key[0-9]+'.$arith.'$|value[0-9]+(\[.+?\])?'.$arith.'$|counter[0-9]+'.$arith.'$#i',"$php_var$extra_var") ? //match loop variables, template variable [ boolean: _b, array: _a, nerdz values n]
+                                    "$php_var$extra_var"  :
+                                    "\$core->lang('".strtoupper(ltrim("$php_var$extra_var",'$'))."')"
+                                ) 
+                                : $php_var.$extra_var
+                            ) .$php_right_delimiter;
+                    }
                     
                     $html = str_replace( $tag, $php_var, $html );
             }

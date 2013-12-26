@@ -1,5 +1,4 @@
 <?php
-//TEMPLATE: Ok
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
@@ -35,8 +34,6 @@ if(!$logged && !is_numeric($_POST['limit']))
 else
 {
     $vals = array();
-    //includo file per variabili di lingua comuni
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.lang.php';
     //includo il loop in $mess
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/postlist.html.php';
     $core->getTPL()->assign($vals);

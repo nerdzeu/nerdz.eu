@@ -1,10 +1,9 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
     $core = new phpCore();
-    $tplcfg = new templateCfg($core);
+    $tplcfg = $core->getTemplateCfg();
 
     ob_start(array('phpCore','minifyHtml'));
 ?>
@@ -16,7 +15,7 @@
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
     <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
     <meta name="robots" content="index,follow" />
-    <title><?= $core->getSiteName(); ?> - <?php echo $core->lang('USERS_LIST'); ?></title>
+    <title><?= $core->getSiteName(), ' - ', $core->lang('USERS_LIST'); ?></title>
 <?php
     $headers = $tplcfg->getTemplateVars('userslist');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

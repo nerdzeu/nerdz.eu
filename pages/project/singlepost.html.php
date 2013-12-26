@@ -24,12 +24,6 @@ if(!($own = $core->getOwnerByGid($o->to)))
 $members = $core->getMembers($o->to);
 
 $singlepostvals = array();
-$singlepostvals['remove'] = $core->lang('REMOVE');
-$singlepostvals['edit'] = $core->lang('EDIT');
-$singlepostvals['comments'] = $core->lang('COMMENTS');
-$singlepostvals['areyousure'] = $core->lang('ARE_YOU_SURE');
-$singlepostvals['receivenotifications'] = $core->lang('REVC_NOTIFY');
-$singlepostvals['dontreceivenotifications'] = $core->lang('NOT_RECV_NOTIFY');
 $singlepostvals['pid_n'] = $o->pid;
 $singlepostvals['from4link_n'] = phpCore::userLink($from);
 $singlepostvals['to4link_n'] = phpCore::projectLink($to);

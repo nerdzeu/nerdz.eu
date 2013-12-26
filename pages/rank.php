@@ -1,16 +1,12 @@
 <?php
-//TEMPLATE: OK
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/utils.class.php';
+$utils = new utils();
+
 $mo = empty($_GET['top']);
 $un_ti = ' AND ("time" + INTERVAL \'28 days\') > NOW()';
-$path = $_SERVER['DOCUMENT_ROOT'].'/pages/cache/'.($mo ? 'rank.json' : 'r_month.json');
+$path = SITE_HOST. ($mo ? 'r_month.json' : 'rank.json');
 
-$vals['position'] = $core->lang('POSITION');
-$vals['username'] = $core->lang('USERNAME');
-$vals['comments'] = $core->lang('COMMENTS');
-$vals['updown'] = $core->lang('UPDOWN');
-$vals['stupidstuff'] = '5tUp1d stUfF!1';
-
-if(!file_exists($path) || (filemtime($path)+3600)<time())
+if(!apc_exists($path))
 {
     $res = $core->query('SELECT COUNT("hcid") AS cc,"from" FROM "comments" WHERE "from" <> '.DELETED_USERS.(!$mo ? $un_ti : '').' GROUP BY "from" ORDER BY cc DESC LIMIT 100',db::FETCH_STMT);
     $rank = array();
@@ -41,20 +37,17 @@ if(!file_exists($path) || (filemtime($path)+3600)<time())
         $ret[$i]['stupidstuff_n'] = $ss[$username];
         ++$i;
     }
-    file_put_contents($path,json_encode($ret));
-    chmod($path,0775);
+
+    @apc_store($path,serialize(json_encode($ret)),3600);
 }
 else
-    $ret = json_decode(file_get_contents($path),true);
+    $ret = json_decode(unserialize(apc_fetch($path)),true);
+
 $vals['list_a'] = $ret;
 $vals['monthly_b'] = !$mo;
+$vals['lastupdate_n'] = $core->getDateTime($utils->apc_getLastModified($path));
 
-$vals['lastupdate'] = $core->lang('LAST_UPDATE');
-$vals['lastupdate_n'] = $core->getDateTime(filemtime($path));
-
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
-
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 $core->getTPL()->assign($vals);
-
 $core->getTPL()->draw('base/rank');
 ?>

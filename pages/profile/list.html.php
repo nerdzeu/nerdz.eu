@@ -46,12 +46,6 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
     ++$i;
 }
 
-$vals['search'] = $core->lang('SEARCH');
-$vals['username'] = $core->lang('USERNAME');
-$vals['name'] = $core->lang('NAME');
-$vals['surname'] = $core->lang('SURNAME');
-$vals['id'] = 'ID';
-
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('profile/list');
 ?>

@@ -1,5 +1,4 @@
 <?php
-//TEMPLATE: OK
 if(!$core->isLogged())
     die(header('Location: /'));
 
@@ -11,27 +10,9 @@ shuffle($banners);
 foreach($banners as $ban)
     $vals['banners_a'][$ban[1]] = $ban[2];
 
-$vals['advertisement'] = $core->lang('ADVERTISEMENT');
-
-$vals['search'] = $core->lang('SEARCH');
-
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
 $limit = isset($_GET['limit']) && $core->limitControl($_GET['limit'],10) ? $_GET['limit'] : 10;
-$vals['lastuser'] = $core->lang('LAST_USER');
-$vals['stats'] = $core->lang('STATS');
-$vals['projects'] = $core->lang('PROJECTS');
-$vals['users'] = $core->lang('USERS');
-$vals['from'] = $core->lang('FROM');
-$vals['everybody'] = $core->lang('EVERYBODY');
-$vals['usersifollow'] = $core->lang('USERS_I_FOLLOW');
-$vals['nerdzit'] = $core->lang('NERDZ_IT');
-$vals['preview'] = $core->lang('PREVIEW');
-$vals['fromworld'] = $core->lang('FROM_WORLD');
-$vals['followed_a'] = array();
-$vals['userslist'] = $core->lang('USERS_LIST');
-$vals['projectslist'] = $core->lang('PROJECTS_LIST');
-$vals['bookmarks'] = 'Bookmarks';
 
 $longlangs  = $core->availableLanguages(1);
 
@@ -93,12 +74,9 @@ if($tot>0)
 else
     $c = 0;
 
-$vals['youfollow'] = $core->lang('YOU_FOLLOW');
+
 $vals['followedtot_n'] = $tot;
 $vals['followedonlinetot_n'] = $c;
-
-$vals['yourprojects'] = $core->lang('YOUR_PROJECTS');
-$vals['memberof'] = $core->lang('MEMBER_OF');
 
 if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
     die($core->lang('ERROR'));

@@ -1,13 +1,6 @@
 <?php
-//TEMPLATE: OK
 $vals = array();
 $vals['logged_b'] = $core->isLogged();
-$vals['register'] = $core->lang('REGISTER');
-$vals['terms'] = $core->lang('TERMS');
-$vals['stats'] = $core->lang('STATS');
-$vals['informations'] = $core->lang('INFORMATIONS');
-$vals['bugtitle'] = $core->lang('BUG_TITLE');
-$vals['search'] = $core->lang('SEARCH');
 
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('base/footer');

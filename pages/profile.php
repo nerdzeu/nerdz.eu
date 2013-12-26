@@ -1,19 +1,13 @@
 <?php
-//TEMPLATE: sistemabile
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';//ok qui
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';//ok qui
 
 $vals = array();
 $vals['logged_b'] = $core->isLogged();
 $vals['id_n'] = $info->counter;
-$vals['unfollow'] = $core->lang('UNFOLLOW');
-$vals['follow'] = $core->lang('FOLLOW');
 
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/mobilemenu.php';
-
-
-$vals['advertisement'] = $core->lang('ADVERTISEMENT');
 $banners = (new banners())->getBanners();
 shuffle($banners);
 foreach($banners as $ban)
@@ -50,30 +44,21 @@ else
         $vals['gravatarurl_n'] = (new gravatar())->getURL($info->counter);
 
         $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/onErrorImg.php';
-        $vals['website'] = $core->lang('WEBSITE');
         $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://www.nerdz.eu/' : $info->website;
 
         if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$vals['website4link_n']))
             $vals['website4link_n'] = 'http://'.$vals['website4link_n'];
-
-        $vals['pm'] = $core->lang('PM');
 
         $vals['username_n'] = $info->username;
         $vals['username4link_n'] = phpCore::userLink($info->username);
         $vals['lang_n'] = $core->getUserLanguage($info->counter);
         $vals['online_b'] = $core->isOnline($info->counter);
         
-        $vals['online'] = $core->lang('ONLINE');
-        $vals['offline'] = $core->lang('OFFLINE');
-        $vals['username'] = $core->lang('USERNAME');
-        $vals['name'] = $core->lang('NAME');
         $vals['name_n'] = ucfirst($info->name);
-        $vals['surname'] = $core->lang('SURNAME');
         $vals['surname_n'] = ucfirst($info->surname);
 
         list($year, $month, $day) = explode('-',$info->birth_date);
         $vals['birthdate_n'] = $day.'/'.$month.'/'.$year;
-        $vals['birthdate'] = $core->lang('BIRTH_DATE');
 
         $ida = array(':id' => $info->counter);
 
@@ -95,8 +80,6 @@ else
             $a = stuff::stupid($n);
             $a['n'] = $n;
 
-            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
-            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
             @apc_store($apc_name,serialize($a),300);
         }
         else
@@ -106,28 +89,20 @@ else
         $vals['stupidstuffnext_n'] = $a['next'];
         $vals['stupidstuffless_n'] = $a['less'];
 
-        $vals['comments'] = $core->lang('COMMENTS');
         $vals['totalcomments_n'] = $a['n'];
 
         if(!($o = $core->query(array('SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',$ida),db::FETCH_OBJ)))
             die($core->lang('ERROR'));
             
         $vals['lastvisit_n'] = $core->getDateTime($o->last);
-        $vals['lastvisit'] = $core->lang('LAST_VISIT');
 
         if(!$core->closedProfile($info->counter))
             $vals['canwrite_b'] = true;
         else
             $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['nerdz_id'] || in_array($_SESSION['nerdz_id'],$core->getWhitelist($info->counter)));
-
-        $vals['nerdzit'] = $core->lang('NERDZ_IT');
-        $vals['preview'] = $core->lang('PREVIEW');
-        $vals['whoami'] = $core->lang('WHO_AM_I');
-        $vals['board'] = $core->lang('NERDZ_BOARD');
         
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';//ok qui
         $vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
-        $vals['friends'] =  $core->lang('FRIENDS');
 
         $f = $core->getFollow($info->counter);
 
@@ -154,14 +129,9 @@ else
         else
             $amigos = array();
 
-        $vals['aboutme'] = $core->lang('ABOUT_ME');
-
-        $vals['gender'] = $core->lang('GENDER');
         $vals['gender_n'] = $core->lang($info->gender == 1 ? 'MALE' : 'FEMALE');
 
-        $vals['biography'] = $core->lang('BIOGRAPHY');
         $vals['biography_n'] = (new messages())->bbcode($info->biography,1);
-        $vals['quotes'] = $core->lang('QUOTES');
         $vals['quotes_a'] = explode("\n",trim($info->quotes));
         if(count($vals['quotes_a']) == 1 && empty($vals['quotes_a'][0]))
             $vals['quotes_a'] = array();
@@ -173,7 +143,6 @@ else
                     unset($vals['quotes_a'][$qid]);
             }
                 
-        $vals['interests'] = $core->lang('INTERESTS');
         $vals['interests_a'] = explode("\n",$info->interests);
         if(count($vals['interests_a']) == 1 && empty($vals['interests_a'][0]))
             $vals['interests_a'] = array();
@@ -184,9 +153,6 @@ else
                 if(empty($vals['interests_a'][$qid]))
                     unset($vals['interests_a'][$qid]);
             }
-        $vals['ownerof'] = $core->lang('OWNER_OF');
-        $vals['memberof'] = $core->lang('MEMBER_OF');
-        $vals['userof'] = $core->lang('USER_OF');
 
         if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',$ida),db::FETCH_STMT)))
             die($core->lang('ERROR'));
@@ -224,22 +190,14 @@ else
             ++$i;
         }
 
-        $vals['contactinfo'] = $core->lang('CONTACT_INFO');
-        $vals['github'] = 'GitHub';
+
         $vals['github_n'] = $info->github;
-        $vals['yahoo'] = $core->lang('YAHOO');
         $vals['yahoo_n'] = $vals['logged_b'] ? $info->yahoo : '';
         $vals['jabber_n'] = $vals['logged_b'] ? $info->jabber: '';
-        $vals['jabber'] = $core->lang('JABBER');
         $vals['skype_n'] = $vals['logged_b'] ? $info->skype: '';
-        $vals['skype'] = 'Skype';
         $vals['steam_n'] = $vals['logged_b'] ? $info->steam: '';
-        $vals['steam'] = 'Steam';
         $vals['facebook_n'] = $vals['logged_b'] ? $info->facebook: '';
-        $vals['facebook'] = 'Facebook';
         $vals['twitter_n'] = $vals['logged_b'] ? $info->twitter: '';
-        $vals['twitter'] = 'Twitter';
-        $vals['id'] = 'ID';
         $vals['id_n'] = $id;
             
         $vals['totalfriends_n'] = isset($c) ? $c : 0;
@@ -254,7 +212,6 @@ else
             if(!($post = $core->query(array('SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array(':pid' => $pid, ':id' => $info->counter)),db::FETCH_OBJ)))
             {
                 $core->getTPL()->assign('banners_a',$vals['banners_a']);
-                $core->getTPL()->assign('postnotfound',$core->lang('POST_NOT_FOUND'));
                 $core->getTPL()->draw('profile/postnotfound');
             }
             else

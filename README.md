@@ -31,6 +31,13 @@ You're welcome contribute via pull requests; only via pull requests.
 
 Before to send a pull request, you want to setup your local version of nerdz, thus you can (quite easily) have your copy of NERDZ following the instructions in `setup/README.md`
 
+Get it
+======
+To get a complete version of nerdz (including all templates, that are submodules) do:
+```bash
+git clone --recursive git://github.com/nerdzeu/nerdz.eu.git
+```
+
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nerdzeu/nerdz.eu/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

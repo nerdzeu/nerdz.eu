@@ -1,5 +1,4 @@
 <?php
-//TEMPLATE: OK
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 ob_start(array('phpCore','minifyHtml'));
@@ -55,8 +54,6 @@ if(!(
   )
     die();
 
-//includo file per variabili di lingua comuni
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.lang.php';
 //per le miniature!
 $miniature = true;
 if($group)
