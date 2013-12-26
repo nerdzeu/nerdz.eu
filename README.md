@@ -38,6 +38,16 @@ To get a complete version of nerdz (including all templates, that are submodules
 git clone --recursive git://github.com/nerdzeu/nerdz.eu.git
 ```
 
+Update [hint]
+======
+To update submodules use
+```bash
+cd nerdz.eu
+git checkout master
+git pull
+git submodule update --init --recursive
+```
+
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nerdzeu/nerdz.eu/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
