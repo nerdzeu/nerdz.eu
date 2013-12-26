@@ -646,7 +646,6 @@ class phpCore
 
     public static function minifyHtml($str)
     {
-        return $str;
         $str = explode("\n",$str);
         foreach($str as &$val)
            $val = trim(str_replace("\t",'',$val));
