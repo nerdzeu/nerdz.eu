@@ -14,10 +14,10 @@ Development
 
 There is a lot of work to do:
 
-*  ~~ Move template to separate repositories: so designers can fork only the template and work on it. ~~
-*  ~~ Improve the User Experience. So work on the design of template located in `tpl/`. ~~
-*  ~~ Create a file containing associations between template number and name, and... ~~
-*  ~~ Create option to make possible to switch template in User preference. ~~
+*  <del> Move template to separate repositories: so designers can fork only the template and work on it. </del>
+*  <del> Improve the User Experience. So work on the design of template located in `tpl/`. </del>
+*  <del> Create a file containing associations between template number and name, and... </del>
+*  <del> Create option to make possible to switch template in User preference. </del>
 *  Create REST APIs (in a new repo. And API will be written in ( TypeScript + node.js || Go lang) with OAuth2 ) and create necessary tables and options in this repo.
 *  On [nerdz.eu](http://www.nerdz.eu), once the API are ready, I reverse proxy nodeserver to api.nerdz.eu:80, so we can finally use API!
 *  And more...
