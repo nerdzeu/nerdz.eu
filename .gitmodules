@@ -1,6 +1,6 @@
 [submodule "tpl/1"]
 	path = tpl/1
-	url = git@github.com:nerdzeu/nerdzTemplateBlackMobile.git
+	url = https://github.com/nerdzeu/nerdzTemplateBlackMobile.git
 [submodule "tpl/0"]
 	path = tpl/0
-	url = git@github.com:nerdzeu/nerdzTemplateBlack.git
+	url = https://github.com/nerdzeu/nerdzTemplateBlack.git
