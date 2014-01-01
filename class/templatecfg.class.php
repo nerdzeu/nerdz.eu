@@ -84,25 +84,46 @@ final class templateCfg
         //control for css/js file modification and substitution of %lang% with selected language
         foreach($ret as $id => &$arr)
             if($id != 'langs')
-                foreach($arr as $nestedID => &$path)
+            {
+                $workArr = $arr; //array needed to work with nested arrays (json)
+                foreach($workArr as $nestedID => &$path)
                 {
                     if(is_array($path)) //Now is possible to use array to include more than 1 file (eg "default": "js/default.js", "http://cdn.jslibrary", "js/otherdefile.js"
                     {
+                        $newVals =[];
                         foreach($path as &$value)
                         {
                             $this->validatePath($value,$id);
-                            $ret[$id][] = $value;
+//                            $ret[$id][] = $value;
+                            $newVals[] = $value;
                         }
-                        unset($ret[$id][$nestedID]);
+                        $this->array_splice_assoc($ret[$id],$nestedID,1,$newVals); //preserve inclusion order
+//                        unset($ret[$id][$nestedID]);
                     }
                     else
                         $this->validatePath($path,$id);
                 }
+            }
             else //id == langs
                 foreach($arr as &$langFile)
                     $langFile = str_replace('%lang%',$this->lang,$langFile);
         
         return $ret;
+    }
+
+    private function array_splice_assoc(&$input, $offset, $length, $replacement) { //Thanks to http://us3.php.net/manual/fr/function.array-splice.php#111204
+        $replacement = (array) $replacement;
+        $key_indices = array_flip(array_keys($input));
+
+        if (isset($input[$offset]) && is_string($offset)) {
+                $offset = $key_indices[$offset];
+        }
+
+        if (isset($input[$length]) && is_string($length)) {
+                $length = $key_indices[$length] - $offset;
+        }
+
+        $input = array_slice($input, 0, $offset, TRUE) + $replacement + array_slice($input, $offset + $length, NULL, TRUE);
     }
 
     private function validatePath(&$path,$id)
