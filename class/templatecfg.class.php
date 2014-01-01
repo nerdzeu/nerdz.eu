@@ -2,9 +2,8 @@
 /*
  * Classe per la gestione dei template in senso stretto.
  * Si occupa di ottenere le variabili obbligatorie e facoltative dei template.
- * In sostanza, si occupa del parsing dei files /tpl/<tpl no>/(mandatory|template).values
+ * In sostanza, si occupa del parsing dei files /tpl/<tpl no>/template.values
  * Inoltre, gestisce la minimizzazione e la compressione dei file css e javascript che i template useranno
- * (file che sono in template.values)
  */
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
@@ -84,37 +83,54 @@ final class templateCfg
             
         //control for css/js file modification and substitution of %lang% with selected language
         foreach($ret as $id => &$arr)
-            if($id != 'langs') {
-                foreach($arr as &$path)
-                    if(!phpCore::isValidURL($path))
+            if($id != 'langs')
+                foreach($arr as $nestedID => &$path)
+                {
+                    if(is_array($path)) //Now is possible to use array to include more than 1 file (eg "default": "js/default.js", "http://cdn.jslibrary", "js/otherdefile.js"
                     {
-                        $userfile = "{$_SERVER['DOCUMENT_ROOT']}/tpl/{$this->tpl_no}/{$path}";
-                        if(!file_exists($userfile))
+                        foreach($path as &$value)
                         {
-                            unset($path);
-                            continue;
+                            $this->validatePath($value,$id);
+                            $ret[$id][] = $value;
                         }
-                        if (!MINIFICATION_ENABLED)
-                            continue;
-                        
-                        $userfiletime = $_SERVER['DOCUMENT_ROOT'].'/tmp/'.md5($path).$this->tpl_no.$id;
-                        $ext = "min.{$id}";
-
-                        if(!file_exists ($userfiletime) || // intval won't get called if the file doesn't exist
-                           intval(file_get_contents($userfiletime)) < filemtime($userfile))
-                        {
-                            require_once $_SERVER['DOCUMENT_ROOT'].'/class/minification.class.php';
-                            Minification::minifyTemplateFile ($userfiletime, $userfile, $userfile . $ext, $id);
-                        }
-                        
-                        $path.=$ext; // append min.ext to file path
+                        unset($ret[$id][$nestedID]);
                     }
-            }
+                    else
+                        $this->validatePath($value,$id);
+                }
             else //id == langs
                 foreach($arr as &$langFile)
                     $langFile = str_replace('%lang%',$this->lang,$langFile);
         
         return $ret;
+    }
+
+    private function validatePath(&$path,$id)
+    {
+        if(!phpCore::isValidURL($path))
+        {
+            $userfile = "{$_SERVER['DOCUMENT_ROOT']}/tpl/{$this->tpl_no}/{$path}";
+            if(!file_exists($userfile))
+            {
+                unset($path);
+                return;
+            }
+            if (!MINIFICATION_ENABLED)
+                return;
+            
+            $userfiletime = $_SERVER['DOCUMENT_ROOT'].'/tmp/'.md5($path).$this->tpl_no.$id;
+            $ext = "min.{$id}";
+
+            if(!file_exists ($userfiletime) || // intval won't get called if the file doesn't exist
+               intval(file_get_contents($userfiletime)) < filemtime($userfile))
+            {
+                require_once $_SERVER['DOCUMENT_ROOT'].'/class/minification.class.php';
+                Minification::minifyTemplateFile ($userfiletime, $userfile, $userfile . $ext, $id);
+            }
+            
+            $path.=$ext; // append min.ext to file path
+        }
+
     }
 }
 
