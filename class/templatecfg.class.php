@@ -96,7 +96,7 @@ final class templateCfg
                         unset($ret[$id][$nestedID]);
                     }
                     else
-                        $this->validatePath($value,$id);
+                        $this->validatePath($path,$id);
                 }
             else //id == langs
                 foreach($arr as &$langFile)
