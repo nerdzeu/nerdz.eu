@@ -90,13 +90,13 @@ final class templateCfg
                     {
                         foreach($path as &$value)
                         {
-                            $this->validatePath($value);
+                            $this->validatePath($value,$id);
                             $ret[$id][] = $value;
                         }
                         unset($ret[$id][$nestedID]);
                     }
                     else
-                        $this->validatePath($value);
+                        $this->validatePath($value,$id);
                 }
             else //id == langs
                 foreach($arr as &$langFile)
@@ -105,7 +105,7 @@ final class templateCfg
         return $ret;
     }
 
-    private function validatePath(&$path)
+    private function validatePath(&$path,$id)
     {
         if(!phpCore::isValidURL($path))
         {
