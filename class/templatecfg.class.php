@@ -91,7 +91,7 @@ final class templateCfg
                         foreach($path as &$value)
                         {
                             $this->validatePath($value);
-                            array_push($ret[$id],$value);
+                            $ret[$id][] = $value;
                         }
                         unset($ret[$id][$nestedID]);
                     }
