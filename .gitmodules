@@ -1,0 +1,9 @@
+[submodule "tpl/2"]
+        path = tpl/2
+        url = git://github.com/DrJest/nerdzTemplateMetroNerdz.git
+[submodule "tpl/1"]
+        path = tpl/1
+        url = git://github.com/nerdzeu/nerdzTemplateBlackMobile.git
+[submodule "tpl/0"]
+        path = tpl/0
+        url = git://github.com/nerdzeu/nerdzTemplateBlack.git
