@@ -93,15 +93,16 @@ final class templateCfg
                         $newVals =[];
                         foreach($path as &$value)
                         {
-                            $this->validatePath($value,$id);
-//                            $ret[$id][] = $value;
+                            $this->validatePath($value,$id);                           
                             $newVals[] = $value;
                         }
-                        $this->array_splice_assoc($ret[$id],$nestedID,1,$newVals); //preserve inclusion order
-//                        unset($ret[$id][$nestedID]);
+                        $this->array_splice_assoc($ret[$id],$nestedID,1,$newVals); //preserve inclusion order                       
                     }
                     else
+                    {
                         $this->validatePath($path,$id);
+                        $ret[$id][$nestedID] = $path;
+                    }
                 }
             }
             else //id == langs
