@@ -35,12 +35,16 @@ class phpCore
 
         $this->autoLogin(); //set nerdz_template value on autologin
 
-        $TPL = $_SESSION['nerdz_template'] = $this->getTemplate();
+        $TPLDefault = '0';
+        if($this->isMobile()) {
+            $_SESSION['nerdz_template'] = '1'; //if mobile version, change nerdz_template
+            $TPLDefault = '1';
+        }
 
         $this->lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['nerdz_id']) : $this->getBrowserLanguage();
 
         $this->tpl = new RainTPL();
-        $this->tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.$TPL.'/'); //fallback on default template
+        $this->tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.($this->isLogged() ? $_SESSION['nerdz_template'] : $TPLDefault).'/'); //fallback on default template
 
         $this->tpl_no = $this->tpl->getActualTemplateNumber();
 
