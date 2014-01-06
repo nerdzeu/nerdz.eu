@@ -9,10 +9,10 @@ Requirements
 ------------
 
 - PHP >= 5.4
-- PHP and PDO drivers for PostgreSQL. Under Arch linux, type `pacman -S php-pgsql`. Remember to uncomment the right PDO connector in `php.ini`. On Windows, it should be built-in. If you installed PHP using cygwin, you should install php-gd, php-json, php-pdo_pgsql, php-session, php-zlib.
+- PHP and PDO drivers for PostgreSQL. Under Arch linux, type `pacman -S php-pgsql`. Remember to uncomment the right PDO connector in `php.ini`. You will also need php-gd. On Windows, it should be built-in. If you installed PHP using cygwin, you should install php-gd, php-json, php-pdo_pgsql, php-session, php-zlib.
 - PostgreSQL 9.2 or newer
 - A webserver. We recommend [lighttpd](http://www.lighttpd.net/) but [nginx](http://nginx.org/) works good too (however note that nginx is harder to set up on Windows).
-- php-apcu extension. It is not included by default in PHP, so you have to install it manually. On Arch Linux a simple `pacman -S php-apcu` is enough, otherwise you may need to compile it with PECL. This command will work for most of the distributions: `pecl install apcu`. If you are using the standard Windows build of PHP, you can find a binary of APCu [here](http://pecl.php.net/package/APCu). For cygwin, a precompiled build is available [here](http://r.usr.sh/mirror/apcu-cygwin/). Instructions are provided inside.
+- php-apcu extension. It is not included by default in PHP, so you have to install it manually. On Arch Linux you need to install it (`pacman -S php-apcu`) and uncomment the `/etc/php/conf.d/acpu.ini` file, otherwise you may need to compile it with PECL. This command will work for most of the distributions: `pecl install apcu`. If you are using the standard Windows build of PHP, you can find a binary of APCu [here](http://pecl.php.net/package/APCu). For cygwin, a precompiled build is available [here](http://r.usr.sh/mirror/apcu-cygwin/). Instructions are provided inside.
 - Optional: Predis for session sharing (follow the instructions [here](http://pear.nrk.io/)). Details on how to setup Redis/Predis are not included here.
 
 Setup
@@ -25,7 +25,7 @@ Setup
 - Move into `static/js/` and download the following file:
     - <http://static.nerdz.eu/static/js/gistBlogger.jsmin.js>
 - Copy `setup/config.skel.php` to `class/config/index.php` and edit the variables accordingly. The configuration is well-documented so you _probably_ don't need any explanation.
-  However, don't forget to disable the minification if you haven't got csstidy / uglifyjs.
+  However, don't forget to disable the minification if you haven't got csstidy / uglifyjs and remeber to set the proper static domain
 - Enable our rewrite rules on your webserver. We only provide examples for the recommended webservers.
 
   Lighttpd:
@@ -82,6 +82,9 @@ You can remove the table and the related trigger by running the following comman
 `psql -h localhost -d db_name -U db_user -f setup/gravatar_migration.sql`
 
 ### All I see is text without a style!
+
+Check your static domain settings in the config or see below 
+
 ### In my tpl/0/js/ dir there are some *.jsmin.js empty files!
 
 Disable minification from the config, or install uglifyjs and csstidy.
@@ -91,6 +94,12 @@ Disable minification from the config, or install uglifyjs and csstidy.
 Please check `data/errlog.txt` (if present) for error debugging. Checking your webserver log may also be helpful.
 
 If you think you have found a bug, please open an issue in our repository.
+
+### I got `error1` while registering
+
+The database is not working properly. Remember to run the `init_postgres.sh` script from the `setup` directory.
+If it doesn't work, you will need to create the database manually (otherwise open an issue)
+
 
 ### I got some apc_* errors
 
