@@ -85,46 +85,60 @@ final class templateCfg
         foreach($ret as $id => &$arr)
             if($id != 'langs')
             {
-                $workArr = $arr; //array needed to work with nested arrays (json)
+                $workArr = $arr;
                 foreach($workArr as $nestedID => &$path)
                 {
-                    if(is_array($path)) //Now is possible to use array to include more than 1 file (eg "default": "js/default.js", "http://cdn.jslibrary", "js/otherdefile.js"
+                    if(is_array ($path)) //Now is possible to use array to include more than 1 file (eg "default": ["js/default.js", "http://cdn.jslibrary", "js/otherdefile.js"]
                     {
-                        $newVals =[];
                         foreach($path as &$value)
                         {
-                            $this->validatePath($value,$id);                           
-                            $newVals[] = $value;
+                            if (!is_array ($value))
+                            {
+                                $this->validatePath($value,$id);
+                                if (isset ($value))
+                                    $ret[$id][] = $value;
+                            }
+                            else
+                            {
+                                if (isset ($ret[$id]['staticData']))
+                                    $ret[$id]['staticData'] = array_merge_recursive ($ret[$id]['staticData'], $value);
+                                else
+                                    $ret[$id]['staticData'] = $value;
+                            }
                         }
-                        $this->array_splice_assoc($ret[$id],$nestedID,1,$newVals); //preserve inclusion order                       
+                        unset ($ret[$id][$nestedID]);
                     }
                     else
                     {
                         $this->validatePath($path,$id);
-                        $ret[$id][$nestedID] = $path;
+                        if (isset ($path))
+                            $ret[$id][$nestedID] = $path;
                     }
                 }
+                // this checks if there is $ret[$id]['staticData'] AND if we are not being
+                // called from the lang() function. this IS necessary because if the language cache
+                // is being rebuilt by calling getTemplateVars this is going to cause an infinite loop
+                // and will cause explosions. To get the calling function I used debug_backtrace
+                // which returns the latest callers of any function. This should NOT be slow
+                // since it is called once per section and ONLY when there is a staticData section.
+                // Practically this is called ONE time on each invocation.
+                if (isset ($ret[$id]['staticData']['lang']) && is_array ($ret[$id]['staticData']['lang']))
+                {
+                    $dbg = debug_backtrace (DEBUG_BACKTRACE_IGNORE_ARGS);
+                    if (isset ($dbg[1]['function']) && $dbg[1]['function'] === 'lang') continue;
+                    foreach ($ret[$id]['staticData']['lang'] as $key => $entry)
+                    {
+                        if (!is_numeric ($key)) continue;
+                        $ret[$id]['staticData']['lang'][$entry] = $this->phpCore->lang ($entry);
+                        unset ($ret[$id]['staticData']['lang'][$key]);
+                    }
+                }
+                //print_r($ret[$id]); // * debug *
             }
             else //id == langs
                 foreach($arr as &$langFile)
                     $langFile = str_replace('%lang%',$this->lang,$langFile);
-        
         return $ret;
-    }
-
-    private function array_splice_assoc(&$input, $offset, $length, $replacement) { //Thanks to http://us3.php.net/manual/fr/function.array-splice.php#111204
-        $replacement = (array) $replacement;
-        $key_indices = array_flip(array_keys($input));
-
-        if (isset($input[$offset]) && is_string($offset)) {
-                $offset = $key_indices[$offset];
-        }
-
-        if (isset($input[$length]) && is_string($length)) {
-                $length = $key_indices[$length] - $offset;
-        }
-
-        $input = array_slice($input, 0, $offset, TRUE) + $replacement + array_slice($input, $offset + $length, NULL, TRUE);
     }
 
     private function validatePath(&$path,$id)

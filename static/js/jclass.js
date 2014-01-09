@@ -38,14 +38,24 @@ function N() /* THE FATHER of God (class/object/function)*/
     }
 
     /**
-     * getVersion
-     * Author: NERDZ Devs
-     * Original author: Robertof
-     * Description: returns the current NERDZ version.
+     * getStaticData
+     * Description: returns the array of static stuff in the header.
      */
-    this.getVersion = function() {
-        return "3.42.1";
+    this.getStaticData = function() {
+        if (typeof window.Nstatic !== 'object')
+            return {};
+        return window.Nstatic;
     };
+
+    /**
+     * getLangData
+     * Description: returns getStaticData().lang if available
+     */
+    this.getLangData = function() {
+        if (typeof window.Nstatic === 'object' && typeof window.Nstatic.lang === 'object')
+            return this.getStaticData().lang;
+        return {};
+    }
 };
 
 N = new N();
@@ -667,11 +677,14 @@ N.html = function()
     };
 
     /**
-     * get notification list
+     * Gets the HTML list of notifications.
+     * Set the 'doNotDelete' param to true if don't wanna reset
+     * the counter.
      */
-    this.getNotifications = function(done)
+    this.getNotifications = function(done, doNotDelete)
     {
-        this.post('/pages/profile/notify.html.php',{},function(d) {
+        var datJson = ( typeof doNotDelete !== 'undefined' && doNotDelete === true ) ? { doNotDelete: true } : {};
+        this.post('/pages/profile/notify.html.php', datJson, function(d) {
             done(d);
         });
     };
