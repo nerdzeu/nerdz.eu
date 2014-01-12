@@ -1,46 +1,55 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/config.class.php';
-$class = new confClass();
+/**
+ * constants.inc.php 
+ * automatically defines constants and checks options in config/index.php
+ */
+require_once $_SERVER['DOCUMENT_ROOT'] . '/class/config/index.php';
+if (!isset ($configuration) || !is_array ($configuration))
+    trigger_error ('Invalid configuration: missing $configuration variable', E_USER_ERROR);
 
-#begin postgresql constants
-define('POSTGRESQL_HOST',$class->postgresql_host);
-define('POSTGRESQL_DATA_NAME',$class->postgresql_db);
-define('POSTGRESQL_USER',$class->postgresql_user);
-define('POSTGRESQL_PASS',$class->postgresql_pass);
-define('POSTGRESQL_DUP_KEY',7);
-define('POSTGRESQL_PORT',$class->postgresql_port);
-#end postgresql constants
+$CONSTANTS = [
+    'MINIFICATION_ENABLED' => true,
+    'REDIS_ENABLED'        => true,
+    'GIT_PATH'             => false,
+    'MINIFICATION_JS_CMD'  => 'uglifyjs %path% -c unused=false',
+    'MINIFICATION_CSS_CMD' => 'csstidy %path% --allow_html_in_templates=false --compress_colors=true --compress_font-weight=true --remove_last_\;=true --remove_bslash=true --template=highest --preserve_css=true --silent=true',
+    'POSTGRESQL_HOST'      => -1, // null does not work since isset() is a faget
+    'POSTGRESQL_DATA_NAME' => -1,
+    'POSTGRESQL_USER'      => -1,
+    'POSTGRESQL_PASS'      => -1,
+    'POSTGRESQL_PORT'      => -1,
+    'MIN_LENGTH_USER'      => -1,
+    'MIN_LENGTH_PASS'      => -1,
+    'MIN_LENGTH_NAME'      => -1,
+    'MIN_LENGTH_SURNAME'   => -1,
+    'CAPTCHA_LEVEL'        => -1,
+    'SITE_HOST'            => -1,
+    'STATIC_DOMAIN'        => -1,
+    'USERS_NEWS'           => -1,
+    'DELETED_USERS'        => -1,
+    'SMTP_SERVER'          => -1,
+    'SMTP_PORT'            => -1,
+    'SMTP_USER'            => -1,
+    'SMTP_PASS'            => -1
+];
 
-#begin user constants
-#length
-define('MIN_LENGTH_USER',$class->length_user);
-define('MIN_LENGTH_PASS',$class->length_pass);
-define('MIN_LENGTH_NAME',$class->length_name);
-define('MIN_LENGTH_SURNAME',$class->length_surname);
+foreach ($configuration as $const_key => $const_val)
+{
+    if (!isset ($CONSTANTS[$const_key]))
+        trigger_error ('Unknown constant: ' . $const_key, E_USER_ERROR);
+    define ($const_key, $const_val);
+    unset ($CONSTANTS[$const_key]);
+}
 
-#captcha constant
-define('CAPTCHA_LEVEL',$class->captcha_level);
+// second (and last) iteration
+foreach ($CONSTANTS as $rkey => $rval)
+{
+    if ($rval === -1)
+        trigger_error ('Missing constant from your config: ' . $rkey, E_USER_ERROR);
+    define ($rkey, $rval);
+}
 
-#site features
-define('SITE_HOST',$class->site_host);
-define('STATIC_DOMAIN',$class->static_domain);
-
-#mail features
-define('SMTP_SERVER',$class->SMTP);
-define('SMTP_PORT',$class->smtp_port);
-define('SMTP_USER',$class->smtp_user);
-define('SMTP_PASS',$class->smtp_pass);
-
-# redis options
-define('REDIS_ENABLED', $class->redis_enabled);
-
-# minification options
-define('MINIFICATION_ENABLED', $class->do_minification);
-define('MINIFICATION_JS_CMD',  $class->js_min_cmd);
-define('MINIFICATION_CSS_CMD', $class->css_min_cmd);
-
-#special profiles
-define('USERS_NEWS',1643);
-define('DELETED_USERS',1644);
+define ('POSTGRESQL_DUP_KEY', 7);
+unset ($CONSTANTS, $configuration, $rkey, $rval, $const_key, $const_val);
 
 ?>

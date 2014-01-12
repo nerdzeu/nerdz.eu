@@ -8,7 +8,7 @@ $core = new notify();
 if($core->isLogged())
 {
     $e = $vals = array();
-    $a = $core->show(); //make () ($_POST['var']) to (un)delete notify
+    $a = $core->show(null, !isset ($_POST['doNotDelete']));
     $y = count($a);
     $f = true;
     if(!$y)

@@ -46,10 +46,13 @@ if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //se ssl è attivo u
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <?php
     foreach($headers['js'] as $var)
+    {
+        if (is_array ($var)) continue;
         if(filter_var($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
             echo '<script type="application/javascript" src="',$var,'"></script>';
         else
             echo '<script type="application/javascript" src="/tpl/',$tno,'/',$var,'"></script>';
+    }
 ?>
     <script type="application/javascript" src="/static/js/api.php"></script>
     <script type="text/x-mathjax-config">
@@ -95,10 +98,13 @@ if($core->isMobile()) { ?>
     <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <?php
     foreach($headers['js'] as $var)
+    {
+        if (is_array ($var)) continue;
         if(filter_var($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
             echo '<script type="application/javascript" src="',$var,'"></script>';
         else
             echo '<script type="application/javascript" src="',STATIC_DOMAIN,'/tpl/',$tno,'/',$var,'"></script>';
+    }
 ?>
     <script type="application/javascript" src="<?php echo STATIC_DOMAIN;?>/static/js/api.php"></script>
     <script type="text/x-mathjax-config">
@@ -128,6 +134,13 @@ if($core->isMobile()) { ?>
                  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
                  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
              })();
+<?php if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true)
+{
+    unset($headers['js']['staticData']['outputVersion']);
+?>
+        var Nversion = '<?=$core->getVersion()?>';
+<?php } ?>
+        var Nstatic = <?=json_encode(isset($headers['js']['staticData'])?$headers['js']['staticData']:array(),JSON_HEX_TAG)?>;
     </script>
 <?php
     if($core->isLogged() && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ))) && !empty($o->userscript))

@@ -1,60 +1,79 @@
 <?php
-// Basic configuration
+// NERDZ master configuration
+// If you don't wanna lose the epicness of this configuration,
+// please configure your IDE to use spaces instead of tabs.
 // This should be put in '/class/config/index.php'.
 
-// PostgreSQL hostname.
-$Rpostgresql_host = 'localhost';
-// PostgreSQL port.
-$Rpostgresql_port = '5432';
-// Desidered PostgreSQL database to use.
-$Rpostgresql_db = 'nerdz';
-// PostgreSQL username/password to use.
-$Rpostgresql_user = 'nerdz';
-$Rpostgresql_pass = '';
-// Length of the string generated in the captcha.
-$Rcaptcha_level = 5;
-// Site hostname. Change to 'localhost' if you are running
-// NERDZ on your PC. NOTE: do not put the protocol!
-$Rsite_host = 'www.nerdz.eu';
-// Minimum length of usernames.
-$Rlength_user = 2;
-// Minimum length of passwords.
-$Rlength_pass = 6;
-// Minimum length of realnames.
-$Rlength_name = 2;
-// Minimum length of surnames.
-$Rlength_surname = 2;
-// SMTP server/port/user/password used to send mails.
-$Rsmtp = 'smtp.gmail.com';
-$Rsmtp_port = 465;
-$Rsmtp_user = 'mail user';
-$Rsmtp_pass = 'mail pass';
-// A domain used for serving of static data.
-// Use an empty string if you have no static domains.
-// NOTE: be sure to check $Rdo_minification and similar.
-// You can have a lot of problems if you misconfigure them.
-$Rstatic_domain = 'http://static.doma.in/';
-// Specifies if Redis session sharing is enabled or not.
-// Disable if you haven't a Redis server.
-// Default value: TRUE
-//$Rredis_enabled = false;
+$configuration = [
+    // Database configuration
+    // PostgreSQL hostname
+    'POSTGRESQL_HOST'        => 'sql.example.com',
+    // PostgreSQL port
+    'POSTGRESQL_PORT'        => '5432',
+    // PostgreSQL database/scheme name
+    'POSTGRESQL_DATA_NAME'   => 'example_db',
+    // PostgreSQL username
+    'POSTGRESQL_USER'        => 'example_user',
+    // PostgreSQL password
+    'POSTGRESQL_PASS'        => 'wow',
 
-// -- Minification options --
-// NERDZ uses an automatic template minification system, this
-// means that every static file of a template is
-// automagically (by default) minified. This could lead to problems
-// if you haven't a proper installation of uglifyjs and csstidy.
-// Disable minification if you don't need it/you don't want to install
-// uglifyjs and csstidy.
+    // Configuration of various requirements
+    // Minimum username length (in characters)
+    'MIN_LENGTH_USER'        => 2,
+    // Minimum password length (in characters)
+    'MIN_LENGTH_PASS'        => 6,
+    // Minimum realname length (in characters)
+    'MIN_LENGTH_NAME'        => 2,
+    // Minimum surname  length (in characters)
+    'MIN_LENGTH_SURNAME'     => 2,
+    // Length of the CAPTCHA string (in chars)
+    'CAPTCHA_LEVEL'          => 5,
 
-// Enables or not the minification of static JS/CSS files.
-// Default value: TRUE
-//$Rdo_minification = false;
+    // Mail configuration
+    // SMTP server username
+    'SMTP_SERVER'            => 'mail.example.com',
+    // SMTP server port
+    'SMTP_PORT'              => '465',
+    // SMTP server username
+    'SMTP_USER'              => 'bob',
+    // SMTP server password
+    'SMTP_PASS'              => 'KFC',
 
-// Specifies the commands to use for the minification.
-// Any '%path%' in the string will automatically be replaced by the
-// desidered file to minify.
-// The default commands are stored in '/class/config.class.php'.
-//$Rjs_minify_cmd = 'something-js %path%';
-//$Rcss_minify_cmd = 'something-css %path%';
+    // Domain configuration
+    // Your NERDZ hostname. If you are running NERDZ on your
+    // PC, use 'localhost'. Do NOT put the protocol (http/https).
+    'SITE_HOST'              => 'example.com',
+    // The domain used to serve static data. If you are running
+    // NERDZ on your PC, put an empty string.
+    'STATIC_DOMAIN'          => 'static.example.com',
+
+    // Minification configuration
+    // NERDZ uses an automatic template minification system, this
+    // means that every static file of a template is automagically
+    // minified. This could lead to problems if you haven't a
+    // proper installation of uglifyjs and csstidy. Disable the
+    // minification if you don't need it or don't want to install
+    // uglifyjs and csstidy.
+    'MINIFICATION_ENABLED'   => false, // Default value: true
+    // Specify the command used to minify JS/CSS files.
+    // %path% will be replaced with the file to be minified.
+    // Comment these options if the default commands are okay for you.
+    //'MINIFICATION_CSS_CMD' => 'something-css %path%',
+    //'MINIFICATION_JS_CMD'  => 'something-js  %path%',
+
+    // Misc configuration
+    // True if you want to enable Redis session sharing. Disable it
+    // if you don't have predis or a Redis server.
+    'REDIS_ENABLED'          => false, // Default value: true
+    // Put the IDs for the special profiles 'users news' and
+    // 'deleted users'. NERDZ will work fine even if those
+    // IDs do not exist, until someone changes nicks or deletes himself.
+    'USERS_NEWS'             => 2,
+    'DELETED_USERS'          => 3,
+    // Now NERDZ features an automatic versioning system based on 
+    // GIT revision hashes. However, you need to specify the path
+    // to the git executable if you want to enable it. 
+    // Feel free to put false (or comment this) if you don't need it.
+    'GIT_PATH'               => '/usr/bin/git'
+];
 ?>

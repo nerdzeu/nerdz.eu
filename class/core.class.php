@@ -425,7 +425,7 @@ class phpCore
 
     public function isLogged()
     {     
-    return (isset($_SESSION['nerdz_logged']) && $_SESSION['nerdz_logged']);
+        return (isset($_SESSION['nerdz_logged']) && $_SESSION['nerdz_logged']);
     }
 
     public function getUserObject($id)
@@ -650,6 +650,20 @@ class phpCore
            $val = trim(str_replace("\t",'',$val));
         
         return implode('',$str);
+    }
+
+    public static function getVersion()
+    {
+        $cache = 'NERDZVersion' . SITE_HOST;
+        if (apc_exists ($cache))
+            return apc_fetch ($cache);
+        if (GIT_PATH === false || !file_exists ($_SERVER['DOCUMENT_ROOT'] . '/.git'))
+            return 'null';
+        $revision = exec (GIT_PATH . ' --git-dir=' . escapeshellarg ($_SERVER['DOCUMENT_ROOT'] . '/.git') . ' rev-parse --short HEAD');
+        if (strlen ($revision) != 7)
+            return 'null';
+        @apc_store ($cache, $revision, 5400); // store the version for 1.5 hours
+        return $revision;
     }
 }
 ?>
