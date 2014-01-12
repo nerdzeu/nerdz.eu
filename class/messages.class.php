@@ -557,13 +557,13 @@ class messages extends phpCore
         return $this->getPostsArray($result,$prj);
     }
 
-    public function getPostsArray($result,$prj)
+    public function getPostsArray($result,$prj,$inList = null) /* In list is a parameter used for projects only. To disaplay news in project board, if posted as news */
     {
         $c=0;
         $ret = array();
         while(($row = $result->fetch(PDO::FETCH_OBJ)))
         {
-            $ret[$c]['news'] = (!$prj && ($row->from == USERS_NEWS)) || ($prj && ($row->to == 1)); // per i progetti, le news sono nerdz
+            $ret[$c]['news'] = (!$prj && ($row->from == USERS_NEWS)) || ($prj && ( $row->to == 1 /*hompage*/ || ($inList && $row->news) )); // per i progetti, le news sono nerdz
             $ret[$c]['hpid'] = $row->hpid;
             $ret[$c]['from'] = $row->from;
             $ret[$c]['to'] = $row->to;
