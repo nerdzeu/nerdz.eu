@@ -22,7 +22,7 @@
             $username = $info->username;
             if($pid)
             {
-                if(!($post = $core->query(array('SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array($pid,$id)),db::FETCH_OBJ)))
+                if($info->private || !($post = $core->query(array('SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array($pid,$id)),db::FETCH_OBJ)))
                 {
                     $post = new stdClass();
                     $post->message = '';
