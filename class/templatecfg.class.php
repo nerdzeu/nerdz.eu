@@ -152,19 +152,25 @@ final class templateCfg
                 return;
             }
             if (!MINIFICATION_ENABLED)
+            {
+                $path .= '?'.filemtime($userfile); //force cache refresh if file is changed
                 return;
+            }
             
             $userfiletime = $_SERVER['DOCUMENT_ROOT'].'/tmp/'.md5($path).$this->tpl_no.$id;
             $ext = "min.{$id}";
 
+            $updateTime = 0;
+
             if(!file_exists ($userfiletime) || // intval won't get called if the file doesn't exist
-               intval(file_get_contents($userfiletime)) < filemtime($userfile))
+               intval(file_get_contents($userfiletime)) < ($updateTime = filemtime($userfile)))
             {
                 require_once $_SERVER['DOCUMENT_ROOT'].'/class/minification.class.php';
                 Minification::minifyTemplateFile ($userfiletime, $userfile, $userfile . $ext, $id);
+                $updateTime = time();
             }
             
-            $path.=$ext; // append min.ext to file path
+            $path.=$ext."?$updateTime"; // append min.ext to file path, and add ?time, to force cache refresh if file is changed
         }
 
     }
