@@ -17,11 +17,31 @@ final class pm extends messages
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
         if(!(new flood())->pm())
             return null;
-        
+       
         if(isset($message[65534]))
             return false;
 
-        return db::NO_ERR == parent::query(array('INSERT INTO "pms" ("from","to","message","time","read") VALUES (:id,:to,:message,NOW(),TRUE)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERR);
+        $wentWell = db::NO_ERR == parent::query(array('INSERT INTO "pms" ("from","to","message","time","read") VALUES (:id,:to,:message,NOW(),TRUE)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERR);
+
+        $pushOn = parent::wantsPush($to) && PUSHED_ENABLED && $wentWell;
+
+        if($pushOn) {
+        
+            require_once $_SERVER['DOCUMENT_ROOT'].'/class/pushed-php-client/pushed.class.php';
+
+            try {
+            
+                $pushed = Pushed::connectIp(PUSHED_PORT,PUSHED_IP6);
+
+                $msg = json_encode(['messageFrom' => html_entity_decode($this->getUserName()), 'messageBody' => html_entity_decode(substr($message, 0, 2000))]); //truncate to 2000 chars because of possibile service limitations
+
+                $pushed->push($to, $msg);
+
+            } catch (PushedException $e) {}
+        
+        }
+
+        return $wentWell;
     }
 
     public function getList()

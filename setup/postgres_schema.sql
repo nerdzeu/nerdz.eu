@@ -55,6 +55,8 @@ CREATE TABLE profiles (
   facebook varchar(350) NOT NULL DEFAULT '',
   twitter varchar(350) NOT NULL DEFAULT '',
   steam varchar(350) NOT NULL DEFAULT '',
+  push boolean NOT NULL DEFAULT FALSE,
+  pushregtime timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
   PRIMARY KEY (counter)
 );
 

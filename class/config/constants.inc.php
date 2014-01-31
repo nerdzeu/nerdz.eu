@@ -10,6 +10,9 @@ if (!isset ($configuration) || !is_array ($configuration))
 $CONSTANTS = [
     'MINIFICATION_ENABLED' => true,
     'REDIS_ENABLED'        => true,
+    'PUSHED_ENABLED'       => true,
+    'PUSHED_IP6'           => true,
+    'PUSHED_PORT'          => 5667,
     'GIT_PATH'             => false,
     'MINIFICATION_JS_CMD'  => 'uglifyjs %path% -c unused=false',
     'MINIFICATION_CSS_CMD' => 'csstidy %path% --allow_html_in_templates=false --compress_colors=true --compress_font-weight=true --remove_last_\;=true --remove_bslash=true --template=highest --preserve_css=true --silent=true',

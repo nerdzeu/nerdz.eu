@@ -8,7 +8,7 @@ Predis\Autoloader::register();
  * redisSessionHandler class
  * @class           redisSessionHandler
  * @file            redisSessionHandler.class.php
- * @brief           This class is used to store session data with redis, it store in json the session to be used more easily in Node.JS
+ * @brief           This class is used to store session data with redis, it store in json the session to be used more easily in Node.JS/Golang
  * @version         0.1
  * @date            2012-04-11
  * @author          deisss
