@@ -19,7 +19,7 @@ class phpCore
     private $lang;
     private $tpl_no;
     private $templateCfg;
-
+    
     public function __construct()
     {
         try
@@ -626,6 +626,38 @@ class phpCore
             return false;
         
         return true;
+    }
+
+    public function setPush($id,$value) {
+    
+        if(!is_bool($value) || !is_numeric($id)) {
+            return false;
+        }
+
+        return $this->query(['UPDATE "profiles" SET "push" = :val WHERE "counter" = :user',[':user' => $id, ':val' => $value]]) ? true : false;
+
+    }
+
+    public function wantsPush($id) {
+        if (!($o = $this->query(['SELECT "push" FROM "profiles" WHERE "counter" = :user',[':user' => $id]],db::FETCH_OBJ))){
+            return false;
+        }
+            
+        return $o->push;
+    }
+
+    public function floodPushRegControl($id) {
+        //If there has been a request in the last 5 seconds, return false. Always update timer to NOW to cut off flooders.
+        if (!($o = $this->query(['SELECT EXTRACT(EPOCH FROM NOW() - "pushregtime") >= 3 AS valid FROM "profiles" WHERE "counter" = :user',[':user' => $id]],db::FETCH_OBJ))) {
+            return false;
+        }
+
+        if (!$this->query(['UPDATE "profiles" SET "pushregtime" = NOW() WHERE "counter" = :user',[':user' => $id]])) {
+            return false;
+        }
+
+        return $o->valid;
+
     }
 
     public static function isValidURL($url)

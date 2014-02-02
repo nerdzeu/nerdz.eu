@@ -64,7 +64,7 @@ $configuration = [
     // Misc configuration
     // True if you want to enable Redis session sharing. Disable it
     // if you don't have predis or a Redis server.
-    'REDIS_ENABLED'          => false, // Default value: true
+    'REDIS_ENABLED'          => true, // Default value: true
     // Put the IDs for the special profiles 'users news' and
     // 'deleted users'. NERDZ will work fine even if those
     // IDs do not exist, until someone changes nicks or deletes himself.
@@ -74,6 +74,13 @@ $configuration = [
     // GIT revision hashes. However, you need to specify the path
     // to the git executable if you want to enable it. 
     // Feel free to put false (or comment this) if you don't need it.
-    'GIT_PATH'               => '/usr/bin/git'
+    'GIT_PATH'               => '/usr/bin/git',
+    // True if you want to connect to pushed (github.com/mcilloni/pushed) to serve push notifications to client apps like 
+    // NerdzMessenger (github.com/mcilloni/NerdzMessenger).
+    'PUSHED_ENABLED'         => true,
+    // PHP client supports only local pushed instances on IP (no UNIX sockets right now)
+    // This parameter indicates IP version to use to connect to pushed (default: 6)
+    'PUSHED_IP6'             => true,
+    'PUSHED_PORT'            => '5667'
 ];
 ?>
