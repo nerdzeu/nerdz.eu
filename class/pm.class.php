@@ -33,7 +33,13 @@ final class pm extends messages
             
                 $pushed = Pushed::connectIp(PUSHED_PORT,PUSHED_IP6);
 
-                $msg = json_encode(['messageFrom' => html_entity_decode($this->getUserName()), 'messageBody' => html_entity_decode(substr($message, 0, 2000))]); //truncate to 2000 chars because of possibile service limitations
+                $msg = json_encode(
+                                   [ 
+                                     'messageFrom' => html_entity_decode($this->getUserName()), 
+                                     'messageFromId' => (string) $this->getUserId(),
+                                     'messageBody' => html_entity_decode(substr($message, 0, 2000))
+                                   ]
+                ); //truncate to 2000 chars because of possibile service limitations
 
                 $pushed->push($to, $msg);
 
