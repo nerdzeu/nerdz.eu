@@ -280,6 +280,7 @@ class messages extends phpCore
             </div>',$str,1);
 
         $imgValidUrl = function($m,$domain,$ssl) {
+            $m[1] = trim($m[1]);
             return 
                 (!phpCore::isValidURL($m[1]) ?
                 $domain.'/static/images/invalidImgUrl.php' :
