@@ -81,7 +81,7 @@ final class Browser
         const PLATFORM_WINDOWS_PHONE = 'Windows Phone';
         const PLATFORM_WINDOWS_CE = 'Windows CE';
         const PLATFORM_APPLE = 'Mac OS X';
-        const PLATFORM_LINUX = 'Linux';
+        const PLATFORM_LINUX = 'GNU/Linux';
         const PLATFORM_OS2 = 'OS/2';
         const PLATFORM_BEOS = 'BeOS';
         const PLATFORM_IPHONE = 'iPhone';
@@ -95,6 +95,7 @@ final class Browser
         const PLATFORM_SUNOS = 'SunOS';
         const PLATFORM_OPENSOLARIS = 'OpenSolaris';
         const PLATFORM_ANDROID = 'Android';
+        const PLATFORM_CHROMEOS = 'Chrome OS (GNU/Linux)';
         
         const WINVER_XP = 'XP';
         const WINVER_VISTA = 'Vista';
@@ -1155,7 +1156,8 @@ final class Browser
             
             elseif( stripos($this->_agent, 'android') !== false )
                 $this->_platform = self::PLATFORM_ANDROID;
-            
+            elseif( stripos($this->_agent, 'CrOS') !== false ) 
+                $this->checkCrOSArchitecture();
             elseif( stripos($this->_agent, 'linux') !== false ) {
                 $this->checkLinuxArchitecture();        
             } else if( stripos($this->_agent, 'Nokia') !== false )
@@ -1189,6 +1191,22 @@ final class Browser
                 $this->_platform = self::PLATFORM_WINDOWS;
         }
         
+        /**                                                                                                                                                                                     
+         * Determine the architecture of the ChromeOS system the user is using.                                                                                                                    
+         */
+        private function checkCrOSArchitecture() {
+
+          $this->_platform = self::PLATFORM_CHROMEOS;
+
+          if (stripos($this->_agent, 'CrOS x86_64') != false) {
+            $this->_platver = self::LINARCH_x86_64;
+          } elseif (stripos($this->_agent, 'CrOS i686') != false) {
+            $this->_platver = self::LINARCH_IA32;
+          } elseif (stripos($this->_agent, 'CrOS arm') != false) {
+            $this->_platver = self::LINARCH_ARM;
+          }
+        }
+
         /**
          * Determine the architecture of the Linux system the user is using.
          */
