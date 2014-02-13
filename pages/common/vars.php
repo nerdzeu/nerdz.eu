@@ -3,4 +3,5 @@
 $vals['tok_n'] = $core->getCsrfToken();
 $vals['myusername_n'] = $core->getUserName();
 $vals['myusername4link_n'] = phpCore::userLink($vals['myusername_n']);
+$vals['mobile_b'] = $core->isMobile();
 ?>
