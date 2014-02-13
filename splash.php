@@ -11,7 +11,7 @@
     {
       unset($_SESSION["referer"]);
       setcookie("mobile-splash","desktop",2000000000,"/","nerdz.eu",false,true);
-      if(!$referer||$referer==$_SERVER["PHP_SELF"])
+      if(!$referer||$referer==$_SERVER["REQUEST_URI"])
       {
         header("Location: /");
         die();
