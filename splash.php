@@ -3,22 +3,21 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
     $referer = $_SESSION['referer'];
+
     if(isset($_GET["mobile"]))
     {
         unset($_SESSION["referer"]);
-        setcookie("mobile-splash","mobile",2000000000,"/",SITE_HOST,false,true);
-        die(header("Location: http://mobile.nerdz.eu".$referer));
+        setcookie("mobile-splash","mobile",2000000000,"/",'nerdz.eu',false,true);
+        $referer = $referer == '/splash.php' ? '/' : $referer;
+        die(header("Location: http://mobile.nerdz.eu{$referer}"));
 
     }
     if(isset($_GET["desktop"]))
     {
         unset($_SESSION["referer"]);
-        setcookie("mobile-splash","desktop",2000000000,"/",SITE_HOST,false,true);
-
-        if(!$referer || $referer == $_SERVER["REQUEST_URI"])
-            die(header("Location: /"));
-        else
-            die(header("Location: /".$referer));
+        setcookie("mobile-splash","desktop",2000000000,"/",'nerdz.eu',false,true);
+        $referer = $referer == '/splash.php' ? '/' : $referer;
+        die(header("Location: {$referer}"));
     }
 
     
