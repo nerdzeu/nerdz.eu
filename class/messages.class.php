@@ -148,7 +148,10 @@ class messages extends phpCore
         $str = preg_replace('#\[small\](.+?)\[/small\]#im','<span style="font-size:7pt">$1</span>',$str);
         $str = preg_replace('#\[big\](.+?)\[/big\]#im','<span style="font-size:14pt">$1</span>',$str);
         $str = preg_replace('#\[wat\]#im','<span style="font-size:22pt">wat</span>',$str); //easter egg [never change]
-
+        $str = preg_replace_callback('#\[twitter\](.+?)\[/twitter\]#im',function($m) {
+          $req = phpCore::isValidURL($m[1]) ? "url" : "id";
+          return '<img data-req="'.$req.'" data-content="'. htmlentities(urlencode($m[1]),ENT_QUOTES,'UTF-8').'" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" onload="N.loadTweet(this)">'; //a blank 1x1 transparent gif image, only needed to call N.loadTweet
+        },$str);
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#im',function($m) {
                 return '<a href="/'.phpCore::userLink($m[1])."\">{$m[1]}</a>";
                 },$str);

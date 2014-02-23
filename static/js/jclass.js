@@ -7,6 +7,37 @@ function N() /* THE FATHER of God (class/object/function)*/
     this.html = function(){}; /*namespace html */
     this.tmp;
     
+    this.loadTweet = function(img) {
+      var p = $(img);
+      var req = p.data("req");
+      var ctn = p.data("content");
+      if(req=="id" && !isFinite(ctn)) {
+        $('<span>[Invalid Twitter Id]</span>').insertBefore(p);
+        p.remove();
+        return;
+      }
+      var url = "https://api.twitter.com/1/statuses/oembed.json?omit_script=true&hide_thread=true&"+req+"="+ctn;
+      $.ajax({
+          url: url,
+          dataType: "jsonp",
+          success: function( response ) {
+              d = $("<div>").html(response.html);
+              d.find("a").attr("target","_blank");
+              d.insertBefore(p);
+              p.remove();
+              $("#twitter-widget").remove();
+              s = document.createElement("script"); 
+              s.src="https://platform.twitter.com/widgets.js"; 
+              s.id="twitter-widget";
+              document.getElementsByTagName("body")[0].insertBefore(s);
+          },
+          error: function( e ) { 
+            $('<span>[Invalid Twitter Id]</span>').insertBefore(p);
+            p.remove();
+          }
+      });
+    };
+    
     this.reloadCaptcha = function()
     {
         var v = $("#captcha");
