@@ -1,0 +1,21 @@
+{
+    "config": {
+        "vendor-dir": "./class/vendor/"
+    },
+    "name": "nerdzeu/nerdz.eu",
+    "description": "A mix between a forum and a social network",
+    "require": {
+        "knplabs/github-api": "1.3.*@dev",
+        "predis/predis": "dev-master"
+    },
+    "license": "AGPL-3.0",
+    "authors": [
+        {
+            "name": "Paolo Galeone",
+            "email": "nessuno@nerdz.eu",
+            "homepage": "http://www.nerdz.eu/nessuno.",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev"
+}

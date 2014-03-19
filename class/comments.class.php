@@ -233,11 +233,9 @@ class comments extends project
         while(preg_match($pattern,$message) && (++$i < 11))
             $message = preg_replace_callback($pattern,function($m) {
                     $username = comments::getUserNameFromProjectCid($m[1]);
-                    return $username ? 
-                            '<div class="qu_main bluser'.parent::getUserId($username).'"><div class="qu_user"><a href="/'.phpCore::userLink($username).'">'.$username.'</a>:</div>'
-                                .str_replace(']','&#93',str_replace("\n",'',comments::getProjectComment($m[1]))).
-                            '</div>' :
-                            '';
+                    return $username
+                           ? '[commentquote=[user]'.$username.'[/user]]'.comments::getProjectComment($m[1]).'[/commentquote]'
+                           : '';
                     },$message,1);
 
         if($i == 11)
@@ -248,11 +246,9 @@ class comments extends project
         while(preg_match($pattern,$message) && (++$i < 11))
             $message = preg_replace_callback($pattern,function($m) {
                     $username = comments::getUserNameFromCid($m[1]);
-                    return $username ? 
-                            '<div class="qu_main bluser'.parent::getUserId($username).'"><div class="qu_user"><a href="/'.phpCore::userLink($username).'">'.$username.'</a>:</div>'
-                                .str_replace(']','&#93',str_replace("\n",'',comments::getComment($m[1]))).
-                            '</div>' :
-                            '';
+                    return $username
+                            ? '[commentquote=[user]'.$username.'[/user]]'.comments::getComment($m[1]).'[/commentquote]'
+                            : '';
                     },$message,1);
 
         if($i == 11)
@@ -345,6 +341,8 @@ class comments extends project
         if(!(new flood())->postComment())
             return null;
 
+        $newMessage = $this->parseCommentQuotes($message); //required for appendComment
+
         $message = trim($this->parseCommentQuotes(htmlentities($message,ENT_QUOTES,'UTF-8')));
 
         if(
@@ -368,7 +366,7 @@ class comments extends project
                 return null; //null => flood error
 
             if($user->from == $_SESSION['nerdz_id']) //append and notify
-                return $this->appendComment($user,$message) && $this->addControl($obj->from,$obj->to,$hpid);
+                return $this->appendComment($user,$newMessage) && $this->addControl($obj->from,$obj->to,$hpid);
         }
 
 //            $msg = $this->explodeMessageInQuotes($o->message);
@@ -390,7 +388,7 @@ class comments extends project
     {
         if(!($o = parent::query(array('SELECT "message" FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
             return '(null)';
-        return parent::bbcode($o->message,1);
+        return $o->message;
     }
 
     private function getUserNameFromProjectCid($hcid)
@@ -477,7 +475,7 @@ class comments extends project
     {
         if(!($o = parent::query(array('SELECT "message" FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
             return '(null)';
-        return parent::bbcode($o->message,1);
+        return $o->message;
     }
 
     private function appendProjectComment($oldMsgObj,$newMessage)
@@ -489,7 +487,7 @@ class comments extends project
     
     private function appendComment($oldMsgObj,$newMessage)
     {
-        $message = $oldMsgObj->message.'[hr]'.$newMessage;
+        $message = $oldMsgObj->message.'[hr]'. $this->parseCommentQuotes( $newMessage );
 
         return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
     }

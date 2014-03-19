@@ -15,3 +15,5 @@ smapxml
 y_key_85b60785628865ce.html
 *.swp
 *.orig
+/class/vendor/
+composer.lock

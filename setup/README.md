@@ -13,6 +13,7 @@ Requirements
 - PostgreSQL 9.2 or newer
 - A webserver. We recommend [lighttpd](http://www.lighttpd.net/) but [nginx](http://nginx.org/) works good too (however note that nginx is harder to set up on Windows).
 - php-apcu extension. It is not included by default in PHP, so you have to install it manually. On Arch Linux you need to install it (`pacman -S php-apcu`) and uncomment the `/etc/php/conf.d/acpu.ini` file, otherwise you may need to compile it with PECL. This command will work for most of the distributions: `pecl install apcu`. If you are using the standard Windows build of PHP, you can find a binary of APCu [here](http://pecl.php.net/package/APCu). For cygwin, a precompiled build is available [here](http://r.usr.sh/mirror/apcu-cygwin/). Instructions are provided inside.
+- [Composer](https://getcomposer.org/)
 - Optional: Predis for session sharing (follow the instructions [here](http://pear.nrk.io/)). Details on how to setup Redis/Predis are not included here.
 
 Setup
@@ -52,6 +53,10 @@ Setup
       rewrite ^/(.+?)\.(\d+)$ /profile.php?id=$1&pid=$2 last;
       rewrite ^/(.+?):(\d+)$ /project.php?gid=$1&pid=$2 last;
   }
+  ```
+- Move to the document root and install dependencies using composer.
+  ```sh
+  composer.phar install
   ```
 - Start everything and load your local NERDZ, then create your account (by registering).
 - It works? Yay! It doesn't work? See the next section.
