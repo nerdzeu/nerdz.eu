@@ -13,3 +13,6 @@
 [submodule "class/pushed-php-client"]
 	path = class/pushed-php-client
 	url = git@github.com:mcilloni/pushed-php-client.git
+[submodule "tpl/4"]
+	path = tpl/4
+	url = https://github.com/mcilloni/nerdz-template-legacy.git
