@@ -135,6 +135,8 @@ class project extends messages
             return false;
 
         $time = time(); //nel loop di insertimento si perdono secondi
+
+        $oldMessage = $message; //required for github implementation
         
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
@@ -148,7 +150,22 @@ class project extends messages
 
         foreach($tonotify as $v)
             if(db::NO_ERR != parent::query(array('INSERT INTO "groups_notify" ("group","to","time") VALUES (:to,:v,TO_TIMESTAMP(:time))',array(':to' => $to, ':v' => $v, ':time' => $time)),db::FETCH_ERR))
-                    return false;                                            
+                    return false;
+
+        
+        if($to == ISSUE_BOARD) {
+            require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
+            $client = new \Github\Client();
+            $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
+            $client->api('issue')->create('nerdzeu','nerdz.eu',
+                    [
+                        'title' => 'NERDZIlla issue',
+                        'body'  => $oldMessage
+                    ]
+            );
+        }
+        
+
         return true;
     }
 

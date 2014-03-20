@@ -30,10 +30,10 @@ if($result->rowCount() == 1)
     if(isset($_POST['setcookie']))
     {
         $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-        if($_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu')
+        if($_SERVER['SERVER_NAME'] == MOBILE_HOST)
         {
-            setcookie('nerdz_id',$obj->counter,time()+60*60*24*30,'/','mobile.nerdz.eu',$ssl,true);
-            setcookie('nerdz_u',md5($pass),time()+60*60*24*30,'/','mobile.nerdz.eu',$ssl,true);
+            setcookie('nerdz_id',$obj->counter,time()+60*60*24*30,'/',MOBILE_HOST,$ssl,true);
+            setcookie('nerdz_u',md5($pass),time()+60*60*24*30,'/',MOBILE_HOST,$ssl,true);
         }
         else
         {

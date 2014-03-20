@@ -34,7 +34,7 @@ class phpCore
         }
 
         $this->mobileSplashScreen();
-        
+
         $this->autoLogin(); //set nerdz_template value on autologin
 
         $TPLDefault = '0';
@@ -70,30 +70,29 @@ class phpCore
 
         $nocookie = ($_SERVER['PHP_SELF'] != '/splash.php' && ! preg_match('/json|html/',$_SERVER["PHP_SELF"]) && !isset($_COOKIE['mobile-splash']));
 
-        if($_SERVER["PHP_SELF"]=="/splash.php" && ( ($this->isMobile()&&$mobilebrowser) || (!$this->isMobile()&&!$mobilebrowser) ) )
-        {
-            die(header("Location: /"));
-        }
+        if($_SERVER['PHP_SELF'] == '/splash.php' && ( ($this->isMobile()&&$mobilebrowser) || (!$this->isMobile()&&!$mobilebrowser) ) )
+            die(header('Location: /'));
+        
 
         if(!isset($_SESSION['referer']))
-            $_SESSION['referer'] = $_SERVER["PHP_SELF"] != '/splash.php' ? $_SERVER['REQUEST_URI'] : '/index.php'; //required in splash.php
+            $_SESSION['referer'] = $_SERVER['PHP_SELF'] != '/splash.php' ? $_SERVER['REQUEST_URI'] : '/index.php'; //required in splash.php
 
         if(!$this->isMobile()) 
         {
             if($nocookie && $mobilebrowser)
-                die(header("Location: /splash.php"));
+                die(header('Location: /splash.php'));
             
 
-            if(isset($_COOKIE['mobile-splash']) && $_COOKIE["mobile-splash"]=="mobile")
-                die(header("Location: http://mobile.nerdz.eu".$_SERVER["REQUEST_URI"]));
+            if(isset($_COOKIE['mobile-splash']) && $_COOKIE['mobile-splash'] == 'mobile')
+                die(header('Location: '.MOBILE_HOST.$_SERVER['REQUEST_URI']));
         }
         else
         {
             if($nocookie && !$mobilebrowser)
-                die(header("Location: /splash.php"));
+                die(header('Location: /splash.php'));
             
-            if(isset($_COOKIE['mobile-splash']) && $_COOKIE["mobile-splash"]=="desktop")
-                die(header("Location: http://".SITE_HOST.$_SERVER["REQUEST_URI"]));
+            if(isset($_COOKIE['mobile-splash']) && $_COOKIE['mobile-splash'] == 'desktop')
+                die(header('Location: '.SITE_HOST.$_SERVER['REQUEST_URI']));
         }
 
     }
@@ -134,7 +133,7 @@ class phpCore
     
     public function isMobile() 
     {
-      return (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu');
+      return (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == MOBILE_HOST);
     }
     
     public function getSiteName()
@@ -175,12 +174,12 @@ class phpCore
         if($this->isLogged())
         {
             $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-            if($_SERVER['SERVER_NAME'] == 'mobile.nerdz.eu')
+            if($_SERVER['SERVER_NAME'] == MOBILE_HOST)
             {
                 if(isset($_COOKIE['nerdz_id']))
-                    setcookie('nerdz_id','',time()-3600,'/','mobile.nerdz.eu',$ssl);
+                    setcookie('nerdz_id','',time()-3600,'/',MOBILE_HOST,$ssl);
                 if(isset($_COOKIE['nerdz_u']))
-                    setcookie('nerdz_u','',time()-3600,'/','mobile.nerdz.eu',$ssl);
+                    setcookie('nerdz_u','',time()-3600,'/',MOBILE_HOST,$ssl);
             }
             else
             {
@@ -633,7 +632,8 @@ class phpCore
 
     public function refererControl()
     {
-         return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],array(SITE_HOST,'nerdz.eu','mobile.nerdz.eu'));
+        //no needs to check if referrer is nerdz.eu since nerdz.eu is redirect by the server to SITE_HOST
+        return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],array(SITE_HOST,MOBILE_HOST));
     }
 
     public function getCsrfToken($n = '')

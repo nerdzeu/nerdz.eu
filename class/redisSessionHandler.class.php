@@ -1,8 +1,9 @@
 <?php
 //First we load the Predis autoloader
-require_once 'Predis/Autoloader.php';
-//Registering Predis system
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
+
 Predis\Autoloader::register();
+
 
 /**
  * redisSessionHandler class

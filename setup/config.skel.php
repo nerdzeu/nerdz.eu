@@ -46,6 +46,9 @@ $configuration = [
     // The domain used to serve static data. If you are running
     // NERDZ on your PC, put an empty string.
     'STATIC_DOMAIN'          => 'static.example.com',
+    // The domain for the mobile version
+    // The rules defined above also apply in this case
+    'MOBILE_HOST'            => 'mobile.example.com',
 
     // Minification configuration
     // NERDZ uses an automatic template minification system, this
@@ -70,6 +73,8 @@ $configuration = [
     // IDs do not exist, until someone changes nicks or deletes himself.
     'USERS_NEWS'             => 2,
     'DELETED_USERS'          => 3,
+    'ISSUE_BOARD'            => 106,
+    'ISSUE_GIT_KEY'          => 'Get the key from your GitHub account',
     // Now NERDZ features an automatic versioning system based on 
     // GIT revision hashes. However, you need to specify the path
     // to the git executable if you want to enable it. 

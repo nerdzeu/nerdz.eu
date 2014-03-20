@@ -137,7 +137,6 @@ class messages extends phpCore
                 return $validURL($m);
             },$str);
 
-
         $str = preg_replace('#\[i\](.+?)\[/i\]#im','<span style="font-style:italic">$1</span>',$str);
         $str = preg_replace('#\[cur\](.+?)\[/cur\]#im','<span style="font-style:italic">$1</span>',$str);
         $str = preg_replace('#\[gist\]([0-9a-zA-Z]+)\[/gist\]#','<div class="gistLoad" data-id="$1" id="gist-$1">'.parent::lang('LOADING').'...</div>',$str);
@@ -147,7 +146,7 @@ class messages extends phpCore
         $str = preg_replace('#\[hr\]#im','<hr style="clear:both" />',$str);
         $str = preg_replace('#\[small\](.+?)\[/small\]#im','<span style="font-size:7pt">$1</span>',$str);
         $str = preg_replace('#\[big\](.+?)\[/big\]#im','<span style="font-size:14pt">$1</span>',$str);
-        $str = preg_replace('#\[wat\]#im','<span style="font-size:22pt">wat</span>',$str); //easter egg [never change]
+        $str = preg_replace('#\[wat\]#im','<span style="font-size:22pt">WAT</span>',$str); //easter egg [never change]
 
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#im',function($m) {
                 return '<a href="/'.phpCore::userLink($m[1])."\">{$m[1]}</a>";
@@ -262,6 +261,12 @@ class messages extends phpCore
                     </span>
                 </div>';
                 },$str,1);
+
+        // Quote in comments, new version
+        while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', $str))
+            $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', function($m) {
+                    return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
+                }, $str, 1);
 
         while(preg_match('#\[spoiler\](.+?)\[/spoiler]#im',$str))
             $str = preg_replace('#\[spoiler\](.+?)\[/spoiler]#im',
