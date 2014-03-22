@@ -380,6 +380,20 @@ N.json.profile = function()
             done(d);
         });
     };
+
+    /**
+     * set thumbs for post
+     * @parameters;  {hpid, thumb}
+     * hpid: hidden post id
+     * vote: vote (-1,0,1)
+     */
+    this.thumbs = function(jObj, done) 
+    {
+        this.post('thumbs.json.php',jObj, function(d) {
+            done(d);
+        });
+    };
+
 };
 
 N.json.profile = new N.json.profile();
@@ -591,6 +605,19 @@ N.json.project = function()
     this.unbookmarkPost = function(jObj,done)
     {
         this.post('bookmark.json.php?action=del',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * set thumbs for post
+     * @parameters;  {hpid, thumb}
+     * hpid: hidden post id
+     * vote: vote (-1,0,1)
+     */
+    this.thumbs = function(jObj, done) 
+    {
+        this.post('thumbs.json.php',jObj, function(d) {
             done(d);
         });
     };

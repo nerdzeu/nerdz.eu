@@ -20,6 +20,8 @@ if(!($to = $core->getUserName($o->to)))
     $to =  '';
 
 $singlepostvals = array();
+$singlepostvals['thumbs_n'] = $core->getThumbs($hpid);
+$singlepostvals['uthumb_n'] = $core->getUserThumb($hpid);
 $singlepostvals['pid_n'] = $o->pid;
 $singlepostvals['from4link_n'] = phpCore::userLink($from);
 $singlepostvals['to4link_n'] = phpCore::userLink($to);
