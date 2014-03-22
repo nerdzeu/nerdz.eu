@@ -688,6 +688,89 @@ class messages extends phpCore
                 str_ireplace('[hr]','',
                 str_ireplace('[wat]','',
                 str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))));
-    }    
+    } 
+
+    public function getThumbs($hpid, $prj = false) {
+        $table = $prj ? "groups_thumbs" : "thumbs";
+
+        $ret = parent::query(
+            [
+                'SELECT SUM("vote") AS "sum" FROM "'.$table.'" WHERE "hpid" = :hpid GROUP BY hpid',
+                [
+                  ':hpid' => $hpid
+                ]
+
+            ],
+            db::FETCH_OBJ
+        );
+
+        if (isset($ret->sum)) {
+           return $ret->sum;
+        }
+
+        return 0;
+    }
+
+    public function getUserThumb($hpid, $prj = false) {
+        if (!parent::isLogged()) {
+          return 0;
+        }
+        $table = $prj ? "groups_thumbs" : "thumbs";
+
+        $ret = parent::query(
+            [
+                'SELECT "vote" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :user',
+                [
+                  ':hpid' => $hpid,
+                  ':user' => $_SESSION['nerdz_id']
+                ]
+
+            ],
+            db::FETCH_OBJ
+        );
+
+        if (isset($ret->vote)) {
+           return $ret->vote;
+        }
+
+        return 0;
+    }
+
+    public function setThumbs($hpid, $vote, $prj = false) {
+        if (!parent::isLogged()) {
+          return false;
+        }
+
+        $table = $prj ? "groups_thumbs" : "thumbs";
+
+        $ret = parent::query(
+            [
+              'WITH new_values (hpid, "user", vote) AS ( VALUES(CAST(:hpid AS int8), CAST(:user AS int8), CAST(:vote AS int8))),
+              upsert AS ( 
+                  UPDATE '.$table.' AS m 
+                  SET vote = nv.vote
+                  FROM new_values AS nv
+                  WHERE m.hpid = nv.hpid
+                    AND m.user = nv.user
+                  RETURNING m.*
+              )
+              INSERT INTO '.$table.' (hpid, "user", vote)
+              SELECT hpid, "user", vote
+              FROM new_values
+              WHERE NOT EXISTS (SELECT 1 
+                                FROM upsert AS up 
+                                WHERE up.hpid = new_values.hpid 
+                                  AND up.user = new_values.user)',
+              [
+                ':hpid' => (int) $hpid,
+                ':user' => (int) $_SESSION['nerdz_id'],
+                ':vote' => (int) $vote
+              ]
+            ],
+            db::FETCH_ERR
+        );
+
+        return $ret == db::NO_ERR;
+    }
 }
 ?>
