@@ -209,7 +209,7 @@ if($control)
 if($usernamechanged)
 {
     $lastpid = $core->countMessages(USERS_NEWS) + 1;
-    $message = "{$obj->username} %%12now is34%%: [user]{$user['username']}[/user].";
+    $message = "{$obj->username} %%12now is34%% [user]{$user['username']}[/user].";
 
     if(db::NO_ERR != $core->query(array('INSERT INTO "posts" ("from","to","pid","message","notify", "time") VALUES ('.USERS_NEWS.','.USERS_NEWS.",{$lastpid}, :msg , FALSE, NOW())",array($message)),db::FETCH_ERR))
         die($core->jsonResponse('error',$core->lang('ERROR')));
