@@ -18,14 +18,14 @@
     {
         unset($_SESSION['referer']);
         setcookie('mobile-splash','mobile',2000000000,'/',$domain,false,true);
-        die(header('Location: '.MOBILE_HOST.$referer));
+        die(header('Location: http://'.MOBILE_HOST.$referer));
 
     }
     if(isset($_GET['desktop']))
     {
         unset($_SESSION['referer']);
         setcookie('mobile-splash','desktop',2000000000,'/',$domain,false,true);
-        die(header("Location: {$referer}"));
+        die(header("Location: http://{$referer}"));
     }
     
     $core = new phpCore();
