@@ -16,6 +16,8 @@ for($i=0;$i<$count;++$i)
 
     $vals['news_b'] = $mess[$i]['news'];
     $vals['pid_n'] = $mess[$i]['pid'];
+    $vals['thumbs_n'] = $core->getThumbs($mess[$i]['hpid']);
+    $vals['uthumb_n'] = $core->getUserThumb($mess[$i]['hpid']);
     $vals['from4link_n'] = phpCore::userLink($from);
     $vals['to4link_n'] = phpCore::userLink($to);
     $vals['fromid_n'] = $mess[$i]['from'];

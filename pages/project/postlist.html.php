@@ -15,6 +15,8 @@ for($i=0;$i<$count;++$i)
     if(!($own = $core->getOwnerByGid($mess[$i]['to'])))
         $own = 0;
 
+    $vals['thumbs_n'] = $core->getThumbs($mess[$i]['hpid'], true);
+    $vals['uthumb_n'] = $core->getUserThumb($mess[$i]['hpid'], true);
     $vals['pid_n'] = $mess[$i]['pid'];
     $vals['news_b'] = $mess[$i]['news'];
     $vals['from4link_n'] = phpCore::userLink($from);
