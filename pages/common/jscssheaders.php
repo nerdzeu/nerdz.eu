@@ -1,13 +1,18 @@
 <?php
-/*css per blacklist, da includere sia con che senza ssl, quindi dichiaro qui */
+/*css and jss required for blacklist -> declared here so we can reuse the code in standard and ssl headers version */
 $logged = $core->isLogged();
 if($logged && ($blist = $core->getBlacklist()))
 {
+    $jsonObj = [];
     $blistcss = '<style type="text/css">';
-    foreach($blist as $b_id)
+    foreach($blist as $b_id) {
         $blistcss.= ".bluser{$b_id},";
+        $jsonObj[] = $core->getUsername($b_id);
+    }
     $blistcss = substr($blistcss,0,-1); //rimuovo ultima ,
     $blistcss.= '{border:1px solid #FF0000}</style>';
+
+    $blistjs = '<script type="application/javascript">window.idiots = '.json_encode((array)$jsonObj).';</script>';
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';
@@ -45,6 +50,7 @@ if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //se ssl è attivo u
 ?>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <?php
+    echo isset($blistjs) ? $blistjs : '';
     foreach($headers['js'] as $var)
     {
         if (is_array ($var)) continue;
@@ -97,6 +103,7 @@ if($core->isMobile()) { ?>
 ?>
     <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <?php
+    echo isset($blistjs) ? $blistjs : '';
     foreach($headers['js'] as $var)
     {
         if (is_array ($var)) continue;
