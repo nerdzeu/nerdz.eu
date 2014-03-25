@@ -160,7 +160,7 @@ class project extends messages
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                     [
                         'title' => 'NERDZIlla issue',
-                        'body'  => $oldMessage
+                        'body'  => parent::getUserName().': '.$oldMessage
                     ]
             );
         }
