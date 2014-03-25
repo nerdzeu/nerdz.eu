@@ -123,6 +123,8 @@ class comments extends project
             $ret[$i]['timestamp_n'] = $o->time;
             $ret[$i]['hcid_n'] = $o->hcid;
             $ret[$i]['hpid_n'] = $hpid;
+            $ret[$i]['thumbs_n'] = $this->getThumbs($o->hcid, $prj);
+            $ret[$i]['uthumb_n'] = $this->getUserThumb($o->hcid, $prj);
             
             if($luck)
             {            
@@ -221,7 +223,7 @@ class comments extends project
                 return false;
             $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         }
-
+  
         return $ret;
     }
 
@@ -588,6 +590,89 @@ class comments extends project
                 return false;
 
         return $o->cc;
+    }
+    
+    public function getThumbs($hcid, $prj = false) {
+        $table = "comment_".($prj ? "groups_thumbs" : "thumbs");
+
+        $ret = parent::query(
+            [
+                'SELECT SUM("vote") AS "sum" FROM "'.$table.'" WHERE "hcid" = :hcid GROUP BY hcid',
+                [
+                  ':hcid' => $hcid
+                ]
+
+            ],
+            db::FETCH_OBJ
+        );
+
+        if (isset($ret->sum)) {
+           return $ret->sum;
+        }
+
+        return 0;
+    }
+
+    public function getUserThumb($hcid, $prj = false) {
+        if (!parent::isLogged()) {
+          return 0;
+        }
+        $table = "comment_".($prj ? "groups_thumbs" : "thumbs");
+
+        $ret = parent::query(
+            [
+                'SELECT "vote" FROM "'.$table.'" WHERE "hcid" = :hcid AND "user" = :user',
+                [
+                  ':hcid' => $hcid,
+                  ':user' => $_SESSION['nerdz_id']
+                ]
+
+            ],
+            db::FETCH_OBJ
+        );
+
+        if (isset($ret->vote)) {
+           return $ret->vote;
+        }
+
+        return 0;
+    }
+
+    public function setThumbs($hcid, $vote, $prj = false) {
+        if (!parent::isLogged()) {
+          return false;
+        }
+
+        $table = "comment_".($prj ? "groups_thumbs" : "thumbs");
+
+        $ret = parent::query(
+            [
+              'WITH new_values (hcid, "user", vote) AS ( VALUES(CAST(:hcid AS int8), CAST(:user AS int8), CAST(:vote AS int8))),
+              upsert AS ( 
+                  UPDATE '.$table.' AS m 
+                  SET vote = nv.vote
+                  FROM new_values AS nv
+                  WHERE m.hcid = nv.hcid
+                    AND m.user = nv.user
+                  RETURNING m.*
+              )
+              INSERT INTO '.$table.' (hcid, "user", vote)
+              SELECT hcid, "user", vote
+              FROM new_values
+              WHERE NOT EXISTS (SELECT 1 
+                                FROM upsert AS up 
+                                WHERE up.hcid = new_values.hcid 
+                                  AND up.user = new_values.user)',
+              [
+                ':hcid' => (int) $hcid,
+                ':user' => (int) $_SESSION['nerdz_id'],
+                ':vote' => (int) $vote
+              ]
+            ],
+            db::FETCH_ERR
+        );
+
+        return $ret == db::NO_ERR;
     }
 }
 ?>
