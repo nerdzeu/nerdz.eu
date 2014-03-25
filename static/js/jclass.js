@@ -5,7 +5,7 @@ function N() /* THE FATHER of God (class/object/function)*/
 {
     this.json = function(){}; /*namespace json */
     this.html = function(){}; /*namespace html */
-    this.tmp;
+    this.tmp = "";
     
     this.reloadCaptcha = function()
     {
@@ -23,7 +23,7 @@ function N() /* THE FATHER of God (class/object/function)*/
     
     this.imgErr = function(obj) {
       $(obj).attr("src","/static/images/onErrorImg.php"); 
-    }
+    };
     
     this.imgLoad = function(obj) {
       src = obj.src;
@@ -33,9 +33,9 @@ function N() /* THE FATHER of God (class/object/function)*/
       } else {
         m = (117-$(obj).height())/2;
         if (m>1)
-          $(obj).css("margin-top", m)
+          $(obj).css("margin-top", m);
       }
-    }
+    };
 
     /**
      * getStaticData
@@ -55,8 +55,8 @@ function N() /* THE FATHER of God (class/object/function)*/
         if (typeof window.Nstatic === 'object' && typeof window.Nstatic.lang === 'object')
             return this.getStaticData().lang;
         return {};
-    }
-};
+    };
+}
 
 N = new N();
 
