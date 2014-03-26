@@ -2,32 +2,21 @@
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-    // extract 2nd level domain
-    function extractRootDomain($str) {
+    if(isset($_GET['goto']) && ($_GET['goto'] == "mobile" || $_GET['goto'] == "desktop"))
+    {
+      $referer = (isset($_GET['ref']) && $_GET['ref']!="") ? str_replace('%2E', '.', $_GET['ref']) : '/';
+      function extractRootDomain($str) {
         $x = explode('.',$str);
         $c = count($x);
         if($c <= 2)
-            return $str;
+          return $str;
         return $x[$c-2] . '.' . $x[$c-1];
+      }
+      $domain = extractRootDomain(SITE_HOST);
+      setcookie('mobile-splash',$_GET['goto'],2000000000,'/',$domain,false,true);
+      die(header('Location: http://'.($_GET['goto']=="mobile"?MOBILE_HOST:SITE_HOST).$referer));
     }
 
-    $domain = extractRootDomain(SITE_HOST);
-    $referer = isset($_SESSION['referer']) && $_SESSION['referer'] == '/splash.php' ? '/' : $_SESSION['referer'];
-
-    if(isset($_GET['mobile']))
-    {
-        unset($_SESSION['referer']);
-        setcookie('mobile-splash','mobile',2000000000,'/',$domain,false,true);
-        die(header('Location: http://'.MOBILE_HOST.$referer));
-
-    }
-    if(isset($_GET['desktop']))
-    {
-        unset($_SESSION['referer']);
-        setcookie('mobile-splash','desktop',2000000000,'/',$domain,false,true);
-        die(header("Location: http://{$referer}"));
-    }
-    
     $core = new phpCore();
     $tplcfg = $core->getTemplateCfg();
 
