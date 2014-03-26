@@ -343,7 +343,7 @@ class comments extends project
         if(!(new flood())->postComment())
             return null;
 
-        $newMessage = $this->parseCommentQuotes($message); //required for appendComment
+        $newMessage = $message; //required for appendComment
 
         $message = trim($this->parseCommentQuotes(htmlentities($message,ENT_QUOTES,'UTF-8')));
 
@@ -489,7 +489,7 @@ class comments extends project
     
     private function appendComment($oldMsgObj,$newMessage)
     {
-        $message = $oldMsgObj->message.'[hr]'. trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
+        $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
 
         return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
     }
@@ -499,6 +499,8 @@ class comments extends project
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
         if(!(new flood())->projectComment())
             return null;
+
+        $newMessage = $message; //required for appendComment
 
         $message = trim($this->parseCommentQuotes(htmlentities($message,ENT_QUOTES,'UTF-8')));
             
@@ -512,10 +514,17 @@ class comments extends project
         if(!($stmt = parent::query(array('SELECT "hpid","from","hcid","message" FROM "groups_comments" WHERE "hpid" = ? AND "hcid" = (SELECT MAX("hcid") FROM "groups_comments" WHERE "hpid" = ?)',array($hpid,$hpid)),db::FETCH_STMT)))
             return false;
 
-        $user = $stmt->fetch(PDO::FETCH_OBJ);
+        if(($user = $stmt->fetch(PDO::FETCH_OBJ))) // if exists a previous message
+        {
+            $expl = explode('[hr]',$user->message);
+            $lastAppendedMessage = $expl[count($expl) - 1]; //equals to $user->message if no append done before
 
-        if($user && $user->from == $_SESSION['nerdz_id'])
-            return $this->appendProjectComment($user,$message) && $this->addControl($obj->from,$obj->to,$hpid,true);
+            if($lastAppendedMessage == $message)
+                return null; //null => flood error
+
+            if($user->from == $_SESSION['nerdz_id']) //append and notify
+                return $this->appendProjectComment($user,$newMessage) && $this->addControl($obj->from,$obj->to,$hpid,true);
+        }
 
         if(db::NO_ERR != parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message","time") VALUES (:id,:to,:hpid,:message,NOW())',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERR))
             return false;
