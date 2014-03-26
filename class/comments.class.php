@@ -482,14 +482,14 @@ class comments extends project
 
     private function appendProjectComment($oldMsgObj,$newMessage)
     {
-        $message = $oldMsgObj->message.'[hr]'.$newMessage;
+        $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
 
         return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "groups_comments" SET message = :message WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
     }
     
     private function appendComment($oldMsgObj,$newMessage)
     {
-        $message = $oldMsgObj->message.'[hr]'. $this->parseCommentQuotes( $newMessage );
+        $message = $oldMsgObj->message.'[hr]'. trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
 
         return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
     }
