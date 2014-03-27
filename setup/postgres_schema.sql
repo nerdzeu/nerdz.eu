@@ -97,6 +97,16 @@ CREATE TABLE posts_no_notify (
   CONSTRAINT postsNoNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
 
+CREATE TABLE thumbs (
+  "hpid" int8 NOT NULL,
+  "user" int8 NOT NULL,
+  "vote" int2 NOT NULL,
+  PRIMARY KEY("hpid", "user"),
+  CONSTRAINT hpidThumbs FOREIGN KEY ("hpid") REFERENCES posts(hpid) ON DELETE CASCADE,
+  CONSTRAINT userThumbs FOREIGN KEY ("user") REFERENCES users(counter) ON DELETE CASCADE,
+  CONSTRAINT chkVote CHECK("vote" IN (-1, 0, 1))
+);
+
 CREATE TABLE lurkers (
   "user" int8 NOT NULL,
   post int8 NOT NULL,
@@ -286,6 +296,18 @@ CREATE TABLE groups_posts_no_notify (
   CONSTRAINT foregngrouphpid FOREIGN KEY (hpid) REFERENCES groups_posts (hpid),
   CONSTRAINT groupsPostsNoNotifyTimeCheck CHECK(EXTRACT(TIMEZONE FROM "time") = '0')
 );
+
+CREATE TABLE groups_thumbs (
+  "hpid" int8 NOT NULL,
+  "user" int8 NOT NULL,
+  "vote" int2 NOT NULL,
+  PRIMARY KEY("hpid", "user"),
+  CONSTRAINT hpidGThumbs FOREIGN KEY ("hpid") REFERENCES groups_posts(hpid) ON DELETE CASCADE,
+  CONSTRAINT userGThumbs FOREIGN KEY ("user") REFERENCES users(counter) ON DELETE CASCADE,
+  CONSTRAINT chkGVote CHECK("vote" IN (-1, 0, 1))
+);
+
+
 
 CREATE TABLE groups_lurkers (
   "user" int8 NOT NULL,
@@ -581,6 +603,30 @@ $func$ LANGUAGE plpgsql;
 CREATE TRIGGER before_delete_post BEFORE DELETE ON posts FOR EACH ROW EXECUTE PROCEDURE before_delete_post();
 
 --END before_delete_post
+
+--BEGIN comment_thumbs
+
+CREATE TABLE comment_thumbs (
+  "hcid" int8 NOT NULL,
+  "user" int8 NOT NULL,
+  "vote" int2 NOT NULL,
+  PRIMARY KEY("hcid", "user"),
+  CONSTRAINT hcidThumbs FOREIGN KEY ("hcid") REFERENCES comments(hcid) ON DELETE CASCADE,
+  CONSTRAINT userThumbs FOREIGN KEY ("user") REFERENCES users(counter) ON DELETE CASCADE,
+  CONSTRAINT chkVote CHECK("vote" IN (-1, 0, 1))
+);
+
+CREATE TABLE comment_groups_thumbs (
+  "hcid" int8 NOT NULL,
+  "user" int8 NOT NULL,
+  "vote" int2 NOT NULL,
+  PRIMARY KEY("hcid", "user"),
+  CONSTRAINT hcidGThumbs FOREIGN KEY ("hcid") REFERENCES groups_comments(hcid) ON DELETE CASCADE,
+  CONSTRAINT userGThumbs FOREIGN KEY ("user") REFERENCES users(counter) ON DELETE CASCADE,
+  CONSTRAINT chkGVote CHECK("vote" IN (-1, 0, 1))
+);
+
+--END comment_thumbs
 
 --BEGIN before_delete_user
 
