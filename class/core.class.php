@@ -33,20 +33,14 @@ class phpCore
             die();
         }
 
+        $this->autoLogin(); //set nerdz_template value on autologin (according to mobile or destktop version)
+
         $this->mobileSplashScreen();
-
-        $this->autoLogin(); //set nerdz_template value on autologin
-
-        $TPLDefault = '0';
-        if($this->isMobile()) {
-            $_SESSION['nerdz_template'] = '1'; //if mobile version, change nerdz_template
-            $TPLDefault = '1';
-        }
 
         $this->lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['nerdz_id']) : $this->getBrowserLanguage();
 
         $this->tpl = new RainTPL();
-        $this->tpl->configure('tpl_dir',$_SERVER['DOCUMENT_ROOT'].'/tpl/'.($this->isLogged() ? $_SESSION['nerdz_template'] : $TPLDefault).'/'); //fallback on default template
+        $this->tpl->configure('tpl_dir',"{$_SERVER['DOCUMENT_ROOT']}/tpl/{$_SESSION['nerdz_template']}/");
 
         $this->tpl_no = $this->tpl->getActualTemplateNumber();
 
@@ -505,13 +499,44 @@ class phpCore
         }
         return $ret;
     }
-
-    public function getTemplate($id = null)
+    
+    public function getMobileTemplate($id = null)
     {
         $logged = $this->isLogged();
 
         if(!$id && !$logged)
-            return ($this->isMobile()) ? '1' : '0'; //default
+            return '1'; //default
+
+        if(!$id && $logged)
+        {
+            if(!isset($_SESSION['nerdz_template']))
+            {
+                if(!($o = $this->query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+                    return false;
+
+                $_SESSION['nerdz_template'] = $o->mobile_template;
+                return $_SESSION['nerdz_template'];
+            }
+            else
+                return $_SESSION['nerdz_template'];
+        }
+        
+        if(!($o = $this->query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+            return '1';
+
+        return $o->mobile_template;
+    }
+
+    public function getTemplate($id = null)
+    {
+        if($this->isMobile()) {
+            return $this->getMobileTemplate($id);
+        }
+
+        $logged = $this->isLogged();
+
+        if(!$id && !$logged)
+            return '0'; //default
 
         if(!$id && $logged)
         {
@@ -603,7 +628,14 @@ class phpCore
 
     private function autoLogin()
     {
-        if($this->isLogged() || !isset($_COOKIE['nerdz_u']) || !isset($_COOKIE['nerdz_id']) || !is_numeric($_COOKIE['nerdz_id']))
+        if($this->isLogged())
+            return false;
+
+        //This session variable MUST be defined either if logged or not
+        $_SESSION['nerdz_template'] = $this->getTemplate();
+
+        //If there are no cookie, no autologin
+        if(!isset($_COOKIE['nerdz_u']) || !isset($_COOKIE['nerdz_id']) || !is_numeric($_COOKIE['nerdz_id']))
             return false;
         if(($obj = $this->query(array('SELECT "username","password" FROM "users" WHERE "counter" = :id',array(':id' => $_COOKIE['nerdz_id'])),db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u'])
         {
@@ -612,9 +644,12 @@ class phpCore
             $_SESSION['nerdz_username'] = $obj->username;
             $_SESSION['nerdz_lang'] = $this->getUserLanguage($_SESSION['nerdz_id']);
             $_SESSION['nerdz_board_lang'] = $this->getBoardLanguage($_SESSION['nerdz_id']);
+            //Redefine session variable with user preference
+            unset($_SESSION['nerdz_template']);
             $_SESSION['nerdz_template'] = $this->getTemplate($_SESSION['nerdz_id']);
             return true;
         }
+
         return false;
     }
 

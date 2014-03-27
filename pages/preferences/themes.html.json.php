@@ -22,7 +22,9 @@ foreach($templates as $val) {
 if(!in_array($theme,$shorts))
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
-if(db::NO_ERR != $core->query(array('UPDATE "profiles" SET "template" = :theme WHERE "counter" = :id',array(':theme' => $theme, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+$column = (MOBILE_HOST == $_SERVER['HTTP_HOST'] ? 'mobile_' : '').'template';
+
+if(db::NO_ERR != $core->query(array('UPDATE "profiles" SET "'.$column.'" = :theme WHERE "counter" = :id',array(':theme' => $theme, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
     die($core->jsonResponse('error','Update: ' . $core->lang('ERROR')));
 
 $_SESSION['nerdz_template'] = $theme;

@@ -21,6 +21,7 @@ foreach($templates as $val)
     ++$i;
 }
 $vals['mytplno_n'] = $core->getTemplate($_SESSION['nerdz_id']);
+$vals['mobile_b'] = $_SERVER['HTTP_HOST'] == MOBILE_HOST;
 
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('preferences/themes');

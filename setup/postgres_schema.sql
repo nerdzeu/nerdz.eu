@@ -51,6 +51,7 @@ CREATE TABLE profiles (
   yahoo varchar(350) NOT NULL DEFAULT '',
   userscript varchar(128) NOT NULL DEFAULT '',
   template int2 NOT NULL DEFAULT 0,
+  mobile_template int2 NOT NULL DEFAULT 1,
   dateformat varchar(25) NOT NULL DEFAULT 'd/m/Y, H:i',
   facebook varchar(350) NOT NULL DEFAULT '',
   twitter varchar(350) NOT NULL DEFAULT '',
