@@ -6,7 +6,7 @@ if(!$core->isLogged() || empty($_GET['message']))
     $_GET['message'] = $core->lang('ERROR');
 
 $vals = array();
-$vals['message_n'] = $core->parseCommentQuotes($core->bbcode(htmlentities($_GET['message'],ENT_QUOTES,'UTF-8')));
+$vals['message_n'] =$core->bbcode($core->parseCommentQuotes(htmlentities($_GET['message'],ENT_QUOTES,'UTF-8')));
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('base/preview');
 ?>
