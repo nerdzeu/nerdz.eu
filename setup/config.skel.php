@@ -80,7 +80,7 @@ $configuration = [
     // (http://git.io/29fYbg)
     'PUSHED_ENABLED'         => true,
     // PHP client supports only local pushed instances on IP.
-    // This parameter indicates IP version to use to connect to pushed.
+    // This parameter specifies the IP version to use to connect to pushed.
     'PUSHED_IP6'             => true,
     'PUSHED_PORT'            => '5667'
 ];
