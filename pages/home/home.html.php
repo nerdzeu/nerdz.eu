@@ -9,7 +9,7 @@ $vals = array();
 if(!($vals['logged_b'] = $logged = $core->isLogged()))
     die($core->lang('REGISTER'));
 
-$_POST['limit'] = $core->limitControl(isset($_POST['limit']) ? $_POST['limit'] : 10 ,10) ? $_POST['limit'] : 10;
+$limit = isset($_POST['limit']) ? $core->limitControl($_POST['limit'] ,10) : 10;
 
 switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 {
@@ -43,21 +43,20 @@ else
     $onlyfollowed = false;
 }
 
-$afterHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
+$beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
 if(!(
-        $mess = $afterHpid !== false ? 
-        $core->getNLatestBeforeHpid($_POST['limit'],$afterHpid, $vals['projects_b'],$onlyfollowed,$lang)
+        $mess = $beforeHpid !== false ? 
+        $core->getNLatestBeforeHpid($limit, $beforeHpid, $vals['projects_b'],$onlyfollowed,$lang)
         :
-        $core->getLatests($_POST['limit'], $vals['projects_b'],$onlyfollowed,$lang)
+        $core->getLatests($limit, $vals['projects_b'],$onlyfollowed,$lang)
     )
   )
     die();
 
-//per le miniature!
+//Variable required to set image thumbnails in postlist
 $miniature = true;
 if($group)
-    //come sotto
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/postlist.html.php';
 else
     //fa tutto il loop e assegna tutte le variabili corrette in $vals, comprese quelle di lingua comuni a entrabbi i loops

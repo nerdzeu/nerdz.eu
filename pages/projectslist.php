@@ -1,23 +1,6 @@
 <?php
 
-function parseLim($lim) {
-
-    $r = sscanf($lim,'%d,%d',$a,$b);
-
-    if($r != 2)
-        return false;
-        
-    return "$b OFFSET $a";
-}
-
-
-$limit = $core->limitControl(isset($_GET['lim']) ? $_GET['lim'] : 0 ,20) ? $_GET['lim'] : 20;
-
-//WTF? sscanf? strstr? What a shitty language! However, postgresql fix.
-if (strstr($limit, ',') != false)
-    $newlim = parseLim($limit);
-else
-    $newlim = $limit;
+$limit = isset($_GET['lim']) ? $core->limitControl($_GET['lim'],20) : 20;
 
 switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 {
@@ -42,11 +25,11 @@ $vals = array();
 $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 
 if(empty($q))
-    $query = "SELECT name, description,counter FROM groups ORDER BY {$orderby} {$order} LIMIT {$newlim}";
+    $query = "SELECT name, description,counter FROM groups ORDER BY {$orderby} {$order} LIMIT {$limit}";
 else
 {
     $orderbycounter = $orderby == 'counter';
-    $query = array("SELECT name,description, counter FROM groups WHERE {$orderby} ".($orderbycounter ? '=' : 'LIKE')." ? ORDER BY {$orderby} {$order} LIMIT {$newlim}",
+    $query = array("SELECT name,description, counter FROM groups WHERE CAST({$orderby} AS TEXT) ".($orderbycounter ? '=' : 'LIKE')." ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
             $orderbycounter ? array($q) : array("%{$q}%"));
 }
 
@@ -74,7 +57,7 @@ if(is_numeric($limit))
 }
 else
 {
-    if(2 == sscanf($limit,"%d,%d",$a,$b))
+    if(2 == sscanf($_GET['lim'],"%d,%d",$a,$b))
     {
         $next =  $a+20;
         $prev = $a-20;

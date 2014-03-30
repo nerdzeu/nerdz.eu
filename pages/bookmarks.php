@@ -1,5 +1,5 @@
 <?php
-$limit = $core->limitControl(isset($_GET['lim']) ? $_GET['lim'] : 0 ,20) ? $_GET['lim'] : 20;
+$limit = isset($_GET['lim']) ? $core->limitControl($_GET['lim'], 20) : 20;
 
 $prj = isset($_GET['project']);
 
@@ -25,7 +25,7 @@ $q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
 
 if($prj)
 {
-    $orderby = $orderby == 'time' ? 'groups_bookmarks.time' : $orderby; //per non svelare struttura database
+    $orderby = $orderby == 'time' ? 'groups_bookmarks.time' : $orderby;
     $query = empty($q)
         ?
          array(
@@ -87,7 +87,7 @@ if(is_numeric($limit))
 }
 else
 {
-    if(2 == sscanf($limit,"%d,%d",$a,$b))
+    if(2 == sscanf($_GET['lim'],"%d,%d",$a,$b))
     {
         $next =  $a+20;
         $prev = $a-20;

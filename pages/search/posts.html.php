@@ -8,12 +8,9 @@ $core = new project();
 if(!$core->isLogged())
     die(header('Location: /'));
 
-$limit = $core->limitControl(isset($_POST['limit']) ? $_POST['limit'] : '',10) ? $_POST['limit'] : 10;
+$limit = isset($_POST['limit']) ? $core->limitControl($_POST['limit'],10) : 10;
 
-if(
-    (empty($_POST['q']) || !$core->isLogged()) || 
-     (!empty($_GET['specific']) && empty($_POST['id']))
-  )
+if( empty($_POST['q']) || (!empty($_GET['specific']) && empty($_POST['id'])) )
     die();
 
 if(isset($_POST['id']) && !is_numeric($_POST['id']))
@@ -22,12 +19,12 @@ if(isset($_POST['id']) && !is_numeric($_POST['id']))
 $txt = trim(htmlentities($_POST['q'],ENT_QUOTES,'UTF-8'));
 
 $blist = $core->getBlacklist();
-$afterHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
+$beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
 $vals = array();
 $group = false;
 $specific = isset($_GET['specific']);
-$query_param = array_merge(array(':like' => '%'.$txt.'%') ,$specific ? array(':to' => $_POST['id']) : array(), $afterHpid ? array (':hpid' => $afterHpid) : array());
+$query_param = array_merge(array(':like' => '%'.$txt.'%') ,$specific ? array(':to' => $_POST['id']) : array(), $beforeHpid ? array (':hpid' => $beforeHpid) : array());
 
 switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 {
@@ -41,7 +38,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         }
 
         if(!($k = $core->query(
-                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "posts" WHERE "message" LIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($afterHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
+                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "posts" WHERE "message" LIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($beforeHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
                         $query_param
                 ),db::FETCH_STMT))
             )
@@ -59,7 +56,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         }
 
         if(!($k = $core->query(
-                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "groups_posts" WHERE "message" LIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($afterHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
+                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "groups_posts" WHERE "message" LIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($beforeHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
                     $query_param
                 ),db::FETCH_STMT))
             )

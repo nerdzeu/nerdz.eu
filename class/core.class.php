@@ -675,17 +675,17 @@ class phpCore
     public function limitControl($limit,$n)
     {
         if(is_numeric($limit) && $limit < $n && $limit > 0)
-            return true;
+            return $limit;
 
         if(!is_string($limit))
-            return false;
+            return $n;
 
         $r = sscanf($limit,'%d,%d',$a,$b);
 
         if($r != 2 || ($r == 2 && $b > $n) )
-            return false;
-        
-        return true;
+            return $n;
+
+        return "{$b} OFFSET {$a}";
     }
 
     public function setPush($id,$value) {

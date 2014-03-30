@@ -9,34 +9,27 @@ $core = new messages();
 $comments = new comments();
 
 if(!($id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false))
-    die($core->lang('ERROR').'1');
+    die($core->lang('ERROR'));
 
 
-$_POST['limit'] = $core->limitControl(isset($_POST['limit']) ? $_POST['limit'] : 10,10) ? $_POST['limit'] : 10;
+$limit = isset($_POST['limit']) ? $core->limitControl($_POST['limit'],10) : 10;
 
 $logged = $core->isLogged();
 
 if($logged && is_numeric(strpos($_SERVER['REQUEST_URI'],'refresh.html.php')) && (true === $core->isInBlacklist($_SESSION['nerdz_id'],$id)))
     die('Hax0r c4n\'t fuck nerdz pr00tectionz');
 
-$afterHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
+$beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
-if(!($mess = $afterHpid ?
-        $core->getNMessagesBeforeHpid($_POST['limit'],$afterHpid,$id)
-        :
-        $core->getMessages($id,$_POST['limit'])
-    )
-  )
-    die(); //vuoto affinché i caricamenti automatici non mostrino nulla
+$mess = $beforeHpid ? $core->getNMessagesBeforeHpid($limit,$beforeHpid,$id) : $core->getMessages($id,$limit);
 
-if(!$logged && !is_numeric($_POST['limit']))
-    die(); //vuoto così automaticamente il javascript non fa altre chiamate
-else
-{
-    $vals = array();
-    //includo il loop in $mess
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/postlist.html.php';
-    $core->getTPL()->assign($vals);
-    $core->getTPL()->draw('profile/postlist');
-}
+
+if(!$mess || (!$logged && $beforeHpid))
+    die(); //empty so javascript client code stop making requests
+
+$vals = array();
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/postlist.html.php';
+$core->getTPL()->assign($vals);
+$core->getTPL()->draw('profile/postlist');
+
 ?>

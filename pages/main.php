@@ -12,8 +12,6 @@ foreach($banners as $ban)
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-$limit = isset($_GET['limit']) && $core->limitControl($_GET['limit'],10) ? $_GET['limit'] : 10;
-
 $longlangs  = $core->availableLanguages(1);
 
 $vals['langs_a'] = array();
