@@ -602,7 +602,7 @@ class comments extends project
     }
     
     public function getThumbs($hcid, $prj = false) {
-        $table = "comment_".($prj ? "groups_thumbs" : "thumbs");
+        $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
 
         $ret = parent::query(
             [
@@ -626,7 +626,8 @@ class comments extends project
         if (!parent::isLogged()) {
           return 0;
         }
-        $table = "comment_".($prj ? "groups_thumbs" : "thumbs");
+
+        $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
 
         $ret = parent::query(
             [
@@ -652,8 +653,8 @@ class comments extends project
           return false;
         }
 
-        $table = "comment_".($prj ? "groups_thumbs" : "thumbs");
-
+        $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
+        
         $ret = parent::query(
             [
               'WITH new_values (hcid, "user", vote) AS ( VALUES(CAST(:hcid AS int8), CAST(:user AS int8), CAST(:vote AS int8))),
