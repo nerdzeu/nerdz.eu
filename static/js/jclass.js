@@ -1236,13 +1236,13 @@ $(document).ready(function() {
     /* Se esiste img#captcha, gli da la corretta path per l'immagine */
     N.reloadCaptcha(); 
     if(typeof initGist == 'function') {
-            initGist();
+      initGist();
     }
     /*Aggiorna timestamp per status online, ogni minuto */
     var timeupdate = function() {
         if(logged) {
             N.json.post('/pages/profile/online.json.php',{},function(d) {
-                if(d.status == 'error') {
+              if(d.status == 'error') {
                 logged = false;
               }
             });
@@ -1251,74 +1251,64 @@ $(document).ready(function() {
     timeupdate();
     setInterval(timeupdate, 60000);
     
-    /*Aggiorna #pmcounter (se esiste) ogni 16 secondi se ci sono nuovi pm */
+    /*Aggiorna #pmcounter (se esiste) e invoca notifycount() */
     var pmcount = function() {
+      if(logged) {
         var v = $("#pmcounter");
-        if(v.length) {
-            N.json.post('/pages/pm/notify.json.php',{}, function(obj) {
-                v.html(obj.status == 'ok' ? obj.message : '0');
-            });
-        }
+        N.json.post('/pages/pm/notify.json.php',{}, function(obj) {
+          var pms = (obj.status == 'ok' ? obj.message : '0');
+          v.length && v.html(pms);
+          notifycount(pms);
+        });
+      }
     };
+    
+    /*Aggiorna #notifycounter (se esiste) e invoca updateTitle() */
+    var notifycount = function(pms) {
+      var v = $("#notifycounter");
+      N.json.post('/pages/profile/notify.json.php',{}, function(obj) {
+        v.length && v.html(obj.message);
+        updateTitle(pms, obj.message);
+        if(obj.status == 'error') {
+          logged = false;
+        }
+      });
+    };
+    
+    var nval = 0, pval = 0;
+    /* aggiorna il titolo e eventualmente invoca un callback */
+    var updateTitle = function(pms, not) {
+      var s = '', go = false;
+      if(!isNaN(not) && not != 0 && not != nval) {
+        document.title = document.title.replace(/\([0-9]+\)/g,'');
+        s+="(" + not + ") ";
+        go = true;
+        nval = not;
+      }
+      if(not == 0) {
+        document.title = document.title.replace(/\([0-9]+\)/g,'');
+      }
+      if(!isNaN(pms) && pms != 0 && pms != pval ) {
+        document.title = document.title.replace(/\[[0-9]+\]/g,'');
+        s+="["+ pms + "] ";
+        go = true;
+        pval = pms;
+      }
+      if(pms == 0) {
+        document.title = document.title.replace(/\[[0-9]+\]/g,'');
+      }
+      if(go) {
+        document.title = s + document.title;
+        go = false;
+      }
+      // ogni template potrà implementare un callback optionale dopo 
+      // dopo ogni modifica del titolo, per esempio per cambiare le 
+      // notifiche (usando campi diversi da #notifycounter e #pmcounter)
+      // verranno passati di default il numero di pm e notifiche
+      if($.isFunction(window.nerdzUpdateCallback)) window.nerdzUpdateCallback(nval, pval);
+    };
+    
+    //invoco pmcount (e a cascata le altre funzioni) ogni 10 secondi
     pmcount();
-    setInterval(pmcount, 16000);
-    
-    /*Aggiorna #notifycounter (se esiste) ogni 12 secondi se ci sono nuove notifiche */
-    var notifycount = function() {
-        if(logged) {
-            var v = $("#notifycounter");
-            if(v.length) {
-                N.json.post('/pages/profile/notify.json.php',{}, function(obj) {
-                    v.html(obj.message);
-                    if(obj.status == 'error') {
-                        logged = false;
-                    }
-
-                });
-            }
-        }
-    };
-    notifycount();
-    setInterval(notifycount, 12000);
-    
-    var pval = 0, nval = 0;
-    var updateTitle = function() {
-        var s = '', n = $("#notifycounter"), p = $("#pmcounter"), go = false;
-        if(n.length) {
-            var val = parseInt(n.text());
-            if(!isNaN(val)) {
-                if(val != 0 && val != nval) {
-                    document.title = document.title.replace(/\([0-9]+\)/g,'');
-                    s+="(" + val + ") ";
-                    go = true;
-                    nval = val;
-                }
-                else if(val == 0) {
-                    document.title = document.title.replace(/\([0-9]+\)/g,'');
-                }
-            }
-        }
-        
-        if(p.length) {
-            var val = parseInt(p.text());
-            if(!isNaN(val)) {
-                if(val != 0 && val != pval ) {
-                    document.title = document.title.replace(/\[[0-9]+\]/g,'');
-                    s+="["+ val + "] ";
-                    go = true;
-                    pval = val;
-                }
-                else if(val == 0) {
-                    document.title = document.title.replace(/\[[0-9]+\]/g,'');
-                }
-            }
-        }
-        
-        if(go) {
-            document.title = s + document.title;
-            go = false;
-        }
-    };
-    
-    setInterval(updateTitle,1000);
+    window.setInterval(pmcount, 10000);
 });
