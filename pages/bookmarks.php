@@ -34,7 +34,7 @@ if($prj)
              )
         :
         array(
-                "SELECT groups_bookmarks.hpid, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time, groups_posts.message, groups_posts.to, groups_posts.pid FROM groups_bookmarks INNER JOIN groups_posts ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+                "SELECT groups_bookmarks.hpid, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time, groups_posts.message, groups_posts.to, groups_posts.pid FROM groups_bookmarks INNER JOIN groups_posts ON groups_posts.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? AND CAST({$orderby} AS TEXT) LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
                 array($_SESSION['nerdz_id'],"%{$q}%")
              );
 
