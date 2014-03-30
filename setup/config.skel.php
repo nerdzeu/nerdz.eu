@@ -26,7 +26,7 @@ $configuration = [
     'MIN_LENGTH_NAME'        => 2,
     // Minimum surname  length (in characters)
     'MIN_LENGTH_SURNAME'     => 2,
-    // Length of the CAPTCHA string (in chars)
+    // Length of the CAPTCHA string (in characters)
     'CAPTCHA_LEVEL'          => 5,
 
     // Mail configuration
@@ -39,15 +39,14 @@ $configuration = [
     // SMTP server password
     'SMTP_PASS'              => 'KFC',
 
-    // Domain configuration
+    // Domain configuration. The protocol should not be included.
     // Your NERDZ hostname. If you are running NERDZ on your
-    // PC, use 'localhost'. Do NOT put the protocol (http/https).
+    // PC, use 'localhost'.
     'SITE_HOST'              => 'example.com',
     // The domain used to serve static data. If you are running
     // NERDZ on your PC, put an empty string.
     'STATIC_DOMAIN'          => 'static.example.com',
-    // The domain for the mobile version
-    // The rules defined above also apply in this case
+    // The domain used to serve the mobile version of NERDZ.
     'MOBILE_HOST'            => 'mobile.example.com',
 
     // Minification configuration
@@ -56,8 +55,8 @@ $configuration = [
     // minified. This could lead to problems if you haven't a
     // proper installation of uglifyjs and csstidy. Disable the
     // minification if you don't need it or don't want to install
-    // uglifyjs and csstidy.
-    'MINIFICATION_ENABLED'   => false, // Default value: true
+    // uglifyjs and csstidy. Enabled by default.
+    'MINIFICATION_ENABLED'   => false,
     // Specify the command used to minify JS/CSS files.
     // %path% will be replaced with the file to be minified.
     // Comment these options if the default commands are okay for you.
@@ -66,25 +65,22 @@ $configuration = [
 
     // Misc configuration
     // True if you want to enable Redis session sharing. Disable it
-    // if you don't have predis or a Redis server.
-    'REDIS_ENABLED'          => true, // Default value: true
-    // Put the IDs for the special profiles 'users news' and
-    // 'deleted users'. NERDZ will work fine even if those
-    // IDs do not exist, until someone changes nicks or deletes himself.
-    'USERS_NEWS'             => 2,
-    'DELETED_USERS'          => 3,
-    'ISSUE_BOARD'            => 106,
-    'ISSUE_GIT_KEY'          => 'Get the key from your GitHub account',
-    // Now NERDZ features an automatic versioning system based on 
-    // GIT revision hashes. However, you need to specify the path
-    // to the git executable if you want to enable it. 
-    // Feel free to put false (or comment this) if you don't need it.
-    'GIT_PATH'               => '/usr/bin/git',
-    // True if you want to connect to pushed (github.com/mcilloni/pushed) to serve push notifications to client apps like 
-    // NerdzMessenger (github.com/mcilloni/NerdzMessenger).
+    // if you don't have predis or a Redis server. Enabled by default.
+    'REDIS_ENABLED'          => true,
+    // IDs of special profiles/project.
+    // NERDZ will work if those IDs do not exist, until something
+    // which requires them is used. (like changing a nick, or deleting users)
+    'USERS_NEWS'             => 2,   // Used to show nick changes
+    'DELETED_USERS'          => 3,   // Contains the posts of deleted users
+    'ISSUE_BOARD'            => 106, // ID of the board used to report bugs
+    // The key used to post issues to GitHub. Get it from your GitHub account.
+    'ISSUE_GIT_KEY'          => '...',
+    // True if you want to connect to pushed (http://git.io/hJ9-rg)
+    // to serve push notifications to client apps like NerdzMessenger
+    // (http://git.io/29fYbg)
     'PUSHED_ENABLED'         => true,
-    // PHP client supports only local pushed instances on IP (no UNIX sockets right now)
-    // This parameter indicates IP version to use to connect to pushed (default: 6)
+    // PHP client supports only local pushed instances on IP.
+    // This parameter specifies the IP version to use to connect to pushed.
     'PUSHED_IP6'             => true,
     'PUSHED_PORT'            => '5667'
 ];
