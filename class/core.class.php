@@ -749,9 +749,10 @@ class phpCore
         $cache = 'NERDZVersion' . SITE_HOST;
         if (apc_exists ($cache))
             return apc_fetch ($cache);
-        if (GIT_PATH === false || !file_exists ($_SERVER['DOCUMENT_ROOT'] . '/.git'))
+        if (!is_dir ($_SERVER['DOCUMENT_ROOT'] . '/.git') ||
+            !file_exists ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'))
             return 'null';
-        $revision = exec (GIT_PATH . ' --git-dir=' . escapeshellarg ($_SERVER['DOCUMENT_ROOT'] . '/.git') . ' rev-parse --short HEAD');
+        $revision = substr (file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'), 0, 7);
         if (strlen ($revision) != 7)
             return 'null';
         @apc_store ($cache, $revision, 5400); // store the version for 1.5 hours
