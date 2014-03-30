@@ -52,7 +52,7 @@ else
              )
         :
         array(
-                "SELECT bookmarks.hpid, EXTRACT(EPOCH FROM bookmarks.time) AS time, posts.message, posts.to, posts.pid FROM bookmarks INNER JOIN posts ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? AND {$orderby} LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+                "SELECT bookmarks.hpid, EXTRACT(EPOCH FROM bookmarks.time) AS time, posts.message, posts.to, posts.pid FROM bookmarks INNER JOIN posts ON posts.hpid = bookmarks.hpid WHERE bookmarks.from = ? AND CAST({$orderby} AS TEXT) LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
                 array($_SESSION['nerdz_id'],"%{$q}%")
              );
 
