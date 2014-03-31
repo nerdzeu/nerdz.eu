@@ -588,7 +588,7 @@ CREATE TABLE comment_thumbs (
   CONSTRAINT chkVote CHECK("vote" IN (-1, 0, 1))
 );
 
-CREATE TABLE comment_groups_thumbs (
+CREATE TABLE groups_comment_thumbs (
   "hcid" int8 NOT NULL,
   "user" int8 NOT NULL,
   "vote" int2 NOT NULL,
