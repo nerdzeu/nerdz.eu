@@ -132,7 +132,6 @@ class messages extends phpCore
         $str = preg_replace_callback('#\[url=(.+?)\](.+?)\[/url\]#im',function($m) use ($validURL) {
                 return $validURL($m);
             },$str);
-
         $str = preg_replace_callback('#\[url\](.+?)\[/url\]#im',function($m) use ($validURL) {
                 return $validURL($m);
             },$str);
@@ -162,7 +161,6 @@ class messages extends phpCore
                 },$str);
 
         $str = preg_replace_callback('#\[list\](.+?)\[\/list\]#im',function($m) {
-
                 $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[1]))));
                 if(empty($arr))
                     return $m[0];
@@ -176,7 +174,6 @@ class messages extends phpCore
                 },$str,20); //ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#im', function($m) {
-
                 $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
                 if(empty($arr))
                     return $m[0];
@@ -229,10 +226,16 @@ class messages extends phpCore
 
                 return $ret;
                 
-                },$str,10);
+        },$str,10);
 
-        while(preg_match('#\[quote=(.+?)\](.+?)\[/quote]#im',$str))
-            $str = preg_replace_callback('#\[quote=(.+?)\](.+?)\[/quote]#im',function($m) use($domain) {
+        // Quote in comments, new version
+        while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', $str))
+            $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', function($m) {
+                    return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
+                }, $str, 1);
+
+        while(preg_match('#\[quote=(.+?)\](.+?)\[/quote\]#im',$str))
+            $str = preg_replace_callback('#\[quote=(.+?)\](.+?)\[/quote\]#im',function($m) use($domain) {
                 return '<div class="quote">
                     <div style="font-weight: bold">'.$m[1].':</div>
                     <span style="float: left; margin-top: 5px">
@@ -245,10 +248,10 @@ class messages extends phpCore
                         <img src="'.$domain.'/static/images/cquotes.gif" alt="cquote" width="20" height="11" />
                     </span>
                 </div>';
-                },$str,1);
+            },$str,1);
 
-        while(preg_match('#\[quote\](.+?)\[/quote]#im',$str))
-            $str = preg_replace_callback('#\[quote\](.+?)\[/quote]#im',function($m) use($domain) {
+        while(preg_match('#\[quote\](.+?)\[/quote\]#im',$str))
+            $str = preg_replace_callback('#\[quote\](.+?)\[/quote\]#im',function($m) use($domain) {
                 return '<div class="quote">
                     <span style="float: left; margin-top: 5px">
                         <img src="'.$domain.'/static/images/oquotes.gif" alt="quote" width="20" height="11" />
@@ -260,15 +263,9 @@ class messages extends phpCore
                         <img src="'.$domain.'/static/images/cquotes.gif" alt="cquote" width="20" height="11" />
                     </span>
                 </div>';
-                },$str,1);
+            },$str,1);
 
-        // Quote in comments, new version
-        while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', $str))
-            $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', function($m) {
-                    return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
-                }, $str, 1);
-
-        while(preg_match('#\[spoiler\](.+?)\[/spoiler]#im',$str))
+        while(preg_match('#\[spoiler\](.+?)\[/spoiler\]#im',$str))
             $str = preg_replace('#\[spoiler\](.+?)\[/spoiler]#im',
             '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">SPOILER:</span>
@@ -276,7 +273,7 @@ class messages extends phpCore
                 <div style="display:none; margin-left:3%;overflow:hidden">$1</div>
             </div>',$str,1);
 
-        while(preg_match('#\[spoiler=(.+?)\](.+?)\[/spoiler]#im',$str))
+        while(preg_match('#\[spoiler=(.+?)\](.+?)\[/spoiler\]#im',$str))
             $str = preg_replace('#\[spoiler=(.+?)\](.+?)\[/spoiler]#im',
             '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">$1:</span>
