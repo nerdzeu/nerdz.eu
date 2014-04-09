@@ -17,3 +17,5 @@ y_key_85b60785628865ce.html
 *.orig
 /class/vendor/
 composer.lock
+*.jade
+*.less
