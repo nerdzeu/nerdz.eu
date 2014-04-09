@@ -30,7 +30,7 @@ $msg.= $core->lang('USERNAME').': '.$obj->username.'<br />';
 $msg.= $core->lang('PASSWORD').': '.$pass.'<br />';
 $msg.= "IP: {$_SERVER['REMOTE_ADDR']}";
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/phpmailer/class.phpmailer.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
 
 $mail = new PHPMailer();
 $mail->IsSMTP();
