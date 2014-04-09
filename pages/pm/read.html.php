@@ -26,7 +26,8 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         $doShowForm = !isset ($_POST['pmid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']);
         if (!$doShowForm && empty ($conv))
             die();
-        $vals['to_n'] = ( $_SESSION['nerdz_id'] != $to ? $core->getUserName ($to) : $core->getUserName ($from) );
+        $vals['toid_n'] = ( $_SESSION['nerdz_id'] != $to ? $to : $from );
+        $vals['to_n'] = $core->getUserName ($vals['toid_n']);
         if (!$vals['to_n']) die ($core->lang ('ERROR'));
         $vals['list_a'] = $conv;
         $vals['pmcount_n'] = $core->countPms ($from, $to);
