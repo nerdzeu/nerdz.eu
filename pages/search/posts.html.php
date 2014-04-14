@@ -47,12 +47,11 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
     
     case 'project':
         $group = true;
-        if(empty($blist))
-            $glue = '';
-        else
+        $glue = ' AND "groups_posts"."to" NOT IN (SELECT "counter" FROM "groups" WHERE "visible" IS FALSE) ';
+        if(!empty($blist))
         {
             $imp_blist = implode(',',$blist);
-            $glue = 'AND "groups_posts"."from" NOT IN ('.$imp_blist.')';
+            $glue .= ' AND "groups_posts"."from" NOT IN ('.$imp_blist.') ';
         }
 
         if(!($k = $core->query(
