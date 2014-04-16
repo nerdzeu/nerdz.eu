@@ -38,7 +38,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         }
 
         if(!($k = $core->query(
-                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "posts" WHERE "message" LIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($beforeHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
+                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "posts" WHERE "message" ILIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($beforeHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
                         $query_param
                 ),db::FETCH_STMT))
             )
@@ -55,7 +55,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         }
 
         if(!($k = $core->query(
-                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "groups_posts" WHERE "message" LIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($beforeHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
+                    array('SELECT "from","to","pid","message",EXTRACT(EPOCH FROM "time") AS time,"hpid" FROM "groups_posts" WHERE "message" ILIKE :like '.$glue.($specific ? ' AND "to" = :to' : '').($beforeHpid ? ' AND "hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit,
                     $query_param
                 ),db::FETCH_STMT))
             )
