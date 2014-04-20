@@ -514,7 +514,7 @@ class messages extends phpCore
         }
 
         $q = $prj ?
-        'SELECT groups.visible, groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND "visible" = TRUE ORDER BY groups_posts.hpid DESC LIMIT '.$limit :
+        'SELECT groups.visible, groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND ("visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = groups_posts."to")) OR \''.$_SESSION['nerdz_id'].'\' = groups.owner ) ORDER BY groups_posts.hpid DESC LIMIT '.$limit :
         'SELECT posts.hpid, posts.from, posts.to, posts.pid, posts.message, posts.notify, EXTRACT(EPOCH FROM posts.time) AS time,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE '.$glue.' ORDER BY posts.hpid DESC LIMIT '.$limit;
 
         if(!($result = parent::query($q,db::FETCH_STMT)))
@@ -551,7 +551,7 @@ class messages extends phpCore
         }
 
         $q = $prj ?
-        array('SELECT groups.visible, groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND "visible" = TRUE AND "hpid" < :hpid ORDER BY groups_posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid)) :
+        array('SELECT groups.visible, groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND ("visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = groups_posts."to")) OR \''.$_SESSION['nerdz_id'].'\' = groups.owner ) AND "hpid" < :hpid ORDER BY groups_posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid)) :
         array('SELECT posts.hpid, posts.from, posts.to, posts.pid, posts.message, posts.notify, EXTRACT(EPOCH FROM posts.time) AS time,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE '.(empty($glue) ? '' : "{$glue} AND ").' "hpid" < :hpid ORDER BY posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid));
 
         if(!($result = parent::query($q,db::FETCH_STMT)))
