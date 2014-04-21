@@ -3,8 +3,6 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 $core = new messages();
 
-header('Content-Type: text/plain; charset=utf-8');
-
 $ncode = isset($_GET['ncode']) && is_numeric($_GET['ncode']) && intval($_GET['ncode']) > 0 ? $_GET['ncode'] : 1;
 --$ncode;
 
@@ -41,5 +39,24 @@ elseif(isset($pcid) || isset($gcid))
 else
     die();
 $codes = $core->getCodes($o->message);
-die(html_entity_decode(isset($codes[$ncode]['code']) ? $codes[$ncode]['code'] : 'Wrong get parameters',ENT_QUOTES,'UTF-8'));
+if ( isset($codes[$ncode]['code']) && isset($codes[$ncode]['lang']) ) {
+    switch(strtolower(trim($codes[$ncode]['lang']))) {
+        case 'js':
+        case 'javascript':
+        case 'jquery':
+            header('Content-type: application/javascript; charset=utf-8');
+        break;
+
+        case 'css':
+            header('Content-Type: text/css; charset=utf-8');
+        break;
+
+        default:
+            header('Content-Type: text/plain; charset=utf-8');
+        break;
+    }
+    die(html_entity_decode($codes[$ncode]['code'],ENT_QUOTES,'UTF-8'));
+}
+header('Content-Type: text/plain; charset=utf-8');
+die('Wrong GET parameters');
 ?>
