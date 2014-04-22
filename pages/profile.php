@@ -104,7 +104,7 @@ else
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';//ok qui
         $vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
 
-        $f = $core->getFollow($info->counter);
+        $f = $core->getFriends($info->counter);
 
         if(!empty($f))
         {
@@ -116,13 +116,12 @@ else
             $amigos = array();
             $c = 0;
             foreach($f as $val)
-                if($core->areFriends($val,$info->counter))
-                    if(($name = $core->getUserName($val)))
-                    {
-                        $amigos[$c]['username_n'] = $name;
-                        $amigos[$c]['username4link_n'] = phpCore::userLink($name);
-                        ++$c;
-                    }
+                if(($name = $core->getUserName($val)))
+                {
+                    $amigos[$c]['username_n'] = $name;
+                    $amigos[$c]['username4link_n'] = phpCore::userLink($name);
+                    ++$c;
+                }
 
             usort($amigos,'sortbyusername');
         }

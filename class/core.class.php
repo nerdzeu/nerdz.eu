@@ -393,6 +393,13 @@ class phpCore
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    public function getFriends($id) {
+        if(!($stmt = $this->query(array('select "to" from (select "to" from follow where "from" = :id) as f inner join (select "from" from follow where "to" = :id) as e on f.to = e.from', array(':id' => $id)), db::FETCH_STMT)))
+            return [];
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     public function isOnline($id)
     {
         if(!($o = $this->query(array('SELECT ("last" + INTERVAL \'300 SECONDS\') > NOW() AS online,"viewonline" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
@@ -400,12 +407,6 @@ class phpCore
         return $o->viewonline && $o->online;
     }
 
-    public function areFriends($uno,$due)
-    {
-        $q = 'SELECT "from" FROM "follow" WHERE "from" = :from AND "to" = :to';
-        return $this->query(array($q,array(':from' => $uno, ':to' => $due)),db::ROW_COUNT) && $this->query(array($q,array(':from' => $due, ':to' => $uno)),db::ROW_COUNT);
-     }
-    
     public function closedProfile($id)
     {
         return $this->query(array('SELECT "counter" FROM "closed_profiles" WHERE "counter" = :id',array(':id' => $id)),db::ROW_COUNT);
