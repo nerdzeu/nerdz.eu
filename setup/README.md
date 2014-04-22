@@ -58,6 +58,8 @@ Setup
   ```sh
   composer.phar install
   ```
+- Setup your tracking script (if you want to track your users visits, otherwise don't create this file) adding your js tracking code in `/data/tracking.js` _Without the <script></script> tags_
+- Setup your advertisements. Create the file `/data/banner.list`, look at the sample in this folder to understand the syntax. If you don't want ads, don't create it.
 - Start everything and load your local NERDZ, then create your account (by registering).
 - It works? Yay! It doesn't work? See the next section.
 

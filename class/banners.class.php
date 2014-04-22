@@ -15,8 +15,9 @@ final class banners
         if(apc_exists($cache))
            $this->banners = unserialize(apc_fetch($cache));
         else
-        {    
-            if(($arr = file ($_SERVER['DOCUMENT_ROOT'].'/data/banner.list', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)))
+        {
+            $path = $_SERVER['DOCUMENT_ROOT'].'/data/banner.list';
+            if(file_exists($path) && ($arr = file ($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)))
             {
                 foreach ($arr as $line)
                 {
