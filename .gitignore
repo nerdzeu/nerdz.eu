@@ -4,7 +4,7 @@ ssltmp/*
 *.jsmin.js
 data/errlog.txt
 data/tracking.js
-data/banners.list
+data/banner.list
 class/config/index.php
 utils/*
 google*
