@@ -88,8 +88,8 @@ $configuration = [
     // and set up your webserver to proxy requests from
     // https://SITE_HOST/secure/image/HASH?url=ENCODED_URL to Camo,
     // then you must put your Camo private key here.
-    // By default it is set to an empty string and your non-secure
-    // SSL images won't be displayed.
+    // By default it is set to an empty string and your images will be
+    // routed to our trusted public SSL proxy.
     //'CAMO_KEY'               => "THAT-CAMO-KEY",
     // True if every login request should be sent via HTTPS.
     // You must configure your webserver to send an access-control header

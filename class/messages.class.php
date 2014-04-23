@@ -298,8 +298,10 @@ class messages extends phpCore
                     },$m[1]);
                 }
 
-                // url hosted on a non ssl host - fallback on local http proxy
-                return $domain.'/secure/image/'.hash_hmac('sha1', $m[1], CAMO_KEY).'?url='.urlencode($m[1]);
+                // url hosted on a non ssl host - use camo or our trusted proxy
+                return CAMO_KEY == '' ?
+                    'https://i0.wp.com/' . preg_replace ('#^http://|^ftp://#i', '', strip_tags($m[1])) :
+                    $domain.'/secure/image/'.hash_hmac('sha1', $m[1], CAMO_KEY).'?url='.urlencode($m[1]);
             }
             return strip_tags($m[1]);
         };
