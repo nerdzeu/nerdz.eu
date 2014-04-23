@@ -84,18 +84,18 @@ N.json = function()
     this.login = function(jObj,done)
     {
         var forceSSL = location.protocol !== 'https:' && 
-            ( 'undefined' != typeof(window.SSLLogin) && window.SSLLogin === true &&
-              'undefined' != typeof(window.sessionID) && window.sessionID !== '');
-
-        this.post(!forceSSL ? 
-                // if I'm on the right domain, or SSL is disabled
-                '/pages/profile/login.json.php' :
-                // if SSL is enabled and I'm on the wrong domain
-                'https://' + ( ('undefined' != typeof(window.SSLDomain) && window.SSLDomain !== '') ? window.SSLDomain : document.location.host ) + '/pages/profile/login.json.php?force_ssl=true',jObj,function(d) {
-                if(forceSSL) {
-                    document.cookie = window.sessionID + "=" + d.session;
-                }
-            done(d);
+            typeof Nssl    !== 'undefined' && Nssl.login === true &&
+            Nssl.sessionId !== '';
+        var req_url  =
+            forceSSL ? (
+                'https://' +
+                (Nssl.domain !== '' ? Nssl.domain : document.location.host) +
+                '/pages/profile/login.json.php?force_ssl=true'
+            ) : '/pages/profile/login.json.php';
+        this.post (req_url, jObj, function(d) {
+            if (forceSSL)
+                document.cookie = Nssl.sessionId + "=" + d.session;
+            done (d);
         });
     };
 
