@@ -283,25 +283,25 @@ class messages extends phpCore
 
         $imgValidUrl = function($m,$domain,$ssl) {
             $m[1] = trim($m[1]);
-            return 
-                (!phpCore::isValidURL($m[1]) ?
-                $domain.'/static/images/invalidImgUrl.php' :
-                (
-                    $ssl ? 
-                        (
-                          preg_match('#^https://#i',$m[1]) ?
-                          strip_tags($m[1]) :
-                          'https://i0.wp.com/'.
-                          (
-                            preg_match("#^http://(i\.)?imgur\.com#i", $m[1]) ?
-                            'www.'.preg_replace('#^http://|^ftp://#i','', strip_tags($m[1])) :
-                            preg_replace('#^http://|^ftp://#i','',strip_tags($m[1]))
-                          )
-                        )
-                        :
-                        strip_tags($m[1])
-                )
-            );
+            if (!phpCore::isValidURL($m[1]))
+                return $domain.'/static/images/invalidImgUrl.php';
+
+            if($ssl) {
+                // valid ssl url
+                if(preg_match('#^https://#i',$m[1]))
+                    return strip_tags($m[1]);
+
+                // imgur without ssl
+                if(preg_match("#^http://(www\.)?(i\.)?imgur\.com/[a-z0-9]+\..{3}$#i",$m[1])) {
+                    return preg_replace_callback("#^http://(?:www\.)?(?:i\.)?imgur\.com/([a-z0-9]+\..{3})$#i", function($matches) {
+                        return 'https://i.imgur.com/'.$matches[1];
+                    },$m[1]);
+                }
+
+                // url hosted on a non ssl host - fallback on local http proxy
+                return $domain.'/secure/image/'.hash_hmac('sha1', $m[1], CAMO_KEY).'?url='.urlencode($m[1]);
+            }
+            return strip_tags($m[1]);
         };
 
         if($truncate)
