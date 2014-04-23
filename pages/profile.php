@@ -9,6 +9,7 @@ $vals['id_n'] = $info->counter;
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
 $banners = (new banners())->getBanners();
+$vals['banners_a'] = [];
 shuffle($banners);
 foreach($banners as $ban)
     $vals['banners_a'][$ban[1]] = $ban[2];

@@ -35,7 +35,10 @@ $CONSTANTS = [
     'SMTP_SERVER'          => -1,
     'SMTP_PORT'            => -1,
     'SMTP_USER'            => -1,
-    'SMTP_PASS'            => -1
+    'SMTP_PASS'            => -1,
+    'CAMO_KEY'             => -1,
+    'LOGIN_SSL_ONLY'       => -1,
+    'HTTPS_DOMAIN'         => -1
 ];
 
 foreach ($configuration as $const_key => $const_val)

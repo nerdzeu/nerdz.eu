@@ -3,7 +3,9 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 $core = new phpCore();
 
-if(!$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
+$forcedSSL = isset($_GET['force_ssl']);
+
+if(!$forcedSSL && !$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
     die($core->jsonResponse('error',$core->lang('ERROR').': CSRF'));
     
 if($core->isLogged())
@@ -51,8 +53,13 @@ if($result->rowCount() == 1)
     $ok = true;
 }
 
-die (
-     $ok ? $core->jsonResponse('ok',$core->lang('LOGIN_OK')) : $core->jsonResponse('error',$core->lang('WRONG_USER_OR_PASSWORD'))
-    );
-
+if($ok) {
+    if($forcedSSL) {
+        header('Content-type: application/json');
+        die(json_encode(array('status' => 'ok', 'message' => $core->lang('LOGIN_OK'), 'session' => session_id()),JSON_FORCE_OBJECT));
+    }
+    else
+        die($core->jsonResponse('ok',$core->lang('LOGIN_OK')));
+}
+die($core->jsonResponse('error',$core->lang('WRONG_USER_OR_PASSWORD')));
 ?>

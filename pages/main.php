@@ -6,6 +6,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';
 $vals = array();
 
 $banners = (new banners())->getBanners();
+$vals['banners_a'] = [];
 shuffle($banners);
 foreach($banners as $ban)
     $vals['banners_a'][$ban[1]] = $ban[2];

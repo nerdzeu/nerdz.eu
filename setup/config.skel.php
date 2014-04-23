@@ -82,6 +82,17 @@ $configuration = [
     // PHP client supports only local pushed instances on IP.
     // This parameter specifies the IP version to use to connect to pushed.
     'PUSHED_IP6'             => true,
-    'PUSHED_PORT'            => '5667'
+    'PUSHED_PORT'            => '5667',
+
+    // If you have configured a camo proxy server (https://github.com/atmos/camo)
+    // and you configured your webserver to reverse proxy requests from https://SITE_HOST/secure/image/hash?url=encodedurl
+    // to localhost:camoport, put your private shared key here.
+    'CAMO_KEY'               => "THAT-CAMO-KEY",
+
+    // If you want to force the users login to be only via ssl, after you setted up
+    // your server to accept CORS request, set this value to true
+    'LOGIN_SSL_ONLY'        => false,
+    //If you enable login only via ssl and you have only one domain with a valid ssl certificate, write down the domain name here. Otherwise we will assume that every subdomain (like the mobile one) will have a valid ertificate
+    'HTTPS_DOMAIN'          => 'secure.example.com'
 ];
 ?>

@@ -71,11 +71,14 @@ foreach($headers['js'] as $var) {
     }
     echo unserialize(apc_fetch('tracking_js'));
 
+/* BEGIN SSL_LOGIN: Variabled used by the javascript API to control if login must be only via ssl */
+    echo 'var SSLLogin = '. (LOGIN_SSL_ONLY ? 'true' : 'false').', sessionID="'.session_name().'", SSLDomain = "'. HTTPS_DOMAIN.'";';
+/* END SSL_LOGIN */
 /* BEGIN NERDZ_VERSION */
 if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true) {
     unset($headers['js']['staticData']['outputVersion']);
 ?>
-        var Nversion = '<?=$core->getVersion()?>';
+    var Nversion = '<?=$core->getVersion()?>';
 <?php
 } /* END NERDZ_VERSION */
 /* BEGIN NERDZ_STATIC_DATA */
