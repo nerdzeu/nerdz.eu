@@ -63,17 +63,14 @@ foreach($headers['js'] as $var) {
     </script>
     <script type="application/javascript" src="http<?php echo $is_ssl ? 's://c328740.ssl.cf1.rackcdn.com' : '://cdn.mathjax.org' ?>/mathjax/latest/MathJax.js"></script>
     <script type="application/javascript">
-        var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-16114171-2']);
-            _gaq.push(['_setDomainName', 'nerdz.eu']);
-            _gaq.push(['_setAllowHash', 'false']);
-            _gaq.push(['_trackPageview']);
-            (function() {
-                 var ga = document.createElement('script'); ga.type = 'application/javascript'; ga.async = true;
-                 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-             })();
 <?php
+
+    if(!apc_exists('tracking_js')) {
+        $trjs = $_SERVER['DOCUMENT_ROOT'].'/data/tracking.js';           
+        @apc_store('tracking_js', serialize(file_exists($trjs) ? file_get_contents($trjs) : ''));
+    }
+    echo unserialize(apc_fetch('tracking_js'));
+
 /* BEGIN NERDZ_VERSION */
 if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true) {
     unset($headers['js']['staticData']['outputVersion']);

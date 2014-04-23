@@ -58,6 +58,8 @@ Setup
   ```sh
   composer.phar install
   ```
+- Setup your tracking script (if you want to track your users visits, otherwise don't create this file) adding your js tracking code in `/data/tracking.js` _Without the <script></script> tags_
+- Setup your advertisements. Create the file `/data/banner.list`, look at the sample in this folder to understand the syntax. If you don't want ads, don't create it.
 - Start everything and load your local NERDZ, then create your account (by registering).
 - It works? Yay! It doesn't work? See the next section.
 
@@ -129,6 +131,16 @@ We are using some C binaries for that, and using/compiling those binaries is not
 ### I'm getting some weird exceptions from the Groovy script, something about timestamps.
 
 Remember to set your timezone to UTC. If it still doesn't work, please open an issue.
+
+### HTTPS does not work on nginx. It does not load the assets!
+
+We are using the `$_SERVER['HTTPS']` variable to check if the user is using HTTPS to browse the website. Unfortunately, this variable is not set when using nginx (and this leads to the errors you are encountering).
+
+However, the fix is quite simple. Locate the HTTPS block in your configuration, and find the lines starting with `fastcgi_`. Add this below:
+
+```nginx
+fastcgi_param HTTPS on;
+```
 
 ### I got some other problem!
 
