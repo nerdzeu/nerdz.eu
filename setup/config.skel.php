@@ -52,7 +52,7 @@ $configuration = [
     // Minification configuration
     // NERDZ uses an automatic template minification system, this
     // means that every static file of a template is automagically
-    // minified. This could lead top roblems if you haven't a
+    // minified. This could lead to problems if you haven't a
     // proper installation of uglifyjs and csstidy. Disable the
     // minification if you don't need it or don't want to install
     // uglifyjs and csstidy. Enabled by default.
