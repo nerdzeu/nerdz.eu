@@ -52,7 +52,7 @@ $configuration = [
     // Minification configuration
     // NERDZ uses an automatic template minification system, this
     // means that every static file of a template is automagically
-    // minified. This could lead to problems if you haven't a
+    // minified. This could lead top roblems if you haven't a
     // proper installation of uglifyjs and csstidy. Disable the
     // minification if you don't need it or don't want to install
     // uglifyjs and csstidy. Enabled by default.
@@ -83,16 +83,23 @@ $configuration = [
     // This parameter specifies the IP version to use to connect to pushed.
     'PUSHED_IP6'             => true,
     'PUSHED_PORT'            => '5667',
-
-    // If you have configured a camo proxy server (https://github.com/atmos/camo)
-    // and you configured your webserver to reverse proxy requests from https://SITE_HOST/secure/image/hash?url=encodedurl
-    // to localhost:camoport, put your private shared key here.
-    'CAMO_KEY'               => "THAT-CAMO-KEY",
-
-    // If you want to force the users login to be only via ssl, after you setted up
-    // your server to accept CORS request, set this value to true
-    'LOGIN_SSL_ONLY'        => false,
-    //If you enable login only via ssl and you have only one domain with a valid ssl certificate, write down the domain name here. Otherwise we will assume that every subdomain (like the mobile one) will have a valid ertificate
-    'HTTPS_DOMAIN'          => 'secure.example.com'
+    // SSL configuration
+    // If you have configured a Camo SSL proxy server (http://git.io/YuvCpQ)
+    // and set up your webserver to proxy requests from
+    // https://SITE_HOST/secure/image/HASH?url=ENCODED_URL to Camo,
+    // then you must put your Camo private key here.
+    // By default it is set to an empty string and your non-secure
+    // SSL images won't be displayed.
+    //'CAMO_KEY'               => "THAT-CAMO-KEY",
+    // True if every login request should be sent via HTTPS.
+    // You must configure your webserver to send an access-control header
+    // to allow requests to the secure domain from the non-secure one.
+    // It is set to false by default.
+    //'LOGIN_SSL_ONLY'         => true,
+    // If your SSL certificate is for just one domain (example.com),
+    // you should put the only secure domain name here. Otherwise, we
+    // will assume that you have a wildcard certificate that will work
+    // for every subdomain (*.example.com).
+    //'HTTPS_DOMAIN'           => 'secure.example.com'
 ];
 ?>
