@@ -83,13 +83,15 @@ N.json = function()
     */
     this.login = function(jObj,done)
     {
-        var forceSSL = location.protocol !== 'https:' && ( 'undefined' != typeof(window.SSLLogin) && window.SSLLogin === true && 'undefined' != typeof(window.sessionID) && window.sessionID !== '');
+        var forceSSL = location.protocol !== 'https:' && 
+            ( 'undefined' != typeof(window.SSLLogin) && window.SSLLogin === true &&
+              'undefined' != typeof(window.sessionID) && window.sessionID !== '');
 
         this.post(!forceSSL ? 
                 // if I'm on the right domain, or SSL is disabled
                 '/pages/profile/login.json.php' :
                 // if SSL is enabled and I'm on the wrong domain
-                'https://' + document.location.host + '/pages/profile/login.json.php?force_ssl=true',jObj,function(d) {
+                'https://' + ( ('undefined' != typeof(window.SSLDomain) && window.SSLDomain !== '') ? window.SSLDomain : document.location.host ) + '/pages/profile/login.json.php?force_ssl=true',jObj,function(d) {
                 if(forceSSL) {
                     document.cookie = window.sessionID + "=" + d.session;
                 }

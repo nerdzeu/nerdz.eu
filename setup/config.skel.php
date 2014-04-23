@@ -91,6 +91,8 @@ $configuration = [
 
     // If you want to force the users login to be only via ssl, after you setted up
     // your server to accept CORS request, set this value to true
-    'LOGIN_SSL_ONLY'        => false
+    'LOGIN_SSL_ONLY'        => false,
+    //If you enable login only via ssl and you have only one domain with a valid ssl certificate, write down the domain name here. Otherwise we will assume that every subdomain (like the mobile one) will have a valid ertificate
+    'HTTPS_DOMAIN'          => 'secure.example.com'
 ];
 ?>
