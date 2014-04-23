@@ -82,6 +82,11 @@ $configuration = [
     // PHP client supports only local pushed instances on IP.
     // This parameter specifies the IP version to use to connect to pushed.
     'PUSHED_IP6'             => true,
-    'PUSHED_PORT'            => '5667'
+    'PUSHED_PORT'            => '5667',
+
+    // If you have configured a camo proxy server (https://github.com/atmos/camo)
+    // and you configured your webserver to reverse proxy requests from https://SITE_HOST/secure/image/hash?url=encodedurl
+    // to localhost:camoport, put your private shared key here.
+    'CAMO_KEY'               => "THAT-CAMO-KEY"
 ];
 ?>
