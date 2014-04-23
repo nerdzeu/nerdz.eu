@@ -87,6 +87,10 @@ $configuration = [
     // If you have configured a camo proxy server (https://github.com/atmos/camo)
     // and you configured your webserver to reverse proxy requests from https://SITE_HOST/secure/image/hash?url=encodedurl
     // to localhost:camoport, put your private shared key here.
-    'CAMO_KEY'               => "THAT-CAMO-KEY"
+    'CAMO_KEY'               => "THAT-CAMO-KEY",
+
+    // If you want to force the users login to be only via ssl, after you setted up
+    // your server to accept CORS request, set this value to true
+    'LOGIN_SSL_ONLY'        => false
 ];
 ?>

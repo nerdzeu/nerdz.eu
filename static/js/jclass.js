@@ -78,12 +78,21 @@ N.json = function()
     
     /**
     * User login
-    * @parameter: { username, password, setcookie, tok[ ,offline] }
+    * @parameters: { username, password, setcookie, tok[ ,offline] }
     * offline: if is set don't mark the user as online for this session
     */
     this.login = function(jObj,done)
     {
-        this.post('/pages/profile/login.json.php',jObj,function(d) {
+        var forceSSL = location.protocol !== 'https:' && ( 'undefined' != typeof(window.SSLLogin) && window.SSLLogin === true && 'undefined' != typeof(window.sessionID) && window.sessionID !== '');
+
+        this.post(!forceSSL ? 
+                // if I'm on the right domain, or SSL is disabled
+                '/pages/profile/login.json.php' :
+                // if SSL is enabled and I'm on the wrong domain
+                'https://' + document.location.host + '/pages/profile/login.json.php?force_ssl=true',jObj,function(d) {
+                if(forceSSL) {
+                    document.cookie = window.sessionID + "=" + d.session;
+                }
             done(d);
         });
     };
@@ -727,9 +736,9 @@ N.html = function()
                 if (typeof window.PR.prettyPrint == 'function')
                     window.PR.prettyPrint (
                         (typeof N.getStaticData().prettyPrintCallbackName !== 'undefined' &&
-                        typeof window[N.getStaticData().prettyPrintCallbackName] === 'function')
-                            ? window[N.getStaticData().prettyPrintCallbackName]
-                            : undefined
+                        typeof window[N.getStaticData().prettyPrintCallbackName] === 'function') ?
+                            window[N.getStaticData().prettyPrintCallbackName] :
+                            undefined
                     );
             });
     };
@@ -1283,32 +1292,32 @@ $(document).ready(function() {
     
     var pval = 0, nval = 0;
     var updateTitle = function() {
-        var s = '', n = $("#notifycounter"), p = $("#pmcounter"), go = false;
+        var s = '', n = $("#notifycounter"), p = $("#pmcounter"), go = false, val = 0;
         if(n.length) {
-            var val = parseInt(n.text());
+            val = parseInt(n.text());
             if(!isNaN(val)) {
-                if(val != 0 && val != nval) {
+                if(val !== 0 && val != nval) {
                     document.title = document.title.replace(/\([0-9]+\)/g,'');
                     s+="(" + val + ") ";
                     go = true;
                     nval = val;
                 }
-                else if(val == 0) {
+                else if(val === 0) {
                     document.title = document.title.replace(/\([0-9]+\)/g,'');
                 }
             }
         }
         
         if(p.length) {
-            var val = parseInt(p.text());
+            val = parseInt(p.text());
             if(!isNaN(val)) {
-                if(val != 0 && val != pval ) {
+                if(val !== 0 && val != pval ) {
                     document.title = document.title.replace(/\[[0-9]+\]/g,'');
                     s+="["+ val + "] ";
                     go = true;
                     pval = val;
                 }
-                else if(val == 0) {
+                else if(val === 0) {
                     document.title = document.title.replace(/\[[0-9]+\]/g,'');
                 }
             }
