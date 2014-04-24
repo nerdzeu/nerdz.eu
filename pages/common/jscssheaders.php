@@ -64,16 +64,22 @@ foreach($headers['js'] as $var) {
     <script type="application/javascript" src="http<?php echo $is_ssl ? 's://c328740.ssl.cf1.rackcdn.com' : '://cdn.mathjax.org' ?>/mathjax/latest/MathJax.js"></script>
     <script type="application/javascript">
 <?php
+if(!apc_exists('tracking_js'))
+{
+    $trjs = $_SERVER['DOCUMENT_ROOT'].'/data/tracking.js';           
+    @apc_store('tracking_js', serialize(file_exists($trjs) ? file_get_contents($trjs) : ''));
+}
+echo unserialize(apc_fetch('tracking_js'));
 
-    if(!apc_exists('tracking_js')) {
-        $trjs = $_SERVER['DOCUMENT_ROOT'].'/data/tracking.js';           
-        @apc_store('tracking_js', serialize(file_exists($trjs) ? file_get_contents($trjs) : ''));
-    }
-    echo unserialize(apc_fetch('tracking_js'));
-
-/* BEGIN SSL_LOGIN: Variabled used by the javascript API to control if login must be only via ssl */
-    echo 'var SSLLogin = '. (LOGIN_SSL_ONLY ? 'true' : 'false').', sessionID="'.session_name().'", SSLDomain = "'. HTTPS_DOMAIN.'";';
-/* END SSL_LOGIN */
+/* BEGIN SSL_VARIABLES (used by the JS API) */
+?>
+        var Nssl = {
+            login:     <?=LOGIN_SSL_ONLY ? 'true' : 'false'?>,
+            domain:    "<?=HTTPS_DOMAIN?>",
+            sessionId: "<?=session_name()?>"
+        };
+<?php
+/* END SSL_VARIABLES */
 /* BEGIN NERDZ_VERSION */
 if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true) {
     unset($headers['js']['staticData']['outputVersion']);

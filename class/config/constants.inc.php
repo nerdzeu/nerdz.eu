@@ -13,6 +13,14 @@ $CONSTANTS = [
     'PUSHED_ENABLED'       => true,
     'PUSHED_IP6'           => true,
     'PUSHED_PORT'          => 5667,
+    'MIN_LENGTH_USER'      => 2,
+    'MIN_LENGTH_PASS'      => 6,
+    'MIN_LENGTH_NAME'      => 2,
+    'MIN_LENGTH_SURNAME'   => 2,
+    'CAPTCHA_LEVEL'        => 5,
+    'CAMO_KEY'             => '',
+    'HTTPS_DOMAIN'         => '',
+    'LOGIN_SSL_ONLY'       => false,
     'MINIFICATION_JS_CMD'  => 'uglifyjs %path% -c unused=false',
     'MINIFICATION_CSS_CMD' => 'csstidy %path% --allow_html_in_templates=false --compress_colors=true --compress_font-weight=true --remove_last_\;=true --remove_bslash=true --template=highest --preserve_css=true --silent=true',
     'POSTGRESQL_HOST'      => -1, // null does not work since isset() is a faget
@@ -20,11 +28,6 @@ $CONSTANTS = [
     'POSTGRESQL_USER'      => -1,
     'POSTGRESQL_PASS'      => -1,
     'POSTGRESQL_PORT'      => -1,
-    'MIN_LENGTH_USER'      => -1,
-    'MIN_LENGTH_PASS'      => -1,
-    'MIN_LENGTH_NAME'      => -1,
-    'MIN_LENGTH_SURNAME'   => -1,
-    'CAPTCHA_LEVEL'        => -1,
     'SITE_HOST'            => -1,
     'MOBILE_HOST'          => -1,
     'STATIC_DOMAIN'        => -1,
@@ -36,9 +39,6 @@ $CONSTANTS = [
     'SMTP_PORT'            => -1,
     'SMTP_USER'            => -1,
     'SMTP_PASS'            => -1,
-    'CAMO_KEY'             => -1,
-    'LOGIN_SSL_ONLY'       => -1,
-    'HTTPS_DOMAIN'         => -1
 ];
 
 foreach ($configuration as $const_key => $const_val)
