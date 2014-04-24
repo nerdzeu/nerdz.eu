@@ -528,9 +528,9 @@ class phpCore
         return $o->mobile_template;
     }
 
-    public function getTemplate($id = null)
+    public function getTemplate($id = null, $forceMobile = null)
     {
-        if($this->isMobile()) {
+        if($this->isMobile() || $forceMobile) {
             return $this->getMobileTemplate($id);
         }
 
