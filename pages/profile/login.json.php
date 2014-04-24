@@ -48,7 +48,9 @@ if($result->rowCount() == 1)
     $_SESSION['nerdz_username'] = $obj->username;
     $_SESSION['nerdz_lang'] = $core->getUserLanguage($obj->counter);
     $_SESSION['nerdz_board_lang'] = $core->getBoardLanguage($obj->counter);
-    $_SESSION['nerdz_template'] = $core->getTemplate($obj->counter);
+    // Referer control used to set mobile template if logged in via forcedSSL from mobile host
+    $referer = $forcedSSL && isset($_SERVER['HTTP_REFERER']) ? parse_url($_SERVER['HTTP_REFERER']) : '';
+    $_SESSION['nerdz_template'] = $core->getTemplate($obj->counter, isset($referer) && $referer['host'] == MOBILE_HOST);
     $_SESSION['nerdz_mark_offline'] = isset($_POST['offline']);
     $ok = true;
 }
