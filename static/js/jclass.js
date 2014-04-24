@@ -93,8 +93,12 @@ N.json = function()
                 '/pages/profile/login.json.php?force_ssl=true'
             ) : '/pages/profile/login.json.php';
         this.post (req_url, jObj, function(d) {
-            if (forceSSL)
+            if (forceSSL) {
                 document.cookie = Nssl.sessionId + "=" + d.session;
+                for(var cookie in d.cookies) {
+                    document.cookie = d.cookies[cookie];
+                }
+            }
             done (d);
         });
     };
