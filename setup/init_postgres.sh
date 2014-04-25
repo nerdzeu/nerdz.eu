@@ -2,28 +2,29 @@
 
 set -e ;
 
-if test -z "$1" ; then
-    echo "No user specified!" 1>&2
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 existingRole db&username"
+    echo "Example: $0 postgres nerdz"
+    echo "    Existing role postgres will create a new database named nerdz and a new user with the same name"
     exit -1
 fi
 
 echo -n "Dropping if existing nerdz user and database... "
 
-dropdb -U "$1" nerdz || true
-dropuser -U "$1" nerdz || true
+dropdb   -U "$1" "$2" &> /dev/null || true
+dropuser -U "$1" "$2" &> /dev/null || true
 
 echo "Done." ; echo
-
 echo  "Creating database and user nerdz (you'll be asked for password)..."
 
-createuser -P -U "$1" -S nerdz
-createdb -U "$1"  nerdz
+createuser -P -U "$1" -S "$2" || exit -1
+createdb -U "$1" "$2" || exit -1
 
 echo "Done." ; echo
 
 echo -n "Setting variables and privileges..."
 
-psql nerdz "$1" << EOF 1>/dev/null
+psql "$2" "$1" << EOF 1>/dev/null
 
 GRANT ALL PRIVILEGES ON DATABASE nerdz TO nerdz\;
 ALTER DATABASE nerdz SET timezone = 'UTC'\;
@@ -32,15 +33,13 @@ CREATE EXTENSION pgcrypto\;
 EOF
 
 echo "Done." ; echo
-
 echo -n "Loading nerdz database schema and triggers into PostgreSQL... "
 
 if test -f postgres_schema.sql ; then
-
-    psql nerdz nerdz < postgres_schema.sql 1>/dev/null
-
+    psql "$2" "$2" < postgres_schema.sql 1>/dev/null
 else
     echo "\nNo postgres_schema.sql found in current PWD.\n (Are you in NERDZ_ROOT/setup/ ?)" 1>&2
+    exit -1
 fi
 
 echo "Done." ; echo
