@@ -31,7 +31,7 @@ if($result->rowCount() == 1)
     $obj = $result->fetch(PDO::FETCH_OBJ);
     // Referer control used to set mobile template if logged in via forcedSSL from mobile host
     $referer = $forcedSSL && isset($_SERVER['HTTP_REFERER']) ? parse_url($_SERVER['HTTP_REFERER']) : '';
-    $SSLfromMobileHost = isset($referer) && $referer['host'] == MOBILE_HOST;
+    $SSLfromMobileHost = isset($referer['host']) && $referer['host'] == MOBILE_HOST;
 
     if(isset($_POST['setcookie']))
     {
