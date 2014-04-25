@@ -97,6 +97,32 @@ class messages extends phpCore
         return $str;
     }
 
+    public static function imgValidUrl($url, $domain, $sslEnabled)
+    {
+        $url = trim($url);
+        if (!phpCore::isValidURL($url))
+            return $domain.'/static/images/invalidImgUrl.php';
+
+        if($sslEnabled) {
+            // valid ssl url
+            if(preg_match('#^https://#i',$url))
+                return strip_tags($url);
+
+            // imgur without ssl
+            if(preg_match("#^http://(www\.)?(i\.)?imgur\.com/[a-z0-9]+\..{3}$#i",$url)) {
+                return preg_replace_callback("#^http://(?:www\.)?(?:i\.)?imgur\.com/([a-z0-9]+\..{3})$#i", function($matches) {
+                    return 'https://i.imgur.com/'.$matches[1];
+                },$url);
+            }
+
+            // url hosted on a non ssl host - use camo or our trusted proxy
+            return CAMO_KEY == '' ?
+                'https://i0.wp.com/' . preg_replace ('#^http://|^ftp://#i', '', strip_tags($url)) :
+                $domain.'/secure/image/'.hash_hmac('sha1', $url, CAMO_KEY).'?url='.urlencode($url);
+        }
+        return strip_tags($url);
+    }
+
     public function bbcode($str,$truncate = null, $type = NULL,$pid = NULL,$id = NULL)
     {
         $str = str_replace("\n",'<br />',$str);
@@ -281,31 +307,6 @@ class messages extends phpCore
                 <div style="display:none; margin-left:3%;overflow:hidden">$2</div>
             </div>',$str,1);
 
-        $imgValidUrl = function($m,$domain,$ssl) {
-            $m[1] = trim($m[1]);
-            if (!phpCore::isValidURL($m[1]))
-                return $domain.'/static/images/invalidImgUrl.php';
-
-            if($ssl) {
-                // valid ssl url
-                if(preg_match('#^https://#i',$m[1]))
-                    return strip_tags($m[1]);
-
-                // imgur without ssl
-                if(preg_match("#^http://(www\.)?(i\.)?imgur\.com/[a-z0-9]+\..{3}$#i",$m[1])) {
-                    return preg_replace_callback("#^http://(?:www\.)?(?:i\.)?imgur\.com/([a-z0-9]+\..{3})$#i", function($matches) {
-                        return 'https://i.imgur.com/'.$matches[1];
-                    },$m[1]);
-                }
-
-                // url hosted on a non ssl host - use camo or our trusted proxy
-                return CAMO_KEY == '' ?
-                    'https://i0.wp.com/' . preg_replace ('#^http://|^ftp://#i', '', strip_tags($m[1])) :
-                    $domain.'/secure/image/'.hash_hmac('sha1', $m[1], CAMO_KEY).'?url='.urlencode($m[1]);
-            }
-            return strip_tags($m[1]);
-        };
-
         if($truncate)
         {
             $callBack2Param = function($m) use($ssl) {
@@ -333,8 +334,8 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[youtube\]http:\/\/youtu.be\/(.{11})\[\/youtube\]#im',$callBack1Param,$str,10);
             $str = preg_replace_callback('#\[yt\]http:\/\/youtu.be\/(.{11})\[\/yt\]#im',$callBack1Param,$str,10);
 
-            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl,$imgValidUrl) {
-                    $url = $imgValidUrl($m, $domain, $ssl);
+            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
+                    $url = messages::imgValidUrl($m[1], $domain, $ssl);
                     return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
                                     <span>
                                         '.parent::lang('IMAGES').'
@@ -367,8 +368,8 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[youtube\]http:\/\/youtu.be\/(.{11})\[\/youtube\]#im',$callBack1Param,$str);
             $str = preg_replace_callback('#\[yt\]http:\/\/youtu.be\/(.{11})\[\/yt\]#im',$callBack1Param,$str);
 
-            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl,$imgValidUrl) {
-                    return '<img src="'.$imgValidUrl($m,$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
+            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
+                    return '<img src="'.messages::imgValidUrl($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
                 },$str);
         }
 

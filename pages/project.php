@@ -35,8 +35,10 @@ else
             return (strtolower($a['username_n']) < strtolower($b['username_n'])) ? -1 : 1;
         }
 
-        $vals['photo_n'] = $info->photo;
-        $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/onErrorImg.php';
+        $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+        $domain = $ssl ? '' : STATIC_DOMAIN;
+        $vals['photo_n'] = messages::imgValidUrl($info->photo, $domain, $ssl);
+        $vals['onerrorimgurl_n'] = $domain.'/static/images/onErrorImg.php';
         $vals['id_n'] = $info->counter;
 
         $vals['name_n'] = $info->name;
