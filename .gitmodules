@@ -12,4 +12,4 @@
         url = git://github.com/nerdzeu/nerdz-template-black.git
 [submodule "class/pushed-php-client"]
 	path = class/pushed-php-client
-	url = git@github.com:mcilloni/pushed-php-client.git
+	url = git://github.com/mcilloni/pushed-php-client.git
