@@ -26,8 +26,8 @@ echo -n "Setting variables and privileges..."
 
 psql "$2" "$1" << EOF 1>/dev/null
 
-GRANT ALL PRIVILEGES ON DATABASE nerdz TO nerdz\;
-ALTER DATABASE nerdz SET timezone = 'UTC'\;
+GRANT ALL PRIVILEGES ON DATABASE $2 TO $2\;
+ALTER DATABASE $2 SET timezone = 'UTC'\;
 CREATE EXTENSION pgcrypto\;
 
 EOF
