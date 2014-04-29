@@ -200,6 +200,7 @@ class phpCore
         {
 
             if($action == db::FETCH_ERR) {
+                $this->dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
                 return $stmt->errorInfo()[1];
             }
 

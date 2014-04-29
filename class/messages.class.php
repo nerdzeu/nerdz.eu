@@ -459,25 +459,20 @@ class messages extends phpCore
         if(in_array($to,parent::getBlacklist()))
             return false;
 
-        $lastpid = $this->countMessages($to) + 1;
         $not = $_SESSION['nerdz_id'] != $to ? '1' : '0';
 
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-        return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO "posts" ("from","to","pid","message","notify", "time") VALUES (:id,:to,:lastpid,:message,:not,NOW())',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':lastpid' => $lastpid,':message' => $message,':not' => $not)),db::FETCH_ERR);
+        return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO "posts" ("from","to","message","notify", "time") VALUES (:id,:to,:message,:not,NOW())',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message,':not' => $not)),db::FETCH_ERR);
     }
 
     public function deleteMessage($hpid)
     {
-        if(
-            !($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
-            !$this->canRemovePost(array('from' => $obj->from,'to' => $obj->to)) ||
-            db::NO_ERR != parent::query(array('DELETE FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR)//il trigger "before_delete_post" gestisce elimimo comments, comments_notify
-          )
-            return false;
-
-        //NON POSSO GESTIRE L'AGGIORNAMENTO QUI SOTTO VIA TRIGGER MYSQL A CAUSA DI UNA SUA LIMITAZIONE
-        return db::NO_ERR == parent::query(array('UPDATE "posts" SET "pid" = "pid" -1 WHERE "pid" > :pid AND "to" = :to',array(':pid' => $obj->pid, ':to' => $obj->to)),db::FETCH_ERR);
+        return (
+            ($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) &&
+            $this->canRemovePost(array('from' => $obj->from,'to' => $obj->to)) &&
+            db::NO_ERR == parent::query(array('DELETE FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) // triggers fix the rest
+          );
     }
 
     public function editMessage($hpid,$message)

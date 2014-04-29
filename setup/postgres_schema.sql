@@ -388,6 +388,46 @@ CREATE TABLE groups_followers (
 
 /*BEGIN Triggers*/
 
+CREATE FUNCTION before_insert_post() RETURNS TRIGGER AS $func$
+BEGIN
+    SELECT "pid" INTO NEW.pid FROM (
+        SELECT "pid" + 1 as "pid" FROM "posts"
+        WHERE "to" = NEW."to"
+        ORDER BY "hpid" DESC
+        FETCH FIRST ROW ONLY
+    ) AS T1;
+    RETURN NEW;
+END $func$ LANGUAGE plpgsql;
+
+CREATE FUNCTION before_insert_groups_post() RETURNS TRIGGER AS $func$
+BEGIN
+    SELECT "pid" INTO NEW.pid FROM (
+        SELECT "pid" + 1 as "pid" FROM "groups_posts"
+        WHERE "to" = NEW."to"
+        ORDER BY "hpid" DESC
+        FETCH FIRST ROW ONLY
+    ) AS T1;
+    RETURN NEW;
+END $func$ LANGUAGE plpgsql;
+
+CREATE FUNCTION after_delete_post() RETURNS TRIGGER AS $func$
+BEGIN
+    UPDATE posts SET pid = "pid" -1 WHERE "pid" > OLD.pid AND "to" = OLD."to";
+    RETURN NULL;
+END $func$ LANGUAGE plpgsql;
+
+CREATE FUNCTION after_delete_groups_post() RETURNS TRIGGER AS $func$
+BEGIN
+    UPDATE groups_posts SET pid = "pid" -1 WHERE "pid" > OLD.pid AND "to" = OLD."to";
+    RETURN NULL;
+END $func$ LANGUAGE plpgsql;
+
+CREATE TRIGGER before_insert_post BEFORE INSERT ON posts FOR EACH ROW EXECUTE PROCEDURE before_insert_post();
+CREATE TRIGGER before_insert_groups_post BEFORE INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_post();
+
+CREATE TRIGGER after_delete_post AFTER DELETE ON posts FOR EACH ROW EXECUTE PROCEDURE after_delete_post();
+CREATE TRIGGER after_delete_groups_post AFTER DELETE ON groups_posts FOR EACH ROW EXECUTE PROCEDURE after_delete_groups_post();
+
 --BEGIN before_insert_blacklist
 CREATE FUNCTION before_insert_blacklist() RETURNS TRIGGER AS $func$
 

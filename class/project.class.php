@@ -117,7 +117,6 @@ class project extends messages
         if(isset($message[65534])) //too long
             return null;
 
-        $lastpid = $this->countProjectMessages($to) + 1;
         if(!($own = $this->getOwnerByGid($to)))
             return false;
         
@@ -140,7 +139,7 @@ class project extends messages
         
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-        if(empty($message) || db::NO_ERR != parent::query(array('INSERT INTO "groups_posts" ("from","to","pid","message","time","news") VALUES (:id,:to,:lastpid,:message,TO_TIMESTAMP(:time),:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':lastpid' => $lastpid, ':time' => $time, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
+        if(empty($message) || db::NO_ERR != parent::query(array('INSERT INTO "groups_posts" ("from","to","message","time","news") VALUES (:id,:to,:message,TO_TIMESTAMP(:time),:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':time' => $time, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
             return false;
 
         if($_SESSION['nerdz_id'] != $own)
@@ -171,16 +170,12 @@ class project extends messages
 
     public function deleteProjectMessage($hpid)
     {
-        if(
-            !($obj = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
-            !in_array($_SESSION['nerdz_id'],array($this->getOwnerByGid($obj->to),$obj->from)) ||
-            db::NO_ERR != parent::query(array('DELETE FROM "groups_comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) ||
-            db::NO_ERR != parent::query(array('DELETE FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR)//il trigger gestice eliminazione in groups_notify, groups_comments_notify, groups_comments
-          )
-            return false;
-
-        //NON POSSO GESTIRE L'AGGIORNAMENTO QUI SOTTO VIA TRIGGER MYSQL A CAUSA DI UNA SUA LIMITAZIONE
-        return db::NO_ERR == parent::query(array('UPDATE "groups_posts" SET "pid" = "pid" -1 WHERE "pid" > :pid AND "to" = :to',array(':pid' => $obj->pid,':to' => $obj->to)),db::FETCH_ERR);
+        return (
+            ($obj = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) &&
+            in_array($_SESSION['nerdz_id'],array($this->getOwnerByGid($obj->to),$obj->from)) &&
+            db::NO_ERR == parent::query(array('DELETE FROM "groups_comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) &&
+            db::NO_ERR == parent::query(array('DELETE FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) // triggers do the rest
+          );
     }
 
     public function editProjectMessage($hpid,$message)
