@@ -99,7 +99,7 @@ class messages extends phpCore
 
     public static function imgValidUrl($url, $domain, $sslEnabled)
     {
-        $url = str_replace('<br />','',trim($url));
+        $url = strip_tags(trim($url));
         if (!phpCore::isValidURL($url))
             return $domain.'/static/images/invalidImgUrl.php';
 
