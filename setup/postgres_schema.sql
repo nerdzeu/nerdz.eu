@@ -391,10 +391,10 @@ CREATE TABLE groups_followers (
 CREATE FUNCTION before_insert_post() RETURNS TRIGGER AS $func$
 BEGIN
     SELECT "pid" INTO NEW.pid FROM (
-        SELECT "pid" + 1 as "pid" FROM "posts"
+        SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "posts"
         WHERE "to" = NEW."to"
         ORDER BY "hpid" DESC
-        FETCH FIRST ROW ONLY
+        FETCH FIRST ROW ONLY), 1 ) AS "pid"
     ) AS T1;
     RETURN NEW;
 END $func$ LANGUAGE plpgsql;
@@ -402,10 +402,10 @@ END $func$ LANGUAGE plpgsql;
 CREATE FUNCTION before_insert_groups_post() RETURNS TRIGGER AS $func$
 BEGIN
     SELECT "pid" INTO NEW.pid FROM (
-        SELECT "pid" + 1 as "pid" FROM "groups_posts"
+        SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "groups_posts"
         WHERE "to" = NEW."to"
         ORDER BY "hpid" DESC
-        FETCH FIRST ROW ONLY
+        FETCH FIRST ROW ONLY), 1) AS "pid"
     ) AS T1;
     RETURN NEW;
 END $func$ LANGUAGE plpgsql;
