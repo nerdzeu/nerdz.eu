@@ -18,9 +18,6 @@ final class pm extends messages
         if(!(new flood())->pm())
             return null;
        
-        if(isset($message[65534]))
-            return false;
-
         $wentWell = db::NO_ERR == parent::query(array('INSERT INTO "pms" ("from","to","message","time","read") VALUES (:id,:to,:message,NOW(),TRUE)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERR);
 
         $pushOn = parent::wantsPush($to) && PUSHED_ENABLED && $wentWell;

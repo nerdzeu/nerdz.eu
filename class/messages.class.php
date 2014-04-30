@@ -449,9 +449,6 @@ class messages extends phpCore
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
         if(!(new flood())->profilePost())
             return 0;
-            
-        if(isset($message[65534]))
-            return false;
 
         if(parent::closedProfile($to) && ($to != $_SESSION['nerdz_id'] && !in_array($_SESSION['nerdz_id'],parent::getWhitelist($to))))
             return false;
@@ -483,7 +480,7 @@ class messages extends phpCore
             !($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
             !$this->canEditPost(array('from' => $obj->from, 'to' => $obj->to)) ||
             empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
-            empty($message) || isset($message[65534]) ||
+            empty($message) ||
             db::NO_ERR != parent::query(array('UPDATE "posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from, ':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
           );
     }

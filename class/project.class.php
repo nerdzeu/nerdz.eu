@@ -113,9 +113,6 @@ class project extends messages
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
         if(!(new flood())->projectPost())
             return 0;
-            
-        if(isset($message[65534])) //too long
-            return null;
 
         if(!($own = $this->getOwnerByGid($to)))
             return false;
@@ -186,7 +183,6 @@ class project extends messages
             !($obj = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
             !$this->canEditProjectPost((array)$obj,$this->getOwnerByGid($obj->to),$this->getMembers($obj->to)) ||
             empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
-            isset($message[65534]) ||
             db::NO_ERR != parent::query(array('UPDATE "groups_posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from,':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
           );
     }

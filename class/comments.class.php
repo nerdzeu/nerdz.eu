@@ -348,7 +348,7 @@ class comments extends project
         $message = trim($this->parseCommentQuotes(htmlentities($message,ENT_QUOTES,'UTF-8')));
 
         if(
-            empty($message) || isset($message[65534]) ||
+            empty($message) ||
             !($obj = parent::query(array('SELECT "to","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
             parent::isInBlacklist($_SESSION['nerdz_id'],$obj->to) || parent::isInBlacklist($obj->to,$_SESSION['nerdz_id'])
           )
@@ -484,14 +484,14 @@ class comments extends project
     {
         $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
 
-        return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "groups_comments" SET message = :message WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
+        return db::NO_ERR == parent::query(array('UPDATE "groups_comments" SET message = :message WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
     }
     
     private function appendComment($oldMsgObj,$newMessage)
     {
         $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
 
-        return !isset($message[65534]) && db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
+        return db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
     }
 
     public function addProjectComment($hpid,$message)
@@ -505,7 +505,7 @@ class comments extends project
         $message = trim($this->parseCommentQuotes(htmlentities($message,ENT_QUOTES,'UTF-8')));
             
         if(
-            empty($message) || isset($message[65534]) ||
+            empty($message) ||
             !($obj = parent::query(array('SELECT "to","from" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ))
           )
             return false;
