@@ -456,11 +456,9 @@ class messages extends phpCore
         if(in_array($to,parent::getBlacklist()))
             return false;
 
-        $not = $_SESSION['nerdz_id'] != $to ? '1' : '0';
-
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-        return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO "posts" ("from","to","message","notify", "time") VALUES (:id,:to,:message,:not,NOW())',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message,':not' => $not)),db::FETCH_ERR);
+        return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO "posts" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message,)),db::FETCH_ERR);
     }
 
     public function deleteMessage($hpid)

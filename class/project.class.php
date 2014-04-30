@@ -136,7 +136,7 @@ class project extends messages
         
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-        if(empty($message) || db::NO_ERR != parent::query(array('INSERT INTO "groups_posts" ("from","to","message","time","news") VALUES (:id,:to,:message,TO_TIMESTAMP(:time),:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':time' => $time, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
+        if(empty($message) || db::NO_ERR != parent::query(array('INSERT INTO "groups_posts" ("from","to","message","news") VALUES (:id,:to,:message,:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
             return false;
 
         if($_SESSION['nerdz_id'] != $own)

@@ -16,6 +16,19 @@ BEGIN
         ORDER BY "hpid" DESC
         FETCH FIRST ROW ONLY), 1 ) AS "pid"
     ) AS T1;
+
+    SELECT "notify" INTO NEW."notify" FROM (
+        SELECT
+        (CASE
+            WHEN NEW."from" = NEW."to" THEN
+                false
+            ELSE
+                true
+        END) AS "notify"
+    ) AS T2;
+
+    SELECT NOW() INTO NEW."time";
+    
     RETURN NEW;
 END $func$ LANGUAGE plpgsql;
 
@@ -27,6 +40,9 @@ BEGIN
         ORDER BY "hpid" DESC
         FETCH FIRST ROW ONLY), 1) AS "pid"
     ) AS T1;
+
+    SELECT NOW() INTO NEW."time";
+
     RETURN NEW;
 END $func$ LANGUAGE plpgsql;
 
