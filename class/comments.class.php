@@ -116,7 +116,7 @@ class comments extends project
             $ret[$i]['gravatarurl_n'] = $gravurl[$o->from];
             $ret[$i]['toid_n'] = $o->to;
             $ret[$i]['from_n'] = $users[$o->from];
-            $ret[$i]['uid_n'] = "c1{$o->from}{$o->to}{$o->time}";
+            $ret[$i]['uid_n'] = "c{$o->hcid}";
             $ret[$i]['from4link_n'] = phpCore::userLink($users[$o->from]);
             $ret[$i]['message_n'] = parent::bbcode($o->message,1,$cg,1,$o->hcid);
             $ret[$i]['datetime_n'] = parent::getDateTime($o->time);
