@@ -589,21 +589,15 @@ class messages extends phpCore
 
     public function canRemovePost($post)
     {
-        if(parent::isLogged())
-            return ($_SESSION['nerdz_id'] == $post['to']) || ($_SESSION['nerdz_id'] == $post['from']);
+        return parent::isLogged() && (($_SESSION['nerdz_id'] == $post['to']) || ($_SESSION['nerdz_id'] == $post['from']));
     }
 
     public function canShowLockForPost($post)
     {
-        if(
-            parent::isLogged() &&
-            (
+        return parent::isLogged() && (
                 in_array($_SESSION['nerdz_id'],array($post['from'],$post['to'])) ||
                 parent::query(array('SELECT DISTINCT "from" FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
-            )
-          )
-            return true;
-        return false;
+            );
     }
 
     public function hasLockedPost($post)
