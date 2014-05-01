@@ -312,7 +312,7 @@ class messages extends phpCore
             $callBack2Param = function($m) use($ssl) {
                 $qsvar = array();
                 parse_str(html_entity_decode($m[2],ENT_QUOTES,'UTF-8'),$qsvar);
-                if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
+                if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}$#',$qsvar['v']))
                     return $m[0];
 
                 return '<a class="yt_frame" data-vid="'.$qsvar['v'].'">
@@ -325,9 +325,9 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[yt\](.+?)youtube.com\/watch\?(.+?)\[\/yt\]#im', $callBack2Param,$str,10);
 
             $callBack1Param = function($m) use($ssl) {
-                return '<a class="yt_frame" data-vid="'.$m[1].'">
+                return '<a class="yt_frame" data-vid="'.strip_tags($m[1]).'">
                             <span>'.parent::lang('VIDEO').'</span>
-                            <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$m[1].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
+                            <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.strip_tags($m[1]).'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
                         </a>';
             };
 
@@ -349,7 +349,7 @@ class messages extends phpCore
             $callBack2Param = function($m) use($ssl) {
                 $qsvar = array();
                 parse_str(html_entity_decode($m[2],ENT_QUOTES,'UTF-8'),$qsvar);
-                if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
+                if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}$#',$qsvar['v']))
                     return $m[0];
                 return '<div style="width:80%; margin: auto;text-align:center">
                             <br /><iframe title="YouTube video" style="width:560px; height:340px; border:0px" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
