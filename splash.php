@@ -1,27 +1,17 @@
 <?php
-    ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+ob_start('ob_gzhandler');
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-    if(isset($_GET['goto']) && ($_GET['goto'] == "mobile" || $_GET['goto'] == "desktop"))
-    {
-      $referer = (isset($_GET['ref']) && $_GET['ref']!="") ? str_replace('%2E', '.', $_GET['ref']) : '/';
-      function extractRootDomain($str) {
-        $x = explode('.',$str);
-        $c = count($x);
-        if($c <= 2)
-          return $str;
-        return $x[$c-2] . '.' . $x[$c-1];
-      }
-      $domain = extractRootDomain(SITE_HOST);
-      setcookie('mobile-splash',$_GET['goto'],2000000000,'/',$domain,false,true);
-      die(header('Location: http://'.($_GET['goto']=="mobile"?MOBILE_HOST:SITE_HOST).$referer));
-    }
+$core = new phpCore();
+if (isset ($_GET['goto']) && ($_GET['goto'] == 'mobile' || $_GET['goto'] == 'desktop'))
+{
+    setcookie ('mobile-splash', $_GET['goto'], time() + 2592000, '/', $core->getSafeCookieDomainName(), false, true);
+    die (header ('Location: http://' . ($_GET['goto'] == 'mobile' ? MOBILE_HOST : SITE_HOST) . (isset ($_GET['ref']) ? rawurldecode ($_GET['ref']) : '')));
+}
 
-    $core = new phpCore();
-    $tplcfg = $core->getTemplateCfg();
+$tplcfg = $core->getTemplateCfg();
 
-    ob_start(array('phpCore','minifyHtml'));
-
+ob_start(array('phpCore','minifyHtml'));
 ?>
 <!DOCTYPE html>
 <html lang="en">
