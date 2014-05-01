@@ -42,11 +42,17 @@ $configuration = [
     // Domain configuration. The protocol should not be included.
     // Your NERDZ hostname. If you are running NERDZ on your
     // PC, use 'localhost'.
-    'SITE_HOST'              => 'example.com',
+    'SITE_HOST'              => 'www.example.com',
     // The domain used to serve static data. If you are running
     // NERDZ on your PC, put an empty string.
     'STATIC_DOMAIN'          => 'static.example.com',
     // The domain used to serve the mobile version of NERDZ.
+    // It is recommended to set this to a subdomain of the root
+    // domain from the SITE_HOST variable. This means that if in
+    // SITE_HOST you have www.example.com (so your root domain is
+    // example.com), then you should have something like mobile.example.com.
+    // Otherwise, your users will need to perform the login again when
+    // switching from the desktop version to the mobile one.
     'MOBILE_HOST'            => 'mobile.example.com',
 
     // Minification configuration

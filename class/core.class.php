@@ -121,11 +121,24 @@ class phpCore
 
     public function getSafeCookieDomainName()
     {
-        $chost = str_ireplace ('www.', '', SITE_HOST);
-        // if $chost is localhost, then the cookies won't work in chrome.
-        // workaround this by specifying a null $chost (which makes the cookie
-        // invalid for subdomains, but you shouldn't care if you are in localhost)
-        return $chost == 'localhost' ? null : $chost;
+        // use a simple algorithm to determine the common parts between
+        // MOBILE_HOST and SITE_HOST.
+        $mobile_host = explode ('.', MOBILE_HOST);
+        $site_host   = explode ('.', SITE_HOST);
+        $chost       = [];
+        for ($i = 0; $i < min (count ($site_host), count ($mobile_host)); $i++)
+        {
+            $sh_k = count ($site_host)   - $i;
+            $mh_k = count ($mobile_host) - $i;
+            if (isset ($site_host[--$sh_k]) && isset ($mobile_host[--$mh_k]) && $site_host[$sh_k] == $mobile_host[$mh_k])
+                array_unshift ($chost, $site_host[$sh_k]);
+            else
+                break;
+        }
+        // accept at least a domain with one dot (x.y), because
+        // chrome does not accept point-less (heh) domains for cookie usage.
+        // this also handles localhost.
+        return count ($chost) > 1 ? implode ('.', $chost) : null;
     }
 
     public function getDB()
