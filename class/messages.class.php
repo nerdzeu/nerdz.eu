@@ -315,7 +315,9 @@ class messages extends phpCore
                 if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
                     return $m[0];
 
-                $qsvar['v'] = reset(explode('#', $qsvar['v']));
+                // Need a temporary variable to avoid php warning
+                $videoID = explode('#', $qsvar['v']);
+                $qsvar['v'] = reset($videoID);
 
                 return '<a class="yt_frame" data-vid="'.$qsvar['v'].'">
                           <span>'.parent::lang('VIDEO').'</span>
@@ -354,7 +356,9 @@ class messages extends phpCore
                 if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
                     return $m[0];
 
-                $qsvar['v'] = reset(explode('#', $qsvar['v']));
+                // Need a temporary variable to avoid php warning
+                $videoID = explode('#', $qsvar['v']);
+                $qsvar['v'] = reset($videoID);
 
                 return '<div style="width:80%; margin: auto;text-align:center">
                             <br /><iframe title="YouTube video" style="width:560px; height:340px; border:0px" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
