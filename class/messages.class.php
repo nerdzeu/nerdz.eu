@@ -315,6 +315,10 @@ class messages extends phpCore
                 if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
                     return $m[0];
 
+                // Need a temporary variable to avoid php warning
+                $videoID = explode('#', $qsvar['v']);
+                $qsvar['v'] = reset($videoID);
+
                 return '<a class="yt_frame" data-vid="'.$qsvar['v'].'">
                           <span>'.parent::lang('VIDEO').'</span>
                           <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$qsvar['v'].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
@@ -325,9 +329,9 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[yt\](.+?)youtube.com\/watch\?(.+?)\[\/yt\]#im', $callBack2Param,$str,10);
 
             $callBack1Param = function($m) use($ssl) {
-                return '<a class="yt_frame" data-vid="'.$m[1].'">
+                return '<a class="yt_frame" data-vid="'.strip_tags($m[1]).'">
                             <span>'.parent::lang('VIDEO').'</span>
-                            <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$m[1].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
+                            <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.strip_tags($m[1]).'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
                         </a>';
             };
 
@@ -351,6 +355,11 @@ class messages extends phpCore
                 parse_str(html_entity_decode($m[2],ENT_QUOTES,'UTF-8'),$qsvar);
                 if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
                     return $m[0];
+
+                // Need a temporary variable to avoid php warning
+                $videoID = explode('#', $qsvar['v']);
+                $qsvar['v'] = reset($videoID);
+
                 return '<div style="width:80%; margin: auto;text-align:center">
                             <br /><iframe title="YouTube video" style="width:560px; height:340px; border:0px" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
                         </div>';
@@ -589,21 +598,15 @@ class messages extends phpCore
 
     public function canRemovePost($post)
     {
-        if(parent::isLogged())
-            return ($_SESSION['nerdz_id'] == $post['to']) || ($_SESSION['nerdz_id'] == $post['from']);
+        return parent::isLogged() && (($_SESSION['nerdz_id'] == $post['to']) || ($_SESSION['nerdz_id'] == $post['from']));
     }
 
     public function canShowLockForPost($post)
     {
-        if(
-            parent::isLogged() &&
-            (
+        return parent::isLogged() && (
                 in_array($_SESSION['nerdz_id'],array($post['from'],$post['to'])) ||
                 parent::query(array('SELECT DISTINCT "from" FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
-            )
-          )
-            return true;
-        return false;
+            );
     }
 
     public function hasLockedPost($post)
