@@ -22,7 +22,11 @@ BEGIN;
             RAISE EXCEPTION 'YOU_HAVE_BEEN_BLACKLISTED';
         END IF;
 
-        IF ((SELECT COUNT("counter") FROM closed_profiles WHERE "counter" = NEW."to") > 0) AND (NEW."from" NOT IN (SELECT "to" FROM whitelist WHERE "from" = NEW."to")) THEN
+        IF( NEW."to" <> NEW."from" AND
+            (SELECT COUNT("counter") FROM closed_profiles WHERE "counter" = NEW."to") > 0 AND 
+            NEW."from" NOT IN (SELECT "to" FROM whitelist WHERE "from" = NEW."to")
+          )
+        THEN
             RAISE EXCEPTION 'CLOSED_PROFILE_NOT_IN_WHITELIST';
         END IF;
 
