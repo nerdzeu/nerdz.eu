@@ -18,7 +18,7 @@ final class pm extends messages
         if(!(new flood())->pm())
             return null;
        
-        $wentWell = db::NO_ERR == parent::query(array('INSERT INTO "pms" ("from","to","message","time","read") VALUES (:id,:to,:message,NOW(),TRUE)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERR);
+        $wentWell = db::NO_ERRNO == parent::query(array('INSERT INTO "pms" ("from","to","message","time","read") VALUES (:id,:to,:message,NOW(),TRUE)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERRNO);
 
         $pushOn = parent::wantsPush($to) && PUSHED_ENABLED && $wentWell;
 
@@ -111,7 +111,7 @@ final class pm extends messages
     public function deleteConversation($from, $to)
    {
         return is_numeric($from) && is_numeric($to) && in_array($_SESSION['nerdz_id'],array($from,$to)) && 
-            db::NO_ERR == parent::query(array('DELETE FROM "pms" WHERE ("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)',array($from,$to,$to,$from)),db::FETCH_ERR);
+            db::NO_ERRNO == parent::query(array('DELETE FROM "pms" WHERE ("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)',array($from,$to,$to,$from)),db::FETCH_ERRNO);
     }
     
     public function readConversation($from, $to, $afterPmId = null, $num = null, $start = 0)
@@ -145,7 +145,7 @@ final class pm extends messages
                 return $ret;
             $ret = $res->fetchAll(PDO::FETCH_FUNC,array($this,'read'));
         }
-        if(db::NO_ERR != parent::query(array('UPDATE "pms" SET "read" = FALSE WHERE "from" = :from AND "to" = :id',array(':from' => $from, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+        if(db::NO_ERRNO != parent::query(array('UPDATE "pms" SET "read" = FALSE WHERE "from" = :from AND "to" = :id',array(':from' => $from, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
             return false;
         
         return $ret;

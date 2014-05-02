@@ -21,7 +21,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!($capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : '')))
             die($core->jsonResponse('error',$core->lang('ERROR').': '.$core->lang('CAPTCHA')));
 
-        if(db::NO_ERR != $core->query(array('DELETE FROM "groups" WHERE "counter" = ?',array($id)),db::FETCH_ERR))//il trigger fa il resto
+        if(db::NO_ERRNO != $core->query(array('DELETE FROM "groups" WHERE "counter" = ?',array($id)),db::FETCH_ERRNO))//il trigger fa il resto
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     
@@ -67,7 +67,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             $uid = $core->getUserId(trim($v));
             if(is_numeric($uid))
             {
-                if(!in_array($core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERR),array(-1,POSTGRESQL_DUP_KEY)))
+                if(!in_array($core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERRNO),array(-1,POSTGRESQL_DUP_KEY)))
                     die($core->jsonResponse('error',$core->lang('ERROR').'1'));
                 $newmem[] = $uid;
             }
@@ -81,7 +81,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                 $toremove[] = $val;
 
          foreach($toremove as $val)
-             if(db::NO_ERR != $core->query(array('DELETE FROM groups_members WHERE "group" = :id AND "user" = :val',array(':id' => $id,':val' => $val)),db::FETCH_ERR))
+             if(db::NO_ERRNO != $core->query(array('DELETE FROM groups_members WHERE "group" = :id AND "user" = :val',array(':id' => $id,':val' => $val)),db::FETCH_ERRNO))
                 die($core->jsonResponse('error',$core->lang('ERROR').'4'));
         
         foreach($_POST as &$val)
@@ -99,7 +99,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 
         $par = array(':desc' => $_POST['description'], ':website' => $_POST['website'], ':photo' => $_POST['photo'], ':private' => $_POST['private'], ':open' => $_POST['open'], ':goal' => $_POST['goal'], ':visible' => $_POST['visible'], ':id' => $id);
         
-        if(db::NO_ERR != $core->query(array('UPDATE "groups" SET "description" = :desc, "website" = :website, "photo" = :photo, "private" = :private, "open" = :open, "goal" = :goal, "visible" = :visible WHERE "counter" = :id',$par),db::FETCH_ERR))
+        if(db::NO_ERRNO != $core->query(array('UPDATE "groups" SET "description" = :desc, "website" = :website, "photo" = :photo, "private" = :private, "open" = :open, "goal" = :goal, "visible" = :visible WHERE "counter" = :id',$par),db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     default:

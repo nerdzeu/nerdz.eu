@@ -24,7 +24,7 @@ if(!in_array($theme,$shorts))
 
 $column = (MOBILE_HOST == $_SERVER['HTTP_HOST'] ? 'mobile_' : '').'template';
 
-if(db::NO_ERR != $core->query(array('UPDATE "profiles" SET "'.$column.'" = :theme WHERE "counter" = :id',array(':theme' => $theme, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+if(db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "'.$column.'" = :theme WHERE "counter" = :id',array(':theme' => $theme, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
     die($core->jsonResponse('error','Update: ' . $core->lang('ERROR')));
 
 $_SESSION['nerdz_template'] = $theme;

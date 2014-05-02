@@ -12,13 +12,13 @@ if(empty($_POST['id']) || !is_numeric($_POST['id']))
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
     case 'del':
-        if(db::NO_ERR != $core->query(array('DELETE FROM "follow" WHERE "from" = :me AND "to" = :id',array(':me' => $_SESSION['nerdz_id'],':id' => $_POST['id'])),db::FETCH_ERR))
+        if(db::NO_ERRNO != $core->query(array('DELETE FROM "follow" WHERE "from" = :me AND "to" = :id',array(':me' => $_SESSION['nerdz_id'],':id' => $_POST['id'])),db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     case 'add':
         if($core->query(array('SELECT "from" FROM "follow" WHERE "from" = :me AND "to" = :id',array(':me' => $_SESSION['nerdz_id'],':id' => $_POST['id'])),db::ROW_COUNT) == 0)
         {
-            if(db::NO_ERR != $core->query(array('INSERT INTO "follow"("from","to","time") VALUES (:me, :id,NOW())',array(':me' => $_SESSION['nerdz_id'],':id' => $_POST['id'])),db::FETCH_ERR))
+            if(db::NO_ERRNO != $core->query(array('INSERT INTO "follow"("from","to","time") VALUES (:me, :id,NOW())',array(':me' => $_SESSION['nerdz_id'],':id' => $_POST['id'])),db::FETCH_ERRNO))
                 die($core->jsonResponse('error',$core->lang('ERROR')));
         }
         else

@@ -33,7 +33,7 @@ class comments extends project
 
         if(in_array($_SESSION['nerdz_id'],$lurkers)) //se lurki non commenti (non avrebbe senso che tu venga notificato novamente)
         {
-            if(db::NO_ERR != parent::query(array('DELETE FROM "'.$glue.'lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+            if(db::NO_ERRNO != parent::query(array('DELETE FROM "'.$glue.'lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
                 return false;
 
             unset($lurkers[array_search($_SESSION['nerdz_id'],$lurkers)]);
@@ -81,7 +81,7 @@ class comments extends project
                     if(!$f)
                         continue;
                 }
-                if(!in_array(parent::query(array('INSERT INTO "'.$glue.'comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,TO_TIMESTAMP(:time))',array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERR),array(db::NO_ERR,POSTGRESQL_DUP_KEY)))
+                if(!in_array(parent::query(array('INSERT INTO "'.$glue.'comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,TO_TIMESTAMP(:time))',array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERRNO),array(db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
                     break;
             }
         return !($i+1);
@@ -380,7 +380,7 @@ class comments extends project
                 //$message .= $this->removeNestedQuotes($quot);
 //                $message .=$quot;
 
-        if(db::NO_ERR != parent::query(array('INSERT INTO "comments" ("from","to","hpid","message","time") VALUES (:from,:to,:hpid,:message,NOW())',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERR))
+        if(db::NO_ERRNO != parent::query(array('INSERT INTO "comments" ("from","to","hpid","message","time") VALUES (:from,:to,:hpid,:message,NOW())',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO))
             return false;
 
         return $this->addControl($obj->from,$obj->to,$hpid);
@@ -442,9 +442,9 @@ class comments extends project
             &&
             in_array($_SESSION['nerdz_id'],array($o->from,$owner->to)) // == canDelete
             &&
-            parent::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_ERR) == db::NO_ERR
+            parent::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_ERRNO) == db::NO_ERRNO
             &&
-            parent::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERR)  == db::NO_ERR
+            parent::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERRNO)  == db::NO_ERRNO
         );
         if($ok)
         {
@@ -452,7 +452,7 @@ class comments extends project
                 return false;
 
             if($c->cc == 0)
-                if(db::NO_ERR != parent::query(array('DELETE FROM "comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['nerdz_id'],':hpid' => $o->hpid)),db::FETCH_ERR))
+                if(db::NO_ERRNO != parent::query(array('DELETE FROM "comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['nerdz_id'],':hpid' => $o->hpid)),db::FETCH_ERRNO))
                     return false;
             return true;
         }
@@ -484,14 +484,14 @@ class comments extends project
     {
         $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
 
-        return db::NO_ERR == parent::query(array('UPDATE "groups_comments" SET message = :message WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
+        return db::NO_ERRNO == parent::query(array('UPDATE "groups_comments" SET message = :message WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERRNO);
     }
     
     private function appendComment($oldMsgObj,$newMessage)
     {
         $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
 
-        return db::NO_ERR == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERR);
+        return db::NO_ERRNO == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERRNO);
     }
 
     public function addProjectComment($hpid,$message)
@@ -526,7 +526,7 @@ class comments extends project
                 return $this->appendProjectComment($user,$newMessage) && $this->addControl($obj->from,$obj->to,$hpid,true);
         }
 
-        if(db::NO_ERR != parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message","time") VALUES (:id,:to,:hpid,:message,NOW())',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERR))
+        if(db::NO_ERRNO != parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message","time") VALUES (:id,:to,:hpid,:message,NOW())',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO))
             return false;
         return $this->addControl($obj->from,$obj->to,$hpid,true);
     }
@@ -569,8 +569,8 @@ class comments extends project
         if(in_array($_SESSION['nerdz_id'],$canremovecomment))
         {
             if(
-                db::NO_ERR != parent::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),db::FETCH_ERR) ||
-                db::NO_ERR != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERR)
+                db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),db::FETCH_ERRNO) ||
+                db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERRNO)
               )
                 return false;
         }
@@ -581,7 +581,7 @@ class comments extends project
             return false;
     
         if($c->cc == 0)
-            if(db::NO_ERR != parent::query(array('DELETE FROM "groups_comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['nerdz_id'],':hpid' => $o->hpid)),db::FETCH_ERR))
+            if(db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['nerdz_id'],':hpid' => $o->hpid)),db::FETCH_ERRNO))
                 return false;
 
         return true;
@@ -679,10 +679,10 @@ class comments extends project
                 ':vote' => (int) $vote
               ]
             ],
-            db::FETCH_ERR
+            db::FETCH_ERRNO
         );
 
-        return $ret == db::NO_ERR;
+        return $ret == db::NO_ERRNO;
     }
 }
 ?>

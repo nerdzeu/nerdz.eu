@@ -6,13 +6,15 @@ class db
     public $dbh;
     private static $instance;
 
-    const NO_ERR        = -1;
+    const NO_ERRSTR      = '';
+    const NO_ERRNO       = -1;
 
     const FETCH_OBJ      = 1;
     const FETCH_STMT     = 2;
-    const FETCH_ERR      = 3;
+    const FETCH_ERRNO    = 3;
     const ROW_COUNT      = 4;
     const NO_RETURN      = 5;
+    const FETCH_ERRSTR   = 6;
 
     private function __construct()
     {

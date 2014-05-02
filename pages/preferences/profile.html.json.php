@@ -80,20 +80,20 @@ $par = array(':interests' => $user['interests'],
              ':counter' => $obj->counter);
     
 if(
-    db::NO_ERR != $core->query(array('UPDATE profiles SET "interests" = :interests, "biography" = :biography, "quotes" = :quotes, "website" = :website, "dateformat" = :dateformat,
+    db::NO_ERRNO != $core->query(array('UPDATE profiles SET "interests" = :interests, "biography" = :biography, "quotes" = :quotes, "website" = :website, "dateformat" = :dateformat,
       "github" = :github, "jabber" = :jabber, "yahoo" = :yahoo,
-      "userscript" = :userscript, "facebook" = :facebook, "twitter" = :twitter, "steam" = :steam, "skype" = :skype WHERE "counter" = :counter',$par),db::FETCH_ERR)
+      "userscript" = :userscript, "facebook" = :facebook, "twitter" = :twitter, "steam" = :steam, "skype" = :skype WHERE "counter" = :counter',$par),db::FETCH_ERRNO)
  )
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
 if($closed)
 {
     if(!$core->closedProfile($_SESSION['nerdz_id']))
-        if(db::NO_ERR != $core->query(array('INSERT INTO "closed_profiles"("counter") VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERR))
+        if(db::NO_ERRNO != $core->query(array('INSERT INTO "closed_profiles"("counter") VALUES(?)',array($_SESSION['nerdz_id'])),db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
 }
 else
-    if( db::NO_ERR != $core->query(array('DELETE FROM "closed_profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERR) )
+    if( db::NO_ERRNO != $core->query(array('DELETE FROM "closed_profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_ERRNO) )
         die($core->jsonResponse('error',$core->lang('ERROR')));
 
 $_SESSION['nerdz_dateformat'] = $user['dateformat'];
@@ -109,7 +109,7 @@ if(isset($_POST['whitelist']))
         $uid = $core->getUserId(trim($v));
         if(is_numeric($uid))
         {
-            if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERR),array(db::NO_ERR,POSTGRESQL_DUP_KEY)))
+            if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERRNO),array(db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
                 die($core->jsonResponse('error',$core->lang('ERROR').'1'));
             $newlist[] = $uid;
         }
@@ -122,7 +122,7 @@ if(isset($_POST['whitelist']))
             $toremove[] = $val;
 
     foreach($toremove as $val)
-        if(db::NO_ERR != $core->query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['nerdz_id'], ':val' => $val)),db::FETCH_ERR))
+        if(db::NO_ERRNO != $core->query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['nerdz_id'], ':val' => $val)),db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR').'4'));
 }
         

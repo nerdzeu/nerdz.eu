@@ -390,6 +390,19 @@ CREATE TABLE groups_followers (
 
 CREATE FUNCTION before_insert_post() RETURNS TRIGGER AS $func$
 BEGIN
+    -- templates and other implementations must handle exceptions with localized functions
+    IF NEW."from" IN (SELECT "from" FROM blacklist WHERE "to" = NEW."to") THEN
+        RAISE EXCEPTION 'YOU_BLACKLISTED_THIS_USER';
+    END IF;
+
+    IF NEW."from" IN (SELECT "to" FROM blacklist WHERE "from" = NEW."to") THEN
+        RAISE EXCEPTION 'YOU_HAVE_BEEN_BLACKLISTED';
+    END IF;
+
+    IF ((SELECT COUNT("counter") FROM closed_profiles WHERE "counter" = NEW."to") > 0) AND (NEW."from" NOT IN (SELECT "to" FROM whitelist WHERE "from" = NEW."to")) THEN
+        RAISE EXCEPTION 'CLOSED_PROFILE_NOT_IN_WHITELIST';
+    END IF;
+
     SELECT "pid" INTO NEW.pid FROM (
         SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "posts"
         WHERE "to" = NEW."to"
@@ -414,6 +427,16 @@ END $func$ LANGUAGE plpgsql;
 
 CREATE FUNCTION before_insert_groups_post() RETURNS TRIGGER AS $func$
 BEGIN
+
+    IF (SELECT "owner" FROM groups WHERE "counter" = NEW."to") <> NEW."from" AND
+        (
+            (SELECT "open" FROM groups WHERE "counter" = NEW."to") IS FALSE AND
+            NEW."from" NOT IN (SELECT "user" FROM groups_members WHERE "group" = NEW."to")
+        )
+    THEN
+        RAISE EXCEPTION 'CLOSED_PROJECT_NOT_MEMBER';
+    END IF;
+    
     SELECT "pid" INTO NEW.pid FROM (
         SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "groups_posts"
         WHERE "to" = NEW."to"

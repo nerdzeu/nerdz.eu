@@ -459,15 +459,9 @@ class messages extends phpCore
         if(!(new flood())->profilePost())
             return 0;
 
-        if(parent::closedProfile($to) && ($to != $_SESSION['nerdz_id'] && !in_array($_SESSION['nerdz_id'],parent::getWhitelist($to))))
-            return false;
-
-        if(in_array($to,parent::getBlacklist()))
-            return false;
-
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-        return !empty($message) && db::NO_ERR == parent::query(array('INSERT INTO "posts" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message,)),db::FETCH_ERR);
+        return !empty($message) && db::NO_ERRSTR == parent::query(array('INSERT INTO "posts" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message,)),db::FETCH_ERRSTR);
     }
 
     public function deleteMessage($hpid)
@@ -475,7 +469,7 @@ class messages extends phpCore
         return (
             ($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) &&
             $this->canRemovePost(array('from' => $obj->from,'to' => $obj->to)) &&
-            db::NO_ERR == parent::query(array('DELETE FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) // triggers fix the rest
+            db::NO_ERRNO == parent::query(array('DELETE FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERRNO) // triggers fix the rest
           );
     }
 
@@ -488,7 +482,7 @@ class messages extends phpCore
             !$this->canEditPost(array('from' => $obj->from, 'to' => $obj->to)) ||
             empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
             empty($message) ||
-            db::NO_ERR != parent::query(array('UPDATE "posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from, ':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
+            db::NO_ERRNO != parent::query(array('UPDATE "posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from, ':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERRNO)
           );
     }
 
@@ -760,10 +754,10 @@ class messages extends phpCore
                 ':vote' => (int) $vote
               ]
             ],
-            db::FETCH_ERR
+            db::FETCH_ERRNO
         );
 
-        return $ret == db::NO_ERR;
+        return $ret == db::NO_ERRNO;
     }
 }
 ?>

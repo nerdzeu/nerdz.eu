@@ -18,12 +18,12 @@ $to = $_SESSION['nerdz_id'];
 switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
 {
     case 'add':
-        $retcode = array(db::NO_ERR,POSTGRESQL_DUP_KEY);
-        if(!in_array($core->query(array('INSERT INTO "groups_lurkers"("user","post","time") VALUES(:to,:hpid,NOW())',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR),$retcode))
+        $retcode = array(db::NO_ERRNO,POSTGRESQL_DUP_KEY);
+        if(!in_array($core->query(array('INSERT INTO "groups_lurkers"("user","post","time") VALUES(:to,:hpid,NOW())',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERRNO),$retcode))
             die($core->jsonResponse('error',$core->lang('ERROR')));    
     break;
     case 'del':
-        if(db::NO_ERR != $core->query(array('DELETE FROM "groups_lurkers" WHERE "user" = :to AND "post" = :hpid',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERR))
+        if(db::NO_ERRNO != $core->query(array('DELETE FROM "groups_lurkers" WHERE "user" = :to AND "post" = :hpid',array(':to' => $to, ':hpid' => $hpid)),db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     default:

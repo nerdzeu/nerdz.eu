@@ -143,7 +143,7 @@ class notify extends phpCore
             ++$i;
         }
 
-        if($del && (db::NO_ERR != parent::query(array('DELETE FROM "comments_notify" WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR)))
+        if($del && (db::NO_ERRNO != parent::query(array('DELETE FROM "comments_notify" WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO)))
             return array();
         return $ret;
     }
@@ -166,7 +166,7 @@ class notify extends phpCore
             $ret[$i]['cmp'] = $o->time;
             $ret[$i]['board'] = true;
             $ret[$i]['project'] = false;
-            if($del && (db::NO_ERR != parent::query(array('UPDATE "posts" SET "notify" = FALSE WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),db::FETCH_ERR)))
+            if($del && (db::NO_ERRNO != parent::query(array('UPDATE "posts" SET "notify" = FALSE WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),db::FETCH_ERRNO)))
                 return array();
             ++$i;
         }
@@ -195,7 +195,7 @@ class notify extends phpCore
             ++$i;
         }
 
-        if($del && (db::NO_ERR != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "to" = :id', array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR)))
+        if($del && (db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "to" = :id', array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO)))
             return array();
         return $ret;
     }
@@ -215,7 +215,7 @@ class notify extends phpCore
             $ret[$i]['news'] = true;
             ++$i;
         }
-        if($del && (db::NO_ERR != parent::query(array('DELETE FROM "groups_notify" WHERE "to" = :id', array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR)))
+        if($del && (db::NO_ERRNO != parent::query(array('DELETE FROM "groups_notify" WHERE "to" = :id', array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO)))
             return array();
         return $ret;
     }
@@ -235,7 +235,7 @@ class notify extends phpCore
             ++$i;
         }
         
-        if($del && (db::NO_ERR != parent::query(array('UPDATE "follow" SET "notified" = FALSE WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR)))
+        if($del && (db::NO_ERRNO != parent::query(array('UPDATE "follow" SET "notified" = FALSE WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO)))
             return array();
         return $ret;
     }
@@ -262,7 +262,7 @@ class notify extends phpCore
         $old = $this->story();
         if(empty($old))
         {
-            if(db::NO_ERR != parent::query(array('UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',array(':story' => json_encode($new,JSON_FORCE_OBJECT),':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+            if(db::NO_ERRNO != parent::query(array('UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',array(':story' => json_encode($new,JSON_FORCE_OBJECT),':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
                 return false;
         }
         else
@@ -279,7 +279,7 @@ class notify extends phpCore
                 for($i=0, $c = count($new);$i<$c;++$i)
                     array_unshift($old,$new[$i]);
 
-            if(db::NO_ERR != parent::query(array('UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',array(':story' => json_encode($old,JSON_FORCE_OBJECT),':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR))
+            if(db::NO_ERRNO != parent::query(array('UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',array(':story' => json_encode($old,JSON_FORCE_OBJECT),':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
                 return false;
         }
         apc_delete($this->cachekey);

@@ -208,8 +208,11 @@ class phpCore
         catch(PDOException $e)
         {
 
-            if($action == db::FETCH_ERR) {
+            if($action == db::FETCH_ERRNO) {
                 return $stmt->errorInfo()[1];
+            }
+            if($action == db::FETCH_ERRSTR) {
+                return $stmt->errorInfo()[2];
             }
 
             $this->dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
@@ -219,8 +222,8 @@ class phpCore
 
         switch($action)
         {
-            case db::FETCH_ERR:
-                return db::NO_ERR;
+            case db::FETCH_ERRNO:
+                return db::NO_ERRNO;
 
             case db::FETCH_STMT:
                 return $stmt;
@@ -329,7 +332,7 @@ class phpCore
         if(!$this->isLogged())
             return false;
             
-        return $this->query(array('UPDATE "users" SET "board_lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR) == db::NO_ERR;
+        return $this->query(array('UPDATE "users" SET "board_lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO) == db::NO_ERRNO;
     }
     
     public function updateUserLanguage($lang)
@@ -337,7 +340,7 @@ class phpCore
         if(!$this->isLogged())
             return false;
             
-        return $this->query(array('UPDATE "users" SET "lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERR) == db::NO_ERR;
+        return $this->query(array('UPDATE "users" SET "lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO) == db::NO_ERRNO;
     }
     
     public function getBoardLanguage($id)

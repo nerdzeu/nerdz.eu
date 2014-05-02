@@ -122,13 +122,7 @@ class project extends messages
 
         $blacklist = parent::getBlacklist();//non devono essere notificati
 
-        $open = $this->isProjectOpen($to);
-        $can = $open || in_array($_SESSION['nerdz_id'],$members) || ($_SESSION['nerdz_id'] == $own);
-
         $news = $news ? 'TRUE' : 'FALSE';
-    
-        if(!$can)
-            return false;
 
         $time = time(); //nel loop di insertimento si perdono secondi
 
@@ -136,7 +130,7 @@ class project extends messages
         
         $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
-        if(empty($message) || db::NO_ERR != parent::query(array('INSERT INTO "groups_posts" ("from","to","message","news") VALUES (:id,:to,:message,:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':message' => $message, ':news' => $news)),db::FETCH_ERR))
+        if(empty($message) || db::NO_ERRNO != parent::query(array('INSERT INTO "groups_posts" ("from","to","message","news") VALUES (:id,:to,:message,:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':message' => $message, ':news' => $news)),db::FETCH_ERRNO))
             return false;
 
         if($_SESSION['nerdz_id'] != $own)
@@ -145,7 +139,7 @@ class project extends messages
         $tonotify = array_diff(array_unique(array_merge($members,$followers)),$blacklist,array($_SESSION['nerdz_id']));
 
         foreach($tonotify as $v)
-            if(db::NO_ERR != parent::query(array('INSERT INTO "groups_notify" ("group","to","time") VALUES (:to,:v,TO_TIMESTAMP(:time))',array(':to' => $to, ':v' => $v, ':time' => $time)),db::FETCH_ERR))
+            if(db::NO_ERRNO != parent::query(array('INSERT INTO "groups_notify" ("group","to","time") VALUES (:to,:v,TO_TIMESTAMP(:time))',array(':to' => $to, ':v' => $v, ':time' => $time)),db::FETCH_ERRNO))
                     return false;
 
         
@@ -170,8 +164,8 @@ class project extends messages
         return (
             ($obj = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) &&
             in_array($_SESSION['nerdz_id'],array($this->getOwnerByGid($obj->to),$obj->from)) &&
-            db::NO_ERR == parent::query(array('DELETE FROM "groups_comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) &&
-            db::NO_ERR == parent::query(array('DELETE FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERR) // triggers do the rest
+            db::NO_ERRNO == parent::query(array('DELETE FROM "groups_comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERRNO) &&
+            db::NO_ERRNO == parent::query(array('DELETE FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERRNO) // triggers do the rest
           );
     }
 
@@ -183,7 +177,7 @@ class project extends messages
             !($obj = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
             !$this->canEditProjectPost((array)$obj,$this->getOwnerByGid($obj->to),$this->getMembers($obj->to)) ||
             empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
-            db::NO_ERR != parent::query(array('UPDATE "groups_posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from,':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERR)
+            db::NO_ERRNO != parent::query(array('UPDATE "groups_posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from,':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERRNO)
           );
     }
 
