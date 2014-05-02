@@ -42,11 +42,17 @@ $configuration = [
     // Domain configuration. The protocol should not be included.
     // Your NERDZ hostname. If you are running NERDZ on your
     // PC, use 'localhost'.
-    'SITE_HOST'              => 'example.com',
+    'SITE_HOST'              => 'www.example.com',
     // The domain used to serve static data. If you are running
     // NERDZ on your PC, put an empty string.
     'STATIC_DOMAIN'          => 'static.example.com',
     // The domain used to serve the mobile version of NERDZ.
+    // It is recommended to set this to a subdomain of the root
+    // domain from the SITE_HOST variable. This means that if in
+    // SITE_HOST you have www.example.com (so your root domain is
+    // example.com), then you should have something like mobile.example.com.
+    // Otherwise, your users will need to perform the login again when
+    // switching from the desktop version to the mobile one.
     'MOBILE_HOST'            => 'mobile.example.com',
 
     // Minification configuration
@@ -92,8 +98,10 @@ $configuration = [
     // routed to our trusted public SSL proxy.
     //'CAMO_KEY'               => "THAT-CAMO-KEY",
     // True if every login request should be sent via HTTPS.
-    // You must configure your webserver to send an access-control header
-    // to allow requests to the secure domain from the non-secure one.
+    // This works via some CORS magic. You need to enable CORS on the HTTP
+    // and mobile domains, and also you need to send the
+    // Access-Control-Allow-Credentials: true header. Otherwise your cookies
+    // won't be saved.
     // It is set to false by default.
     //'LOGIN_SSL_ONLY'         => true,
     // If your SSL certificate is for just one domain (example.com),
@@ -102,4 +110,22 @@ $configuration = [
     // for every subdomain (*.example.com).
     //'HTTPS_DOMAIN'           => 'secure.example.com'
 ];
+// Hint: you want to test SSL login locally, but you don't have the time.
+// Here's a little help for you. First, create an alias in your system's
+// hosts file for 127.0.0.1 (localhost won't work, sorry). Something like
+// dev.nerdz or similar (I don't recommend using *.nerdz.eu, otherwise
+// something on the remote side will explode).
+// Then, edit your configuration properly, and uncomment this snippet
+// to magically handle everything CORS-related. Enjoy.
+/*
+if ($_SERVER['PHP_SELF'] == '/pages/profile/login.json.php' &&
+    isset ($_SERVER['HTTP_ORIGIN']) && (
+        $_SERVER['HTTP_ORIGIN'] == 'http://' . $configuration['SITE_HOST'] ||
+        $_SERVER['HTTP_ORIGIN'] == 'http://' . $configuration['MOBILE_HOST']
+    ))
+{
+    header ('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+    header ('Access-Control-Allow-Credentials: true');
+}
+*/
 ?>

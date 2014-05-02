@@ -66,13 +66,16 @@ N.json = function()
     this.project = function(){};
     this.profile = function(){};
         
-    this.post = function(path,param,done)
+    this.post = function(path,param,done,_corsCookies)
     {
         $.ajax({
             type: 'POST',
             url: path,
             data: param,
-            dataType: 'json'
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: _corsCookies === true ? true : false
+            }
         }).done(function(data) { done(data); });
     };
     
@@ -84,23 +87,10 @@ N.json = function()
     this.login = function(jObj,done)
     {
         var forceSSL = location.protocol !== 'https:' && 
-            typeof Nssl    !== 'undefined' && Nssl.login === true &&
-            Nssl.sessionId !== '';
-        var req_url  =
-            forceSSL ? (
-                'https://' +
-                (Nssl.domain !== '' ? Nssl.domain : document.location.host) +
-                '/pages/profile/login.json.php?force_ssl=true'
-            ) : '/pages/profile/login.json.php';
-        this.post (req_url, jObj, function(d) {
-            if (forceSSL) {
-                document.cookie = Nssl.sessionId + "=" + d.session;
-                for(var cookie in d.cookies) {
-                    document.cookie = d.cookies[cookie];
-                }
-            }
+            typeof Nssl !== 'undefined' && Nssl.login === true;
+        this.post ((forceSSL ? 'https://' + (Nssl.domain || document.location.host) : '') + '/pages/profile/login.json.php', jObj, function(d) {
             done (d);
-        });
+        }, true);
     };
 
     /**
@@ -739,7 +729,7 @@ N.html = function()
                 N.html.eval(data);
                 if (typeof initGist == 'function')
                     initGist();
-                if (typeof window.PR.prettyPrint == 'function')
+                if (('PR' in window) && typeof window.PR.prettyPrint == 'function')
                     window.PR.prettyPrint (
                         (typeof N.getStaticData().prettyPrintCallbackName !== 'undefined' &&
                         typeof window[N.getStaticData().prettyPrintCallbackName] === 'function') ?

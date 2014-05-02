@@ -75,8 +75,7 @@ echo unserialize(apc_fetch('tracking_js'));
 ?>
         var Nssl = {
             login:     <?=LOGIN_SSL_ONLY ? 'true' : 'false'?>,
-            domain:    "<?=HTTPS_DOMAIN?>",
-            sessionId: "<?=session_name()?>"
+            domain:    "<?=HTTPS_DOMAIN?>"
         };
 <?php
 /* END SSL_VARIABLES */

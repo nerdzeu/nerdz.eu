@@ -2,11 +2,6 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 $core = new phpCore();
-
-$forcedSSL = isset($_GET['force_ssl']);
-
-if(!$forcedSSL && !$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
-    die($core->jsonResponse('error',$core->lang('ERROR').': CSRF'));
     
 if($core->isLogged())
     die($core->jsonResponse('error',$core->lang('ALREADY_LOGGED')));
@@ -25,59 +20,24 @@ if(is_numeric($user)) {
         die($core->jsonResponse('error',$core->lang('ERROR')));
 }    
 
-$ok = false;
 if($result->rowCount() == 1)
 {
     $obj = $result->fetch(PDO::FETCH_OBJ);
-    // Referer control used to set mobile template if logged in via forcedSSL from mobile host
-    $referer = $forcedSSL && isset($_SERVER['HTTP_REFERER']) ? parse_url($_SERVER['HTTP_REFERER']) : '';
-    $SSLfromMobileHost = isset($referer['host']) && $referer['host'] == MOBILE_HOST;
-
     if(isset($_POST['setcookie']))
     {
-        $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-        $maxage = 2592000;
-
-        if($forcedSSL) {
-            $cookies = [];
-            $expires = date('r',time() + $maxage);
-            $cookies[0] = "nerdz_id={$obj->counter}; expires={$expires}; Max-Age={$maxage}; path=/; domain=%HOST%";
-            $cookies[1]  = 'nerdz_u=' . md5($pass) . "; expires={$expires}; Max-Age={$maxage}; path=/; domain=%HOST%";
-        }
-
-        if($_SERVER['SERVER_NAME'] == MOBILE_HOST || $SSLfromMobileHost)
-        {
-            if($forcedSSL) {
-                $cookies = str_replace('%HOST%',MOBILE_HOST,$cookies);
-            } else {
-                setcookie('nerdz_id',$obj->counter,$maxage,'/',MOBILE_HOST,$ssl,true);
-                setcookie('nerdz_u',md5($pass),$maxage,'/',MOBILE_HOST,$ssl,true);
-            }
-        }
-        else
-        {
-            if($forcedSSL) {
-                $cookies = str_replace('%HOST%',SITE_HOST,$cookies);
-            } else {
-                setcookie('nerdz_id',$obj->counter,$maxage,'/',SITE_HOST,$ssl,true);
-                setcookie('nerdz_u',md5($pass),$maxage,'/',SITE_HOST,$ssl,true);
-            }
-        }
+        $exp_time = time() + 2592000;
+        $chost    = $core->getSafeCookieDomainName();
+        setcookie ('nerdz_id', $obj->counter, $exp_time, '/', $chost, false, true);
+        setcookie ('nerdz_u',  md5 ($pass),   $exp_time, '/', $chost, false, true);
     }
     $_SESSION['nerdz_logged'] = true;
     $_SESSION['nerdz_id'] = $obj->counter;
     $_SESSION['nerdz_username'] = $obj->username;
     $_SESSION['nerdz_lang'] = $core->getUserLanguage($obj->counter);
     $_SESSION['nerdz_board_lang'] = $core->getBoardLanguage($obj->counter);
-    $_SESSION['nerdz_template'] = $core->getTemplate($obj->counter, $SSLfromMobileHost);
+    $_SESSION['nerdz_template'] = $core->getTemplate($obj->counter, (isset ($_SERVER['HTTP_REFERER']) && parse_url ($_SERVER['HTTP_REFERER'], PHP_URL_HOST) == MOBILE_HOST));
     $_SESSION['nerdz_mark_offline'] = isset($_POST['offline']);
-
-    if($forcedSSL) {
-        header('Content-type: application/json');
-        die(json_encode(array('status' => 'ok', 'message' => $core->lang('LOGIN_OK'), 'session' => session_id(), 'cookies' => isset($cookies) ? $cookies : ''),JSON_FORCE_OBJECT));
-    }
-    else
-        die($core->jsonResponse('ok',$core->lang('LOGIN_OK')));
+    die($core->jsonResponse('ok',$core->lang('LOGIN_OK')));
 }
 
 die($core->jsonResponse('error',$core->lang('WRONG_USER_OR_PASSWORD')));
