@@ -17,12 +17,12 @@ final class pm extends messages
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
         if(!(new flood())->pm())
             return null;
-       
-        $wentWell = db::NO_ERRNO == parent::query(array('INSERT INTO "pms" ("from","to","message","time","read") VALUES (:id,:to,:message,NOW(),TRUE)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERRNO);
 
-        $pushOn = parent::wantsPush($to) && PUSHED_ENABLED && $wentWell;
+        $retVal = parent::query(array('INSERT INTO "pms" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERRSTR);
 
-        if($pushOn) {
+        $wentWell = $retVal == db::NO_ERRSTR;
+
+        if($wentWell && parent::wantsPush($to) && PUSHED_ENABLED) {
         
             require_once $_SERVER['DOCUMENT_ROOT'].'/class/pushed-php-client/pushed.class.php';
 
@@ -41,10 +41,10 @@ final class pm extends messages
                 $pushed->push($to, $msg);
 
             } catch (PushedException $e) {}
-        
+
         }
 
-        return $wentWell;
+        return is_string($retVal) ? $retVal : $wentWell;
     }
 
     public function getList()

@@ -15,15 +15,6 @@ if(!($toid = $core->getUserId($_POST['to']))) //getUserId DON'T what htmlentitie
 
 foreach($_POST as &$val)
     $val = htmlentities(trim($val),ENT_QUOTES,'UTF-8');
-    
-if($_SESSION['nerdz_id'] == $toid)
-    die($core->jsonResponse('error',$core->lang('ERROR')));
-
-if(
-        (true === $core->isInBlacklist($_SESSION['nerdz_id'],$toid)) ||
-        (true === $core->isInBlacklist($toid,$_SESSION['nerdz_id']))
-  )
-    die($core->jsonResponse('error','Blacklisted'));
 
 if(!$core->refererControl())
     die($core->jsonResponse('error','No SPAM/BOT'));
@@ -38,6 +29,9 @@ if($ret === null)
 }
 if($ret === false)
     die($core->jsonResponse('error',$core->lang('ERROR')));
+
+if(is_string($ret))
+   die($core->jsonResponse('error',$ret));
 
 die($core->jsonResponse('ok','OK'));
 ?>

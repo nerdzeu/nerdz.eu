@@ -380,7 +380,7 @@ class comments extends project
                 //$message .= $this->removeNestedQuotes($quot);
 //                $message .=$quot;
 
-        if(db::NO_ERRNO != parent::query(array('INSERT INTO "comments" ("from","to","hpid","message","time") VALUES (:from,:to,:hpid,:message,NOW())',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO))
+        if(db::NO_ERRNO != parent::query(array('INSERT INTO "comments" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO))
             return false;
 
         return $this->addControl($obj->from,$obj->to,$hpid);
@@ -526,7 +526,7 @@ class comments extends project
                 return $this->appendProjectComment($user,$newMessage) && $this->addControl($obj->from,$obj->to,$hpid,true);
         }
 
-        if(db::NO_ERRNO != parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message","time") VALUES (:id,:to,:hpid,:message,NOW())',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO))
+        if(db::NO_ERRNO != parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message") VALUES (:id,:to,:hpid,:message)',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO))
             return false;
         return $this->addControl($obj->from,$obj->to,$hpid,true);
     }
