@@ -11,82 +11,6 @@ class comments extends project
         parent::__construct();
     }
 
-    private function addControl($author,$dest,$hpid,$prj = null)
-    {
-        $glue = $prj ? 'groups_' : '';
-
-        if(
-            !($r = parent::query(array('SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)) || //quelli da non notificare 
-            !($nn = parent::query(array('SELECT "from","to" FROM "'.$glue.'comments_no_notify" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
-            !($nnp = parent::query(array('SELECT "user" FROM "'.$glue.'posts_no_notify" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
-            !($res = parent::query(array('SELECT DISTINCT "from" FROM "'.$glue.'comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
-            !($lur = parent::query(array('SELECT "user" FROM "'.$glue.'lurkers" WHERE "post" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT))
-          )
-            return false;
-
-        $lurkers = $blist = $nnu = $users = $nnpost = array();
-
-        $blist = $r->fetchAll(PDO::FETCH_COLUMN);
-
-        $lurkers = $lur->fetchAll(PDO::FETCH_COLUMN);
-
-
-        if(in_array($_SESSION['nerdz_id'],$lurkers)) //se lurki non commenti (non avrebbe senso che tu venga notificato novamente)
-        {
-            if(db::NO_ERRNO != parent::query(array('DELETE FROM "'.$glue.'lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
-                return false;
-
-            unset($lurkers[array_search($_SESSION['nerdz_id'],$lurkers)]);
-        }
-
-        while(($o = $nn->fetch(PDO::FETCH_OBJ)))
-            if(!isset($nnu[$o->to]))
-                $nnu[$o->to] = $o->from;
-            else
-                $nnu[$o->to].= '-'.$o->from;
-
-        $users = $res->fetchAll(PDO::FETCH_COLUMN);
-
-        $nnpost = $nnp->fetchAll(PDO::FETCH_COLUMN);
-
-        $jmp = false;
-        if(!in_array($author,$users) && ($author != $_SESSION['nerdz_id']))
-        {
-            $users[] = $author;
-            $jmp = true;
-        }
-
-        if(!$prj && (!in_array($dest,$users) && ($dest != $_SESSION['nerdz_id'])))
-            $users[] = $dest;
-
-        $users = array_values(array_diff(array_unique(array_merge($users,$lurkers)),array(USERS_NEWS,DELETED_USERS)));
-        $i = count($users);
-        $time = time(); //devo usare questa e non NOW perché nel while altrimenti perdo secondi e le cose si sfasano
-        while($i-- > 0)
-            if(isset($users[$i]) && ($jmp && ($author == $users[$i]))||($_SESSION['nerdz_id'] != $users[$i]))
-            {
-                if(in_array($users[$i],$blist) || in_array($users[$i],$nnpost))
-                    continue;
-                if(isset($nnu[$users[$i]]))
-                {
-                    $e = explode('-',$nnu[$users[$i]]);
-                    $f = 1;
-                    $u = 0;
-                    while(isset($e[$u]) && $f)
-                    {
-                        if(in_array($e[$u],array($_SESSION['nerdz_id'],0)))
-                            $f = 0;
-                        ++$u;
-                    }
-                    if(!$f)
-                        continue;
-                }
-                if(!in_array(parent::query(array('INSERT INTO "'.$glue.'comments_notify"("from","to","hpid","time") VALUES (:from,:to,:hpid,TO_TIMESTAMP(:time))',array(':from' => $_SESSION['nerdz_id'], ':to' => $users[$i],':hpid' => $hpid, ':time' => $time)),db::FETCH_ERRNO),array(db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
-                    break;
-            }
-        return !($i+1);
-    }
-
     private function getProjectMembersAndOwner($hpid)
     {
         if(!($info = parent::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
@@ -368,7 +292,7 @@ class comments extends project
                 return null; //null => flood error
 
             if($user->from == $_SESSION['nerdz_id']) //append and notify
-                return $this->appendComment($user,$newMessage) && $this->addControl($obj->from,$obj->to,$hpid);
+                return $this->appendComment($user,$newMessage);
         }
 
 //            $msg = $this->explodeMessageInQuotes($o->message);
@@ -380,10 +304,7 @@ class comments extends project
                 //$message .= $this->removeNestedQuotes($quot);
 //                $message .=$quot;
 
-        if(db::NO_ERRNO != parent::query(array('INSERT INTO "comments" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO))
-            return false;
-
-        return $this->addControl($obj->from,$obj->to,$hpid);
+        return db::NO_ERRNO == parent::query(array('INSERT INTO "comments" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO);
     }
 
     public function getComment($hcid)
@@ -523,12 +444,10 @@ class comments extends project
                 return null; //null => flood error
 
             if($user->from == $_SESSION['nerdz_id']) //append and notify
-                return $this->appendProjectComment($user,$newMessage) && $this->addControl($obj->from,$obj->to,$hpid,true);
+                return $this->appendProjectComment($user,$newMessage);
         }
 
-        if(db::NO_ERRNO != parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message") VALUES (:id,:to,:hpid,:message)',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO))
-            return false;
-        return $this->addControl($obj->from,$obj->to,$hpid,true);
+        return db::NO_ERRNO == parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message") VALUES (:id,:to,:hpid,:message)',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO);
     }
 
     /*
