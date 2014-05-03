@@ -17,7 +17,24 @@ function N() /* THE FATHER of God (class/object/function)*/
     this.yt = function(a,vid)
     {
         a.removeClass("yt_frame");
-        a.html('<div style="width:80%; margin: auto;text-align:center"><br /><iframe style="border:0px;width:560px; height:340px" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe></div>');
+        var iframe;
+        switch(a.data("host")) {
+          case "youtube":
+            iframe = '<iframe style="border:0px;width:560px; height:340px" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe>';
+            break;
+          case "vimeo":
+            iframe = '<iframe src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            break;
+          case "dailymotion":
+            iframe = '<iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
+            break;
+          case "facebook":
+            iframe = '<iframe src="https://www.facebook.com/video/embed?video_id='+vid+'" width="540" height="420" frameborder="0"></iframe>';
+            break;
+          default:
+            break;
+        }
+        a.html('<div style="width:80%; margin: auto;text-align:center"><br />'+iframe+'</div>');
         a.css('cursor','default');
     };
     
