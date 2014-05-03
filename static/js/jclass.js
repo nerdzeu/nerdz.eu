@@ -20,22 +20,35 @@ function N() /* THE FATHER of God (class/object/function)*/
         var iframe;
         switch(a.data("host")) {
           case "youtube":
-            iframe = '<iframe style="border:0px;width:560px; height:340px" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe>';
+            iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe>';
             break;
           case "vimeo":
-            iframe = '<iframe src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            iframe = '<iframe style="margin: auto" src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             break;
           case "dailymotion":
-            iframe = '<iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
+            iframe = '<iframe style="margin: auto" frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
             break;
           case "facebook":
-            iframe = '<iframe src="https://www.facebook.com/video/embed?video_id='+vid+'" width="540" height="420" frameborder="0"></iframe>';
+            iframe = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='+vid+'" width="540" height="420" frameborder="0"></iframe>';
             break;
           default:
             break;
         }
-        a.html('<div style="width:80%; margin: auto;text-align:center"><br />'+iframe+'</div>');
+        a.html('<div style="width:100%; text-align:center"><br />'+iframe+'</div>');
         a.css('cursor','default');
+    };
+    
+    this.vimeoThumbnail = function(img) {
+        var video_id = $(img).parent().data("vid");
+        $.ajax({
+            type:'GET',
+            url: 'http://vimeo.com/api/v2/video/' + video_id + '.json',
+            jsonp: 'callback',
+            dataType: 'jsonp',
+            success: function(data){
+                img.src = data[0].thumbnail_large;
+            }
+        });
     };
     
     this.imgErr = function(obj) {

@@ -316,33 +316,35 @@ class messages extends phpCore
         {
             $callBack1Param = function($m) use($ssl) {
                 $qsvar = array();
-                $vidid = end(explode("/",html_entity_decode($m[1],ENT_QUOTES,'UTF-8')));
-                if(preg_match('#https?:\/\/(www.)?youtu.?be(.com)?#',$m[1])) {
-                  if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$vidid)) {
-                    $qsvar["v"] = $end;
-                  } else {
-                    parse_str(str_replace("watch?","",$vidid),$qsvar);
+                $vUrl = parse_url(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+                if(preg_match('#youtu.?be#',$vUrl['host'])) {
+                  if($vUrl['path'] == "/watch") {
+                    parse_str($vUrl['query'], $qsvar);
                     if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
                       return $m[0];
                     $videoID = explode('#', $qsvar['v']);
                     $qsvar['v'] = reset($videoID);
                   }
+                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$path))
+                    $qsvar["v"] = $vUrl['path'];
+                  else 
+                    return $m[0];
                   return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="youtube">
                             <span>'.parent::lang('VIDEO').'</span>
                             <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$qsvar['v'].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
                           </a>';
                 }
-                else if(preg_match('#https?:\/\/(www\.)?vimeo\.com\/\d+#', $m[1])) {
-                  if(!preg_match('#^[\d]+(\#.+?)?$#',$vidid))
+                else if(preg_match('#(www\.)?vimeo\.com#', $vUrl['host'])) {
+                  if(!preg_match('#^\/\d+(\#.+?)?$#',$vUrl['path']))
                     return $m[0];
-                  $hash = unserialize(file_get_contents("http://vimeo.com/api/v2/video/$vidid.php"));
-                  $thumb = $hash[0]['thumbnail_small'];  
+                  $vidid = substr($vUrl['path'], 1);
                   return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="vimeo">
                             <span>'.parent::lang('VIDEO').'</span>
-                            <img src="'.$thumb.'" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="" width="130" height="130" style="float: left; margin-right:4px; " onload="N.vimeoThumbnail(this);"/>
                           </a>';
                 }
-                else if(preg_match('#http:\/\/dai\.ly\/#', $m[1]) || preg_match('#http:\/\/www\.dailymotion\.com\/video\/#', $m[1])) {
+                else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
+                  $vidid = str_replace("video/","",$vUrl['path']);
                   if(strpos($vidid,"_")!==false)
                     $vidid = reset(explode("_",$vidid));
                   return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="dailymotion">
@@ -350,8 +352,8 @@ class messages extends phpCore
                             <img src="https://www.dailymotion.com/thumbnail/video/'.$vidid.'" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
                           </a>';
                 }
-                else if(preg_match('#facebook\.com#', $m[1])) {
-                  parse_str(str_replace("photo.php?","",$vidid),$qsvar);
+                else if(preg_match('#facebook\.com#', $vUrl['host'])) {
+                  parse_str($vUrl['query'],$qsvar);
                     if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
                       return $m[0];
                   $videoID = explode('#', $qsvar['v']);
@@ -364,7 +366,7 @@ class messages extends phpCore
                 else 
                   return $m[1];
             };
-            $str = preg_replace_callback('#\[video\][ ]?(https?:\/\/[\S]+)[ ]?\[\/video\]#im',$callBack1Param,$str,10);
+            $str = preg_replace_callback('#\[video\]\s?(https?:\/\/[\S]+)\s?\[\/video\]#im',$callBack1Param,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
                     $url = messages::imgValidUrl($m[1], $domain, $ssl);
@@ -380,45 +382,47 @@ class messages extends phpCore
         {
             $callBack1Param = function($m) use($ssl) {
                 $qsvar = array();
-                $vidid = end(explode("/",html_entity_decode($m[1],ENT_QUOTES,'UTF-8')));
-                if(preg_match('#https?:\/\/(www.)?youtu.?be(.com)?#',$m[1])) {
-                  if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$vidid)) {
-                    $qsvar["v"] = $end;
-                  } else {
-                    parse_str(str_replace("watch?","",$vidid),$qsvar);
+                $vUrl = parse_url(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+                if(preg_match('#youtu.?be#',$vUrl['host'])) {
+                  if($vUrl['path'] == "/watch") {
+                    parse_str($vUrl['query'], $qsvar);
                     if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
                       return $m[0];
                     $videoID = explode('#', $qsvar['v']);
                     $qsvar['v'] = reset($videoID);
                   }
-                  return '<div style="width:80%; margin: auto;text-align:center"><br />
-                            <iframe title="YouTube video" style="width:560px; height:340px; border:0px" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
-                          </div>';
-                }
-                else if(preg_match('#https?:\/\/(www\.)?vimeo\.com\/\d+#', $m[1])) {
-                  if(!preg_match('#^[\d]+(\#.+?)?$#',$vidid))
+                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$path))
+                    $qsvar["v"] = $vUrl['path'];
+                  else 
                     return $m[0];
-                  $hash = unserialize(file_get_contents("http://vimeo.com/api/v2/video/$vidid.php"));
-                  $thumb = $hash[0]['thumbnail_small'];  
-                  return '<div style="width:80%; margin: auto;text-align:center"><br />
-                            <iframe src="//player.vimeo.com/video/'.$vidid.'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                  return '<div style="width:100%; text-align:center"><br />
+                            <iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
                           </div>';
                 }
-                else if(preg_match('#http:\/\/dai\.ly\/#', $m[1]) || preg_match('#http:\/\/www\.dailymotion\.com\/video\/#', $m[1])) {
+                else if(preg_match('#(www\.)?vimeo\.com#', $vUrl['host'])) {
+                  if(!preg_match('#^\/\d+(\#.+?)?$#',$vUrl['path']))
+                    return $m[0];
+                  $vidid = substr($vUrl['path'], 1);
+                  return '<div style="width:100%; text-align:center"><br />
+                            <iframe src="//player.vimeo.com/video/'.$vidid.'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                          </div>';
+                }
+                else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
+                  $vidid = str_replace("video/","",$vUrl['path']);
                   if(strpos($vidid,"_")!==false)
                     $vidid = reset(explode("_",$vidid));
-                  return '<div style="width:80%; margin: auto;text-align:center"><br />
-                            <iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$vidid.'" allowfullscreen></iframe>
+                  return '<div style="width:100%; text-align:center"><br />
+                            <iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$vidid.'" allowfullscreen></iframe>
                           </div>';
                 }
-                else if(preg_match('#facebook\.com#', $m[1])) {
-                  parse_str(str_replace("photo.php?","",$vidid),$qsvar);
-                    if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#',$qsvar['v']))
+                else if(preg_match('#facebook\.com#', $vUrl['host'])) {
+                  parse_str($vUrl['query'],$qsvar);
+                    if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
                       return $m[0];
                   $videoID = explode('#', $qsvar['v']);
                   $qsvar['v'] = reset($videoID);
-                  return '<div style="width:80%; margin: auto;text-align:center"><br />
-                            <iframe src="https://www.facebook.com/video/embed?video_id='.$qsvar['v'].'" width="540" height="420" frameborder="0"></iframe>
+                  return '<div style="width:100%; text-align:center"><br />
+                            <iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$qsvar['v'].'" width="540" height="420" frameborder="0"></iframe>
                           </div>';
                 }
                 else 
