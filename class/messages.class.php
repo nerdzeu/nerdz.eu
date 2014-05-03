@@ -350,10 +350,12 @@ class messages extends phpCore
                             <img src="https://www.dailymotion.com/thumbnail/video/'.$vidid.'" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
                           </a>';
                 }
-                else if(preg_match('/facebook\.com/', $m[1])) {
+                else if(preg_match('#facebook\.com#', $m[1])) {
                   parse_str(str_replace("photo.php?","",$vidid),$qsvar);
-                    if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#',$qsvar['v']))
+                    if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
                       return $m[0];
+                  $videoID = explode('#', $qsvar['v']);
+                  $qsvar['v'] = reset($videoID);
                   return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="facebook">
                             <span>'.parent::lang('VIDEO').'</span>
                             <img src="https://graph.facebook.com/'.$qsvar['v'].'/picture" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
@@ -409,10 +411,12 @@ class messages extends phpCore
                             <iframe frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$vidid.'" allowfullscreen></iframe>
                           </div>';
                 }
-                else if(preg_match('/facebook\.com/', $m[1])) {
+                else if(preg_match('#facebook\.com#', $m[1])) {
                   parse_str(str_replace("photo.php?","",$vidid),$qsvar);
                     if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#',$qsvar['v']))
                       return $m[0];
+                  $videoID = explode('#', $qsvar['v']);
+                  $qsvar['v'] = reset($videoID);
                   return '<div style="width:80%; margin: auto;text-align:center"><br />
                             <iframe src="https://www.facebook.com/video/embed?video_id='.$qsvar['v'].'" width="540" height="420" frameborder="0"></iframe>
                           </div>';
