@@ -312,8 +312,10 @@ class messages extends phpCore
           $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
           if(preg_match("#^spotify:track:[\d\w]+$#im", $uri))
             $ID=$uri;
-          else if(preg_match("#^https?:\/\/play\.spotify\.com\/track\/[\w\d]+$#im",$uri))
-            $ID="spotify:track:".end(explode("/",$uri));
+          else if(preg_match("#^https?:\/\/play\.spotify\.com\/track\/[\w\d]+$#im",$uri)) {
+            $tmpID = explode('/',$uri);
+            $ID="spotify:track:".end($tmpID);
+          }
           else
             return $m[0];
           return '<iframe src="https://embed.spotify.com/?uri='.$ID.'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
@@ -356,8 +358,9 @@ class messages extends phpCore
                 }
                 else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
                   $vidid = str_replace("video/","",$vUrl['path']);
-                  if(strpos($vidid,"_")!==false)
-                    $vidid = reset(explode("_",$vidid));
+                  if(strpos($vidid,'_')!==false)
+                      $vidid = explode("_",$vidid);
+                    $vidid = reset($vidid);
                   return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="dailymotion">
                             <span>'.parent::lang('VIDEO').'</span>
                             <img src="https://www.dailymotion.com/thumbnail/video/'.$vidid.'" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
