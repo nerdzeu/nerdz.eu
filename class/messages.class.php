@@ -325,8 +325,8 @@ class messages extends phpCore
                     $videoID = explode('#', $qsvar['v']);
                     $qsvar['v'] = reset($videoID);
                   }
-                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$vUrl['path']))
-                    $qsvar["v"] = $vUrl['path'];
+                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',substr($vUrl['path'], 1)))
+                    $qsvar["v"] = substr($vUrl['path'], 1);
                   else 
                     return $m[0];
                   return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="youtube">
@@ -391,8 +391,8 @@ class messages extends phpCore
                     $videoID = explode('#', $qsvar['v']);
                     $qsvar['v'] = reset($videoID);
                   }
-                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$vUrl['path']))
-                    $qsvar["v"] = $vUrl['path'];
+                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',substr($vUrl['path'], 1)))
+                    $qsvar["v"] = substr($vUrl['path'], 1);
                   else 
                     return $m[0];
                   return '<div style="width:100%; text-align:center"><br />
