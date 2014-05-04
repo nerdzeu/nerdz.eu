@@ -42,7 +42,7 @@ function N() /* THE FATHER of God (class/object/function)*/
         var video_id = $(img).parent().data("vid");
         $.ajax({
             type:'GET',
-            url: 'http://vimeo.com/api/v2/video/' + video_id + '.json',
+            url: 'https://vimeo.com/api/v2/video/' + video_id + '.json',
             jsonp: 'callback',
             dataType: 'jsonp',
             success: function(data){
