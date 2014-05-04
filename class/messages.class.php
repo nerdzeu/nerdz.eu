@@ -308,13 +308,24 @@ class messages extends phpCore
             </div>',$str,1);
 
         
-        $str = preg_replace_callback('#\[spotify\](.+?)\[/spotify\]#im',function($m) use($ssl) {
-          return     '<iframe src="https://embed.spotify.com/?uri='.html_entity_decode($m[1],ENT_QUOTES,'UTF-8').'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+        $str = preg_replace_callback('#\[spotify\]\s*(.+?)\s*\[/spotify\]#im',function($m) use($ssl) {
+          $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+          if(preg_match("#^spotify:track:[\d\w]+$#im", $uri))
+            $ID=$uri;
+          else if(preg_match("#^https?:\/\/play\.spotify\.com\/track\/[\w\d]+$#im",$uri))
+            $ID="spotify:track:".end(explode("/",$uri));
+          else
+            return $m[0];
+          return '<iframe src="https://embed.spotify.com/?uri='.$ID.'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+        },$str,10);
+        
+        $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#im',function($m) use($ssl) {
+          return '<img data-id="'.strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8')).'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)">';
         },$str,10);
         
         if($truncate)
         {
-            $callBack1Param = function($m) use($ssl) {
+            $videoCallback = function($m) use($ssl) {
                 $qsvar = array();
                 $vUrl = parse_url(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
                 if(preg_match('#youtu.?be#',$vUrl['host'])) {
@@ -364,9 +375,12 @@ class messages extends phpCore
                           </a>';
                 }
                 else 
-                  return $m[1];
+                  return $m[0];
             };
-            $str = preg_replace_callback('#\[video\]\s?(https?:\/\/[\S]+)\s?\[\/video\]#im',$callBack1Param,$str,10);
+            $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
+            //compatibilità con vecchi post
+            $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
                     $url = messages::imgValidUrl($m[1], $domain, $ssl);
@@ -380,7 +394,7 @@ class messages extends phpCore
         }
         else
         {
-            $callBack1Param = function($m) use($ssl) {
+            $videoCallback = function($m) use($ssl) {
                 $qsvar = array();
                 $vUrl = parse_url(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
                 if(preg_match('#youtu.?be#',$vUrl['host'])) {
@@ -426,10 +440,12 @@ class messages extends phpCore
                           </div>';
                 }
                 else 
-                  return $m[1];
+                  return $m[0];
             };
-            $str = preg_replace_callback('#\[video\][ ]?(https?:\/\/[\S]+)[ ]?\[\/video\]#im',$callBack1Param,$str,10);
-
+            $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
+            
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
                     return '<img src="'.messages::imgValidUrl($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
                 },$str);
