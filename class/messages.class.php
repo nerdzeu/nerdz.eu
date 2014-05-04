@@ -325,7 +325,7 @@ class messages extends phpCore
                     $videoID = explode('#', $qsvar['v']);
                     $qsvar['v'] = reset($videoID);
                   }
-                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$path))
+                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$vUrl['path']))
                     $qsvar["v"] = $vUrl['path'];
                   else 
                     return $m[0];
@@ -391,7 +391,7 @@ class messages extends phpCore
                     $videoID = explode('#', $qsvar['v']);
                     $qsvar['v'] = reset($videoID);
                   }
-                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$path))
+                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',$vUrl['path']))
                     $qsvar["v"] = $vUrl['path'];
                   else 
                     return $m[0];
