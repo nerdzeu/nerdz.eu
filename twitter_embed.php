@@ -14,7 +14,8 @@
   $ID = strip_tags(urldecode($_GET['twit']));
   if(!preg_match("#^\d+$#", $ID)) {
     $j = parse_url($ID);
-    $ID = end(explode("/",$j['path']));
+    $tmpID = explode('/',$j['path']);
+    $ID = end($tmpID);
     if(!preg_match("#^\d+$#", $ID))
       die(jsonResponse('{"errors":[{"message":"Invalid ID", "code": 1}]}'));
   }
