@@ -307,22 +307,23 @@ class messages extends phpCore
                 <div style="display:none; margin-left:3%;overflow:hidden">$2</div>
             </div>',$str,1);
 
-        
         $str = preg_replace_callback('#\[spotify\]\s*(.+?)\s*\[/spotify\]#im',function($m) use($ssl) {
-          $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
-          if(preg_match("#^spotify:track:[\d\w]+$#im", $uri))
-            $ID=$uri;
-          else if(preg_match("#^https?:\/\/play\.spotify\.com\/track\/[\w\d]+$#im",$uri)) {
-            $tmpID = explode('/',$uri);
-            $ID="spotify:track:".end($tmpID);
-          }
-          else
-            return $m[0];
-          return '<iframe src="https://embed.spotify.com/?uri='.$ID.'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+                $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+                if(preg_match('#^spotify:track:[\d\w]+$#im', $uri)) {
+                    $ID = $uri;
+                }
+                else if(preg_match('#^https?:\/\/play\.spotify\.com\/track\/[\w\d]+$#im',$uri)) {
+                    $tmpID = explode('/',$uri);
+                    $ID = 'spotify:track:'.end($tmpID);
+                }
+                else
+                    return $m[0];
+
+                return '<iframe src="https://embed.spotify.com/?uri='.$ID.'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
         },$str,10);
         
         $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#im',function($m) use($ssl) {
-          return '<img data-id="'.strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8')).'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)">';
+                return '<img data-id="'.strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8')).'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)">';
         },$str,10);
         
         if($truncate)
@@ -330,49 +331,61 @@ class messages extends phpCore
             $videoCallback = function($m) use($ssl) {
                 $qsvar = array();
                 $vUrl = parse_url(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+
                 if(preg_match('#youtu.?be#',$vUrl['host'])) {
-                  if($vUrl['path'] == "/watch") {
-                    parse_str($vUrl['query'], $qsvar);
-                    if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
-                      return $m[0];
-                    $videoID = explode('#', $qsvar['v']);
-                    $qsvar['v'] = reset($videoID);
-                  }
-                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',substr($vUrl['path'], 1)))
-                    $qsvar["v"] = substr($vUrl['path'], 1);
-                  else 
-                    return $m[0];
-                  return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="youtube">
+                    if($vUrl['path'] == '/watch') {
+                        parse_str($vUrl['query'], $qsvar);
+                        
+                        if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
+                            return $m[0];
+                        
+                        $videoID = explode('#', $qsvar['v']);
+                        $qsvar['v'] = reset($videoID);
+                    }
+                    else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',substr($vUrl['path'], 1))) {
+                        $qsvar['v'] = substr($vUrl['path'], 1);
+                    }
+                    else
+                        return $m[0];
+                    
+                    return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="youtube">
                             <span>'.parent::lang('VIDEO').'</span>
                             <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$qsvar['v'].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
                           </a>';
                 }
                 else if(preg_match('#(www\.)?vimeo\.com#', $vUrl['host'])) {
-                  if(!preg_match('#^\/\d+(\#.+?)?$#',$vUrl['path']))
-                    return $m[0];
-                  $vidid = substr($vUrl['path'], 1);
-                  return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="vimeo">
+
+                    if(!preg_match('#^\/\d+(\#.+?)?$#',$vUrl['path']))
+                        return $m[0];
+
+                    $vidid = substr($vUrl['path'], 1);
+                     return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="vimeo">
                             <span>'.parent::lang('VIDEO').'</span>
                             <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="" width="130" height="130" style="float: left; margin-right:4px; " onload="N.vimeoThumbnail(this);"/>
                           </a>';
                 }
                 else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
-                  $vidid = str_replace("video/","",$vUrl['path']);
-                  if(strpos($vidid,'_')!==false)
-                      $vidid = explode("_",$vidid);
-                    $vidid = reset($vidid);
+                  $vidid = str_replace('video/','',$vUrl['path']);
+
+                  if(strpos($vidid,'_')!==false) {
+                      $vidid = explode('_',$vidid);
+                      $vidid = reset($vidid);
+                  }
+
                   return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="dailymotion">
                             <span>'.parent::lang('VIDEO').'</span>
                             <img src="https://www.dailymotion.com/thumbnail/video/'.$vidid.'" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
                           </a>';
                 }
                 else if(preg_match('#facebook\.com#', $vUrl['host'])) {
-                  parse_str($vUrl['query'],$qsvar);
-                    if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
-                      return $m[0];
-                  $videoID = explode('#', $qsvar['v']);
-                  $qsvar['v'] = reset($videoID);
-                  return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="facebook">
+                     parse_str($vUrl['query'],$qsvar);
+                     if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
+                         return $m[0];
+
+                     $videoID = explode('#', $qsvar['v']);
+                     $qsvar['v'] = reset($videoID);
+                     
+                     return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="facebook">
                             <span>'.parent::lang('VIDEO').'</span>
                             <img src="https://graph.facebook.com/'.$qsvar['v'].'/picture" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
                           </a>';
@@ -706,6 +719,9 @@ class messages extends phpCore
                 str_replace('"]',' ',
                 str_replace(']',' ',
                 str_ireplace('[url]','',
+                str_ireplace('[twitter]','',
+                str_ireplace('[video]','',
+                str_ireplace('[spotify]','',
                 str_ireplace('[img]','',
                 str_ireplace('[/img]','',
                 str_ireplace('[/url]','',
@@ -746,7 +762,7 @@ class messages extends phpCore
                 str_ireplace('[/big]','',
                 str_ireplace('[hr]','',
                 str_ireplace('[wat]','',
-                str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))));
+                str_ireplace('[quote=','',$message)))))))))))))))))))))))))))))))))))))))))))))))));
     } 
 
     public function getThumbs($hpid, $prj = false) {
