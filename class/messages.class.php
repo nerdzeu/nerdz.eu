@@ -456,10 +456,7 @@ class messages extends phpCore
                             </div>';
                 }
                 else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
-                    $vidid = str_replace('video/','',$vUrl['path']);
-                    if(strpos($vidid,'_')!==false)
-                        $vidid = reset(explode('_',$vidid));
-
+                    $vidid = baseame(strtok(str_replace('video/','',$vUrl['path']), '_'));
                     return '<div style="width:100%; text-align:center"><br />
                                 <iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$vidid.'" allowfullscreen></iframe>
                             </div>';
