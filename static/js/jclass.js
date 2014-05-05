@@ -77,7 +77,7 @@ function N() /* THE FATHER of God (class/object/function)*/
             twttr.widgets.load();
         }
       });
-    }
+    };
     
     this.imgErr = function(obj) {
       $(obj).attr("src","/static/images/onErrorImg.php"); 
