@@ -307,19 +307,35 @@ class messages extends phpCore
                 <div style="display:none; margin-left:3%;overflow:hidden">$2</div>
             </div>',$str,1);
 
-        $str = preg_replace_callback('#\[spotify\]\s*(.+?)\s*\[/spotify\]#im',function($m) use($ssl) {
-                $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+        $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#im',function($m) use($ssl, $truncate) {
+            $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+            if(preg_match('#spotify#im',$uri)) {
                 if(preg_match('#^spotify:track:[\d\w]+$#im', $uri)) {
-                    $ID = $uri;
+                  $ID = $uri;
                 }
-                else if(preg_match('#^https?:\/\/play\.spotify\.com\/track\/[\w\d]+$#im',$uri)) {
-                    $tmpID = explode('/',$uri);
-                    $ID = 'spotify:track:'.end($tmpID);
+                else if(preg_match('#^https?:\/\/(open|play)\.spotify\.com\/track\/[\w\d]+$#im',$uri)) {
+                  $tmpID = explode('/',$uri);
+                  $ID = 'spotify:track:'.end($tmpID);
                 }
                 else
-                    return $m[0];
-
+                  return $m[0];
                 return '<iframe src="https://embed.spotify.com/?uri='.$ID.'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+            }
+            else if(preg_match('#^https?:\/\/soundcloud\.com\/\S+\/\S+$#im',$uri)) {
+                return '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url='.urlencode($uri).'"></iframe>';
+            }
+            else if(preg_match('#^https?:\/\/(www\.)?deezer\.com\/(track|album|playlist)\/\d+$#', $uri)) {
+                $path = substr(parse_url($uri)['path'],1);
+                $type = explode("/",$path)[0];
+                $ID   = explode("/",$path)[1];
+                $heig = $truncate?"80":"240";
+                return "<iframe src='http://www.deezer.com/plugins/player?height={$heig}&type={$type}&id={$ID}' width='100%' height='{$heig}' scrolling='no' frameborder='no'></iframe>";
+            }
+            else if(preg_match('#^https?:\/\/#', $uri)) {
+                return '<audio preload="none" controls src="'.$uri.'"></audio>';
+            }
+            else 
+                return $m[0];
         },$str,10);
         
         $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#im',function($m) use($ssl) {
@@ -390,8 +406,9 @@ class messages extends phpCore
                             <img src="https://graph.facebook.com/'.$qsvar['v'].'/picture" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
                           </a>';
                 }
-                else 
-                  return $m[0];
+                else {
+                    return $m[0];
+                }
             };
             $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
             //compatibilità con vecchi post
@@ -414,49 +431,50 @@ class messages extends phpCore
                 $qsvar = array();
                 $vUrl = parse_url(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
                 if(preg_match('#youtu.?be#',$vUrl['host'])) {
-                  if($vUrl['path'] == "/watch") {
-                    parse_str($vUrl['query'], $qsvar);
-                    if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
-                      return $m[0];
-                    $videoID = explode('#', $qsvar['v']);
-                    $qsvar['v'] = reset($videoID);
-                  }
-                  else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',substr($vUrl['path'], 1)))
-                    $qsvar["v"] = substr($vUrl['path'], 1);
-                  else 
-                    return $m[0];
-                  return '<div style="width:100%; text-align:center"><br />
-                            <iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
-                          </div>';
+                    if($vUrl['path'] == "/watch") {
+                        parse_str($vUrl['query'], $qsvar);
+                        if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
+                            return $m[0];
+                        $videoID = explode('#', $qsvar['v']);
+                        $qsvar['v'] = reset($videoID);
+                    }
+                    else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',substr($vUrl['path'], 1)))
+                        $qsvar["v"] = substr($vUrl['path'], 1);
+                    else 
+                        return $m[0];
+                    return '<div style="width:100%; text-align:center"><br />
+                                <iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
+                            </div>';
                 }
                 else if(preg_match('#(www\.)?vimeo\.com#', $vUrl['host'])) {
-                  if(!preg_match('#^\/\d+(\#.+?)?$#',$vUrl['path']))
-                    return $m[0];
-                  $vidid = substr($vUrl['path'], 1);
-                  return '<div style="width:100%; text-align:center"><br />
-                            <iframe src="//player.vimeo.com/video/'.$vidid.'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                          </div>';
+                    if(!preg_match('#^\/\d+(\#.+?)?$#',$vUrl['path']))
+                        return $m[0];
+                    $vidid = substr($vUrl['path'], 1);
+                    return '<div style="width:100%; text-align:center"><br />
+                                <iframe src="//player.vimeo.com/video/'.$vidid.'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                            </div>';
                 }
                 else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
-                  $vidid = str_replace("video/","",$vUrl['path']);
-                  if(strpos($vidid,"_")!==false)
-                    $vidid = reset(explode("_",$vidid));
-                  return '<div style="width:100%; text-align:center"><br />
-                            <iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$vidid.'" allowfullscreen></iframe>
-                          </div>';
+                    $vidid = str_replace("video/","",$vUrl['path']);
+                    if(strpos($vidid,"_")!==false)
+                        $vidid = reset(explode("_",$vidid));
+                    return '<div style="width:100%; text-align:center"><br />
+                                <iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$vidid.'" allowfullscreen></iframe>
+                            </div>';
                 }
                 else if(preg_match('#facebook\.com#', $vUrl['host'])) {
-                  parse_str($vUrl['query'],$qsvar);
-                    if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
-                      return $m[0];
-                  $videoID = explode('#', $qsvar['v']);
-                  $qsvar['v'] = reset($videoID);
-                  return '<div style="width:100%; text-align:center"><br />
-                            <iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$qsvar['v'].'" width="540" height="420" frameborder="0"></iframe>
-                          </div>';
+                    parse_str($vUrl['query'],$qsvar);
+                        if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
+                            return $m[0];
+                        $videoID = explode('#', $qsvar['v']);
+                        $qsvar['v'] = reset($videoID);
+                        return '<div style="width:100%; text-align:center"><br />
+                                    <iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$qsvar['v'].'" width="540" height="420" frameborder="0"></iframe>
+                                </div>';
                 }
-                else 
-                  return $m[0];
+                else {
+                    return $m[0];
+                }
             };
             $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
             $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
@@ -721,7 +739,7 @@ class messages extends phpCore
                 str_ireplace('[url]','',
                 str_ireplace('[twitter]','',
                 str_ireplace('[video]','',
-                str_ireplace('[spotify]','',
+                str_ireplace('[music]','',
                 str_ireplace('[img]','',
                 str_ireplace('[/img]','',
                 str_ireplace('[/url]','',
