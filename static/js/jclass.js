@@ -61,6 +61,7 @@ function N() /* THE FATHER of God (class/object/function)*/
           if(json.errors) {
             img.src = "/static/images/twitter_fail.png";
             img.title = json.errors[0].message;
+            img.onload = '';
             return false;
           }
           var div = $("<div/>").html(json.html);
