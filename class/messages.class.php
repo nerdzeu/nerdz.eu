@@ -334,8 +334,8 @@ class messages extends phpCore
                     $heig = $truncate ? '80': '240';
                     return "<iframe src='http://www.deezer.com/plugins/player?height={$heig}&type={$type}&id={$ID}' width='100%' height='{$heig}' scrolling='no' frameborder='no'></iframe>";
                 }
-                else if(preg_match('#^https?:\/\/#', $uri)) {
-                    return '<audio preload="none" controls src="'.$uri.'"></audio>';
+                else if(filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+                    return '<audio preload="none" controls src="'.htmlspecialchars($uri,ENT_QUOTES,'UTF-8').'"></audio>';
                 }
                 else 
                     return $m[0];
@@ -384,12 +384,7 @@ class messages extends phpCore
                           </a>';
                 }
                 else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
-                  $vidid = str_replace('video/','',$vUrl['path']);
-
-                  if(strpos($vidid,'_')!==false) {
-                      $vidid = explode('_',$vidid);
-                      $vidid = reset($vidid);
-                  }
+                  $vidid = baseame(strtok(str_replace('video/','',$vUrl['path']), '_'));
 
                   return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="dailymotion">
                             <span>'.parent::lang('VIDEO').'</span>
