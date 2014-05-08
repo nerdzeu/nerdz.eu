@@ -480,7 +480,7 @@ class messages extends phpCore
         if(!(new flood())->profilePost())
             return 0;
 
-        $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
+        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
         return !empty($message) && db::NO_ERRSTR == parent::query(array('INSERT INTO "posts" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message,)),db::FETCH_ERRSTR);
     }
@@ -496,7 +496,7 @@ class messages extends phpCore
 
     public function editMessage($hpid,$message)
     {
-        $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
+        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
         return !(
             empty($message) ||
             !($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
