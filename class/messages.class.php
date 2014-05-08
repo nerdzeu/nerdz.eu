@@ -6,6 +6,11 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
 class messages extends phpCore
 {
+    // regular expressions used to parse the [video] bbcode
+    const YOUTUBE_REGEXP  = '#^https?://(?:www\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
+    const VIMEO_REGEXP    = '#^https?://(?:www\.)?vimeo\.com.+?(\d+)$#i';
+    const DMOTION_REGEXP  = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
+    const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/photo\.php(?:\?v=|\?.+?&v=)(\d+)#i';
     public function __construct()
     {
         parent::__construct();
@@ -152,41 +157,41 @@ class messages extends phpCore
             return isset($m[2]) ? '<a href="'.messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
         };
 
-        $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#im',function($m) use ($validURL) {
+        $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#i',function($m) use ($validURL) {
                    return $validURL($m);
             },$str);
-        $str = preg_replace_callback('#\[url=(.+?)\](.+?)\[/url\]#im',function($m) use ($validURL) {
+        $str = preg_replace_callback('#\[url=(.+?)\](.+?)\[/url\]#i',function($m) use ($validURL) {
                 return $validURL($m);
             },$str);
-        $str = preg_replace_callback('#\[url\](.+?)\[/url\]#im',function($m) use ($validURL) {
+        $str = preg_replace_callback('#\[url\](.+?)\[/url\]#i',function($m) use ($validURL) {
                 return $validURL($m);
             },$str);
 
-        $str = preg_replace('#\[i\](.+?)\[/i\]#im','<span style="font-style:italic">$1</span>',$str);
-        $str = preg_replace('#\[cur\](.+?)\[/cur\]#im','<span style="font-style:italic">$1</span>',$str);
-        $str = preg_replace('#\[gist\]([0-9a-zA-Z]+)\[/gist\]#','<div class="gistLoad" data-id="$1" id="gist-$1">'.parent::lang('LOADING').'...</div>',$str);
-        $str = preg_replace('#\[b\](.+?)\[/b\]#im','<span style="font-weight:bold">$1</span>',$str);
-        $str = preg_replace('#\[del\](.+?)\[/del\]#im','<del>$1</del>',$str);
-        $str = preg_replace('#\[u\](.+?)\[/u\]#im','<u>$1</u>',$str);
-        $str = preg_replace('#\[hr\]#im','<hr style="clear:both" />',$str);
-        $str = preg_replace('#\[small\](.+?)\[/small\]#im','<span style="font-size:7pt">$1</span>',$str);
-        $str = preg_replace('#\[big\](.+?)\[/big\]#im','<span style="font-size:14pt">$1</span>',$str);
-        $str = preg_replace('#\[wat\]#im','<span style="font-size:22pt">WAT</span>',$str); //easter egg [never change]
+        $str = preg_replace('#\[i\](.+?)\[/i\]#i','<span style="font-style:italic">$1</span>',$str);
+        $str = preg_replace('#\[cur\](.+?)\[/cur\]#i','<span style="font-style:italic">$1</span>',$str);
+        $str = preg_replace('#\[gist\]([0-9a-z]+)\[/gist\]#i','<div class="gistLoad" data-id="$1" id="gist-$1">'.parent::lang('LOADING').'...</div>',$str);
+        $str = preg_replace('#\[b\](.+?)\[/b\]#i','<span style="font-weight:bold">$1</span>',$str);
+        $str = preg_replace('#\[del\](.+?)\[/del\]#i','<del>$1</del>',$str);
+        $str = preg_replace('#\[u\](.+?)\[/u\]#i','<u>$1</u>',$str);
+        $str = preg_replace('#\[hr\]#i','<hr style="clear:both" />',$str);
+        $str = preg_replace('#\[small\](.+?)\[/small\]#i','<span style="font-size:7pt">$1</span>',$str);
+        $str = preg_replace('#\[big\](.+?)\[/big\]#i','<span style="font-size:14pt">$1</span>',$str);
+        $str = preg_replace('#\[wat\]#i','<span style="font-size:22pt">WAT</span>',$str); //easter egg [never change]
 
-        $str = preg_replace_callback('#\[user\](.+?)\[/user\]#im',function($m) {
+        $str = preg_replace_callback('#\[user\](.+?)\[/user\]#i',function($m) {
                 return '<a href="/'.phpCore::userLink($m[1])."\">{$m[1]}</a>";
                 },$str);
-        $str = preg_replace_callback('#\[project\](.+?)\[/project\]#im',function($m) {
+        $str = preg_replace_callback('#\[project\](.+?)\[/project\]#i',function($m) {
                 return '<a href="/'.phpCore::projectLink($m[1])."\">{$m[1]}</a>";
                 },$str);
-        $str = preg_replace_callback('#\[wiki=([a-z]{2})\](.+?)\[/wiki\]#im',function($m) {
+        $str = preg_replace_callback('#\[wiki=([a-z]{2})\](.+?)\[/wiki\]#i',function($m) {
                 return '<a href="http://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ','_',html_entity_decode($m[2],ENT_QUOTES,'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
                 },$str);
-        $str = preg_replace_callback("#(\[math\]|\[m\])(.+?)(\[/math\]|\[/m\])#im",function($m) {
+        $str = preg_replace_callback("#(\[math\]|\[m\])(.+?)(\[/math\]|\[/m\])#i",function($m) {
                 return $m[1].strip_tags($m[2]).$m[3];
                 },$str);
 
-        $str = preg_replace_callback('#\[list\](.+?)\[\/list\]#im',function($m) {
+        $str = preg_replace_callback('#\[list\](.+?)\[\/list\]#i',function($m) {
                 $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[1]))));
                 if(empty($arr))
                     return $m[0];
@@ -199,7 +204,7 @@ class messages extends phpCore
                 return $ret;
                 },$str,20); //ok
 
-        $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#im', function($m) {
+        $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i', function($m) {
                 $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
                 if(empty($arr))
                     return $m[0];
@@ -212,7 +217,7 @@ class messages extends phpCore
                 return $ret;
                 },$str,10); //ok
 
-        $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#im',function($m) {
+        $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
                 $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
                 if(empty($arr))
                     return $m[0];
@@ -226,7 +231,7 @@ class messages extends phpCore
                 
                 },$str,10);//ok
 
-        $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#im',function($m) {
+        $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i',function($m) {
                 $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
                 if(empty($arr))
                     return $m[0];
@@ -240,7 +245,7 @@ class messages extends phpCore
                 
                 },$str,10);//ok
 
-        $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#im',function($m) {
+        $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
                 $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
                 if(empty($arr))
                     return $m[0];
@@ -255,12 +260,12 @@ class messages extends phpCore
         },$str,10);
 
         // Quote in comments, new version
-        while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', $str))
+        while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#i', $str))
             $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', function($m) {
                     return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
                 }, $str, 1);
 
-        while(preg_match('#\[quote=(.+?)\](.+?)\[/quote\]#im',$str))
+        while(preg_match('#\[quote=(.+?)\](.+?)\[/quote\]#i',$str))
             $str = preg_replace_callback('#\[quote=(.+?)\](.+?)\[/quote\]#im',function($m) use($domain) {
                 return '<div class="quote">
                     <div style="font-weight: bold">'.$m[1].':</div>
@@ -276,7 +281,7 @@ class messages extends phpCore
                 </div>';
             },$str,1);
 
-        while(preg_match('#\[quote\](.+?)\[/quote\]#im',$str))
+        while(preg_match('#\[quote\](.+?)\[/quote\]#i',$str))
             $str = preg_replace_callback('#\[quote\](.+?)\[/quote\]#im',function($m) use($domain) {
                 return '<div class="quote">
                     <span style="float: left; margin-top: 5px">
@@ -291,7 +296,7 @@ class messages extends phpCore
                 </div>';
             },$str,1);
 
-        while(preg_match('#\[spoiler\](.+?)\[/spoiler\]#im',$str))
+        while(preg_match('#\[spoiler\](.+?)\[/spoiler\]#i',$str))
             $str = preg_replace('#\[spoiler\](.+?)\[/spoiler]#im',
             '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">SPOILER:</span>
@@ -299,7 +304,7 @@ class messages extends phpCore
                 <div style="display:none; margin-left:3%;overflow:hidden">$1</div>
             </div>',$str,1);
 
-        while(preg_match('#\[spoiler=(.+?)\](.+?)\[/spoiler\]#im',$str))
+        while(preg_match('#\[spoiler=(.+?)\](.+?)\[/spoiler\]#i',$str))
             $str = preg_replace('#\[spoiler=(.+?)\](.+?)\[/spoiler]#im',
             '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">$1:</span>
@@ -307,108 +312,57 @@ class messages extends phpCore
                 <div style="display:none; margin-left:3%;overflow:hidden">$2</div>
             </div>',$str,1);
 
-        $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#im',function($m) use($ssl, $truncate) {
-                $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
-
-                if(preg_match('#spotify#im',$uri)) {
-                    if(preg_match('#^spotify:track:[\d\w]+$#im', $uri)) {
-                        $ID = $uri;
-                    }
-                    else if(preg_match('#^https?:\/\/(open|play)\.spotify\.com\/track\/[\w\d]+$#im',$uri)) {
-                        $tmpID = explode('/',$uri);
-                        $ID = 'spotify:track:'.end($tmpID);
-                    }
-                    else
-                        return $m[0];
-
-                    return '<iframe src="https://embed.spotify.com/?uri='.$ID.'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
-                }
-                else if(preg_match('#^https?:\/\/soundcloud\.com\/\S+\/\S+$#im',$uri)) {
-                    return '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url='.urlencode($uri).'"></iframe>';
-                }
-                else if(preg_match('#^https?:\/\/(www\.)?deezer\.com\/(track|album|playlist)\/\d+$#', $uri)) {
-                    $path = substr(parse_url($uri)['path'],1);
-                    $path = explode('/',$path);
-                    $type = $path[0];
-                    $ID   = $path[1];
-                    $heig = $truncate ? '80': '240';
-                    return "<iframe src='http://www.deezer.com/plugins/player?height={$heig}&type={$type}&id={$ID}' width='100%' height='{$heig}' scrolling='no' frameborder='no'></iframe>";
-                }
-                else if(filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
-                    return '<audio preload="none" controls src="'.htmlspecialchars($uri,ENT_QUOTES,'UTF-8').'"></audio>';
-                }
-                else 
+        $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#i',function($m) use($ssl, $truncate) {
+            $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+            if (stripos ($uri, 'spotify') !== false) // TODO: use a single regexp
+            {
+                if (preg_match ('#^spotify:track:[\d\w]+$#i', $uri))
+                    $ID = $uri;
+                else if (preg_match('#^https?://(?:open|play)\.spotify\.com/track/[\w\d]+$#i',$uri))
+                    $ID = 'spotify:track:' . basename ($uri);
+                else
                     return $m[0];
+                return '<iframe src="https://embed.spotify.com/?uri='.$ID.'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+            }
+            else if (preg_match ('#^https?://soundcloud\.com/\S+/\S+$#i',$uri))
+                return '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' . rawurlencode($uri).'"></iframe>';
+            else if (preg_match ('#^https?://(?:www\.)?deezer\.com/(track|album|playlist)/(\d+)$#', $uri, $match)) {
+                $a_type   = $match[1] . ($match[1] == 'track' ? 's' : '');
+                $a_height = $truncate ? '80': '240';
+                return "<iframe src='//www.deezer.com/plugins/player?height={$a_height}&type={$a_type}&id={$match[2]}' width='100%' height='{$a_height}' scrolling='no' frameborder='no'></iframe>";
+            }
+            else if (filter_var ($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
+                return '<audio preload="none" controls src="'.htmlspecialchars ($uri, ENT_QUOTES, 'UTF-8').'"></audio>';
+            else 
+                return $m[0];
         },$str,10);
         
-        $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#im',function($m) use($ssl) {
-                return '<img data-id="'.strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8')).'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)">';
+        $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#i',function($m) use($ssl) {
+            return '<img data-id="'.$m[1].'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)">';
         },$str,10);
         
         if($truncate)
         {
             $videoCallback = function($m) use($ssl) {
-                $qsvar = array();
-                $vUrl = parse_url(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
-
-                if(preg_match('#youtu.?be#',$vUrl['host'])) {
-                    if($vUrl['path'] == '/watch') {
-                        parse_str($vUrl['query'], $qsvar);
-                        
-                        if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
-                            return $m[0];
-                        
-                        $videoID = explode('#', $qsvar['v']);
-                        $qsvar['v'] = reset($videoID);
-                    }
-                    else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',substr($vUrl['path'], 1))) {
-                        $qsvar['v'] = substr($vUrl['path'], 1);
-                    }
-                    else
-                        return $m[0];
-                    
-                    return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="youtube">
-                            <span>'.parent::lang('VIDEO').'</span>
-                            <img src="http'.($ssl ? 's': '').'://i1.ytimg.com/vi/'.$qsvar['v'].'/hqdefault.jpg" alt="" width="130" height="130" style="float: left; margin-right:4px; " />
-                          </a>';
-                }
-                else if(preg_match('#(www\.)?vimeo\.com#', $vUrl['host'])) {
-
-                    if(!preg_match('#^\/\d+(\#.+?)?$#',$vUrl['path']))
-                        return $m[0];
-
-                    $vidid = substr($vUrl['path'], 1);
-                     return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="vimeo">
-                            <span>'.parent::lang('VIDEO').'</span>
-                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="" width="130" height="130" style="float: left; margin-right:4px; " onload="N.vimeoThumbnail(this);"/>
-                          </a>';
-                }
-                else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
-                  $vidid = basename(strtok(str_replace('video/','',$vUrl['path']), '_'));
-
-                  return '<a class="yt_frame" data-vid="'.$vidid.'" data-host="dailymotion">
-                            <span>'.parent::lang('VIDEO').'</span>
-                            <img src="https://www.dailymotion.com/thumbnail/video/'.$vidid.'" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
-                          </a>';
-                }
-                else if(preg_match('#facebook\.com#', $vUrl['host'])) {
-                     parse_str($vUrl['query'],$qsvar);
-                     if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
-                         return $m[0];
-
-                     $videoID = explode('#', $qsvar['v']);
-                     $qsvar['v'] = reset($videoID);
-                     
-                     return '<a class="yt_frame" data-vid="'.$qsvar['v'].'" data-host="facebook">
-                            <span>'.parent::lang('VIDEO').'</span>
-                            <img src="https://graph.facebook.com/'.$qsvar['v'].'/picture" alt="" width="130" height="100" style="float: left; margin-right:4px; " />
-                          </a>';
-                }
+                $v_url  = html_entity_decode ($m[1],ENT_QUOTES,'UTF-8');
+                $output = [];
+                if      (preg_match (self::YOUTUBE_REGEXP,  $v_url, $match))
+                    $output = [ 'youtube', $match[1], '//i1.ytimg.com/vi/' . $match[1] . '/hqdefault.jpg', 130 ];
+                else if (preg_match (self::VIMEO_REGEXP,    $v_url, $match))
+                    $output = [ 'vimeo', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 130, 'N.vimeoThumbnail(this)' ];
+                else if (preg_match (self::DMOTION_REGEXP,  $v_url, $match))
+                    $output = [ 'dailymotion', $match[1], 'https://www.dailymotion.com/thumbnail/video/' . $match[1], 100 ];
+                else if (preg_match (self::FACEBOOK_REGEXP, $v_url, $match))
+                    $output = [ 'facebook', $match[1], 'https://graph.facebook.com/' . $match[1] . '/picture', 100 ];
                 else
                     return $m[0];
+                return '<a class="yt_frame" data-vid="' . $output[1] . '" data-host="' . $output[0] . '">' .
+                       '<span>' . parent::lang ('VIDEO') . '</span>' .
+                       '<img src="' . $output[2] . '" alt="" width="130" height="' . $output[3] . '" style="float:left;margin-right:4px"' . (isset ($output[4]) ? 'onload="' . $output[4] . '"' : '') . ' />' .
+                       '</a>';
             };
             $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
-            //compatibilità con vecchi post
+            // don't break older posts and preserve the [yt] and [youtube] tags.
             $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
@@ -425,56 +379,19 @@ class messages extends phpCore
         else
         {
             $videoCallback = function($m) use($ssl) {
-                $qsvar = array();
-                $vUrl = parse_url(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
-
-                if(preg_match('#youtu.?be#',$vUrl['host'])) {
-                    if($vUrl['path'] == '/watch') {
-                        parse_str($vUrl['query'], $qsvar);
-                        if(empty($qsvar['v']) || !preg_match('#^[\w+\-]{11}(\#.+?)?$#',$qsvar['v']))
-                            return $m[0];
-
-                        $videoID = explode('#', $qsvar['v']);
-                        $qsvar['v'] = reset($videoID);
-                    }
-                    else if(preg_match('#^[\w+\-]{11}(\#.+?)?$#',substr($vUrl['path'], 1)))
-                        $qsvar['v'] = substr($vUrl['path'], 1);
-                    else 
-                        return $m[0];
-
-                    return '<div style="width:100%; text-align:center"><br />
-                                <iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="http'.($ssl ? 's': '').'://www.youtube.com/embed/'.$qsvar['v'].'?wmode=opaque"></iframe>
-                            </div>';
-                }
-                else if(preg_match('#(www\.)?vimeo\.com#', $vUrl['host'])) {
-                    if(!preg_match('#^\/\d+(\#.+?)?$#',$vUrl['path']))
-                        return $m[0];
-
-                    $vidid = substr($vUrl['path'], 1);
-                    return '<div style="width:100%; text-align:center"><br />
-                                <iframe src="//player.vimeo.com/video/'.$vidid.'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                            </div>';
-                }
-                else if(preg_match('#(www\.)?dai\.?ly(motion)?#', $vUrl['host'])) {
-                    $vidid = basename(strtok(str_replace('video/','',$vUrl['path']), '_'));
-                    return '<div style="width:100%; text-align:center"><br />
-                                <iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$vidid.'" allowfullscreen></iframe>
-                            </div>';
-                }
-                else if(preg_match('#facebook\.com#', $vUrl['host'])) {
-                    parse_str($vUrl['query'],$qsvar);
-                    if(empty($qsvar['v']) || !preg_match('#^[\d]+(\#.+?)?$#im',$qsvar['v']))
-                        return $m[0];
-
-                    $videoID = explode('#', $qsvar['v']);
-                    $qsvar['v'] = reset($videoID);
-
-                    return '<div style="width:100%; text-align:center"><br />
-                                <iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$qsvar['v'].'" width="540" height="420" frameborder="0"></iframe>
-                            </div>';
-                }
+                $v_url       = html_entity_decode ($m[1], ENT_QUOTES, 'UTF-8');
+                $iframe_code = '';
+                if      (preg_match (self::YOUTUBE_REGEXP,  $v_url, $match))
+                    $iframe_code = '<iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="//www.youtube.com/embed/'.$match[1].'?wmode=opaque"></iframe>';
+                else if (preg_match (self::VIMEO_REGEXP,    $v_url, $match))
+                    $iframe_code = '<iframe src="//player.vimeo.com/video/'.$match[1].'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                else if (preg_match (self::DMOTION_REGEXP,  $v_url, $match))
+                    $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
+                else if (preg_match (self::FACEBOOK_REGEXP, $v_url, $match))
+                    $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" width="540" height="420" frameborder="0"></iframe>';
                 else
                     return $m[0];
+                return '<div style="width:100%; text-align:center"><br />' . $iframe_code . '</div>';
             };
 
             $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
@@ -483,7 +400,7 @@ class messages extends phpCore
             
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
                     return '<img src="'.messages::imgValidUrl($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
-                },$str);
+            },$str);
         }
 
         while($index > 0)
