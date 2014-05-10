@@ -62,7 +62,7 @@ if(!empty($user['steam']) && strlen($user['steam']) > 35)
     die($core->jsonResponse('error',$core->lang('ERROR').': Steam'));
     
 foreach($user as &$value)
-    $value = htmlentities($value,ENT_QUOTES,'UTF-8');
+    $value = htmlspecialchars($value,ENT_QUOTES,'UTF-8');
 
 $par = array(':interests' => $user['interests'],
              ':biography' => $user['biography'],

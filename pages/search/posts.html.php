@@ -16,7 +16,7 @@ if( empty($_POST['q']) || (!empty($_GET['specific']) && empty($_POST['id'])) )
 if(isset($_POST['id']) && !is_numeric($_POST['id']))
     die('2');
 
-$txt = trim(htmlentities($_POST['q'],ENT_QUOTES,'UTF-8'));
+$txt = trim(htmlspecialchars($_POST['q'],ENT_QUOTES,'UTF-8'));
 
 $blist = $core->getBlacklist();
 $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;

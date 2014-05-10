@@ -269,7 +269,7 @@ class comments extends project
 
         $newMessage = $message; //required for appendComment
 
-        $message = trim($this->parseCommentQuotes(htmlentities($message,ENT_QUOTES,'UTF-8')));
+        $message = trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
         if(
             empty($message) ||
@@ -403,14 +403,14 @@ class comments extends project
 
     private function appendProjectComment($oldMsgObj,$newMessage)
     {
-        $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
+        $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlspecialchars($newMessage,ENT_QUOTES,'UTF-8') ) );
 
         return db::NO_ERRNO == parent::query(array('UPDATE "groups_comments" SET message = :message WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERRNO);
     }
     
     private function appendComment($oldMsgObj,$newMessage)
     {
-        $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlentities($newMessage,ENT_QUOTES,'UTF-8') ) );
+        $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlspecialchars($newMessage,ENT_QUOTES,'UTF-8') ) );
 
         return db::NO_ERRNO == parent::query(array('UPDATE "comments" SET message = :message, time = NOW() WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERRNO);
     }
@@ -423,7 +423,7 @@ class comments extends project
 
         $newMessage = $message; //required for appendComment
 
-        $message = trim($this->parseCommentQuotes(htmlentities($message,ENT_QUOTES,'UTF-8')));
+        $message = trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
             
         if(
             empty($message) ||

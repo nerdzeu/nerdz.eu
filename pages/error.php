@@ -16,8 +16,8 @@ if($code)
         $vals['error_n'] = 'Undefined error';
     $vals['errorcode_n']  = $code;
     $vals['ip_n'] = $_SERVER['REMOTE_ADDR'];
-    $vals['useragent_n'] = isset($_SERVER['HTTP_USER_AGENT']) ? htmlentities($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8') : '';
-    $vals['referrer_n'] = isset($_SERVER['HTTP_REFERRER']) ? htmlentities($_SERVER['HTTP_REFERRER'],ENT_QUOTES,'UTF-8') : 'Direct';
+    $vals['useragent_n'] = isset($_SERVER['HTTP_USER_AGENT']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8') : '';
+    $vals['referrer_n'] = isset($_SERVER['HTTP_REFERRER']) ? htmlspecialchars($_SERVER['HTTP_REFERRER'],ENT_QUOTES,'UTF-8') : 'Direct';
 }
 else
     $vals['error_n'] = $vals['errorcode_n'] = $vals['ip_n'] = $vals['useragent_n'] = $vals['referrer_n'] = 'Undefined Error';

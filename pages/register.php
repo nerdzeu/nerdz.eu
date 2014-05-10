@@ -1,7 +1,7 @@
 <?php
 $lang = $core->getBrowserLanguage();
 $presentation = file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/presentation/{$lang}.txt");
-$presentation = nl2br(htmlentities($presentation,ENT_QUOTES,'UTF-8'));
+$presentation = nl2br(htmlspecialchars($presentation,ENT_QUOTES,'UTF-8'));
 
 $vals = array();
 $vals['presentation_n'] = $presentation;

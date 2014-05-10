@@ -22,7 +22,7 @@ $order = isset($_GET['desc']) && $_GET['desc'] == 1 ? 'DESC' : 'ASC';
 
 $vals = array();
 
-$q = empty($_GET['q']) ? '' : htmlentities($_GET['q'],ENT_QUOTES,'UTF-8');
+$q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
 
 if(empty($q))
     $query = "SELECT name, description,counter FROM groups ORDER BY {$orderby} {$order} LIMIT {$limit}";

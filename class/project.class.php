@@ -19,7 +19,7 @@ class project extends messages
 
     public function getGid($name)
     {
-        if(!($o = parent::query(array('SELECT "counter" FROM "groups" WHERE LOWER("name") = LOWER(:name)',array(':name' => htmlentities($name,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT "counter" FROM "groups" WHERE LOWER("name") = LOWER(:name)',array(':name' => htmlspecialchars($name,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
             return false;
         return $o->counter;
     }
@@ -128,7 +128,7 @@ class project extends messages
 
         $oldMessage = $message; //required for github implementation
         
-        $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
+        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
 
         if(empty($message) || db::NO_ERRNO != parent::query(array('INSERT INTO "groups_posts" ("from","to","message","news") VALUES (:id,:to,:message,:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':message' => $message, ':news' => $news)),db::FETCH_ERRNO))
             return false;
@@ -171,7 +171,7 @@ class project extends messages
 
     public function editProjectMessage($hpid,$message)
     {
-        $message = htmlentities($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
+        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
         return ! (
             empty($message) ||
             !($obj = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||

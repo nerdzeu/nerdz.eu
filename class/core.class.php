@@ -105,7 +105,7 @@ class phpCore
             }
             @apc_store($cache,serialize($_LANG),3600);
         }
-        return nl2br(htmlentities($_LANG[$index],ENT_QUOTES,'UTF-8'));
+        return nl2br(htmlspecialchars($_LANG[$index],ENT_QUOTES,'UTF-8'));
     }
 
     
@@ -181,6 +181,39 @@ class phpCore
         }
     }
 
+    public function login($username, $pass, $cookie = null, $setOffline = null, $hashPassword = null)
+    {
+        $shaPass = $hashPassword ? $pass : sha1($pass);
+        if(!($o = $this->query(
+            [
+                'SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:user) AND "password" = :pass',
+                 [
+                     ':user' => $username,
+                     ':pass' => $shaPass
+                 ]
+             ],db::FETCH_OBJ))
+         )
+            return false;
+
+        if($cookie)
+        {
+            $exp_time = time() + 2592000;
+            $chost    = $this->getSafeCookieDomainName();
+            setcookie ('nerdz_id', $o->counter , $exp_time, '/', $chost, false, true);
+            setcookie ('nerdz_u',  md5($shaPass), $exp_time, '/', $chost, false, true);
+        }
+
+        $_SESSION['nerdz_logged'] = true;
+        $_SESSION['nerdz_id'] = $o->counter;
+        $_SESSION['nerdz_username'] = $username;
+        $_SESSION['nerdz_lang'] = $this->getUserLanguage($o->counter);
+        $_SESSION['nerdz_board_lang'] = $this->getBoardLanguage($o->counter);
+        $_SESSION['nerdz_template'] = $this->getTemplate($o->counter, (isset($_SERVER['HTTP_REFERER']) && parse_url ($_SERVER['HTTP_REFERER'], PHP_URL_HOST) == MOBILE_HOST));
+        $_SESSION['nerdz_mark_offline'] = $setOffline;
+
+        return true;
+    }
+
     /**
      * Executes a query.
      * Its return value varies according to the $action parameter, which should 
@@ -207,7 +240,7 @@ class phpCore
         }
         catch(PDOException $e)
         {
-
+            $this->dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
             if($action == db::FETCH_ERRNO) {
                 return $stmt->errorInfo()[1];
             }
@@ -277,7 +310,7 @@ class phpCore
             while(false !== ($row = fgetcsv($fp)))
             {
                 $a[] = $row[0]; //encoding sarebbe inutile, sono due caratteri e sono ascii
-                $b[$row[0]] = htmlentities($row[1],ENT_QUOTES,'UTF-8');
+                $b[$row[0]] = htmlspecialchars($row[1],ENT_QUOTES,'UTF-8');
             }
             fclose($fp);
             ksort($b);
@@ -493,7 +526,7 @@ class phpCore
         if($this->isLogged() && ($username === null))
             return $_SESSION['nerdz_id'];
 
-        if(!($id = $this->query(array('SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',array(':username' => htmlentities($username,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
+        if(!($id = $this->query(array('SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',array(':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
             return false;
 
         return $id->counter;
@@ -651,17 +684,7 @@ class phpCore
         if(!isset($_COOKIE['nerdz_u']) || !isset($_COOKIE['nerdz_id']) || !is_numeric($_COOKIE['nerdz_id']))
             return false;
         if(($obj = $this->query(array('SELECT "username","password" FROM "users" WHERE "counter" = :id',array(':id' => $_COOKIE['nerdz_id'])),db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u'])
-        {
-            $_SESSION['nerdz_logged'] = true;
-            $_SESSION['nerdz_id']     = $_COOKIE['nerdz_id'];
-            $_SESSION['nerdz_username'] = $obj->username;
-            $_SESSION['nerdz_lang'] = $this->getUserLanguage($_SESSION['nerdz_id']);
-            $_SESSION['nerdz_board_lang'] = $this->getBoardLanguage($_SESSION['nerdz_id']);
-            //Redefine session variable with user preference
-            unset($_SESSION['nerdz_template']);
-            $_SESSION['nerdz_template'] = $this->getTemplate($_SESSION['nerdz_id']);
-            return true;
-        }
+            return $this->login($obj->username, $obj->password, true, false, true);
 
         return false;
     }

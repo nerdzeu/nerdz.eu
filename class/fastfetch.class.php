@@ -132,7 +132,7 @@ final class FastFetch {
     
     public function getIdFromUsername($userName) {
         
-        $userName = htmlentities($userName,ENT_QUOTES,'UTF-8');
+        $userName = htmlspecialchars($userName,ENT_QUOTES,'UTF-8');
         
         $idObj = $this->mPm->query(
             [

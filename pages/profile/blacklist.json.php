@@ -17,7 +17,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
     break;
     
     case 'add':
-        $motivation = empty($_POST['motivation']) ? '' : htmlentities(trim($_POST['motivation']),ENT_QUOTES,'UTF-8');
+        $motivation = empty($_POST['motivation']) ? '' : htmlspecialchars(trim($_POST['motivation']),ENT_QUOTES,'UTF-8');
         if(!($core->isInBlacklist($_POST['id'],$_SESSION['nerdz_id'])))
         {
             if(db::NO_ERRNO != $core->query(array('INSERT INTO "blacklist"("from","to","motivation") VALUES (:me,:to,:motivation)',array(':me' => $_SESSION['nerdz_id'],':to' => $_POST['id'],':motivation' => $motivation)),db::FETCH_ERRNO))

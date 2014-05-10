@@ -25,7 +25,7 @@ if(db::NO_ERRNO != $core->query(array('UPDATE "users" SET "password" = ENCODE(DI
     die($core->jsonResponse('error',$core->lang('ERROR').': retry'));
 
 $subject = 'NERDZ PASSWORD';
-$msg = '<a href="http://www.nerdz.eu">NERDZ</a><br /><br />';
+$msg = '<a href="http://'.SITE_HOST.'">NERDZ</a><br /><br />';
 $msg.= $core->lang('USERNAME').': '.$obj->username.'<br />';
 $msg.= $core->lang('PASSWORD').': '.$pass.'<br />';
 $msg.= "IP: {$_SERVER['REMOTE_ADDR']}";
