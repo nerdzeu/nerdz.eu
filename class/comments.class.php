@@ -271,15 +271,10 @@ class comments extends project
 
         $message = trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
-        if(
-            empty($message) ||
-            !($obj = parent::query(array('SELECT "to","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
-            parent::isInBlacklist($_SESSION['nerdz_id'],$obj->to) || parent::isInBlacklist($obj->to,$_SESSION['nerdz_id'])
+        if(empty($message) || !($obj = parent::query(array('SELECT "to","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
+                //se l'utente è l'ultimo ad aver inviato un commento e ora ne aggiunge un altro allora append
+                !($stmt = parent::query(array('SELECT "hpid","from","hcid","message" FROM "comments" WHERE "hpid" = ? AND "hcid" = (SELECT MAX("hcid") FROM "comments" WHERE "hpid" = ?)',array($hpid,$hpid)),db::FETCH_STMT))
           )
-            return false;
-
-        //se l'utente è l'ultimo ad aver inviato un commento e ora ne aggiunge un altro allora append
-        if(!($stmt = parent::query(array('SELECT "hpid","from","hcid","message" FROM "comments" WHERE "hpid" = ? AND "hcid" = (SELECT MAX("hcid") FROM "comments" WHERE "hpid" = ?)',array($hpid,$hpid)),db::FETCH_STMT)))
             return false;
 
         //for possible multiple append bug fix+

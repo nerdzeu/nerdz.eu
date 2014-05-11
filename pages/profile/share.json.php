@@ -26,8 +26,6 @@ else
 
 if($_SESSION['nerdz_id'] != $to)
 {
-    if($core->isInBlacklist($_SESSION['nerdz_id'],$to))
-        die($core->jsonResponse('error','Blacklisted'));
     if($core->closedProfile($to))
         die($core->jsonResponse('error',$core->lang('CLOSED_PROFILE_DESCR')));
 }

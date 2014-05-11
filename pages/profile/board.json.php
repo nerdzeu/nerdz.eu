@@ -16,12 +16,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if($to <= 0)
             $to = $_SESSION['nerdz_id'];
     
-        $message = trim(isset($_POST['message']) ? $_POST['message'] : '');
-    
-        if($to != $_SESSION['nerdz_id'] && $core->isInBlacklist($_SESSION['nerdz_id'],$to))
-            die($core->jsonResponse('error','Blacklisted'));
-            
-        $retval = $core->addMessage($to,$message);
+        $retval = $core->addMessage($to,isset($_POST['message']) ? $_POST['message'] : '');
         if($retval === 0)
         {
             require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
