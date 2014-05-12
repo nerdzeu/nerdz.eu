@@ -186,7 +186,7 @@ class phpCore
         $shaPass = $hashPassword ? $pass : sha1($pass);
         if(!($o = $this->query(
             [
-                'SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:user) AND "password" = :pass',
+                'SELECT "counter", "username" FROM "users" WHERE LOWER("username") = LOWER(:user) AND "password" = :pass',
                  [
                      ':user' => $username,
                      ':pass' => $shaPass
@@ -205,7 +205,7 @@ class phpCore
 
         $_SESSION['nerdz_logged'] = true;
         $_SESSION['nerdz_id'] = $o->counter;
-        $_SESSION['nerdz_username'] = $username;
+        $_SESSION['nerdz_username'] = $o->username;
         $_SESSION['nerdz_lang'] = $this->getUserLanguage($o->counter);
         $_SESSION['nerdz_board_lang'] = $this->getBoardLanguage($o->counter);
         $_SESSION['nerdz_template'] = $this->getTemplate($o->counter, (isset($_SERVER['HTTP_REFERER']) && parse_url ($_SERVER['HTTP_REFERER'], PHP_URL_HOST) == MOBILE_HOST));
