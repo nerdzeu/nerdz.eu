@@ -656,6 +656,7 @@ class messages extends phpCore
                 str_replace(']',' ',
                 str_ireplace('[url]','',
                 str_ireplace('[twitter]','',
+                str_ireplace('[/twitter]','',
                 str_ireplace('[video]','',
                 str_ireplace('[music]','',
                 str_ireplace('[img]','',
@@ -698,7 +699,7 @@ class messages extends phpCore
                 str_ireplace('[/big]','',
                 str_ireplace('[hr]','',
                 str_ireplace('[wat]','',
-                str_ireplace('[quote=','',$message)))))))))))))))))))))))))))))))))))))))))))))))));
+                str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))));
     } 
 
     public function getThumbs($hpid, $prj = false) {
