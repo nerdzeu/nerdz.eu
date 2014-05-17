@@ -50,7 +50,7 @@ echo -n "Loading nerdz database schema and triggers into $2 ... "
 
 start_progress &
 PROGRESS_PID=$!
-psql -U "$1" "$2" < postgres_schema.sql 1> /dev/null
+psql -U "$2" "$2" < postgres_schema.sql 1> /dev/null
 disown $PROGRESS_PID
 kill $PROGRESS_PID
 
