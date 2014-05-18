@@ -11,7 +11,7 @@ class comments extends project
         parent::__construct();
     }
 
-    private function getProjectMembersAndOwner($hpid)
+    private function getProjectMembersAndOwnerFromHpid($hpid)
     {
         if(!($info = parent::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
             return false;
@@ -26,15 +26,13 @@ class comments extends project
     {
         $i = 0;
         $ret = array();
+        if($prj)
+            $canremoveusers = $this->getProjectMembersAndOwnerFromHpid($hpid);
+
         while(($o = $res->fetch(PDO::FETCH_OBJ)))
         {
             if(in_array($o->from,$blist))
                 continue;
-
-            if($prj)
-                $canremoveusers[] = $o->from;
-            else
-                $canremoveusers = array($o->from,$o->to);
 
             $ret[$i]['fromid_n'] = $o->from;
             $ret[$i]['gravatarurl_n'] = $gravurl[$o->from];
@@ -51,7 +49,7 @@ class comments extends project
             $ret[$i]['uthumb_n'] = $this->getUserThumb($o->hcid, $prj);
             
             if($luck)
-            {            
+            {
                 $ret[$i]['canshowlock_b'] = false;
                 if(isset($lkd[$o->from]) && !in_array($o->from,$times) && ($_SESSION['nerdz_id'] != $o->from))
                 {
@@ -69,10 +67,9 @@ class comments extends project
             else
                 $ret[$i]['canshowlock_b'] = $ret[$i]['lock_b'] = false;
 
-            $ret[$i]['canremove_b'] = in_array($_SESSION['nerdz_id'],$canremoveusers);
 
-            if($prj)
-                array_pop($canremoveusers);
+            $canremoveusers = $prj ? array_merge($canremoveusers, (array)$o->from) : array($o->from,$o->to);
+            $ret[$i]['canremove_b'] = in_array($_SESSION['nerdz_id'],$canremoveusers);
 
             ++$i;
         }
@@ -134,8 +131,6 @@ class comments extends project
             $lkd[$o->from] = parent::getUserName($o->from);
 
         $cg = $prj ? 'gc' : 'pc'; //per txt version code in commenti
-        
-        $canremoveusers = $prj ? $this->getProjectMembersAndOwner($hpid) : array();
 
         $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         
@@ -477,8 +472,7 @@ class comments extends project
           )
             return false;
 
-        $canremovecomment = $this->getProjectMembersAndOwner($o->hpid);
-        $canremovecomment[] = $o->from;
+        $canremovecomment = array_merge($this->getProjectMembersAndOwnerFromHpid($o->hpid), (array) $o->from);
 
         if(in_array($_SESSION['nerdz_id'],$canremovecomment))
         {
