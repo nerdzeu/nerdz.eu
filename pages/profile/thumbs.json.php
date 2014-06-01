@@ -21,14 +21,8 @@ if (!$core->isLogged()) {
     die($core->jsonResponse('error',$core->lang('REGISTER')));
 }
 
-if ( isset($_POST['thumb']) && is_numeric($_POST['thumb']) ) {    
-    $thumb = (int) $_POST['thumb'];
-
-    if ($thumb > 1 || $thumb < -1) {
-        die($core->jsonResponse('error',$core->lang('ERROR').': 1'));
-    }
-
-    if (!$core->setThumbs($id, $thumb)) {
+if ( isset($_POST['thumb']) && is_numeric($_POST['thumb']) ) {
+    if(!$core->setThumbs($id, $_POST['thumb'])) {
         die($core->jsonResponse('error',$core->lang('ERROR').': 2'));
     }
 }   
@@ -36,7 +30,5 @@ else {
     die($core->jsonResponse('error',$core->lang('ERROR').': 3'));
 }
 
-
 die($core->jsonResponse('thumbs', $core->getThumbs($id)));
-
 ?>

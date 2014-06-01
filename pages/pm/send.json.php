@@ -19,19 +19,5 @@ foreach($_POST as &$val)
 if(!$core->refererControl())
     die($core->jsonResponse('error','No SPAM/BOT'));
     
-$ret = $core->send($toid,$_POST['message']);
-
-if($ret === null)
-{
-    include_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-    $flood = new flood();
-    die($core->jsonResponse('error',$core->lang('WAIT').' '.($flood::PM_TIMEOUT - (time()-$_SESSION['nerdz_MPflood'])).'s'));
-}
-if($ret === false)
-    die($core->jsonResponse('error',$core->lang('ERROR')));
-
-if(is_string($ret))
-   die($core->jsonResponse('error',$ret));
-
-die($core->jsonResponse('ok','OK'));
+die($core->jsonDbResponse($core->send($toid,$_POST['message'])));
 ?>

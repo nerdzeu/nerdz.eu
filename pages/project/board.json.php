@@ -12,24 +12,17 @@ if(!$core->refererControl())
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
     case 'add':
-
-        $news = isset($_POST['news']) && $_POST['news'] == 1 ? '1' : '0';
         
-        if(empty($_POST['to']) || empty($_POST['message']))
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+        if(empty($_POST['to']))
+            die($core->jsonResponse('error',$core->lang('ERROR').'a'));
 
-
-        $retval = $core->addProjectMessage($_POST['to'],$_POST['message'],$news);
-
-        if($retval === 0)
-        {
-            require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-            $flood = new flood();
-            die($core->jsonResponse('error','Flood! '.$core->lang('WAIT').': '.($_SESSION['nerdz_ProjectFlood']+ $flood::PROJECT_POST_TIMEOUT - time().'s')));
-        }
-        else if($retval === false || $retval === null)
-            die($core->jsonResponse('error',$core->lang('ERROR')));
-        
+        die($core->jsonDbResponse(
+            $core->addProjectMessage(
+                $_POST['to'],
+                isset($_POST['message']) ? $_POST['message'] : '',
+                isset($_POST['news'])
+            )
+        ));
     break;
     
     case 'del':
@@ -55,12 +48,9 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(    empty($_POST['hpid']) || empty($_POST['message']) || !$core->editProjectMessage($_POST['hpid'],$_POST['message']) )
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
+
     default:
-        die($core->jsonResponse('error',$core->lang('ERROR').'3'));
-    break;
-    
-    default:
-        die($core->jsonResponse('error',$core->lang('ERROR')));
+        die($core->jsonResponse('error',$core->lang('ERROR').'aa'));
     break;
 }
 die($core->jsonResponse('ok', isset($o) ? $o->message : 'OK'));

@@ -110,53 +110,33 @@ class project extends messages
 
     public function addProjectMessage($to,$message,$news = null)
     {
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-        if(!(new flood())->projectPost())
-            return 0;
+        $retStr = parent::query(
+            [
+                'INSERT INTO "groups_posts" ("from","to","message","news") VALUES (:id,:to,:message,:news)',
+                [
+                    ':id' => $_SESSION['nerdz_id'],
+                    ':to' => $to,
+                    ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8'),
+                    ':news' => $news ? 'TRUE' : 'FALSE'
+                ]
+            ],db::FETCH_ERRSTR);
 
-        if(!($own = $this->getOwnerByGid($to)))
-            return false;
-        
-        $members = $this->getMembers($to);
-        $followers = $this->getFollowers($to);
+        if($retStr != db::NO_ERRSTR)
+            return $retStr;
 
-        $blacklist = parent::getBlacklist();//non devono essere notificati
-
-        $news = $news ? 'TRUE' : 'FALSE';
-
-        $time = time(); //nel loop di insertimento si perdono secondi
-
-        $oldMessage = $message; //required for github implementation
-        
-        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
-
-        if(empty($message) || db::NO_ERRNO != parent::query(array('INSERT INTO "groups_posts" ("from","to","message","news") VALUES (:id,:to,:message,:news)',array(':id' => $_SESSION['nerdz_id'], ':to' => $to, ':message' => $message, ':news' => $news)),db::FETCH_ERRNO))
-            return false;
-
-        if($_SESSION['nerdz_id'] != $own)
-            $members[] = $own;
-
-        $tonotify = array_diff(array_unique(array_merge($members,$followers)),$blacklist,array($_SESSION['nerdz_id']));
-
-        foreach($tonotify as $v)
-            if(db::NO_ERRNO != parent::query(array('INSERT INTO "groups_notify" ("group","to","time") VALUES (:to,:v,TO_TIMESTAMP(:time))',array(':to' => $to, ':v' => $v, ':time' => $time)),db::FETCH_ERRNO))
-                    return false;
-
-        
         if($to == ISSUE_BOARD) {
             require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
             $client = new \Github\Client();
             $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                     [
-                        'title' => 'NERDZIlla issue',
-                        'body'  => parent::getUserName().': '.$oldMessage
+                        'title' => substr($message, 0, 128),
+                        'body'  => parent::getUserName().': '.$message
                     ]
             );
         }
-        
 
-        return true;
+        return db::NO_ERRSTR;
     }
 
     public function deleteProjectMessage($hpid)

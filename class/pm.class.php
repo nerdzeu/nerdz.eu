@@ -14,10 +14,6 @@ final class pm extends messages
 
     public function send($to,$message)
     {
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-        if(!(new flood())->pm())
-            return null;
-
         $retVal = parent::query(array('INSERT INTO "pms" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERRSTR);
 
         $wentWell = $retVal == db::NO_ERRSTR;
@@ -32,19 +28,18 @@ final class pm extends messages
 
                 $msg = json_encode(
                                    [ 
-                                     'messageFrom' => html_entity_decode($this->getUserName()), 
-                                     'messageFromId' => (string) $this->getUserId(),
-                                     'messageBody' => html_entity_decode(substr($message, 0, 2000))
+                                     'messageFrom' => html_entity_decode($this->getUserName(), ENT_QUOTES, 'UTF-8'), 
+                                     'messageFromId' => $this->getUserId(),
+                                     'messageBody' => substr(html_entity_decode($message, ENT_QUOTES, 'UTF-8'), 0, 2000)
                                    ]
                 ); //truncate to 2000 chars because of possibile service limitations
 
                 $pushed->push($to, $msg);
 
             } catch (PushedException $e) {}
-
         }
 
-        return is_string($retVal) ? $retVal : $wentWell;
+        return $retVal;
     }
 
     public function getList()
@@ -79,7 +74,7 @@ final class pm extends messages
             
         if(
                 !is_numeric($fromid) || !is_numeric($toid) || !is_numeric ($pmid) || !in_array($_SESSION['nerdz_id'],array($fromid,$toid)) ||
-                !($res = parent::query(array('SELECT "message","read" FROM "pms" WHERE "from" = :from AND "to" = :to AND "pmid" = :pmid',array(':from' => $fromid, ':to' => $toid, ':pmid' => $pmid)),db::FETCH_STMT))
+                !($res = parent::query(array('SELECT "message","to_read" FROM "pms" WHERE "from" = :from AND "to" = :to AND "pmid" = :pmid',array(':from' => $fromid, ':to' => $toid, ':pmid' => $pmid)),db::FETCH_STMT))
           )
             return false;
 
@@ -92,7 +87,7 @@ final class pm extends messages
             $ret['fromid_n'] = $fromid;
             $ret['toid_n'] = $toid;
             $ret['message_n'] = parent::bbcode($o->message);
-            $ret['read_b'] = $o->read;
+            $ret['read_b'] = $o->to_read;
             $ret['pmid_n'] = $pmid;
             $ret['timestamp_n'] = $time;
             //$ret['realto_n'] = $fromid != $_SESSION['nerdz_id'] ? $from : $this->getUserName ($toid);
@@ -103,7 +98,7 @@ final class pm extends messages
     
     public function countNew()
     {
-        if(!($o = parent::query(array('SELECT COUNT(DISTINCT "from") as cc FROM (SELECT "from" FROM "pms" WHERE "to" = :id AND "read" = TRUE) AS tmp1',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT COUNT(DISTINCT "from") as cc FROM (SELECT "from" FROM "pms" WHERE "to" = :id AND "to_read" = TRUE) AS tmp1',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
             return -1;
         return $o->cc;
     }
@@ -145,7 +140,7 @@ final class pm extends messages
                 return $ret;
             $ret = $res->fetchAll(PDO::FETCH_FUNC,array($this,'read'));
         }
-        if(db::NO_ERRNO != parent::query(array('UPDATE "pms" SET "read" = FALSE WHERE "from" = :from AND "to" = :id',array(':from' => $from, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+        if(db::NO_ERRNO != parent::query(array('UPDATE "pms" SET "to_read" = FALSE WHERE "from" = :from AND "to" = :id',array(':from' => $from, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
             return false;
         
         return $ret;
@@ -166,7 +161,7 @@ final class pm extends messages
             
             $res = parent::query(
                 [
-                    'WITH thisconv AS (SELECT "from",time,message,read FROM pms WHERE("from" = :me AND "to" = :other) OR  ("from" = :otheragain AND  "to" = :meagain)) SELECT "from" as last_sender,message,read FROM thisconv WHERE time = (SELECT MAX(time) FROM thisconv)',
+                    'WITH thisconv AS (SELECT "from",time,message,to_read FROM pms WHERE("from" = :me AND "to" = :other) OR  ("from" = :otheragain AND  "to" = :meagain)) SELECT "from" as last_sender,message,to_read FROM thisconv WHERE time = (SELECT MAX(time) FROM thisconv)',
                     [
                         ':me' => $_SESSION['nerdz_id'],
                         ':meagain' => $_SESSION['nerdz_id'],

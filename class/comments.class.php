@@ -135,7 +135,7 @@ class comments extends project
         $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         
         /* Per il beforeHcid, nel caso in cui nella fase di posting si siano uniti gli ultimi messaggi
-           allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty e fuck off*/
+           allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty */
         if($olderThanMe && empty($ret))
         {
             if(!($res = parent::query(array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe)),db::FETCH_STMT)))
@@ -147,8 +147,7 @@ class comments extends project
     }
 
     public function parseCommentQuotes($message)
-    {
-        
+    {        
         $i = 0;
         $pattern = '#\[quote=([0-9]+)\|p\]#i';
         while(preg_match($pattern,$message) && (++$i < 11))
@@ -178,123 +177,21 @@ class comments extends project
         return $message;
     }
 
-    private function explodeMessageInQuotes($str) //restituisce array("messaggio + quote o multiquote + altro testo fino al prossimo multiquote o fine messaggio")
-    {
-        $ret = array();
-
-        if(strpos($str,'<div') === false)
-            return $str;
-
-        $len = strlen($str);
-        $tmp = '';
-        $divs = $lastlen = 0;
-        $enter = false;
-
-        for($i=0;$i<$len;++$i)
-        {
-            $tmp .= $str[$i];
-
-            if(substr($tmp,-4) == '<div') // open
-                ++$divs;
-
-            if(substr($tmp,-6) == '</div>'){ // close
-                --$divs;
-                $enter = true;
-                $lastlen = $i + 1;
-            }
-            
-            if($enter && !$divs) { //termine blocco
-                $ret[] = $tmp;
-                $tmp = '';
-                $enter = false;
-            }
-        }
-
-        if($lastlen != $len)
-            $ret[] = substr($str,$lastlen);
-
-        return $ret;
-    }
-
-    private function removeNestedQuotes($str) // per ora funziona se c'è un solo multiquote all'interno del mesaggio
-    {
-        $quotes = substr_count($str,'<div class="qu_main">');
-        $toremove = $quotes > 2 ? $quotes-2 : 0; //se ci sono più di due quote l'uno nell'altro mantengo gli ultimi due messaggi quotati
-        
-        if($toremove)
-        {
-            //devo mantenere i mittenti più esterni, eliminare  i più interni
-            //preservi i mittenti più esterni quotes-toremove
-            $newquote = '';
-            $times = $quotes-$toremove;
-            $str = preg_replace_callback('#<div class="qu_main"><div class="qu_user"><a href=(.+?)<\/a>:<\/div>#',function($m) use (&$newquote) {
-                $newquote.= $m[0];
-                return '>>><<<';
-            },$str,$times);
-            //ora new quote contiene i mittenti più esterni.
-            //str contiene il testo prima dei quote, la posizione salvata da quotes-toremove >>><<<, da li partira newquote
-            //eliminiamo tutto il testo finché non ho rimosso toremove divs
-            $strpos = '';
-            for($i = 0; $i <$times; ++$i)
-                $strpos.= '>>><<<';
-
-            $pos = strpos($str,$strpos) + 6*$times;
-
-            //devo eliminare finché non ho rimosso toremove*2 (dato che c'è un </div> anche nel mittente del commento da eliminare') </div>s
-            $toremove*=2;
-            for($i = 0; $i < $toremove;++$i)
-            {
-                $divpos = strpos($str,'</div>') + 6;
-                $todelete = '';
-                for($k = $pos;$k<$divpos;++$k)
-                    $todelete .= $str[$k];
-                $str = str_replace($todelete,'',$str);
-            }
-            
-            return str_replace($strpos,$newquote,$str); //metto i quote al posto giusto
-        }
-        return $str;
-    }
-
     public function addComment($hpid,$message)
     {
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-        if(!(new flood())->postComment())
-            return null;
-
-        $newMessage = $message; //required for appendComment
-
-        $message = trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
-
-        if(empty($message) || !($obj = parent::query(array('SELECT "to","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
-                //se l'utente è l'ultimo ad aver inviato un commento e ora ne aggiunge un altro allora append
-                !($stmt = parent::query(array('SELECT "hpid","from","hcid","message" FROM "comments" WHERE "hpid" = ? AND "hcid" = (SELECT MAX("hcid") FROM "comments" WHERE "hpid" = ?)',array($hpid,$hpid)),db::FETCH_STMT))
-          )
-            return false;
-
-        //for possible multiple append bug fix+
-        if(($user = $stmt->fetch(PDO::FETCH_OBJ))) // if exists a previous message
-        {
-            $expl = explode('[hr]',$user->message);
-            $lastAppendedMessage = $expl[count($expl) - 1]; //equals to $user->message if no append done before
-
-            if($lastAppendedMessage == $message)
-                return null; //null => flood error
-
-            if($user->from == $_SESSION['nerdz_id']) //append and notify
-                return $this->appendComment($user,$newMessage);
-        }
-
-//            $msg = $this->explodeMessageInQuotes($o->message);
-//            $message = '';
-
-//            var_dump($msg);
-
-//            foreach((array)$msg as $quot)
-                //$message .= $this->removeNestedQuotes($quot);
-//                $message .=$quot;
-
-        return db::NO_ERRNO == parent::query(array('INSERT INTO "comments" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',array(':from' => $_SESSION['nerdz_id'],':to' => $obj->to,':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO);
+        if(!($obj = parent::query(array('SELECT "to" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+            return 'ERROR';
+        
+        return parent::query(
+            [
+                'INSERT INTO "comments" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',
+                [
+                    ':from' => $_SESSION['nerdz_id'],
+                    ':to' => $obj->to,
+                    ':hpid' => $hpid,
+                    ':message' => trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')))
+                ]
+            ],db::FETCH_ERRSTR);
     }
 
     public function getComment($hcid)
@@ -316,17 +213,6 @@ class comments extends project
         if(!($o = parent::query(array('SELECT "from" FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
             return false;
         return parent::getUserName($o->from);
-    }
-
-    /*
-     * @deprecated Use getLastComments().
-     */
-    public function getComments($hpid)
-    {
-        if(!($o = parent::query(array('SELECT "to","pid","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-            return false;
-        
-        return $this->showControl($o->from,$o->to,$hpid,$o->pid);
     }
 
     public function getCommentsAfterHcid($hpid,$hcid)
@@ -407,47 +293,24 @@ class comments extends project
 
     public function addProjectComment($hpid,$message)
     {
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-        if(!(new flood())->projectComment())
-            return null;
-
-        $newMessage = $message; //required for appendComment
-
         $message = trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
             
         if(
             empty($message) ||
             !($obj = parent::query(array('SELECT "to","from" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ))
           )
-            return false;
+            return 'ERROR';
 
-        //se l'utente è l'ultimo ad aver inviato un commento e ora ne aggiunge un altro allora append
-        if(!($stmt = parent::query(array('SELECT "hpid","from","hcid","message" FROM "groups_comments" WHERE "hpid" = ? AND "hcid" = (SELECT MAX("hcid") FROM "groups_comments" WHERE "hpid" = ?)',array($hpid,$hpid)),db::FETCH_STMT)))
-            return false;
-
-        if(($user = $stmt->fetch(PDO::FETCH_OBJ))) // if exists a previous message
-        {
-            $expl = explode('[hr]',$user->message);
-            $lastAppendedMessage = $expl[count($expl) - 1]; //equals to $user->message if no append done before
-
-            if($lastAppendedMessage == $message)
-                return null; //null => flood error
-
-            if($user->from == $_SESSION['nerdz_id']) //append and notify
-                return $this->appendProjectComment($user,$newMessage);
-        }
-
-        return db::NO_ERRNO == parent::query(array('INSERT INTO "groups_comments" ("from","to","hpid","message") VALUES (:id,:to,:hpid,:message)',array(':id' => $_SESSION['nerdz_id'], ':to' => $obj->to, ':hpid' => $hpid,':message' => $message)),db::FETCH_ERRNO);
-    }
-
-    /*
-     * @deprecated use getProjectLastComments()
-     */
-    public function getProjectComments($hpid)
-    {
-        if(!($o = parent::query(array('SELECT "to","from","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-            return false;
-        return $this->showControl($o->from,$o->to,$hpid,$o->pid,true);
+        return parent::query(
+            [
+                'INSERT INTO "groups_comments" ("from","to","hpid","message") VALUES (:id,:to,:hpid,:message)',
+                [
+                    ':id' => $_SESSION['nerdz_id'],
+                    ':to' => $obj->to,
+                    ':hpid' => $hpid,
+                    ':message' => $message
+                ]
+            ],db::FETCH_ERRNO);
     }
 
     public function getProjectCommentsAfterHcid($hpid,$hcid)
@@ -539,10 +402,10 @@ class comments extends project
 
         $ret = parent::query(
             [
-                'SELECT "vote" FROM "'.$table.'" WHERE "hcid" = :hcid AND "user" = :user',
+                'SELECT "vote" FROM "'.$table.'" WHERE "hcid" = :hcid AND "from" = :from',
                 [
                   ':hcid' => $hcid,
-                  ':user' => $_SESSION['nerdz_id']
+                  ':from' => $_SESSION['nerdz_id']
                 ]
 
             ],
@@ -565,25 +428,10 @@ class comments extends project
         
         $ret = parent::query(
             [
-              'WITH new_values (hcid, "user", vote) AS ( VALUES(CAST(:hcid AS int8), CAST(:user AS int8), CAST(:vote AS int8))),
-              upsert AS ( 
-                  UPDATE '.$table.' AS m 
-                  SET vote = nv.vote
-                  FROM new_values AS nv
-                  WHERE m.hcid = nv.hcid
-                    AND m.user = nv.user
-                  RETURNING m.*
-              )
-              INSERT INTO '.$table.' (hcid, "user", vote)
-              SELECT hcid, "user", vote
-              FROM new_values
-              WHERE NOT EXISTS (SELECT 1 
-                                FROM upsert AS up 
-                                WHERE up.hcid = new_values.hcid 
-                                  AND up.user = new_values.user)',
+              'INSERT INTO '.$table.' (hcid, "from", vote) VALUES(:hcid, :from, :vote)',
               [
                 ':hcid' => (int) $hcid,
-                ':user' => (int) $_SESSION['nerdz_id'],
+                ':from' => (int) $_SESSION['nerdz_id'],
                 ':vote' => (int) $vote
               ]
             ],

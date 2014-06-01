@@ -476,13 +476,15 @@ class messages extends phpCore
 
     public function addMessage($to,$message)
     {
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-        if(!(new flood())->profilePost())
-            return 0;
-
-        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
-
-        return !empty($message) && db::NO_ERRSTR == parent::query(array('INSERT INTO "posts" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message,)),db::FETCH_ERRSTR);
+        return parent::query(
+            [
+                'INSERT INTO "posts" ("from","to","message") VALUES (:id,:to,:message)',
+                [
+                    ':id' => $_SESSION['nerdz_id'],
+                    ':to' => $to,
+                    ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8')
+                ]
+            ],db::FETCH_ERRSTR);
     }
 
     public function deleteMessage($hpid)
@@ -731,10 +733,10 @@ class messages extends phpCore
 
         $ret = parent::query(
             [
-                'SELECT "vote" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :user',
+                'SELECT "vote" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :from',
                 [
                   ':hpid' => $hpid,
-                  ':user' => $_SESSION['nerdz_id']
+                  ':from' => $_SESSION['nerdz_id']
                 ]
 
             ],
@@ -757,25 +759,10 @@ class messages extends phpCore
 
         $ret = parent::query(
             [
-              'WITH new_values (hpid, "user", vote) AS ( VALUES(CAST(:hpid AS int8), CAST(:user AS int8), CAST(:vote AS int8))),
-              upsert AS ( 
-                  UPDATE '.$table.' AS m 
-                  SET vote = nv.vote
-                  FROM new_values AS nv
-                  WHERE m.hpid = nv.hpid
-                    AND m.user = nv.user
-                  RETURNING m.*
-              )
-              INSERT INTO '.$table.' (hpid, "user", vote)
-              SELECT hpid, "user", vote
-              FROM new_values
-              WHERE NOT EXISTS (SELECT 1 
-                                FROM upsert AS up 
-                                WHERE up.hpid = new_values.hpid 
-                                  AND up.user = new_values.user)',
+                'INSERT INTO '.$table.'(hpid, "from", vote) VALUES(:hpid, :from, :vote)',
               [
                 ':hpid' => (int) $hpid,
-                ':user' => (int) $_SESSION['nerdz_id'],
+                ':from' => (int) $_SESSION['nerdz_id'],
                 ':vote' => (int) $vote
               ]
             ],

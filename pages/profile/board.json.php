@@ -16,15 +16,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if($to <= 0)
             $to = $_SESSION['nerdz_id'];
     
-        $retval = $core->addMessage($to,isset($_POST['message']) ? $_POST['message'] : '');
-        if($retval === 0)
-        {
-            require_once $_SERVER['DOCUMENT_ROOT'].'/class/flood.class.php';
-            $flood = new flood();
-            die($core->jsonResponse('error','Flood! '.$core->lang('WAIT').': '.($_SESSION['nerdz_ProfileFlood'] + $flood::PROFILE_POST_TIMEOUT - time().'s')));
-        }
-        else if($retval === false)
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+         die($core->jsonDbResponse($core->addMessage($to,isset($_POST['message']) ? $_POST['message'] : '')));
     break;
     
     case 'del':

@@ -12,19 +12,12 @@ if(!$core->refererControl())
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
     case 'add':
-        //dati del post
         $hpid  = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid']  : false;
-        //testo del commento al tal post
 
         if(!$hpid)
             die($core->jsonResponse('error',$core->lang('ERROR')));
-            
-        $r = $core->addComment($hpid,$_POST['message']);
-        
-        if($r === false)
-            die($core->jsonResponse('error',$core->lang('ERROR')));
-        elseif($r === null)
-            die($core->jsonResponse('error','Flood'));
+
+        die($core->jsonDbResponse($core->addComment($hpid,$_POST['message'])));
     break;
     
     case 'del':

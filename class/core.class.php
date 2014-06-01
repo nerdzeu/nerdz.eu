@@ -165,7 +165,7 @@ class phpCore
    
     public function jsonResponse($status, $message)
     {
-        header('Content-type: application/json');
+        header('Content-type: application/json; charset=utf-8');
         return json_encode(array('status' => $status, 'message' => $message),JSON_FORCE_OBJECT);
     }
     
@@ -240,6 +240,8 @@ class phpCore
         }
         catch(PDOException $e)
         {
+            $this->dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
+
             if($action == db::FETCH_ERRNO) {
                 return $stmt->errorInfo()[1];
             }
@@ -453,7 +455,9 @@ class phpCore
 
     public function closedProfile($id)
     {
-        return $this->query(array('SELECT "counter" FROM "closed_profiles" WHERE "counter" = :id',array(':id' => $id)),db::ROW_COUNT);
+        if(! ( $o = $this->query(array('SELECT "closed" FROM "profiles" WHERE "counter" = ?',array($id)),db::FETCH_OBJ)))
+            return false;
+        return $o->closed;
     }
 
     public function getBlacklist()
@@ -753,6 +757,36 @@ class phpCore
 
         return $o->valid;
 
+    }
+
+    public function parseDbMessage($msg)
+    {
+        $msg = trim($msg);
+        $okRet = ['ok', 'OK'];
+        if(db::NO_ERRSTR == $msg)
+            return $okRet;
+
+        if(strpos($msg, '~') !== false) { // flood with time
+            $exp = explode('~',$msg);
+            return ['error', $this->lang('WAIT').' '.trim($exp[1])];
+        }
+
+        $matches = [];
+        preg_match("#error:\s*(.*)#i", $msg, $matches);
+        $match = isset($matches[1]);
+        if($match) {
+            if($matches[1] == 'FLOOD') { // flood without time. Translation is useless
+                return [ 'error', 'Flood.' ];
+            }
+        }
+
+        return ['error', htmlspecialchars($this->lang( $match ? $matches[1] : 'ERROR'), ENT_QUOTES, 'UTF-8') ];
+    }
+
+    public function jsonDbResponse($msg)
+    {
+        $res = $this->parseDbMessage($msg);
+        return $this->jsonResponse($res[0], $res[1]);
     }
 
     public static function isValidURL($url)

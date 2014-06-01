@@ -44,17 +44,12 @@ BEGIN;
     steam varchar(350) NOT NULL DEFAULT '',
     push boolean NOT NULL DEFAULT FALSE,
     pushregtime timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    closed boolean NOT NULL DEFAULT FALSE,
     PRIMARY KEY (counter),
     CONSTRAINT fkProfilesUsers FOREIGN KEY (counter) REFERENCES users(counter)
     );
 
     CREATE INDEX fkdateformat ON profiles(dateformat);
-
-    CREATE TABLE closed_profiles (
-    counter int8 NOT NULL,
-    PRIMARY KEY (counter),
-    CONSTRAINT fkUser FOREIGN KEY (counter) REFERENCES users (counter)
-    );
 
     --END user tables
 
@@ -534,7 +529,6 @@ BEGIN;
         DELETE FROM "whitelist" WHERE "from" = OLD.counter OR "to" = OLD.counter;
         DELETE FROM "lurkers" WHERE "user" = OLD.counter;
         DELETE FROM "groups_lurkers" WHERE "user" = OLD.counter;
-        DELETE FROM "closed_profiles" WHERE "counter" = OLD.counter;
         DELETE FROM "follow" WHERE "from" = OLD.counter OR "to" = OLD.counter;
         DELETE FROM "groups_followers" WHERE "user" = OLD.counter;
         DELETE FROM "groups_members" WHERE "user" = OLD.counter;
@@ -777,7 +771,7 @@ BEGIN;
         END IF;
 
         IF( NEW."to" <> NEW."from" AND
-            (SELECT COUNT("counter") FROM closed_profiles WHERE "counter" = NEW."to") > 0 AND 
+            SELECT "closed" FROM "profiles" WHERE "counter" = NEW."to" AND 
             NEW."from" NOT IN (SELECT "to" FROM whitelist WHERE "from" = NEW."to")
           )
         THEN
