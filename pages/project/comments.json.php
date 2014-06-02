@@ -10,18 +10,12 @@ if(!$core->refererControl())
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
     case 'add':
-        //dati del post
         $hpid  = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid']  : false;
 
-        if(!$hpid) //emmpty message htmlentities fix
+        if(!$hpid)
             die($core->jsonResponse('error',$core->lang('ERROR')));
     
-        $r = $core->addProjectComment($hpid,$_POST['message']);
-        
-        if($r === false)
-            die($core->jsonResponse('error',$core->lang('ERROR')));
-        elseif($r === null)
-            die($core->jsonResponse('error','Flood'));
+        die($core->jsonDbResponse($core->addProjectComment($hpid,$_POST['message'])));
     break;
 
     case 'del':
