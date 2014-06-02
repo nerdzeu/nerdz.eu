@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # configure from here
-db="nigger"
-user="nigger"
-owner="nigger"
+db="nerdz"
+user="nerdz"
+owner="nerdz"
 
 deleted="1"
 users_news="1"

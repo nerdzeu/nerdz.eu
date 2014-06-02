@@ -49,10 +49,12 @@ BEGIN;
 
     -- general function to handle flood of table flood_limits.table_name
 
-    CREATE OR REPLACE FUNCTION flood_control(tbl regclass, flooder int8) RETURNS VOID AS $$
+    CREATE OR REPLACE FUNCTION flood_control(tbl regclass, flooder int8, message text DEFAULT NULL) RETURNS VOID AS $$
     DECLARE now timestamp(0) with time zone;
             lastAction timestamp(0) with time zone;
             interv interval minute to second;
+            myLastMessage text;
+            postId text;
     BEGIN
         EXECUTE 'SELECT MAX("time") FROM ' || tbl || ' WHERE "from" = ' || flooder || ';' INTO lastAction;
         now := NOW();
@@ -62,7 +64,23 @@ BEGIN;
         IF now - lastAction < interv THEN
             RAISE EXCEPTION 'FLOOD ~%~', interv - (now - lastAction);
         END IF;
+
+        -- duplicate messagee
+        IF message IS NOT NULL AND tbl IN ('comments', 'groups_comments', 'posts', 'groups_posts', 'pms') THEN
             
+            SELECT CASE
+               WHEN tbl IN ('comments', 'groups_comments') THEN 'hcid'
+               WHEN tbl IN ('posts', 'groups_posts') THEN 'hpid'
+               ELSE 'pmid'
+            END AS columnName INTO postId;
+
+            EXECUTE 'SELECT "message" FROM ' || tbl || ' WHERE "from" = ' || flooder || ' AND ' || postId || ' = (
+                SELECT MAX(' || postId ||') FROM ' || tbl || ' WHERE "from" = ' || flooder || ')' INTO myLastMessage;
+
+            IF myLastMessage = message THEN
+                RAISE EXCEPTION 'FLOOD';
+            END IF;
+        END IF;
     END $$ LANGUAGE plpgsql;
 
     CREATE OR REPLACE FUNCTION message_control(message text) RETURNS text AS $$
@@ -90,20 +108,9 @@ BEGIN;
     DROP FUNCTION before_insert_post() CASCADE;
 
     CREATE FUNCTION before_insert_post() RETURNS TRIGGER AS $func$
-    DECLARE myLastMessage text;
     BEGIN
-        PERFORM flood_control('"posts"', NEW."from");
         NEW.message = message_control(NEW.message);
-
-        -- flood control for duplicated post from the same user
-        SELECT "message" INTO myLastMessage FROM "posts" WHERE "from" = NEW."from" AND "hpid" = (
-            SELECT MAX("hpid") FROM "posts" WHERE "from" = NEW."from"
-        );
-
-        IF myLastMessage = NEW."message" THEN
-            RAISE EXCEPTION 'FLOOD';
-        END IF;
-
+        PERFORM flood_control('"posts"', NEW."from", NEW.message);
         PERFORM blacklist_control(NEW."from", NEW."to");
 
         IF( NEW."to" <> NEW."from" AND
@@ -335,9 +342,6 @@ BEGIN;
     ALTER TABLE ONLY "groups_bookmarks" ALTER COLUMN "time" SET DEFAULT NOW();
     ALTER TABLE ONLY "groups_followers" ALTER COLUMN "time" SET DEFAULT NOW();
 
-    -- remove useless triggers and function
-    DROP FUNCTION before_insert_groups_comment() CASCADE;
-
     --update triggger
     DROP TRIGGER before_delete_user ON users;
 
@@ -518,7 +522,6 @@ BEGIN;
     CREATE FUNCTION before_insert_thumb() RETURNS TRIGGER AS $func$
     DECLARE tmp RECORD;
     BEGIN
-
         PERFORM flood_control('"thumbs"', NEW."from");
 
         SELECT T."to", T."from" INTO tmp FROM (SELECT "to", "from" FROM "posts" WHERE "hpid" = NEW.hpid) AS T;
@@ -569,7 +572,6 @@ BEGIN;
     DECLARE postFrom int8;
             tmp record;
     BEGIN
-
         PERFORM flood_control('"groups_thumbs"', NEW."from");
 
         SELECT T."to", T."from" INTO tmp
@@ -619,7 +621,6 @@ BEGIN;
     DECLARE postFrom int8;
             tmp record;
     BEGIN
-
         PERFORM flood_control('"comment_thumbs"', NEW."from");
 
         SELECT T."to", T."hpid" INTO tmp FROM (SELECT "to", "hpid" FROM "comments" WHERE "hcid" = NEW.hcid) AS T;
@@ -674,7 +675,6 @@ BEGIN;
     DECLARE tmp record;
             postFrom int8;
     BEGIN
-
         PERFORM flood_control('"groups_comment_thumbs"', NEW."from");
 
         SELECT T."hpid", T."from" INTO tmp FROM (SELECT "hpid", "from" FROM "groups_comments" WHERE "hcid" = NEW.hcid) AS T;
@@ -774,53 +774,22 @@ BEGIN;
     CREATE OR REPLACE FUNCTION before_insert_comment() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-    DECLARE lastCommentInPost record;
     BEGIN
-        PERFORM flood_control('"comments"', NEW."from");
-        PERFORM blacklist_control(NEW."from", NEW."to");
         NEW.message = message_control(NEW.message);
-
-        -- flood control for duplicated comment
-        SELECT "hpid","from","hcid","message" INTO lastCommentInPost FROM "comments" WHERE "hpid" = NEW."hpid" AND "hcid" = (
-            SELECT MAX("hcid") FROM "comments" WHERE "hpid" = NEW.hpid
-        );
-
-        IF lastCommentInPost IS NOT NULL THEN
-            IF lastCommentInPost."message" = NEW."message" AND lastCommentInPost."from" = NEW."from" THEN
-                RAISE EXCEPTION 'FLOOD';
-             ELSIF lastCommentInPost."from" = NEW."from" THEN --append
-                UPDATE "comments" SET message = lastCommentInPost.message || '[hr]' || NEW.message WHERE "hcid" = NEW.hcid;
-                RETURN NULL;
-            END IF;
-        END IF;
-
+        PERFORM flood_control('"comments"', NEW."from", NEW.message);
+        PERFORM blacklist_control(NEW."from", NEW."to");
         RETURN NEW;
     END $$;
 
     CREATE OR REPLACE FUNCTION before_insert_groups_comment() RETURNS trigger LANGUAGE plpgsql
     AS $$
     DECLARE postFrom int8;
-            lastCommentInPost record;
     BEGIN
-        PERFORM flood_control('"groups_comments"', NEW."from");
         NEW.message = message_control(NEW.message);
+        PERFORM flood_control('"groups_comments"', NEW."from", NEW.message);
 
-        SELECT T."from" INTO postFrom FROM (SELECT p."from" FROM "groups_posts" p WHERE p.hpid = tmp.hpid) AS T;
+        SELECT T."from" INTO postFrom FROM (SELECT "from" FROM "groups_posts" WHERE hpid = NEW.hpid) AS T;
         PERFORM blacklist_control(NEW."from", postFrom); --blacklisted post creator
-
-        -- flood control for duplicated comment
-        SELECT "hpid","from","hcid","message" INTO lastCommentInPost FROM "groups_comments" WHERE "hpid" = NEW."hpid" AND "hcid" = (
-            SELECT MAX("hcid") FROM "groups_comments" WHERE "hpid" = NEW.hpid
-        );
-
-        IF lastCommentInPost IS NOT NULL THEN
-            IF lastCommentInPost."message" = NEW."message" AND lastCommentInPost."from" = NEW."from" THEN
-                RAISE EXCEPTION 'FLOOD';
-             ELSIF lastCommentInPost."from" = NEW."from" THEN --append
-                UPDATE "groups_comments" SET message = lastCommentInPost.message || '[hr]' || NEW.message WHERE "hcid" = NEW.hcid;
-                RAISE EXCEPTION 'OK';
-            END IF;
-        END IF;
 
         RETURN NEW;
     END $$;
@@ -830,19 +799,9 @@ BEGIN;
     AS $$
     DECLARE group_owner int8;
             open_group boolean;
-            myLastMessage text;
     BEGIN
-        PERFORM flood_control('"groups_posts"', NEW."from");
         NEW.message = message_control(NEW.message);
-
-        -- flood control for duplicated post from the same user
-        SELECT "message" INTO myLastMessage FROM "groups_posts" WHERE "from" = NEW."from" AND "hpid" = (
-            SELECT MAX("hpid") FROM "groups_posts" WHERE "from" = NEW."from"
-        );
-
-        IF myLastMessage = NEW."message" THEN
-            RAISE EXCEPTION 'FLOOD';
-        END IF;
+        PERFORM flood_control('"groups_posts"', NEW."from", NEW.message);
 
         SELECT "owner" INTO group_owner FROM groups WHERE "counter" = NEW."to";
         SELECT "open" INTO open_group FROM groups WHERE "counter" = NEW."to";
@@ -914,9 +873,10 @@ BEGIN;
     CREATE OR REPLACE FUNCTION before_insert_pm() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+    DECLARE myLastMessage RECORD;
     BEGIN
-        PERFORM flood_control('"pms"', NEW."from");
         NEW.message = message_control(NEW.message);
+        PERFORM flood_control('"pms"', NEW."from", NEW.message);
 
         IF NEW."from" = NEW."to" THEN
             RAISE EXCEPTION 'CANT_PM_YOURSELF';
