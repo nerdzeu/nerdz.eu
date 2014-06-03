@@ -143,6 +143,24 @@ BEGIN;
 
     CREATE TRIGGER before_insert_post BEFORE INSERT ON posts FOR EACH ROW EXECUTE PROCEDURE before_insert_post();
 
+    CREATE FUNCTION before_insert_follow() RETURNS TRIGGER AS $$
+    BEGIN
+        PERFORM blacklist_control(NEW."from", NEW."to");
+        RETURN NEW;
+    END $$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER before_insert_follow BEFORE INSERT ON follow FOR EACH ROW EXECUTE PROCEDURE before_insert_follow();
+
+    CREATE FUNCTION before_insert_groups_member() RETURNS TRIGGER AS $$
+    DECLARE group_owner int8;
+    BEGIN
+        SELECT "owner" INTO group_owner FROM "groups" WHERE "counter" = NEW."group";
+        PERFORM blacklist_control(group_owner, NEW."user");
+        RETURN NEW;
+    END $$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER before_insert_groups_member BEFORE INSERT ON groups_members FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_member();
+
     ALTER TABLE profiles ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
 
     UPDATE profiles SET closed = true WHERE counter IN (SELECT counter FROM closed_profiles);
@@ -234,6 +252,11 @@ BEGIN;
     ALTER TABLE "comments"
         DROP CONSTRAINT "foreignfromusers",
         ADD CONSTRAINT "foreignfromusers" FOREIGN KEY ("from")
+        REFERENCES users(counter) ON DELETE CASCADE;
+
+    ALTER TABLE "comments"
+        DROP CONSTRAINT "foreigntousers",
+        ADD CONSTRAINT "foreigntousers" FOREIGN KEY ("to")
         REFERENCES users(counter) ON DELETE CASCADE;
 
     ALTER TABLE "posts"
@@ -352,7 +375,7 @@ BEGIN;
     declare r RECORD;
     newOwner int8;
     begin
-        FOR r IN SELECT "counter" FROM "groups" WHERE "owner" = userCouner LOOP
+        FOR r IN SELECT "counter" FROM "groups" WHERE "owner" = userCounter LOOP
             IF EXISTS (select "user" FROM groups_members where "group" = r.counter) THEN
                 SELECT gm."user" INTO newowner FROM groups_members gm
                 WHERE "group" = r.counter AND "time" = (
@@ -370,11 +393,11 @@ BEGIN;
 
     CREATE OR REPLACE FUNCTION before_delete_user() RETURNS TRIGGER AS $func$
         BEGIN
-            UPDATE "comments" SET "from" = (SELECT "counter" FROM"special_users" WHERE "role" = 'DELETED') WHERE "from" = OLD.counter;
-            UPDATE "posts" SET "from" = (SELECT "counter" FROM"special_users" WHERE "role" = 'DELETED') WHERE "from" = OLD.counter;
+            UPDATE "comments" SET "from" = (SELECT "counter" FROM "special_users" WHERE "role" = 'DELETED') WHERE "from" = OLD.counter;
+            UPDATE "posts" SET "from" = (SELECT "counter" FROM "special_users" WHERE "role" = 'DELETED') WHERE "from" = OLD.counter;
 
-            UPDATE "groups_comments" SET "from" = (SELECT "counter" FROM"special_users" WHERE "role" = 'DELETED') WHERE "from" = OLD.counter;            
-            UPDATE "groups_posts" SET "from" = (SELECT "counter" FROM"special_users" WHERE "role" = 'DELETED') WHERE "from" = OLD.counter;
+            UPDATE "groups_comments" SET "from" = (SELECT "counter" FROM "special_users" WHERE "role" = 'DELETED') WHERE "from" = OLD.counter;            
+            UPDATE "groups_posts" SET "from" = (SELECT "counter" FROM "special_users" WHERE "role" = 'DELETED') WHERE "from" = OLD.counter;
 
             PERFORM handle_groups_on_user_delete(OLD.counter);
 
@@ -423,31 +446,40 @@ BEGIN;
     ALTER TABLE "groups_posts"
         DROP CONSTRAINT "fktoproj",
         ADD CONSTRAINT "fktoproj" FOREIGN KEY ("to")
-        REFERENCES groups_posts(hpid) ON DELETE CASCADE;
+        REFERENCES groups(counter) ON DELETE CASCADE;
+
+    ALTER TABLE "groups_posts"
+        DROP CONSTRAINT "fkfromproj",
+        ADD CONSTRAINT "fkfromproj" FOREIGN KEY ("from")
+        REFERENCES users(counter) ON DELETE CASCADE;
 
     ALTER TABLE "groups_comments"
         DROP CONSTRAINT "fktoproject",
         ADD CONSTRAINT "fktoproject" FOREIGN KEY ("to")
-        REFERENCES groups_posts(hpid) ON DELETE CASCADE;
+        REFERENCES groups(counter) ON DELETE CASCADE;
+
+    ALTER TABLE "groups_comments"
+        DROP CONSTRAINT "fkfromusersp",
+        ADD CONSTRAINT "fkfromusersp" FOREIGN KEY ("from")
+        REFERENCES users(counter) ON DELETE CASCADE;
 
     ALTER TABLE "groups_notify"
         DROP CONSTRAINT "grforkey",
         ADD CONSTRAINT "grforkey" FOREIGN KEY ("group")
-        REFERENCES groups_posts(hpid) ON DELETE CASCADE;
+        REFERENCES groups(counter) ON DELETE CASCADE;
 
     ALTER TABLE "groups_members"
         DROP CONSTRAINT "groupfkg",
         ADD CONSTRAINT "groupfkg" FOREIGN KEY ("group")
-        REFERENCES groups_posts(hpid) ON DELETE CASCADE;
+        REFERENCES groups(counter) ON DELETE CASCADE;
 
     ALTER TABLE "groups_followers"
         DROP CONSTRAINT "groupfollofkg",
         ADD CONSTRAINT "groupfollofkg" FOREIGN KEY ("group")
-        REFERENCES groups_posts(hpid) ON DELETE CASCADE;
+        REFERENCES groups(counter) ON DELETE CASCADE;
 
  
     DROP FUNCTION before_delete_group() CASCADE; -- and trigger
-
 
     -- fix groups_posts
 
@@ -719,45 +751,43 @@ BEGIN;
     CREATE TRIGGER before_insert_groups_comment_thumb BEFORE INSERT ON groups_comment_thumbs FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_comment_thumb();
 
     DROP FUNCTION IF EXISTS before_insert_blacklist() CASCADE; --trigger
+
     CREATE FUNCTION after_insert_blacklist() RETURNS trigger LANGUAGE plpgsql AS $$
-    DECLARE mygroups record;
+    DECLARE r RECORD;
     BEGIN
         INSERT INTO posts_no_notify("user","hpid")
         (
-            SELECT NEW."from", -- find hpid
-                (
-                    SELECT "hpid" FROM "posts" WHERE "to" = NEW."to" OR "from" = NEW."to" -- posts made by the blacklisted user and post on his board
-                        UNION DISTINCT
-                    SELECT "hpid" FROM "comments" WHERE "from" = NEW."to" OR "to" = NEW."to" -- comments made by blacklisted user on others and his board
-                )
-                EXCEPT -- except existing ones
-                (
-                    SELECT "hpid" FROM "posts_no_notify" WHERE "user" = NEW."from"
-                )
+            SELECT NEW."from", "hpid" FROM "posts" WHERE "to" = NEW."to" OR "from" = NEW."to" -- posts made by the blacklisted user and post on his board
+                UNION DISTINCT
+            SELECT NEW."from", "hpid" FROM "comments" WHERE "from" = NEW."to" OR "to" = NEW."to" -- comments made by blacklisted user on others and his board
+        )
+        EXCEPT -- except existing ones
+        (
+            SELECT NEW."from", "hpid" FROM "posts_no_notify" WHERE "user" = NEW."from"
         );
 
         INSERT INTO groups_posts_no_notify("user","hpid")
         (
-            SELECT NEW."from", --find hpid
-                (
-                    SELECT "hpid" FROM "groups_posts" WHERE "from" = NEW."to" -- posts made by the blacklisted user in every project
-                        UNION DISTINCT
-                    SELECT "hpid" FROM "groups_comments" WHERE "from" = NEW."to" -- comments made by the blacklisted user in every project
-                )
-                EXCEPT -- except existing ones
-                (
-                    SELECT "hpid" FROM "groups_posts_no_notify" WHERE "user" = NEW."from"
-                )
+            (
+                SELECT NEW."from", "hpid" FROM "groups_posts" WHERE "from" = NEW."to" -- posts made by the blacklisted user in every project
+                    UNION DISTINCT
+                SELECT NEW."from", "hpid" FROM "groups_comments" WHERE "from" = NEW."to" -- comments made by the blacklisted user in every project
+            )
+            EXCEPT -- except existing ones
+            (
+                SELECT NEW."from", "hpid" FROM "groups_posts_no_notify" WHERE "user" = NEW."from"
+            )
         );
         
-        SELECT "counter" INTO mygroups FROM "groups" WHERE "owner" = NEW."from";
 
-        -- remove from my groups members
-        DELETE FROM "groups_members" WHERE "user" = NEW."to" AND "group" IN (SELECT "counter" FROM mygroups);
-
-        -- remove from my group follwors
-        DELETE FROM "groups_follwers" WHERE "user" = NEW."to" AND "group" IN (SELECT "counter" FROM mygroups);
-
+        FOR r IN (SELECT "counter" FROM "groups" WHERE "owner" = NEW."from")
+        LOOP
+            -- remove from my groups members
+            DELETE FROM "groups_members" WHERE "user" = NEW."to" AND "group"  = r."counter";
+            -- remove from my group follwors
+            DELETE FROM "groups_followers" WHERE "user" = NEW."to" AND "group" = r."counter";
+        END LOOP;
+        
         -- remove from followers
         DELETE FROM "follow" WHERE ("from" = NEW."from" AND "to" = NEW."to") OR ("to" = NEW."from" AND "from" = NEW."to");
 
@@ -919,5 +949,16 @@ BEGIN;
     END $$;
 
     CREATE TRIGGER after_insert_groups_post AFTER INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE after_insert_groups_post();
+
+    -- fix notifications when user gets deleted
+    DROP TRIGGER IF EXISTS after_update_comment ON comments;
+    DROP TRIGGER IF EXISTS after_update_group_comment ON groups_comments;
+
+    -- execute trigger only if message fields changed
+    CREATE TRIGGER after_update_comment_message AFTER UPDATE ON comments FOR EACH ROW
+    WHEN (NEW.message <> OLD.message) EXECUTE PROCEDURE notify_user_comment();
+
+    CREATE TRIGGER after_update_group_comment_message AFTER UPDATE ON groups_comments FOR EACH ROW
+    WHEN (NEW.message <> OLD.message) EXECUTE PROCEDURE notify_group_comment();
 
 COMMIT;

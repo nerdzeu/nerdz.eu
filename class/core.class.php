@@ -759,12 +759,16 @@ class phpCore
 
     }
 
-    public function parseDbMessage($msg)
+    public function parseDbMessage($msg, $otherInfo = '')
     {
         $msg = trim($msg);
+        if($otherInfo != '') {
+            $otherInfo = ': '.$otherInfo;
+        }
+
         $okRet = ['ok', 'OK'];
         if(db::NO_ERRSTR == $msg)
-            return $okRet;
+            return $okRet.$otherInfo;
 
         if(strpos($msg, '~') !== false) { // flood with time
             $exp = explode('~',$msg);
@@ -776,16 +780,16 @@ class phpCore
         $match = isset($matches[1]);
         if($match) {
             if($matches[1] == 'FLOOD') { // flood without time. Translation is useless
-                return [ 'error', 'Flood.' ];
+                return [ 'error', 'Flood'.$otherInfo ];
             }
         }
 
-        return ['error', htmlspecialchars($this->lang( $match ? $matches[1] : 'ERROR'), ENT_QUOTES, 'UTF-8') ];
+        return ['error', htmlspecialchars($this->lang( $match ? $matches[1] : 'ERROR'), ENT_QUOTES, 'UTF-8').$otherInfo ];
     }
 
-    public function jsonDbResponse($msg)
+    public function jsonDbResponse($msg, $otherInfo = '')
     {
-        $res = $this->parseDbMessage($msg);
+        $res = $this->parseDbMessage($msg, $otherInfo);
         return $this->jsonResponse($res[0], $res[1]);
     }
 

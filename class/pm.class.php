@@ -44,7 +44,20 @@ final class pm extends messages
 
     public function getList()
     {
-            if(!($rs = parent::query(array('SELECT DISTINCT EXTRACT(EPOCH FROM MAX(times)) as lasttime, otherid as "from" FROM ((SELECT MAX("time") AS times, "from" as otherid FROM pms WHERE "to" = ? GROUP BY "from") UNION (SELECT MAX("time") AS times, "to" as otherid FROM pms WHERE "from" = ? GROUP BY "to")) AS tmp GROUP BY otherid ORDER BY "lasttime" DESC',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
+        if(!($rs = parent::query(
+            [
+                'SELECT DISTINCT EXTRACT(EPOCH FROM MAX(times)) as lasttime, otherid as "from", to_read FROM
+                (
+                    (SELECT MAX("time") AS times, "from" as otherid, to_read FROM pms WHERE "to" = ? GROUP BY "from", to_read)
+                    UNION
+                    (SELECT MAX("time") AS times, "to" as otherid, to_read FROM pms WHERE "from" = ? GROUP BY "to", to_read)
+                ) AS tmp
+                GROUP BY otherid, to_read ORDER BY "lasttime" DESC',
+                [
+                    $_SESSION['nerdz_id'],
+                    $_SESSION['nerdz_id']
+                ]
+            ],db::FETCH_STMT)))
                 return false;
     
             $times = $res = array();
@@ -58,11 +71,15 @@ final class pm extends messages
                 $res[$c]['timestamp_n'] = $o->lasttime;
                 $res[$c]['fromid_n'] = $o->from;
                 $res[$c]['toid_n'] = $_SESSION['nerdz_id'];
+                $res[$c]['toread_n'] = $o->to_read;
                 $times[$c] = $o->lasttime;
                 ++$c;
             }
 
-            $res = array_unique($res,SORT_REGULAR); //fix for new duplicate pm
+            $res = array_unique($res,SORT_REGULAR);
+            usort($res, function($a, $b) {
+                return $a['toread_n'] || $b['toread_n'];
+            });
             $c = count($res);
             
         return $res;

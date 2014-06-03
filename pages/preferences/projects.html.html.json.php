@@ -38,21 +38,28 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $oldmem = $res->fetchAll(PDO::FETCH_COLUMN);
 
         $m = array_filter(array_unique(explode("\n",$_POST['members'])));
-        $newmem = array();
+        $newmem = [];
+        $userMap = [];
         foreach($m as $v)
         {
-            $uid = $core->getUserId(trim($v));
-            if(is_numeric($uid))
+            $username = trim($v);
+            $uid = $core->getUserId($username);
+            if(is_numeric($uid)) {
                 $newmem[] = $uid;
+                $userMap[$uid] = $username;
+            }
             else
                 die($core->jsonResponse('error',$core->lang('ERROR').': Invalid member - '.$v));
         }
 
         //members to add
         $toadd = array_diff($newmem, $oldmem);
-        foreach($toadd as $uid)
-            if(db::NO_ERRNO != $core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERRNO))
-                die($core->jsonResponse('error',$core->lang('ERROR').'1'));
+        foreach($toadd as $uid) {
+            $ret = $core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERRSTR);
+
+            if($ret != db::NO_ERRSTR)
+                die($core->jsonDbResponse($ret, $userMap[$uid]));
+        }
 
         // members to remove
         $toremove = array_diff($oldmem, $newmem);

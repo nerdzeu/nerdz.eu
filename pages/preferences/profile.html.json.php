@@ -89,11 +89,11 @@ if(
 if($closed)
 {
     if(!$core->closedProfile($_SESSION['nerdz_id']))
-        if(db::NO_ERRNO != $core->query(array('UPDATE "users" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => true, ':counter' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+        if(db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => true, ':counter' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
 }
 else
-    if(db::NO_ERRNO != $core->query(array('UPDATE "users" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => false, ':counter' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+    if(db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => false, ':counter' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
         die($core->jsonResponse('error',$core->lang('ERROR')));
 
 $_SESSION['nerdz_dateformat'] = $user['dateformat'];

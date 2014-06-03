@@ -5,7 +5,7 @@ db="nerdz"
 user="nerdz"
 owner="nerdz"
 
-deleted="1"
+deleted="14"
 users_news="1"
 issue="2"
 groups_news="1"

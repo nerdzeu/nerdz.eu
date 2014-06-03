@@ -15,13 +15,13 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!$hpid)
             die($core->jsonResponse('error',$core->lang('ERROR')));
     
-        die($core->jsonDbResponse($core->addProjectComment($hpid,$_POST['message'])));
+        die($core->jsonDbResponse($core->addComment($hpid,$_POST['message'], true)));
     break;
 
     case 'del':
         $hcid = isset($_POST['hcid']) && is_numeric($_POST['hcid']) ? $_POST['hcid'] : false;
         
-        if(!$hcid || !$core->delProjectComment($hcid))
+        if(!$hcid || !$core->delComment($hcid, true))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     default:

@@ -177,12 +177,15 @@ class comments extends project
         return $message;
     }
 
-    public function addComment($hpid,$message)
+    public function addComment($hpid,$message, $prj = false)
     {
+        $posts = ($prj ? 'groups_' : '').'posts';
+        $comments = ($prj ? 'groups_' : '').'comments';
+
         if(
                 !($obj = parent::query(
                     [
-                        'SELECT "to" FROM "posts" WHERE "hpid" = :hpid',
+                        'SELECT "to" FROM "'.$posts.'" WHERE "hpid" = :hpid',
                         [
                             ':hpid' => $hpid
                         ]
@@ -190,35 +193,36 @@ class comments extends project
                 ||
                 !($stmt = parent::query(
                     [
-                        'SELECT "hpid","from","hcid","message" FROM "comments" WHERE "hpid" = :hpid AND "hcid" = (SELECT MAX("hcid") FROM "comments" WHERE "hpid" = :hpid)',
+                        'SELECT "hpid","from","hcid","message" FROM "'.$comments.'" WHERE "hpid" = :hpid AND "hcid" = (SELECT MAX("hcid") FROM "'.$comments.'" WHERE "hpid" = :hpid)',
                         [
                             ':hpid' => $hpid
                         ],
                     ],db::FETCH_STMT))
           )
-            return 'ERROR';
+          return 'ERROR';
+
+        $message = trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
         if(($user = $stmt->fetch(PDO::FETCH_OBJ)))
         {
             $expl = explode('[hr]',$user->message);
             $lastAppendedMessage = $expl[count($expl) - 1];
 
+            if(trim($lastAppendedMessage) == $message)
+                return 'error: FLOOD'; //simulate db response
 
-            if(trim($lastAppendedMessage) == trim($message))
-                return 'FLOOD';
-
-            if($user->from == $_SESSION['nerdz_id']) //append and notify
-                return $this->appendComment($user,$message);
+            if($user->from == $_SESSION['nerdz_id'])
+                return $this->appendComment($user,$message, $prj);
         }
         
         return parent::query(
             [
-                'INSERT INTO "comments" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',
+                'INSERT INTO "'.$comments.'" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',
                 [
                     ':from' => $_SESSION['nerdz_id'],
                     ':to' => $obj->to,
                     ':hpid' => $hpid,
-                    ':message' => trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')))
+                    ':message' => $message
                 ]
             ],db::FETCH_ERRSTR);
     }
@@ -306,48 +310,16 @@ class comments extends project
         return $o->message;
     }
 
-    private function appendComment($oldMsgObj,$newMessage, $prj = false)
+    private function appendComment($oldMsgObj,$parsedMessage, $prj = false)
     {
         return parent::query(
                 [
                     'UPDATE "'.($prj ? 'groups_' : '').'comments" SET message = :message WHERE "hcid" = :hcid',
                     [
-                        ':message' => $oldMsgObj->message.'[hr]'.trim($this->parseCommentQuotes(htmlspecialchars($newMessage,ENT_QUOTES,'UTF-8'))),
+                        ':message' => $oldMsgObj->message.'[hr]'.$parsedMessage,
                         ':hcid' => $oldMsgObj->hcid
                     ]
                 ],db::FETCH_ERRSTR);
-    }
-
-    public function addProjectComment($hpid,$message)
-    {
-        if(
-                !($obj = parent::query(array('SELECT "to","from" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
-                !($stmt = parent::query(array('SELECT "hpid","from","hcid","message" FROM "groups_comments" WHERE "hpid" = ? AND "hcid" = (SELECT MAX("hcid") FROM "groups_comments" WHERE "hpid" = ?)',array($hpid,$hpid)),db::FETCH_STMT))
-          )
-            return 'ERROR';
-
-        if(($user = $stmt->fetch(PDO::FETCH_OBJ)))
-        {
-            $expl = explode('[hr]',$user->message);
-            $lastAppendedMessage = $expl[count($expl) - 1];
-
-            if($lastAppendedMessage == trim($message))
-                return 'FLOOD';
-
-            if($user->from == $_SESSION['nerdz_id'])
-                return $this->appendComment($user,$message, true);
-        }
-
-        return parent::query(
-            [
-                'INSERT INTO "groups_comments" ("from","to","hpid","message") VALUES (:id,:to,:hpid,:message)',
-                [
-                    ':id' => $_SESSION['nerdz_id'],
-                    ':to' => $obj->to,
-                    ':hpid' => $hpid,
-                    ':message' => trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')))
-                ]
-            ],db::FETCH_ERRSTR);
     }
 
     public function getProjectCommentsAfterHcid($hpid,$hcid)
