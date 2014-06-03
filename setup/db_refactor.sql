@@ -118,7 +118,7 @@ BEGIN;
             NEW."from" NOT IN (SELECT "to" FROM whitelist WHERE "from" = NEW."to")
           )
         THEN
-            RAISE EXCEPTION 'CLOSED_PROFILE_NOT_IN_WHITELIST';
+            RAISE EXCEPTION 'CLOSED_PROFILE';
         END IF;
 
         SELECT "pid" INTO NEW.pid FROM (
@@ -161,7 +161,10 @@ BEGIN;
 
     CREATE TRIGGER before_insert_groups_member BEFORE INSERT ON groups_members FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_member();
 
+    -- fix table layou and indexes
     ALTER TABLE profiles ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
+    ALTER TABLE users ADD CONSTRAINT uniqueMail UNIQUE(email);
+    ALTER TABLE users ADD CONSTRAINT uniqueUsername UNIQUE(username);
 
     UPDATE profiles SET closed = true WHERE counter IN (SELECT counter FROM closed_profiles);
 
@@ -560,7 +563,7 @@ BEGIN;
 
         SELECT tmp."to" INTO NEW."to";
 
-        PERFORM blacklist_control(NEW."from", NEW."to");   -- can't thumb on blacklisted board
+        PERFORM blacklist_control(NEW."from", NEW."to"); -- can't thumb on blacklisted board
         IF tmp."from" <> tmp."to" THEN
             PERFORM blacklist_control(NEW."from", tmp."from"); -- can't thumbs if post was made by blacklisted user
         END IF;

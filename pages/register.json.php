@@ -15,7 +15,7 @@ if(!$cptcka->check($captcha))
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php';
 
-if(db::NO_ERRNO != $core->query(
+$ret = $core->query(
     [
         'INSERT INTO users ("username","password","name","surname","email","gender","birth_date","lang","board_lang","timezone","remote_addr", "http_user_agent")
         VALUES (:username,ENCODE(DIGEST(:password, \'SHA1\'), \'HEX\'), :name, :surname, :email, :gender, :date, :lang, :lang, :timezone, :remote_addr, :http_user_agent)',
@@ -32,9 +32,10 @@ if(db::NO_ERRNO != $core->query(
               ':remote_addr'     => $_SERVER['REMOTE_ADDR'],
               ':http_user_agent' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
          ]
-     ], db::FETCH_ERRNO)
- )
-    die($core->jsonResponse('error',$core->lang('ERROR').' Please try back later or contact the support'));  
+     ], db::FETCH_ERRSTR);
+
+if($ret != db::NO_ERRSTR)
+    die($core->jsonDbResponse($ret));
 
 if(!$core->login($user['username'], $user['password']))
     die($core->jsonResponse('error',$core->lang('ERROR').': Login'));

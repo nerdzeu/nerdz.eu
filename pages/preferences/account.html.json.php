@@ -28,14 +28,15 @@ if($updatedPassword) {
     $params[':password'] = $user['password'];
 }
 
-if(db::NO_ERRNO != $core->query(
+$ret = $core->query(
     [
         'UPDATE users SET "timezone" = :timezone, "name" = :name,
         "surname" = :surname,"email" = :email,"gender" = :gender, "birth_date" = :date
         '.($updatedPassword ? ', "password" = ENCODE(DIGEST(:password, \'SHA1\'), \'HEX\')' : '').' WHERE counter = :id', $params
-    ],db::FETCH_ERRNO)
-)
-    die($core->jsonResponse('error',$core->lang('ERROR')));
+    ],db::FETCH_ERRSTR);
+
+if($ret != db::NO_ERRSTR)
+    die($core->jsonDbResponse($ret));
 
 if(!$core->login($core->getUserName(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['nerdz_mark_offline'], !$updatedPassword))
     die($core->jsonResponse('error',$core->lang('ERROR').': Login'));

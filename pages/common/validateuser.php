@@ -107,16 +107,6 @@ if(!$core->isLogged()) //username field
     if(mb_strlen($user['username'],'UTF-8') < MIN_LENGTH_USER)
         die($core->jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.MIN_LENGTH_USER));
     
-    if(
-        !$core->isLogged() && $core->getUserId($user['username']) || 
-        ($core->isLogged() && (
-                        $user['username'] != html_entity_decode($core->getUserName(),ENT_QUOTES,'UTF-8') &&
-                        false !== $core->getUserId($user['username'])
-                    )
-               )
-     )
-        die($core->jsonResponse('error',$core->lang('USERNAME_EXISTS')));
-
     if(is_numeric($user['username']))
         die($core->jsonResponse('error',$core->lang('USERNAME_NUMBER')));
 
@@ -178,14 +168,6 @@ if(!checkdate($birth['birth_month'],$birth['birth_day'],$birth['birth_year']))
     die($core->jsonResponse('error',$core->lang('DATE_NOT_VALID')));
 
 $birth['date'] = $birth['birth_year'].'/'.$birth['birth_month'].'/'.$birth['birth_day'];
-
-if($core->isLogged()) {
-    if(($ut = $core->query("SELECT counter FROM users WHERE email = '{$user['email']}'",db::FETCH_OBJ)) && ($ut->counter != $_SESSION['nerdz_id']))
-        die($core->jsonResponse('error',$core->lang('MAIL_EXISTS')));
-} else {
-    if($core->query(array('SELECT "counter" FROM "users" WHERE "email" = :email',array(':email' => $user['email'])),db::ROW_COUNT) > 0)
-        die($core->jsonResponse('error',$core->lang('MAIL_EXISTS')."\n".$core->lang('FORGOT_PASSWORD').'?'));
-}
 
 $user['gender'] = intval($user['gender']) == 1 ? 'true' : 'false'; //true = male, false = woman
 

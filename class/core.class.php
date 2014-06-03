@@ -762,13 +762,12 @@ class phpCore
     public function parseDbMessage($msg, $otherInfo = '')
     {
         $msg = trim($msg);
-        if($otherInfo != '') {
+        if($otherInfo != '')
             $otherInfo = ': '.$otherInfo;
-        }
 
         $okRet = ['ok', 'OK'];
         if(db::NO_ERRSTR == $msg)
-            return $okRet.$otherInfo;
+            return $okRet;
 
         if(strpos($msg, '~') !== false) { // flood with time
             $exp = explode('~',$msg);
@@ -781,6 +780,10 @@ class phpCore
         if($match) {
             if($matches[1] == 'FLOOD') { // flood without time. Translation is useless
                 return [ 'error', 'Flood'.$otherInfo ];
+            } else if(stripos($matches[1], 'unique') !== false) {
+                if(preg_match("#detail:\s+key\s+\((.+?)\)#i", $msg, $matches)) {
+                    return [ 'error', $this->lang('email' == trim(strtolower($matches[1])) ? 'MAIL_EXISTS' : 'USERNAME_EXISTS') ];
+                }
             }
         }
 
