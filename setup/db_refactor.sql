@@ -953,15 +953,221 @@ BEGIN;
 
     CREATE TRIGGER after_insert_groups_post AFTER INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE after_insert_groups_post();
 
-    -- fix notifications when user gets deleted
-    DROP TRIGGER IF EXISTS after_update_comment ON comments;
-    DROP TRIGGER IF EXISTS after_update_group_comment ON groups_comments;
+    -- comments fixes
 
-    -- execute trigger only if message fields changed
+    alter table comments add column editable boolean not null default true;
+    alter table groups_comments add column editable boolean not null default true;
+    
+    update comments set editable = false where message like '%<%' or message like '%>%';
+    update groups_comments set editable = false where message like '%<%' or message like '%>%';
+
+    CREATE TABLE comments_revisions(
+        hcid int8 not null references comments(hcid) on delete cascade,
+        message text not null,
+        time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        rev_no int4 not null default 0,
+        primary key(hcid, rev_no)
+    );
+
+    CREATE TABLE groups_comments_revisions(
+        hcid int8 not null references groups_comments(hcid) on delete cascade,
+        message text not null,
+        time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        rev_no int4 not null default 0,
+        primary key(hcid, rev_no)
+    );
+
+    CREATE FUNCTION comment_edit_control() RETURNS TRIGGER AS $$
+    BEGIN
+        IF OLD.editable IS FALSE THEN
+            RAISE EXCEPTION 'NOT_EDITABLE';
+        END IF;
+    END $$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER before_update_comment_message BEFORE UPDATE ON comments FOR EACH ROW EXECUTE PROCEDURE comment_edit_control();
+    CREATE TRIGGER before_update_group_comment_message BEFORE UPDATE ON groups_comments FOR EACH ROW EXECUTE PROCEDURE comment_edit_control();
+
+    DROP FUNCTION notify_user_comment() CASCADE; --drop after insert and after update triggers
+    DROP FUNCTION notify_group_comment() CASCADE; -- ^
+
+    -- no notification of the edit was made on a random comment (not the last in the conersation)
+    -- execute notification trigger only if message fields changed and its the last message of the conversation
+
+    CREATE FUNCTION user_comment() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        -- edit support
+        IF TG_OP = 'UPDATE' THEN
+            INSERT INTO comments_revisions(hcid, message, rev_no)
+            VALUES(OLD.hcid, OLD.message, (
+                SELECT COUNT(hcid) + 1 FROM comments_revisions WHERE hcid = OLD.hcid
+            ));
+
+             --notify only if it's the last comment in the post
+            IF OLD.hcid <> (SELECT MAX(hcid) FROM comments WHERE hpid = NEW.hpid) THEN
+                RETURN NULL;
+            END IF;
+        END IF;
+
+        -- if I commented the post, I stop lurking
+        DELETE FROM "lurkers" WHERE "post" = NEW."hpid" AND "user" = NEW."from";
+
+        WITH no_notify AS (
+            -- blacklist
+            (
+                SELECT "from" AS "user" FROM "blacklist" WHERE "to" = NEW."from"
+                    UNION
+                SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
+            )
+            UNION -- users that locked the notifications for all the thread
+                SELECT "user" FROM "posts_no_notify" WHERE "hpid" = NEW."hpid"
+            UNION -- users that locked notifications from me in this thread
+                SELECT "to" AS "user" FROM "comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
+            UNION
+                SELECT NEW."from"
+        ),
+        to_notify AS (
+                SELECT DISTINCT "from" AS "user" FROM "comments" WHERE "hpid" = NEW."hpid"
+            UNION
+                SELECT "user" FROM "lurkers" WHERE "post" = NEW."hpid"
+            UNION
+                SELECT "from" FROM "posts" WHERE "hpid" = NEW."hpid"
+            UNION
+                SELECT "to" FROM "posts" WHERE "hpid" = NEW."hpid"
+        ),
+        real_notify AS (
+            -- avoid to add rows with the same primary key
+            SELECT "user" FROM (
+                SELECT "user" FROM to_notify
+                    EXCEPT
+                (
+                    SELECT "user" FROM no_notify
+                 UNION
+                    SELECT "to" AS "user" FROM "comments_notify" WHERE "hpid" = NEW."hpid"
+                )
+            ) AS T1
+        )
+
+        INSERT INTO "comments_notify"("from","to","hpid","time") (
+            SELECT NEW."from", "user", NEW."hpid", NEW."time" FROM real_notify
+        );
+
+        RETURN NULL;
+    END $$;
+
     CREATE TRIGGER after_update_comment_message AFTER UPDATE ON comments FOR EACH ROW
-    WHEN (NEW.message <> OLD.message) EXECUTE PROCEDURE notify_user_comment();
+    WHEN ( NEW.message <> OLD.message )
+    EXECUTE PROCEDURE user_comment();
 
-    CREATE TRIGGER after_update_group_comment_message AFTER UPDATE ON groups_comments FOR EACH ROW
-    WHEN (NEW.message <> OLD.message) EXECUTE PROCEDURE notify_group_comment();
+    CREATE TRIGGER after_insert_comment AFTER INSERT ON comments FOR EACH ROW EXECUTE PROCEDURE user_comment();
+
+    CREATE FUNCTION group_comment() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        -- edit support
+        IF TG_OP = 'UPDATE' THEN
+            INSERT INTO groups_comments_revisions(hcid, message, rev_no)
+            VALUES(OLD.hcid, OLD.message, (
+                SELECT COUNT(hcid) + 1 FROM groups_comments_revisions WHERE hcid = OLD.hcid
+            ));
+
+             --notify only if it's the last comment in the post
+            IF OLD.hcid <> (SELECT MAX(hcid) FROM groups_comments WHERE hpid = NEW.hpid) THEN
+                RETURN NULL;
+            END IF;
+        END IF;
+
+
+        -- if I commented the post, I stop lurking
+        DELETE FROM "groups_lurkers" WHERE "post" = NEW."hpid" AND "user" = NEW."from";
+
+        WITH no_notify AS (
+            -- blacklist
+            (
+                SELECT "from" AS "user" FROM "blacklist" WHERE "to" = NEW."from"
+                    UNION
+                SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
+            )
+            UNION -- users that locked the notifications for all the thread
+                SELECT "user" FROM "groups_posts_no_notify" WHERE "hpid" = NEW."hpid"
+            UNION -- users that locked notifications from me in this thread
+                SELECT "to" AS "user" FROM "groups_comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
+            UNION
+                SELECT NEW."from"
+        ),
+        to_notify AS (
+                SELECT DISTINCT "from" AS "user" FROM "groups_comments" WHERE "hpid" = NEW."hpid"
+            UNION
+                SELECT "user" FROM "groups_lurkers" WHERE "post" = NEW."hpid"
+            UNION
+                SELECT "from" FROM "groups_posts" WHERE "hpid" = NEW."hpid"
+        ),
+        real_notify AS (
+            -- avoid to add rows with the same primary key
+            SELECT "user" FROM (
+                SELECT "user" FROM to_notify
+                    EXCEPT
+                (
+                    SELECT "user" FROM no_notify
+                 UNION
+                    SELECT "to" AS "user" FROM "groups_comments_notify" WHERE "hpid" = NEW."hpid"
+                )
+            ) AS T1
+        )
+
+        INSERT INTO "groups_comments_notify"("from","to","hpid","time") (
+            SELECT NEW."from", "user", NEW."hpid", NEW."time" FROM real_notify
+        );
+
+        RETURN NULL;
+    END $$;
+
+
+    CREATE TRIGGER after_insert_group_comment AFTER INSERT ON groups_comments FOR EACH ROW EXECUTE PROCEDURE group_comment();
+
+    CREATE TRIGGER after_update_groups_comment_message AFTER UPDATE ON groups_comments FOR EACH ROW
+    WHEN ( NEW.message <> OLD.message )
+    EXECUTE PROCEDURE group_comment();
+
+    -- no notifications for post update, store revisions only
+    CREATE TABLE posts_revisions(
+        hpid int8 not null references posts(hpid) on delete cascade,
+        message text not null,
+        time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        rev_no int4 not null default 0,
+        primary key(hpid, rev_no)
+    );
+
+    CREATE TABLE groups_posts_revisions(
+        hpid int8 not null references groups_posts(hpid) on delete cascade,
+        message text not null,
+        time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        rev_no int4 not null default 1,
+        primary key(hpid, rev_no)
+    );
+
+    CREATE FUNCTION save_post_revision() RETURNS TRIGGER AS $$
+    BEGIN
+        INSERT INTO posts_revisions(hpid, message, rev_no)  VALUES(OLD.hpid, OLD.message,
+            (SELECT COUNT(hpid) +1 FROM posts_revisions WHERE hpid = OLD.hpid));
+        RETURN NULL;
+    END $$ LANGUAGE plpgsql;
+
+    CREATE FUNCTION save_groups_post_revision() RETURNS TRIGGER AS $$
+    BEGIN
+        INSERT INTO groups_posts_revisions(hpid, message, rev_no)  VALUES(OLD.hpid, OLD.message,
+            (SELECT COUNT(hpid) +1 FROM groups_posts_revisions WHERE hpid = OLD.hpid));
+        RETURN NULL;
+    END $$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER after_update_post_message AFTER UPDATE ON posts FOR EACH ROW
+    WHEN ( NEW.message <> OLD.message )
+    EXECUTE PROCEDURE save_post_revision();
+
+    CREATE TRIGGER after_update_groups_post_message AFTER UPDATE ON groups_posts FOR EACH ROW
+    WHEN ( NEW.message <> OLD.message )
+    EXECUTE PROCEDURE save_groups_post_revision();
 
 COMMIT;
