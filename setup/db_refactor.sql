@@ -964,7 +964,7 @@ BEGIN;
     CREATE TABLE comments_revisions(
         hcid int8 not null references comments(hcid) on delete cascade,
         message text not null,
-        time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        time timestamp(0) WITH TIME ZONE NOT NULL,
         rev_no int4 not null default 0,
         primary key(hcid, rev_no)
     );
@@ -972,7 +972,7 @@ BEGIN;
     CREATE TABLE groups_comments_revisions(
         hcid int8 not null references groups_comments(hcid) on delete cascade,
         message text not null,
-        time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        time timestamp(0) WITH TIME ZONE NOT NULL,
         rev_no int4 not null default 0,
         primary key(hcid, rev_no)
     );
@@ -999,8 +999,8 @@ BEGIN;
     BEGIN
         -- edit support
         IF TG_OP = 'UPDATE' THEN
-            INSERT INTO comments_revisions(hcid, message, rev_no)
-            VALUES(OLD.hcid, OLD.message, (
+            INSERT INTO comments_revisions(hcid, time, message, rev_no)
+            VALUES(OLD.hcid, OLD.time, OLD.message, (
                 SELECT COUNT(hcid) + 1 FROM comments_revisions WHERE hcid = OLD.hcid
             ));
 
@@ -1068,8 +1068,8 @@ BEGIN;
     BEGIN
         -- edit support
         IF TG_OP = 'UPDATE' THEN
-            INSERT INTO groups_comments_revisions(hcid, message, rev_no)
-            VALUES(OLD.hcid, OLD.message, (
+            INSERT INTO groups_comments_revisions(hcid, time, message, rev_no)
+            VALUES(OLD.hcid, OLD.time, OLD.message, (
                 SELECT COUNT(hcid) + 1 FROM groups_comments_revisions WHERE hcid = OLD.hcid
             ));
 
@@ -1135,7 +1135,7 @@ BEGIN;
     CREATE TABLE posts_revisions(
         hpid int8 not null references posts(hpid) on delete cascade,
         message text not null,
-        time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        time timestamp(0) WITH TIME ZONE NOT NULL,
         rev_no int4 not null default 0,
         primary key(hpid, rev_no)
     );
@@ -1143,21 +1143,21 @@ BEGIN;
     CREATE TABLE groups_posts_revisions(
         hpid int8 not null references groups_posts(hpid) on delete cascade,
         message text not null,
-        time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        time timestamp(0) WITH TIME ZONE NOT NULL,
         rev_no int4 not null default 1,
         primary key(hpid, rev_no)
     );
 
     CREATE FUNCTION save_post_revision() RETURNS TRIGGER AS $$
     BEGIN
-        INSERT INTO posts_revisions(hpid, message, rev_no)  VALUES(OLD.hpid, OLD.message,
+        INSERT INTO posts_revisions(hpid, time, message, rev_no)  VALUES(OLD.hpid, OLD.time,  OLD.message,
             (SELECT COUNT(hpid) +1 FROM posts_revisions WHERE hpid = OLD.hpid));
         RETURN NULL;
     END $$ LANGUAGE plpgsql;
 
     CREATE FUNCTION save_groups_post_revision() RETURNS TRIGGER AS $$
     BEGIN
-        INSERT INTO groups_posts_revisions(hpid, message, rev_no)  VALUES(OLD.hpid, OLD.message,
+        INSERT INTO groups_posts_revisions(hpid, time, message, rev_no)  VALUES(OLD.hpid, OLD.time, OLD.message,
             (SELECT COUNT(hpid) +1 FROM groups_posts_revisions WHERE hpid = OLD.hpid));
         RETURN NULL;
     END $$ LANGUAGE plpgsql;
@@ -1169,5 +1169,15 @@ BEGIN;
     CREATE TRIGGER after_update_groups_post_message AFTER UPDATE ON groups_posts FOR EACH ROW
     WHEN ( NEW.message <> OLD.message )
     EXECUTE PROCEDURE save_groups_post_revision();
+
+    CREATE FUNCTION update_post_time() RETURNS TRIGGER AS $$
+    BEGIN
+        SELECT NOW() INTO NEW.time;
+        RETURN NEW;
+    END $$ LANGUAGE plpgsql;
+
+
+    CREATE TRIGGER before_update_post BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE update_post_time();
+    CREATE TRIGGER before_update_groups_post BEFORE UPDATE ON groups_posts FOR EACH ROW EXECUTE PROCEDURE update_post_time();
 
 COMMIT;

@@ -705,7 +705,7 @@ class messages extends phpCore
     } 
 
     public function getThumbs($hpid, $prj = false) {
-        $table = $prj ? "groups_thumbs" : "thumbs";
+        $table = ($prj ? 'groups_' : ''). 'thumbs';
 
         $ret = parent::query(
             [
@@ -718,11 +718,41 @@ class messages extends phpCore
             db::FETCH_OBJ
         );
 
-        if (isset($ret->sum)) {
-           return $ret->sum;
-        }
+        return isset($ret->sum) ? $ret->sum : 0;
+    }
 
-        return 0;
+    public function getRevisionsNumber($hpid, $prj = false) {
+        $table = ($prj ? 'groups_' : ''). 'posts_revisions';
+
+        $ret = parent::query(
+            [
+                'SELECT COALESCE( MAX("rev_no"), 0 )  AS "rev_no" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                [
+                  ':hpid' => $hpid
+                ]
+
+            ],
+            db::FETCH_OBJ
+        );
+
+        return isset($ret->rev_no) ? $ret->rev_no : 0;
+    }
+
+    public function getRevision($hpid, $number,  $prj = false) {
+        $table = ($prj ? 'groups_' : ''). 'posts_revisions';
+
+        return parent::query(
+            [
+                'SELECT message, EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" = :hpid AND "rev_no" = :number',
+                [
+
+                    ':hpid' => $hpid,
+                    ':number' => $number
+                ]
+
+            ],
+            db::FETCH_OBJ
+        );
     }
 
     public function getUserThumb($hpid, $prj = false) {

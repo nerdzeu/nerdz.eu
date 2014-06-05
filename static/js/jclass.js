@@ -461,12 +461,38 @@ N.json.profile = function()
     /**
      * set thumbs for comments
      * @parameters;  {hcid, thumb}
-     * hpid: hidden comment id
+     * hcid: hidden comment id
      * vote: vote (-1,0,1)
      */
     this.cthumbs = function(jObj, done) 
     {
         this.post('thumbs.json.php',$.extend(jObj,{comment:true}), function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * get revison for post
+     * @parameters; {hpid, revNo}
+     * hpid: hidden post id
+     * revNo: revision number
+     */
+    this.getRevision = function(jObj, done)
+    {
+        this.post('revisions.json.php', jObj, function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * get revison for comment
+     * @parameters; {hcid, revNo}
+     * hcid: hidden comment id
+     * revNo: revision number
+     */
+    this.getCommentRevision = function(jObj, done)
+    {
+        this.post('revisions.json.php', $.extend(jObj, {comment:true}), function(d) {
             done(d);
         });
     };
@@ -708,6 +734,32 @@ N.json.project = function()
     this.cthumbs = function(jObj, done) 
     {
         this.post('thumbs.json.php',$.extend(jObj,{comment:true}), function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * get revison for post
+     * @parameters; {hpid, revNo}
+     * hpid: hidden post id
+     * revNo: revision number
+     */
+    this.getRevision = function(jObj, done)
+    {
+        this.post('revisions.json.php',jObj, function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * get revison for comment
+     * @parameters; {hcid, revNo}
+     * hcid: hidden comment id
+     * revNo: revision number
+     */
+    this.getCommentRevision = function(jObj, done)
+    {
+        this.post('revisions.json.php',$.extend(jObj, {comment:true}), function(d) {
             done(d);
         });
     };

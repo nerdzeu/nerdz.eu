@@ -25,6 +25,7 @@ $members = $core->getMembers($o->to);
 
 $singlepostvals = array();
 $singlepostvals['thumbs_n'] = $core->getThumbs($hpid, true);
+$singlepostvals['revisions_n'] = $core->getRevisionsNumber($hpid, true);
 $singlepostvals['uthumb_n'] = $core->getUserThumb($hpid, true); 
 $singlepostvals['pid_n'] = $o->pid;
 $singlepostvals['from4link_n'] = phpCore::userLink($from);

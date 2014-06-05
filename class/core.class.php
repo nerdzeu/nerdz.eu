@@ -163,10 +163,11 @@ class phpCore
         chmod($path,0775);
     }
    
-    public function jsonResponse($status, $message)
+    public function jsonResponse($status, $message = '')
     {
         header('Content-type: application/json; charset=utf-8');
-        return json_encode(array('status' => $status, 'message' => $message),JSON_FORCE_OBJECT);
+        $ret = is_array($status) ? $status : ['status' => $status, 'message' => $message];
+        return json_encode($ret,JSON_FORCE_OBJECT);
     }
     
     public function logout()
