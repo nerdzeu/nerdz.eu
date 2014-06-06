@@ -982,6 +982,11 @@ BEGIN;
         IF OLD.editable IS FALSE THEN
             RAISE EXCEPTION 'NOT_EDITABLE';
         END IF;
+
+        -- update time
+        SELECT NOW() INTO NEW.time;
+
+        RETURN NEW;
     END $$ LANGUAGE plpgsql;
 
     CREATE TRIGGER before_update_comment_message BEFORE UPDATE ON comments FOR EACH ROW EXECUTE PROCEDURE comment_edit_control();

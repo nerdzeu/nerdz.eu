@@ -20,6 +20,7 @@ if(!($to = $core->getUserName($o->to)))
     $to =  '';
 
 $singlepostvals = array();
+$singlepostvals['revisions_n'] = $core->getRevisionsNumber($hpid);
 $singlepostvals['thumbs_n'] = $core->getThumbs($hpid);
 $singlepostvals['uthumb_n'] = $core->getUserThumb($hpid);
 $singlepostvals['pid_n'] = $o->pid;

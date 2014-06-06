@@ -47,6 +47,7 @@ class comments extends project
             $ret[$i]['hpid_n'] = $hpid;
             $ret[$i]['thumbs_n'] = $this->getThumbs($o->hcid, $prj);
             $ret[$i]['uthumb_n'] = $this->getUserThumb($o->hcid, $prj);
+            $ret[$i]['revisions_n'] = $this->getRevisionsNumber($o->hcid, $prj);
             
             if($luck)
             {
@@ -263,8 +264,39 @@ class comments extends project
         return $this->showControl ($o->from, $o->to, $hpid, $o->pid, false, false, $num, $cycle * $num);
     }
 
-    public function delComment($hcid)
+    public function delComment($hcid, $prj = false)
     {
+        if($prj) {
+            if(
+                !($o = parent::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)) ||
+                !($owner = parent::getOwnerByGid($o->to))
+              )
+                return false;
+
+            $canremovecomment = array_merge($this->getProjectMembersAndOwnerFromHpid($o->hpid), (array) $o->from);
+
+            if(in_array($_SESSION['nerdz_id'],$canremovecomment))
+            {
+                if(
+                    db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),db::FETCH_ERRNO) ||
+                    db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERRNO)
+                  )
+                    return false;
+            }
+            else
+                return false;
+
+            if(!($c = parent::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+                return false;
+        
+            if($c->cc == 0)
+                if(db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['nerdz_id'],':hpid' => $o->hpid)),db::FETCH_ERRNO))
+                    return false;
+
+            return true;
+        }
+
+        //profile
         $ok =  (
             ($o = parent::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)) //cid, from, to, time servono
             &&
@@ -336,37 +368,6 @@ class comments extends project
         return $this->showControl ($o->from, $o->to, $hpid, $o->pid, true, false, $num, $cycle * $num);
     }
 
-    public function delProjectComment($hcid)
-    {
-        if(
-            !($o = parent::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)) ||
-            !($owner = parent::getOwnerByGid($o->to))
-          )
-            return false;
-
-        $canremovecomment = array_merge($this->getProjectMembersAndOwnerFromHpid($o->hpid), (array) $o->from);
-
-        if(in_array($_SESSION['nerdz_id'],$canremovecomment))
-        {
-            if(
-                db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),db::FETCH_ERRNO) ||
-                db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),db::FETCH_ERRNO)
-              )
-                return false;
-        }
-        else
-            return false;
-
-        if(!($c = parent::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
-            return false;
-    
-        if($c->cc == 0)
-            if(db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['nerdz_id'],':hpid' => $o->hpid)),db::FETCH_ERRNO))
-                return false;
-
-        return true;
-    }
-
     public function countProjectComments($hpid)
     {
         if(parent::isLogged())
@@ -379,6 +380,40 @@ class comments extends project
                 return false;
 
         return $o->cc;
+    }
+
+    public function getRevisionsNumber($hcid, $prj = false) {
+        $table = ($prj ? 'groups_' : ''). 'comments_revisions';
+
+        $ret = parent::query(
+            [
+                'SELECT COALESCE( MAX("rev_no"), 0 )  AS "rev_no" FROM "'.$table.'" WHERE "hcid" = :hcid',
+                [
+                  ':hcid' => $hcid
+                ]
+
+            ],
+            db::FETCH_OBJ
+        );
+
+        return isset($ret->rev_no) ? $ret->rev_no : 0;
+    }
+
+    public function getRevision($hcid, $number,  $prj = false) {
+        $table = ($prj ? 'groups_' : ''). 'comments_revisions';
+
+        return parent::query(
+            [
+                'SELECT message, EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hcid" = :hcid AND "rev_no" = :number',
+                [
+
+                    ':hcid' => $hcid,
+                    ':number' => $number
+                ]
+
+            ],
+            db::FETCH_OBJ
+        );
     }
     
     public function getThumbs($hcid, $prj = false) {

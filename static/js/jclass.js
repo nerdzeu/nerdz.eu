@@ -230,6 +230,18 @@ N.json.profile = function()
             done(d);
         });
     };
+
+    /**
+    * Get comment from profile post (to put in a textarea, before editing)
+    * (in json namespace is not parsed)
+    * @Parameters: { hcid }
+    */
+    this.getComment = function(jObj,done)
+    {
+        this.post('comments.json.php?action=get',jObj,function(d) {
+            done(d);
+        });
+    };
     
     /** create a nerdz post sharing the content of a url
      * @parameters: {to, comment, url}
@@ -274,6 +286,18 @@ N.json.profile = function()
     this.editPost = function(jObj,done)
     {
         this.post('board.json.php?action=edit',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
+    * edit profile post commment
+    * (in json namespace is not parsed)
+    * @Parameters: { hcid, message }
+    */
+    this.editComment = function(jObj,done)
+    {
+        this.post('comments.json.php?action=edit',jObj,function(d) {
             done(d);
         });
     };
@@ -533,6 +557,18 @@ N.json.project = function()
             done(d);
         });
     };
+
+    /**
+    * Get comment from profile post (to put in a textarea, before editing)
+    * (in json namespace is not parsed)
+    * @Parameters: { hcid }
+    */
+    this.getComment = function(jObj,done)
+    {
+        this.post('comments.json.php?action=get',jObj,function(d) {
+            done(d);
+        });
+    };
     
     /**
     * edit post in project
@@ -541,6 +577,18 @@ N.json.project = function()
     this.editPost = function(jObj,done)
     {
         this.post('board.json.php?action=edit',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
+    * Get comment from profile post (to put in a textarea, before editing)
+    * (in json namespace is not parsed)
+    * @Parameters: { hcid, message }
+    */
+    this.editComment = function(jObj,done)
+    {
+        this.post('comments.json.php?action=edit',jObj,function(d) {
             done(d);
         });
     };
