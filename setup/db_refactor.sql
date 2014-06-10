@@ -161,10 +161,13 @@ BEGIN;
 
     CREATE TRIGGER before_insert_groups_member BEFORE INSERT ON groups_members FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_member();
 
-    -- fix table layou and indexes
+    -- fix table layout and indexes
     ALTER TABLE profiles ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
     ALTER TABLE users ADD CONSTRAINT uniqueMail UNIQUE(email);
     ALTER TABLE users ADD CONSTRAINT uniqueUsername UNIQUE(username);
+
+    ALTER TABLE posts ADD CONSTRAINT uniquePostPidHpid UNIQUE(hpid, pid);
+    ALTER TABLE groups_posts ADD CONSTRAINT uniqueGroupsPostPidHpid UNIQUE(hpid, pid);
 
     UPDATE profiles SET closed = true WHERE counter IN (SELECT counter FROM closed_profiles);
 
