@@ -757,7 +757,7 @@ class phpCore
 
     public static function isValidURL($url)
     {
-        return preg_match("#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#im",$url);
+        return filter_var($url, FILTER_VALIDATE_URL);
     }
 
     public static function userLink($user)
