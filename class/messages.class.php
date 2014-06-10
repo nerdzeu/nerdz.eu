@@ -151,7 +151,7 @@ class messages extends phpCore
             {
                 $m[1] = 'www.'.$m[1];
                 if(!phpCore::isValidURL($m[1]))
-                    return 'http://www';
+                    return '<b>'.parent::lang('INVALID_URL').'</b>';
             }
             $url = preg_match('#^(http(s)?:\/\/)|(ftp:\/\/)#im',$m[1]) ? $m[1] : 'http://'.$m[1];
             return isset($m[2]) ? '<a href="'.messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
