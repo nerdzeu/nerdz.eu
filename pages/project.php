@@ -82,7 +82,7 @@ else
 
         $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://www.nerdz.eu/' : $info->website;
 
-        $vals['openproject_b'] = $core->isProjectOpen($info->counter);
+        $vals['openproject_b'] = $core->isOpen($info->counter);
         
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';
         $banners = (new banners())->getBanners();
@@ -97,7 +97,7 @@ else
 
         $vals['singlepost_b'] = isset($pid) && isset($gid) && is_numeric($pid);
 
-        $vals['canwrite_b'] = $vals['logged_b'] && ($core->isProjectOpen($gid) || in_array($_SESSION['nerdz_id'],$mem) || ($_SESSION['nerdz_id'] == $info->owner));
+        $vals['canwrite_b'] = $vals['logged_b'] && ($core->isOpen($gid) || in_array($_SESSION['nerdz_id'],$mem) || ($_SESSION['nerdz_id'] == $info->owner));
         $vals['canwritenews_b'] = $vals['logged_b'] && (in_array($_SESSION['nerdz_id'],$mem) || ($_SESSION['nerdz_id'] == $info->owner));
 
         // solo qui ci sarà la pagina statica, per i posts singoli

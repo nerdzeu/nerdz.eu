@@ -26,6 +26,17 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!$hcid || !$core->delComment($hcid))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
+
+    case 'get':
+        if(empty($_POST['hcid']) || !($o = $core->getComment($_POST['hcid'],$edit = true)))
+            die($core->jsonResponse('error',$core->lang('ERROR')));
+        die($o->message);
+    break;
+
+    case 'edit':
+        if(empty($_POST['hcid']) || empty($_POST['message']) || !$core->editComment($_POST['hcid'], $_POST['message']))
+            die($core->jsonResponse('error',$core->lang('ERROR')));
+    break;
 default:
     die($core->jsonResponse('error',$core->lang('ERROR')));
 break;

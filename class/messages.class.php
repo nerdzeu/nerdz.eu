@@ -11,9 +11,14 @@ class messages extends phpCore
     const VIMEO_REGEXP    = '#^https?://(?:www\.)?vimeo\.com.+?(\d+)$#i';
     const DMOTION_REGEXP  = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
     const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/photo\.php(?:\?v=|\?.+?&v=)(\d+)#i';
+
+    private $project;
+
     public function __construct()
     {
         parent::__construct();
+        require_once 'project.class.php';
+        $this->project = new project();
     }
 
     public function getCodes($str)
@@ -420,24 +425,42 @@ class messages extends phpCore
         return str_replace('%%12now is34%%',$this->lang('NOW_IS'),$message);
     }
 
-    public function countMessages($id)
+    public function countMessages($id, $prj = false)
     {
-        if(!($o = parent::query(array('SELECT MAX("pid") AS cc FROM "posts" WHERE "to" = :id',array(':id' => $id)),db::FETCH_OBJ)))
-            return false;
-        return $o->cc === null ? 0 : $o->cc;
+        $table = ($prj ? 'groups_' : '').'posts';
+
+        if(!($o = parent::query(
+            [
+                'SELECT COALESCE( MAX("pid"), 0 ) AS cc FROM "'.$table.'" WHERE "to" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],db::FETCH_OBJ)))
+            return 0;
+
+        return $o->cc;
     }
 
-    public function getMessage($hpid,$edit = false)
+    public function getMessage($hpid,$prj = false)
     {
-        if(!($o = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-            return false;
-        if($edit)
-            $_SESSION['nerdz_editpid'] = $o->pid;
+        $table = ($prj ? 'groups_' : '').'posts';
+
+        if(!($o = parent::query(
+            [
+                'SELECT "hpid", "from", "to", "pid", "message", EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" = :hpid',
+                    [
+                        ':hpid' => $hpid
+                    ]
+            ],db::FETCH_OBJ))
+        )
+            return new StdClass();
+
         return $o;
     }
 
-    public function getMessages($id,$limit)
+    public function getMessages($id,$limit, $prj = false)
     {
+        $table = ($prj ? 'groups_' : '').'posts';
         $blist = parent::getBlacklist();
 
         if(empty($blist))
@@ -445,16 +468,26 @@ class messages extends phpCore
         else
         {
             $imp_blist = implode(',',$blist);
-            $glue = 'AND "posts"."from" NOT IN ('.$imp_blist.') AND "posts"."to" NOT IN ('.$imp_blist.')';
+            $glue = 'AND "from" NOT IN ('.$imp_blist.') ';
+            if(!$prj) {
+                $glue .= 'AND "posts"."to" NOT IN ('.$imp_blist.')';
+            }
         }
 
-        if(!($result = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,array(':id' => $id)),db::FETCH_STMT)))
-            return false;
-        return $this->getPostsArray($result,false);
+        if(!($result = parent::query(
+            [
+                'SELECT "hpid", "from", "to", "pid", "message", EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,
+                    [
+                        ':id' => $id
+                    ]
+            ],db::FETCH_STMT)))
+            return [];
+        return $this->getPostsArray($result, $prj, true);
     }
 
-    public function getNMessagesBeforeHpid($N,$hpid,$id)
+    public function getNMessagesBeforeHpid($N,$hpid,$id, $prj = false)
     {
+        $table = ($prj ? 'groups_' : '').'posts';
         $blist = parent::getBlacklist();
 
         if($N > 20 || $N <= 0) //massimo 20 posts, defaults
@@ -465,48 +498,105 @@ class messages extends phpCore
         else
         {
             $imp_blist = implode(',',$blist);
-            $glue = 'AND "posts"."from" NOT IN ('.$imp_blist.') AND "posts"."to" NOT IN ('.$imp_blist.')';
+            $glue = 'AND "from" NOT IN ('.$imp_blist.') ';
+            if(!$prj) {
+                $glue .= 'AND "to" NOT IN ('.$imp_blist.')';
+            }
         }
 
-        if(!($result = parent::query(array('SELECT "hpid", "from", "to", "pid", "message", "notify", EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "hpid" < :hpid AND "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,array(':id' => $id,':hpid' => $hpid)),db::FETCH_STMT)))
-            return false;
+        if(!($result = parent::query(
+            [
+                'SELECT "hpid", "from", "to", "pid", "message"  EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" < :hpid AND "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,
+                    [
+                        ':id' => $id,
+                        ':hpid' => $hpid
+                    ]
+             ],db::FETCH_STMT)))
+            return [];
 
-        return $this->getPostsArray($result,false);
+        return $this->getPostsArray($result, $prj, true);
     }
 
-    public function addMessage($to,$message)
+    public function addMessage($to,$message, $news = false, $prj = false)
     {
-        return parent::query(
+        $table = ($prj ? 'groups_' : '').'posts';
+
+        $retStr = parent::query(
             [
-                'INSERT INTO "posts" ("from","to","message") VALUES (:id,:to,:message)',
+                'INSERT INTO "'.$table.'" ("from","to","message", "news") VALUES (:id,:to,:message: news)',
                 [
                     ':id' => $_SESSION['nerdz_id'],
                     ':to' => $to,
-                    ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8')
+                    ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8'),
+                    ':news' => $news ? 'true' :'false'
                 ]
             ],db::FETCH_ERRSTR);
+
+        if($retStr != db::NO_ERRSTR)
+            return $retStr;
+
+        if($prj && $to == ISSUE_BOARD) {
+            require_once 'vendor/autoload.php';
+            $client = new \Github\Client();
+            $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
+            $client->api('issue')->create('nerdzeu','nerdz.eu',
+                [
+                    'title' => substr($message, 0, 128),
+                     'body'  => parent::getUserName().': '.$message
+                 ]
+             );
+        }
     }
 
-    public function deleteMessage($hpid)
+    public function deleteMessage($hpid, $prj = true)
     {
-        return (
-            ($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) &&
-            $this->canRemovePost(array('from' => $obj->from,'to' => $obj->to)) &&
-            db::NO_ERRNO == parent::query(array('DELETE FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_ERRNO) // triggers fix the rest
-          );
+        $table = ($prj ? 'groups_' : '').'posts';
+        $obj = new StdClass();
+
+        if(!($obj = parent::query(
+            [
+                'SELECT "from","to" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $hpid
+                ]
+            ],db::FETCH_OBJ)))
+            return 'ERROR';
+
+        return $this->canRemovePost([ 'from' => $obj->from, 'to' => $obj->to ], $prj) &&
+            db::NO_ERRNO == parent::query(
+                [
+                    'DELETE FROM "'.$table.'" WHERE "hpid" = :hpid',
+                    [
+                        ':hpid' => $hpid
+                    ]
+                ],db::FETCH_ERRNO);
     }
 
-    public function editMessage($hpid,$message)
+    public function editMessage($hpid,$message, $prj = false)
     {
-        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8'); //fixed empty entities
-        return !(
-            empty($message) ||
-            !($obj = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)) ||
-            !$this->canEditPost(array('from' => $obj->from, 'to' => $obj->to)) ||
-            empty($_SESSION['nerdz_editpid']) || $_SESSION['nerdz_editpid'] != $obj->pid ||
-            empty($message) ||
-            db::NO_ERRNO != parent::query(array('UPDATE "posts" SET "from" = :from, "to" = :to, "pid" = :pid, "message" = :message WHERE "hpid" = :hpid',array(':from' => $obj->from, ':to' => $obj->to, ':pid' => $obj->pid, ':message' => $message, ':hpid' => $hpid)),db::FETCH_ERRNO)
-          );
+        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8');
+        $table = ($prj ? 'groups_' : '').'posts';
+        $obj = new StdClass();
+
+        if(!($obj = parent::query(
+            [
+                'SELECT "from","to","pid" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $hpid
+                ]
+            ],db::FETCH_OBJ)) ||
+            !$this->canEditPost(['from' => $obj->from, 'to' => $obj->to], $prj)
+          )
+              return 'ERROR';
+
+        return parent::query(
+            [
+                'UPDATE "'.$table.'" SET "message" = :message WHERE "hpid" = :hpid',
+                [
+                    ':message' => $message,
+                    ':hpid'    => $hpid
+                ]
+            ],db::FETCH_ERRSTR);
     }
 
     public function getLatests($limit,$prj = null,$onlyfollowed = false,$lang = false)
@@ -598,55 +688,89 @@ class messages extends phpCore
         return $ret;
     }
 
-    public function canEditPost($post) 
-    {
-        if(parent::isLogged())
-            if(($_SESSION['nerdz_id'] == $post['to']) && ($_SESSION['nerdz_id'] == $post['from']))
-                return true;
-            else
-            {
-                if($_SESSION['nerdz_id'] == $post['from'])
-                    return true;
-                elseif($_SESSION['nerdz_id'] == $post['to'])
-                    return false;
-            }
-        return false;
-    }
-
-    public function canRemovePost($post)
-    {
-        return parent::isLogged() && (($_SESSION['nerdz_id'] == $post['to']) || ($_SESSION['nerdz_id'] == $post['from']));
-    }
-
-    public function canShowLockForPost($post)
+    public function canEditPost($post, $prj = false)
     {
         return parent::isLogged() && (
-                in_array($_SESSION['nerdz_id'],array($post['from'],$post['to'])) ||
-                parent::query(array('SELECT DISTINCT "from" FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+            $prj ? 
+            in_array($_SESSION['nerdz_id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
+            : $_SESSION['nerdz_id'] == $post['from']
+        );
+    }
+
+    public function canRemovePost($post, $prj = false)
+    {
+        return parent::isLogged() && (
+            $prj ?
+                in_array($_SESSION['nerdz_id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
+            : in_array($_SESSION['nerdz_id'], [ $post['to'], $post['from'] ] )
+        );
+    }
+
+    public function canShowLockForPost($post, $prj = false)
+    {
+        $table =  ($prj ? 'groups_' : '').'comments';
+        return parent::isLogged() && (
+            (
+                $prj
+                ? $_SESSION['nerdz_id'] == $post['from']
+                : in_array($_SESSION['nerdz_id'],array($post['from'],$post['to']))
+            ) ||
+            parent::query(
+                     [
+                         'SELECT DISTINCT "from" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
+                         [
+                             ':hpid' => $post['hpid'],
+                             ':id' => $_SESSION['nerdz_id']
+                         ]
+                     ], db::ROW_COUNT) > 0
             );
     }
 
-    public function hasLockedPost($post)
+    public function hasLockedPost($post, $prj = false)
     {
+        $table = ($prj ? 'groups_' : '').'posts_no_notify';
         return (
                 parent::isLogged() &&
-                parent::query(array('SELECT "hpid" FROM "posts_no_notify" WHERE "hpid" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+                parent::query(
+                    [
+                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :id',
+                        [
+                            ':hpid' => $post['hpid'],
+                            ':id'   => $_SESSION['nerdz_id']
+                        ]
+                    ],db::ROW_COUNT) > 0
                );
     }
 
-    public function hasLurkedPost($post)
+    public function hasLurkedPost($post, $prj = false)
     {
+        $table = ($prj ? 'groups_' : '').'lurkers';
         return (
                 parent::isLogged() &&
-                parent::query(array('SELECT "post" FROM "lurkers" WHERE "post" = :hpid AND "user" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+                parent::query(
+                    [
+                        'SELECT "post" FROM "'.$table.'" WHERE "post" = :hpid AND "user" = :id',
+                        [
+                            ':hpid' => $post['hpid'],
+                            ':id'   => $_SESSION['nerdz_id']
+                        ]
+                    ],db::ROW_COUNT) > 0
                );
     }
 
-    public function hasBookmarkedPost($post)
+    public function hasBookmarkedPost($post, $prj = false)
     {
+        $table = ($prj ? 'groups_' : '').'bookmarks';
         return (
                 parent::isLogged() &&
-                parent::query(array('SELECT "hpid" FROM "bookmarks" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $post['hpid'],':id' => $_SESSION['nerdz_id'])),db::ROW_COUNT) > 0
+                parent::query(
+                    [
+                        'SELECT "hpid" FROM "bookmarks" WHERE "hpid" = :hpid AND "from" = :id',
+                        [
+                            ':hpid' => $post['hpid'],
+                            ':id'   => $_SESSION['nerdz_id']
+                        ]
+                    ],db::ROW_COUNT) > 0
                );
     }
 
