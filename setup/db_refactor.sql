@@ -107,7 +107,7 @@ BEGIN;
 
     DROP FUNCTION before_insert_post() CASCADE;
 
-    CREATE FUNCTION before_insert_post() RETURNS TRIGGER AS $func$
+    CREATE FUNCTION post_control() RETURNS TRIGGER AS $func$
     BEGIN
         NEW.message = message_control(NEW.message);
         PERFORM flood_control('"posts"', NEW."from", NEW.message);
@@ -121,27 +121,24 @@ BEGIN;
             RAISE EXCEPTION 'CLOSED_PROFILE';
         END IF;
 
-        SELECT "pid" INTO NEW.pid FROM (
-            SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "posts"
-            WHERE "to" = NEW."to"
-            ORDER BY "hpid" DESC
-            FETCH FIRST ROW ONLY), 1 ) AS "pid"
-        ) AS T1;
 
-        SELECT "notify" INTO NEW."notify" FROM (
-            SELECT
-            (CASE
-                WHEN NEW."from" = NEW."to" THEN
-                    false
-                ELSE
-                    true
-            END) AS "notify"
-        ) AS T2;
+        IF TG_OP = 'UPDATE' THEN
+            SELECT NOW() INTO NEW.time;
+        ELSE -- no pid increment
+
+            SELECT "pid" INTO NEW.pid FROM (
+                SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "posts"
+                WHERE "to" = NEW."to"
+                ORDER BY "hpid" DESC
+                FETCH FIRST ROW ONLY), 1 ) AS "pid"
+            ) AS T1;
+
+        END IF;
         
         RETURN NEW;
     END $func$ LANGUAGE plpgsql;
 
-    CREATE TRIGGER before_insert_post BEFORE INSERT ON posts FOR EACH ROW EXECUTE PROCEDURE before_insert_post();
+    CREATE TRIGGER post_control BEFORE INSERT OR UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE post_control();
 
     CREATE FUNCTION before_insert_follow() RETURNS TRIGGER AS $$
     BEGIN
@@ -163,6 +160,7 @@ BEGIN;
 
     -- fix table layout and indexes
     ALTER TABLE profiles ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
+    ALTER TABLE posts ADD COLUMN "news" BOOLEAN NOT NULL DEFAULT FALSE;
     ALTER TABLE users ADD CONSTRAINT uniqueMail UNIQUE(email);
     ALTER TABLE users ADD CONSTRAINT uniqueUsername UNIQUE(username);
 
@@ -486,6 +484,21 @@ BEGIN;
 
  
     DROP FUNCTION before_delete_group() CASCADE; -- and trigger
+
+    --TODO: qui sotto
+    CREATE TABLE posts_notify(
+        "from" int8 not null references users(counter) on delete cascade.
+        "to" int8 not null references users(counter) on delete cascade,
+        "hpid" int8 not null references posts(hpid) on delete cascade,
+        time timestamp(0) WITH TIME ZONE NOT NULL,
+        primary key("from", "to", hpid)
+    );
+
+    alter table groups_notify RENAME TO groups_posts_notify;
+
+    alter table groups_posts_notify add column
+
+    --TODO: fino a qui. E soprattutto after insert on post, vedere come funziona e se esiste e se è fatto
 
     -- fix groups_posts
 
@@ -830,7 +843,9 @@ BEGIN;
         RETURN NEW;
     END $$;
 
-    CREATE OR REPLACE FUNCTION before_insert_groups_post() RETURNS trigger
+    DROP FUNCTION IF EXIST before_insert_groups_post() CASCADE;
+
+    CREATE OR REPLACE FUNCTION group_post_control() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
     DECLARE group_owner int8;
@@ -854,16 +869,21 @@ BEGIN;
             PERFORM blacklist_control(NEW."from", group_owner);
         END IF;
 
-        SELECT "pid" INTO NEW.pid FROM (
-            SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "groups_posts"
-            WHERE "to" = NEW."to"
-            ORDER BY "hpid" DESC
-            FETCH FIRST ROW ONLY), 1) AS "pid"
-        ) AS T1;
+        IF TG_OP = 'UPDATE' THEN
+            SELECT NOW() INTO NEW.time;
+        ELSE 
+            SELECT "pid" INTO NEW.pid FROM (
+                SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "groups_posts"
+                WHERE "to" = NEW."to"
+                ORDER BY "hpid" DESC
+                FETCH FIRST ROW ONLY), 1) AS "pid"
+            ) AS T1;
+        END IF;
 
         RETURN NEW;
     END $$;
 
+    CREATE TRIGGER before_insert_group_post BEFORE INSERT OR UPDATE ON groups_posts FOR EACH ROW EXECUTE group_post_control();
 
     CREATE OR REPLACE FUNCTION before_insert_on_groups_lurkers() RETURNS trigger
     LANGUAGE plpgsql
@@ -1177,15 +1197,5 @@ BEGIN;
     CREATE TRIGGER after_update_groups_post_message AFTER UPDATE ON groups_posts FOR EACH ROW
     WHEN ( NEW.message <> OLD.message )
     EXECUTE PROCEDURE save_groups_post_revision();
-
-    CREATE FUNCTION update_post_time() RETURNS TRIGGER AS $$
-    BEGIN
-        SELECT NOW() INTO NEW.time;
-        RETURN NEW;
-    END $$ LANGUAGE plpgsql;
-
-
-    CREATE TRIGGER before_update_post BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE update_post_time();
-    CREATE TRIGGER before_update_groups_post BEFORE UPDATE ON groups_posts FOR EACH ROW EXECUTE PROCEDURE update_post_time();
 
 COMMIT;
