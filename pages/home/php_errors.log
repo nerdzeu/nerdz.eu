@@ -1,0 +1,2 @@
+[13-Jun-2014 18:12:30 Europe/Rome] PHP Notice:  Undefined variable: messages in /srv/http/nerdz/pages/project/postlist.html.php on line 20
+[13-Jun-2014 18:12:30 Europe/Rome] PHP Fatal error:  Call to a member function getThumbs() on a non-object in /srv/http/nerdz/pages/project/postlist.html.php on line 20

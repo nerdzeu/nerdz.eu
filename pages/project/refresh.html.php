@@ -2,10 +2,12 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
 ob_start(array('phpCore','minifyHtml'));
 
-$core = new project();
+$core     = new phpCore();
+$messages = new messages();
 $comments = new comments();
 
 $gid = (isset($_POST['id']) && is_numeric($_POST['id'])) ? $_POST['id'] : false;
@@ -19,7 +21,7 @@ $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid
 
 $logged = $core->isLogged();
 
-$mess = $beforeHpid ? $core->getNMessagesBeforeHpid($limit,$beforeHpid,$gid) : $core->getProjectMessages($gid,$limit);
+$mess = $beforeHpid ? $messages->getNMessagesBeforeHpid($limit,$beforeHpid,$gid, true) : $messages->getMessages($gid,$limit, true);
 if(!$mess || (!$logged && $beforeHpid))
     die(); //empty so javascript client code stop making requests
 

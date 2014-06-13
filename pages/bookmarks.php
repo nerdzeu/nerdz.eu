@@ -57,7 +57,7 @@ else
              );
 
     $linkMethod = 'userLink';
-    $nameMethod = 'getUserName';
+    $nameMethod = 'getUsername';
 }
 
 $vals['list_a'] = array();

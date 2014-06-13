@@ -16,11 +16,11 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $_list = null;
         if (isset ($_POST['start']) && isset ($_POST['num']) &&
             is_numeric ($_POST['start']) && is_numeric ($_POST['num']))
-            $_list = $core->getProjectLastComments ($hpid, $_POST['num'], $_POST['start']);
+            $_list = $core->getLastComments ($hpid, $_POST['num'], $_POST['start'], true);
         else if (isset ($_POST['hcid']) && is_numeric ($_POST['hcid']))
-            $_list = $core->getProjectCommentsAfterHcid ($hpid, $_POST['hcid']);
+            $_list = $core->getCommentsAfterHcid ($hpid, $_POST['hcid'], true);
         else
-            $_list = $core->getProjectComments ($hpid);
+            $_list = $core->getComments ($hpid, true);
         $doShowForm = !isset ($_POST['hcid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']);
         if (empty ($_list) && !$doShowForm)
             die();
@@ -29,12 +29,12 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals['currentuserprofile_n'] = phpCore::userLink($_SESSION['nerdz_id']);
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
         $vals['currentusergravatar_n'] = (new gravatar())->getURL($_SESSION['nerdz_id']);
-        $vals['currentusername_n'] = $core->getUserName();
+        $vals['currentusername_n'] = $core->getUsername();
         $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/red_x.png';
         $vals['list_a'] = $_list;
         $vals['showform_b'] = $doShowForm;
         $vals['hpid_n'] = $hpid;
-        $vals['commentcount_n'] = $core->countProjectComments ($hpid);
+        $vals['commentcount_n'] = $core->countComments($hpid, true);
         $vals['needmorebtn_b'] = $doShowForm && $vals['commentcount_n'] > 10;
         $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20; 
         $core->getTPL()->assign($vals);

@@ -37,7 +37,7 @@ foreach ($headers['css'] as $var) {
 /* END STYLESHEETS */
 /* BEGIN JQUERY */
 ?>
-    <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <?php
 /* END JQUERY */
 foreach($headers['js'] as $var) {

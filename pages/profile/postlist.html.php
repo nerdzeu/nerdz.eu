@@ -9,9 +9,9 @@ $vals['count_n'] = $count = count($mess);
 $ret = array();
 for($i=0;$i<$count;++$i)
 {
-    if(!($from = $core->getUserName($mess[$i]['from'])))
+    if(!($from = $core->getUsername($mess[$i]['from'])))
         $from = '';
-    if(!($to = $core->getUserName($mess[$i]['to'])))
+    if(!($to = $core->getUsername($mess[$i]['to'])))
         $to =  '';
 
     $vals['news_b'] = $mess[$i]['news'];

@@ -130,10 +130,10 @@ class notify extends phpCore
         while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),db::FETCH_OBJ)))
         {
             $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = parent::getUserName($o->from);
+            $ret[$i]['from_user'] = parent::getUsername($o->from);
             $ret[$i]['to'] = $p->to;
-            $ret[$i]['to_user'] = parent::getUserName($p->to);
-            $ret[$i]['post_from_user'] = parent::getUserName($p->from);
+            $ret[$i]['to_user'] = parent::getUsername($p->to);
+            $ret[$i]['post_from_user'] = parent::getUsername($p->from);
             $ret[$i]['post_from'] = $p->from;
             $ret[$i]['pid'] = $p->pid;
             $ret[$i]['datetime'] = parent::getDateTime($o->time);
@@ -153,12 +153,12 @@ class notify extends phpCore
         $ret = array();
         $i = 0;
         $result = parent::query(array('SELECT "pid","hpid","from",EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "notify" = TRUE AND "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT);
-        $to = parent::getUserName($_SESSION['nerdz_id']);
+        $to = parent::getUsername($_SESSION['nerdz_id']);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
         {
             $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = parent::getUserName($o->from);
+            $ret[$i]['from_user'] = parent::getUsername($o->from);
             $ret[$i]['to'] = $_SESSION['nerdz_id'];
             $ret[$i]['to_user'] = $to;
             $ret[$i]['pid'] = $o->pid;
@@ -182,10 +182,10 @@ class notify extends phpCore
         while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),db::FETCH_OBJ)))
         {
             $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = parent::getUserName($o->from);
+            $ret[$i]['from_user'] = parent::getUsername($o->from);
             $ret[$i]['to'] = $p->to;
             $ret[$i]['to_project'] = parent::getProjectName($p->to);
-            $ret[$i]['post_from_user'] = parent::getUserName($p->from);
+            $ret[$i]['post_from_user'] = parent::getUsername($p->from);
             $ret[$i]['post_from'] = $p->from;
             $ret[$i]['pid'] = $p->pid;
             $ret[$i]['datetime'] = parent::getDateTime($o->time);
@@ -229,7 +229,7 @@ class notify extends phpCore
         {
             $ret[$i]['follow'] = true;
             $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = parent::getUserName($o->from);
+            $ret[$i]['from_user'] = parent::getUsername($o->from);
             $ret[$i]['datetime'] = parent::getDateTime($o->time);
             $ret[$i]['cmp'] = $o->time;
             ++$i;

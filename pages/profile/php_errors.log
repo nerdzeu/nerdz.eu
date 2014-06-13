@@ -1,0 +1,1 @@
+[13-Jun-2014 17:43:23 Europe/Rome] PHP Fatal error:  Call to undefined method project::bbcode() in /srv/http/nerdz/class/comments.class.php on line 43

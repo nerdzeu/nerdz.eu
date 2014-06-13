@@ -15,7 +15,7 @@ if(!apc_exists($path))
     while(($o = $res->fetch(PDO::FETCH_OBJ)))
     {
         $gc = $core->query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :from '.(!$mo ? $un_ti : ''),array(':from' => $o->from)),db::FETCH_OBJ);
-        $us = $core->getUserName($o->from);
+        $us = $core->getUsername($o->from);
         $n = $o->cc + $gc->cc;
         $rank[$us] = $n;
         $stupid = stuff::stupid($n);

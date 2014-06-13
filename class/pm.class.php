@@ -28,7 +28,7 @@ final class pm extends messages
 
                 $msg = json_encode(
                                    [ 
-                                     'messageFrom' => html_entity_decode($this->getUserName(), ENT_QUOTES, 'UTF-8'), 
+                                     'messageFrom' => html_entity_decode($this->getUsername(), ENT_QUOTES, 'UTF-8'), 
                                      'messageFromId' => $this->getUserId(),
                                      'messageBody' => substr(html_entity_decode($message, ENT_QUOTES, 'UTF-8'), 0, 2000)
                                    ]
@@ -64,7 +64,7 @@ final class pm extends messages
             $c = 0;
             while(($o = $rs->fetch(PDO::FETCH_OBJ)))
             {
-                $from = $this->getUserName($o->from);
+                $from = $this->getUsername($o->from);
                 $res[$c]['from4link_n'] = phpCore::userLink($from);
                 $res[$c]['from_n'] = $from;
                 $res[$c]['datetime_n'] = parent::getDateTime($o->lasttime);
@@ -97,7 +97,7 @@ final class pm extends messages
 
         if(($o = $res->fetch(PDO::FETCH_OBJ)))
         {
-            $from = $this->getUserName($fromid);
+            $from = $this->getUsername($fromid);
             $ret['from4link_n'] = phpCore::userLink($from);
             $ret['from_n'] = $from;
             $ret['datetime_n'] = parent::getDateTime($time);
@@ -107,7 +107,7 @@ final class pm extends messages
             $ret['read_b'] = $o->to_read;
             $ret['pmid_n'] = $pmid;
             $ret['timestamp_n'] = $time;
-            //$ret['realto_n'] = $fromid != $_SESSION['nerdz_id'] ? $from : $this->getUserName ($toid);
+            //$ret['realto_n'] = $fromid != $_SESSION['nerdz_id'] ? $from : $this->getUsername ($toid);
         }
         
         return $ret;

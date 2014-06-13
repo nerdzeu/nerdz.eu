@@ -1,8 +1,8 @@
 <?php
     ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
     
-    $core = new project();
+    $core = new messages();
     if(!$core->isLogged())
         die(header('Location: /'));
 

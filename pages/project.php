@@ -49,7 +49,7 @@ else
         $i = 0;
         foreach($mem as $uid)
         {
-            if(!($uname = $core->getUserName($uid)))
+            if(!($uname = $core->getUsername($uid)))
                 continue;
             $vals['members_a'][$i]['username_n'] = $uname;
             $vals['members_a'][$i]['username4link_n'] =  phpCore::userLink($uname);
@@ -65,7 +65,7 @@ else
         $i = 0;
         foreach($fol as $uid)
         {
-            if(!($uname = $core->getUserName($uid)))
+            if(!($uname = $core->getUsername($uid)))
                 continue;
             $vals['users_a'][$i]['username_n'] = $uname;
             $vals['users_a'][$i]['username4link_n'] = phpCore::userLink($uname);
@@ -76,9 +76,9 @@ else
         $vals['owner_n'] = $core->getUsername($info->owner);
         $vals['owner4link_n'] =  phpCore::userLink($vals['owner_n']);
 
-        $vals['description_n'] = $core->bbcode($info->description);
+        $vals['description_n'] = $messages->bbcode($info->description);
 
-        $vals['goal_n'] = $core->bbcode($info->goal);
+        $vals['goal_n'] = $messages->bbcode($info->goal);
 
         $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://www.nerdz.eu/' : $info->website;
 

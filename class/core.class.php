@@ -515,7 +515,7 @@ class phpCore
         return $o->email;
     }
 
-    public function getUserName($id=null)
+    public function getUsername($id=null)
     {
         if($this->isLogged() && (($id===null) || $id == $_SESSION['nerdz_id']))
             return $_SESSION['nerdz_username'];

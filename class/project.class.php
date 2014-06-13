@@ -9,6 +9,17 @@ class project extends phpCore
         parent::__construct();
     }
 
+    public function getMembersAndOwnerFromHpid($hpid)
+    {
+        if(!($info = parent::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+            return false;
+
+        $members = $this->getMembers($info->to);
+        $members[] = $this->getOwner($info->to);
+
+        return $members;
+    }
+
     public function getObject($gid)
     {
         return parent::query(

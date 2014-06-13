@@ -18,7 +18,7 @@ if(!$url || !phpCore::isValidURL($url))
 
 if($to)
 {
-    if(!$core->getUserName($to))
+    if(!$core->getUsername($to))
         die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
 }
 else

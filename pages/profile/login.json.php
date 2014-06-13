@@ -12,7 +12,7 @@ $pass = isset($_POST['password']) ? $_POST['password'] : false;
 if(!$user || !$pass)
     die($core->jsonResponse('error',$core->lang('INSERT_USER_PASS')));
 
-$user = is_numeric($user) ? $core->getUserName($user) : $user;
+$user = is_numeric($user) ? $core->getUsername($user) : $user;
 if(!$user)
     die($core->jsonResponse('error',$core->lang('WRONG_USER_OR_PASSWORD')));
 

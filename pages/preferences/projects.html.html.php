@@ -26,7 +26,7 @@ $vals['members_n'] = count($mem);
 $vals['members_a'] = array();
 
 foreach($mem as &$uid)
-    $uid = $core->getUserName($uid);
+    $uid = $core->getUsername($uid);
 
 $vals['members_a'] = $mem;
 

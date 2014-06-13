@@ -117,7 +117,7 @@ else
             $amigos = array();
             $c = 0;
             foreach($f as $val)
-                if(($name = $core->getUserName($val)))
+                if(($name = $core->getUsername($val)))
                 {
                     $amigos[$c]['username_n'] = $name;
                     $amigos[$c]['username4link_n'] = phpCore::userLink($name);

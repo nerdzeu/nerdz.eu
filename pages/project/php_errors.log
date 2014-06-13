@@ -1,0 +1,27 @@
+[13-Jun-2014 17:51:40 Europe/Rome] PHP Fatal error:  Call to undefined method project::getProjectMessages() in /srv/http/nerdz/pages/project/refresh.html.php on line 22
+[13-Jun-2014 17:53:08 Europe/Rome] PHP Fatal error:  Call to undefined method project::getProjectMessages() in /srv/http/nerdz/pages/project/refresh.html.php on line 22
+[13-Jun-2014 17:53:12 Europe/Rome] PHP Fatal error:  Call to undefined method project::getMessages() in /srv/http/nerdz/pages/project/refresh.html.php on line 22
+[13-Jun-2014 17:54:29 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 17:54:29 Europe/Rome] PHP Fatal error:  Call to undefined method phpCore::getThumbs() in /srv/http/nerdz/pages/project/postlist.html.php on line 20
+[13-Jun-2014 17:55:22 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 17:55:22 Europe/Rome] PHP Fatal error:  Call to undefined method phpCore::getThumbs() in /srv/http/nerdz/pages/project/postlist.html.php on line 20
+[13-Jun-2014 17:55:26 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 17:55:26 Europe/Rome] PHP Fatal error:  Call to undefined method phpCore::canRemovePost() in /srv/http/nerdz/pages/project/postlist.html.php on line 34
+[13-Jun-2014 17:56:07 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 17:56:07 Europe/Rome] PHP Fatal error:  Call to undefined method phpCore::canRemovePost() in /srv/http/nerdz/pages/project/postlist.html.php on line 34
+[13-Jun-2014 17:56:12 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 17:56:12 Europe/Rome] PHP Notice:  Undefined variable: messges in /srv/http/nerdz/pages/project/postlist.html.php on line 46
+[13-Jun-2014 17:56:12 Europe/Rome] PHP Fatal error:  Call to a member function hasBookmarkedPost() on a non-object in /srv/http/nerdz/pages/project/postlist.html.php on line 46
+[13-Jun-2014 17:56:24 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 17:58:18 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 18:02:52 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 18:03:14 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 18:03:16 Europe/Rome] PHP Fatal error:  Call to undefined method comments::getProjectLastComments() in /srv/http/nerdz/pages/project/comments.html.php on line 19
+[13-Jun-2014 18:04:22 Europe/Rome] PHP Fatal error:  Call to undefined method messages::getMembers() in /srv/http/nerdz/class/comments.class.php on line 19
+[13-Jun-2014 18:10:04 Europe/Rome] PHP Fatal error:  Call to private method project::getMembersAndOwnerFromHpid() from context 'comments' in /srv/http/nerdz/class/comments.class.php on line 23
+[13-Jun-2014 18:14:07 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 18:14:07 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 18:24:40 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 18:24:40 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 18:28:41 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678
+[13-Jun-2014 18:28:41 Europe/Rome] PHP Notice:  Undefined property: stdClass::$news in /srv/http/nerdz/class/messages.class.php on line 678

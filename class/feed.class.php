@@ -47,8 +47,8 @@ class feed extends project
 
     private function getProfileItem($post)
     {
-        $from = $this->xmlentity(parent::getUserName($post['from']));
-        $to = $this->xmlentity(parent::getUserName($post['to']));
+        $from = $this->xmlentity(parent::getUsername($post['from']));
+        $to = $this->xmlentity(parent::getUsername($post['to']));
 
         $url = $this->baseurl.parent::userLink($to).$post['pid'];
 
@@ -63,7 +63,7 @@ class feed extends project
 
     private function getProjectItem($post)
     {
-        $from = $this->xmlentity(parent::getUserName($post['from']));
+        $from = $this->xmlentity(parent::getUsername($post['from']));
         $to = $this->xmlentity(parent::getProjectName($post['to']));
 
         $url = $this->baseurl.parent::projectLink($to).$post['pid'];
@@ -123,7 +123,7 @@ class feed extends project
 
     public function getProfileFeed($id)
     {
-        if(!($us = parent::getUserName($id)))
+        if(!($us = parent::getUsername($id)))
             return $this->error('Invalid user ID');
 
         $urluser = phpCore::userLink($us);

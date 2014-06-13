@@ -2,10 +2,10 @@
 //necessita di $hpid e $draw SEMPRE
 //questa pagina viene sempre inclusa, quindi non necessita di ob_start e altri include che tanto fanno gli altri file (ma tanto usiamo require once che è meglio per star sicuri)
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 ob_start(array('phpCore','minifyHtml'));
 
-$core = new project();
+$core = new messages();
 $comments = new comments();
 
 if(
@@ -14,9 +14,9 @@ if(
   )
     die($core->lang('ERROR'));
 
-if(!($from = $core->getUserName($o->from)))
+if(!($from = $core->getUsername($o->from)))
     $from = '';
-if(!($to = $core->getUserName($o->to)))
+if(!($to = $core->getUsername($o->to)))
     $to =  '';
 
 $singlepostvals = array();

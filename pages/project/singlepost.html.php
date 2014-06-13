@@ -3,30 +3,32 @@
 //questa pagina viene sempre inclusa, quindi non necessita di ob_start e altri include che tanto fanno gli altri file (ma tanto usiamo require once che è meglio per star sicuri)
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 ob_start(array('phpCore','minifyHtml'));
 
 $core = new project();
 $comments = new comments();
+$messages = new messages();
 
 if(
     empty($hpid) ||
-    !($o = $core->getProjectMessage($hpid,$edit = false))
+    !($o = $messages->getMessage($hpid, true))
   )
     die($core->lang('ERROR'));
 
-if(!($from = $core->getUserName($o->from)))
+if(!($from = $core->getUsername($o->from)))
     $from = '';
 if(!($to = $core->getProjectName($o->to)))
     $to =  '';
-if(!($own = $core->getOwnerByGid($o->to)))
+if(!($own = $core->getOwner($o->to)))
     $own = 0;
 
 $members = $core->getMembers($o->to);
 
 $singlepostvals = array();
-$singlepostvals['thumbs_n'] = $core->getThumbs($hpid, true);
-$singlepostvals['revisions_n'] = $core->getRevisionsNumber($hpid, true);
-$singlepostvals['uthumb_n'] = $core->getUserThumb($hpid, true); 
+$singlepostvals['thumbs_n'] = $messages->getThumbs($hpid, true);
+$singlepostvals['revisions_n'] = $messages->getRevisionsNumber($hpid, true);
+$singlepostvals['uthumb_n'] = $messages->getUserThumb($hpid, true); 
 $singlepostvals['pid_n'] = $o->pid;
 $singlepostvals['from4link_n'] = phpCore::userLink($from);
 $singlepostvals['to4link_n'] = phpCore::projectLink($to);
@@ -37,19 +39,19 @@ $singlepostvals['to_n'] = $to;
 $singlepostvals['datetime_n'] = $core->getDateTime($o->time);
 $singlepostvals['cmp_n'] = $o->time;
 
-$singlepostvals['canremovepost_b'] = $core->canRemoveProjectPost((array)$o,$own);
-$singlepostvals['caneditpost_b'] = $core->canEditProjectPost((array)$o,$own,$members);
-$singlepostvals['canshowlock_b'] = $core->canShowLockForProjectPost((array)$o);
-$singlepostvals['lock_b'] = $core->hasLockedProjectPost((array)$o);
+$singlepostvals['canremovepost_b'] = $messages->canRemovePost((array)$o,$own, true);
+$singlepostvals['caneditpost_b'] = $messages->canEditPost((array)$o,$own,$members, true);
+$singlepostvals['canshowlock_b'] = $messages->canShowLockForPost((array)$o, true);
+$singlepostvals['lock_b'] = $messages->hasLockedPost((array)$o, true);
 
 $singlepostvals['canshowlurk_b'] = $core->isLogged() ? !$singlepostvals['canshowlock_b'] : false;
-$singlepostvals['lurk_b'] = $core->hasLurkedProjectPost((array)$o);
+$singlepostvals['lurk_b'] = $messages->hasLurkedPost((array)$o, true);
 
 $singlepostvals['canshowbookmark_b'] = $core->isLogged();
-$singlepostvals['bookmark_b'] = $core->hasBookmarkedProjectPost((array)$o);
+$singlepostvals['bookmark_b'] = $messages->hasBookmarkedPost((array)$o, true);
 
-$singlepostvals['message_n'] = in_array($o->from,$core->getBlacklist()) ? 'Blacklist' : $core->bbcode($o->message,true,'g',$singlepostvals['pid_n'],$singlepostvals['toid_n']);
-$singlepostvals['postcomments_n'] = $comments->countProjectComments($o->hpid);
+$singlepostvals['message_n'] = in_array($o->from,$core->getBlacklist()) ? 'Blacklist' : $messages->bbcode($o->message,true,'g',$singlepostvals['pid_n'],$singlepostvals['toid_n']);
+$singlepostvals['postcomments_n'] = $comments->countComments($o->hpid, true);
 $singlepostvals['hpid_n'] = $o->hpid;
 $singlepostvals['news_b'] = $o->news;
 

@@ -41,7 +41,7 @@ if($tot>0)
                 break;
             }
             $myarray[$i]['id_n'] = $l[$i];
-            $myarray[$i]['username_n'] = $core->getUserName($l[$i]);
+            $myarray[$i]['username_n'] = $core->getUsername($l[$i]);
             $myarray[$i]['username4link_n'] = phpCore::userLink($myarray[$i]['username_n']);
             $myarray[$i]['online_b'] = $core->isOnline($l[$i]);
             if($myarray[$i]['online_b'])

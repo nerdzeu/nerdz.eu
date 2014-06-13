@@ -2,24 +2,17 @@
 /*
  * Classe per la gestione dei commenti
  */
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 
-class comments extends project
+class comments extends messages
 {
+    private $project;
     public function __construct()
     {
         parent::__construct();
-    }
-
-    private function getProjectMembersAndOwnerFromHpid($hpid)
-    {
-        if(!($info = parent::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-            return false;
-
-        $members = parent::getMembers($info->to);
-        $members[] = parent::getOwnerByGid($info->to);
-
-        return $members;
+        $this->project = new project();
     }
 
     private function getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
@@ -27,7 +20,7 @@ class comments extends project
         $i = 0;
         $ret = array();
         if($prj)
-            $canremoveusers = $this->getProjectMembersAndOwnerFromHpid($hpid);
+            $canremoveusers = $this->project->getMembersAndOwnerFromHpid($hpid);
 
         while(($o = $res->fetch(PDO::FETCH_OBJ)))
         {
@@ -119,7 +112,7 @@ class comments extends project
 
         while(($o = $f->fetch(PDO::FETCH_OBJ)))
         {
-            $users[$o->from] = parent::getUserName($o->from);
+            $users[$o->from] = parent::getUsername($o->from);
             $gravurl[$o->from] = $grav->getURL($o->from);
             $nonot[] = $o->from;
         }
@@ -130,7 +123,7 @@ class comments extends project
         $luck = in_array($_SESSION['nerdz_id'],$nonot);
 
         while(($o = $ll->fetch(PDO::FETCH_OBJ)))
-            $lkd[$o->from] = parent::getUserName($o->from);
+            $lkd[$o->from] = parent::getUsername($o->from);
 
         $cg = $prj ? 'gc' : 'pc'; //per txt version code in commenti
 
@@ -154,9 +147,9 @@ class comments extends project
         $pattern = '#\[quote=([0-9]+)\|p\]#i';
         while(preg_match($pattern,$message) && (++$i < 11))
             $message = preg_replace_callback($pattern,function($m) {
-                    $username = comments::getUserNameFromProjectCid($m[1]);
+                    $username = comments::getUsernameFromCid($m[1], true);
                     return $username
-                           ? '[commentquote=[user]'.$username.'[/user]]'.comments::getProjectComment($m[1]).'[/commentquote]'
+                           ? '[commentquote=[user]'.$username.'[/user]]'.comments::getComment($m[1], true).'[/commentquote]'
                            : '';
                     },$message,1);
 
@@ -167,7 +160,7 @@ class comments extends project
         $pattern = '#\[quote=([0-9]+)\|u\]#i';
         while(preg_match($pattern,$message) && (++$i < 11))
             $message = preg_replace_callback($pattern,function($m) {
-                    $username = comments::getUserNameFromCid($m[1]);
+                    $username = comments::getUsernameFromCid($m[1]);
                     return $username
                             ? '[commentquote=[user]'.$username.'[/user]]'.comments::getComment($m[1]).'[/commentquote]'
                             : '';
@@ -229,40 +222,61 @@ class comments extends project
             ],db::FETCH_ERRSTR);
     }
 
-    public function getComment($hcid)
+    public function getComment($hcid, $prj = false)
     {
-        if(!($o = parent::query(array('SELECT "message" FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
+        $tbl = ($prj ? 'groups_' : '').'comments';
+
+        if(!($o = parent::query(
+                        [
+                            'SELECT "message" FROM "'.$table.'" WHERE "hcid" = :hcid',
+                            [
+                                ':hcid' => $hcid
+                            ]
+                        ],db::FETCH_OBJ))
+         )
             return '(null)';
         return $o->message;
     }
 
-    private function getUserNameFromProjectCid($hcid)
+    private function getUsernameFromCid($hcid, $prj = false)
     {
-        if(!($o = parent::query(array('SELECT "from" FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
-            return false;
-        return parent::getUserName($o->from);
+        $table = ($prj ? 'groups_' : '').'comments';
+        if(!($o = parent::query(array('SELECT "from" FROM "'.$table.'" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
+            return '';
+        return parent::getUsername($o->from);
     }
 
-    private function getUserNameFromCid($hcid)
+    public function getCommentsAfterHcid($hpid,$hcid, $prj = false)
     {
-        if(!($o = parent::query(array('SELECT "from" FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
-            return false;
-        return parent::getUserName($o->from);
-    }
-
-    public function getCommentsAfterHcid($hpid,$hcid)
-    {
-        if(!($o = parent::query(array('SELECT "to","pid","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+        $table = ($prj ? 'groups_' : '').'posts';
+        if(!($o = parent::query(
+                        [
+                            'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                            [
+                                ':hpid' => $hpid
+                            ]
+                        ],db::FETCH_OBJ))
+          )
             return false;
         
-        return $this->showControl($o->from,$o->to,$hpid,$o->pid,false,$hcid);
+        return $this->showControl($o->from,$o->to,$hpid,$o->pid,$prj,$hcid);
     }
 
-    public function getLastComments ($hpid, $num, $cycle = 0)
+    public function getLastComments ($hpid, $num, $cycle = 0, $prj = false)
     {
-        if($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 || !($o = parent::query(array('SELECT "to","pid","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
+        $table = ($prj ? 'groups_' : '').'posts';
+        if($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 ||
+                !($o = parent::query(
+                        [
+                            'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                            [
+                                ':hpid' => $hpid
+                            ]
+                        ],db::FETCH_OBJ)
+                 )
+          )
             return false;
-        return $this->showControl ($o->from, $o->to, $hpid, $o->pid, false, false, $num, $cycle * $num);
+        return $this->showControl ($o->from, $o->to, $hpid, $o->pid, $prj, false, $num, $cycle * $num);
     }
 
     public function delComment($hcid, $prj = false)
@@ -270,11 +284,11 @@ class comments extends project
         if($prj) {
             if(
                 !($o = parent::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)) ||
-                !($owner = parent::getOwnerByGid($o->to))
+                !($owner = parent::getOwner($o->to))
               )
                 return false;
 
-            $canremovecomment = array_merge($this->getProjectMembersAndOwnerFromHpid($o->hpid), (array) $o->from);
+            $canremovecomment = array_merge($this->project->getMembersAndOwnerFromHpid($o->hpid), (array) $o->from);
 
             if(in_array($_SESSION['nerdz_id'],$canremovecomment))
             {
@@ -322,25 +336,39 @@ class comments extends project
         return false;
     }
 
-    public function countComments($hpid)
+    public function countComments($hpid, $prj = false)
     {
+        $table = ($prj ? 'groups_' : '').'comments';
+
         if(parent::isLogged())
         {
-            if(!($o = parent::query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) AND "to" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?)',array($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
-                return false;
+            if(!($o = parent::query(
+                            [
+                                'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
+                                    SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
+                                $prj ? '' 
+                                : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)',
+                                [
+                                    ':hpid' => $hpid,
+                                    ':id'   => $_SESSION['nerdz_id']
+                                ]
+                            ],db::FETCH_OBJ))
+              )
+                return 0;
         }
-        else
-            if(!($o = parent::query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-                return false;
+        else {
+            if(!($o = parent::query(
+                            [
+                                'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
+                                [
+                                    ':hpid' => $hpid
+                                ]
+                            ],db::FETCH_OBJ))
+              )
+                return 0;
+        }
 
         return $o->cc;
-    }
-    
-    public function getProjectComment($hcid)
-    {
-        if(!($o = parent::query(array('SELECT "message" FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
-            return '(null)';
-        return $o->message;
     }
 
     private function appendComment($oldMsgObj,$parsedMessage, $prj = false)
@@ -353,34 +381,6 @@ class comments extends project
                         ':hcid' => $oldMsgObj->hcid
                     ]
                 ],db::FETCH_ERRSTR);
-    }
-
-    public function getProjectCommentsAfterHcid($hpid,$hcid)
-    {
-        if(!($o = parent::query(array('SELECT "to","from","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-            return false;
-        return $this->showControl($o->from,$o->to,$hpid,$o->pid,true,$hcid);
-    }
-
-    public function getProjectLastComments ($hpid, $num, $cycle = 0)
-    {
-        if ($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 || !($o = parent::query(array('SELECT "to","from","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-            return false;
-        return $this->showControl ($o->from, $o->to, $hpid, $o->pid, true, false, $num, $cycle * $num);
-    }
-
-    public function countProjectComments($hpid)
-    {
-        if(parent::isLogged())
-        {
-            if(!($o = parent::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?)',array($hpid,$_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_OBJ)))
-                return false;
-        }
-        else
-            if(!($o = parent::query(array('SELECT COUNT("hpid") AS cc FROM "groups_comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
-                return false;
-
-        return $o->cc;
     }
 
     public function getRevisionsNumber($hcid, $prj = false) {

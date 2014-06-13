@@ -1,9 +1,11 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 ob_start(array('phpCore','minifyHtml'));
 
-$core = new project();
+$core = new messages();
+$messages = new messages();
 
 $vals = array();
 if(!($vals['logged_b'] = $logged = $core->isLogged()))
@@ -47,9 +49,9 @@ $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid
 
 if(!(
         $mess = $beforeHpid !== false ? 
-        $core->getNLatestBeforeHpid($limit, $beforeHpid, $vals['projects_b'],$onlyfollowed,$lang)
+        $messsages->getNLatestBeforeHpid($limit, $beforeHpid, $vals['projects_b'],$onlyfollowed,$lang)
         :
-        $core->getLatests($limit, $vals['projects_b'],$onlyfollowed,$lang)
+        $messages->getLatests($limit, $vals['projects_b'],$onlyfollowed,$lang)
     )
   )
     die();

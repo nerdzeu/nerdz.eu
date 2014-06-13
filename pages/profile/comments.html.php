@@ -26,10 +26,10 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             die();
         $vals = array();
         
-        $vals['currentuserprofile_n'] = phpCore::userLink($core->getUserName());
+        $vals['currentuserprofile_n'] = phpCore::userLink($core->getUsername());
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
         $vals['currentusergravatar_n'] = (new gravatar())->getURL($core->getUserId());
-        $vals['currentusername_n'] = $core->getUserName();
+        $vals['currentusername_n'] = $core->getUsername();
         $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/red_x.png';
         $vals['list_a'] = $_list;
         $vals['showform_b'] = $doShowForm;

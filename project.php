@@ -1,8 +1,12 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-        
-    $core = new project();
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+     
+    $core = new phpCore();
+    $project = new project();
+    $messages = new messages();
     $tplcfg = $core->getTemplateCfg();
     
     $gid = isset($_GET['gid']) && is_numeric($_GET['gid']) ? $_GET['gid'] : false;
@@ -16,7 +20,7 @@
     $post->message = '';
     if($gid)
     {
-        if(false === ($info = $core->getProjectObject($gid)))
+        if(false === ($info = $project->getObject($gid)))
             $name = $core->lang('PROJECT_NOT_FOUND');
         else
         {
@@ -35,7 +39,7 @@
         $name = 'Create';
     ob_start(array('phpCore','minifyHtml'));
 
-    $a = explode(' ',$core->parseNewsMessage($core->stripTags(str_replace("\n",' ',$post->message))));
+    $a = explode(' ',$messages->parseNewsMessage($messages->stripTags(str_replace("\n",' ',$post->message))));
 
     $i = 25;
     while((isset($a[$i])))

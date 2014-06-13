@@ -38,7 +38,7 @@ $ret = $core->query(
 if($ret != db::NO_ERRSTR)
     die($core->jsonDbResponse($ret));
 
-if(!$core->login($core->getUserName(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['nerdz_mark_offline'], !$updatedPassword))
+if(!$core->login($core->getUsername(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['nerdz_mark_offline'], !$updatedPassword))
     die($core->jsonResponse('error',$core->lang('ERROR').': Login'));
 
 die($core->jsonResponse('error','OK'));
