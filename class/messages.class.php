@@ -447,7 +447,7 @@ class messages extends phpCore
 
         if(!($o = parent::query(
             [
-                'SELECT *, EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" = :hpid',
+                'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" = :hpid',
                     [
                         ':hpid' => $hpid
                     ]
@@ -458,7 +458,7 @@ class messages extends phpCore
         return $o;
     }
 
-    public function getMessages($id,$limit, $prj = false)
+    public function getMessages($id,$limit, $prj = false, $inHome = false)
     {
         $table = ($prj ? 'groups_' : '').'posts';
         $blist = parent::getBlacklist();
@@ -468,24 +468,24 @@ class messages extends phpCore
         else
         {
             $imp_blist = implode(',',$blist);
-            $glue = 'AND "from" NOT IN ('.$imp_blist.') ';
+            $glue = 'AND p."from" NOT IN ('.$imp_blist.') ';
             if(!$prj) {
-                $glue .= 'AND "posts"."to" NOT IN ('.$imp_blist.')';
+                $glue .= 'AND p."to" NOT IN ('.$imp_blist.')';
             }
         }
 
         if(!($result = parent::query(
             [
-                'SELECT "hpid", "from", "to", "pid", "message", EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,
+                'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,
                     [
                         ':id' => $id
                     ]
             ],db::FETCH_STMT)))
             return [];
-        return $this->getPostsArray($result, $prj);
+        return $this->getPostsArray($result, $prj, $inHome);
     }
 
-    public function getNMessagesBeforeHpid($N,$hpid,$id, $prj = false)
+    public function getNMessagesBeforeHpid($N,$hpid,$id, $prj = false, $inHome = false)
     {
         $table = ($prj ? 'groups_' : '').'posts';
         $blist = parent::getBlacklist();
@@ -498,15 +498,15 @@ class messages extends phpCore
         else
         {
             $imp_blist = implode(',',$blist);
-            $glue = 'AND "from" NOT IN ('.$imp_blist.') ';
+            $glue = 'AND p."from" NOT IN ('.$imp_blist.') ';
             if(!$prj) {
-                $glue .= 'AND "to" NOT IN ('.$imp_blist.')';
+                $glue .= 'AND p."to" NOT IN ('.$imp_blist.')';
             }
         }
 
         if(!($result = parent::query(
             [
-                'SELECT "hpid", "from", "to", "pid", "message", EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" < :hpid AND "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,
+                'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" < :hpid AND p."to" = :id '.$glue.' ORDER BY p."hpid" DESC LIMIT '.$N,
                     [
                         ':id' => $id,
                         ':hpid' => $hpid
@@ -514,7 +514,7 @@ class messages extends phpCore
              ],db::FETCH_STMT)))
             return [];
 
-        return $this->getPostsArray($result, $prj);
+        return $this->getPostsArray($result, $prj, $inHome);
     }
 
     public function addMessage($to,$message, $news = false, $prj = false)
@@ -600,7 +600,7 @@ class messages extends phpCore
             ],db::FETCH_ERRSTR);
     }
 
-    public function getLatests($limit,$prj = null,$onlyfollowed = false,$lang = false)
+    public function getLatests($limit,$prj = false, $onlyfollowed = false,$lang = false)
     {
         $ret = [];
         $blist = parent::getBlacklist();
@@ -630,10 +630,10 @@ class messages extends phpCore
         if(!($result = parent::query($q,db::FETCH_STMT)))
             return $ret;
 
-        return $this->getPostsArray($result,$prj);
+        return $this->getPostsArray($result,$prj, true);
     }
 
-    public function getNLatestBeforeHpid($N,$hpid,$prj = null,$onlyfollowed = false,$lang = false)
+    public function getNLatestBeforeHpid($N,$hpid,$prj = false,$onlyfollowed = false,$lang = false)
     {
         $ret = [];
         $blist = parent::getBlacklist();
@@ -679,16 +679,18 @@ class messages extends phpCore
         if(!($result = parent::query($q,db::FETCH_STMT)))
             return $ret;
 
-        return $this->getPostsArray($result,$prj);
+        return $this->getPostsArray($result,$prj, true);
     }
 
-    public function getPostsArray($result,$prj)
+    public function getPostsArray($result,$prj, $inHome = false)
     {
         $c=0;
         $ret = [];
         while(($row = $result->fetch(PDO::FETCH_OBJ)))
         {
-            $ret[$c]['news'] = $row->news || (!$prj && ($row->to == USERS_NEWS)) || ($prj && ($row->to == PROJECTS_NEWS));
+            $ret[$c]['news'] = $inHome ? 
+                (!$prj && ($row->to == USERS_NEWS)) || ($prj && ($row->to == PROJECTS_NEWS))
+                : $row->news;
             $ret[$c]['hpid'] = $row->hpid;
             $ret[$c]['from'] = $row->from;
             $ret[$c]['to'] = $row->to;

@@ -1,7 +1,8 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 
-class feed extends project
+class feed extends messages
 {
     private $ssl, $baseurl;
  
@@ -27,15 +28,10 @@ class feed extends project
 
     private function xmlentity($str)
     {
-        $str = html_entity_decode($str,ENT_QUOTES,'UTF-8');
-        return str_replace('<','&lt;',
-               str_replace('>','&gt;',
-               str_replace("'",'&apos;',
-               str_replace('"','&quot;',
-               str_replace('&','&amp;',$str)))));
+        return htmlspecialchars(html_entity_decode($str,ENT_QUOTES,'UTF-8'),ENT_QUOTES,'UTF-8');
     }
 
-    private function getValidFeedMessage($message) //40 "parole"
+    private function getValidFeedMessage($message) //40 words
     {
         $m = explode(' ',$message);
         $i = 40;

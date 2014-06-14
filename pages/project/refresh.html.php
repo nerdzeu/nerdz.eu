@@ -21,7 +21,7 @@ $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid
 
 $logged = $core->isLogged();
 
-$mess = $beforeHpid ? $messages->getNMessagesBeforeHpid($limit,$beforeHpid,$gid, true) : $messages->getMessages($gid,$limit, true);
+$mess = $beforeHpid ? $messages->getNMessagesBeforeHpid($limit,$beforeHpid,$gid, true, false) : $messages->getMessages($gid,$limit, true, false);
 if(!$mess || (!$logged && $beforeHpid))
     die(); //empty so javascript client code stop making requests
 
