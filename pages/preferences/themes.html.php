@@ -7,10 +7,10 @@ ob_start(array('phpCore','minifyHtml'));
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
     
-$vals = array();
+$vals = [];
 $vals['tok_n'] = $core->getCsrfToken('edit');
 
-$vals['themes_a'] = array();
+$vals['themes_a'] = [];
 $i = 0;
 $templates = $core->getAvailableTemplates();
 

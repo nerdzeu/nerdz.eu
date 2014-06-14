@@ -10,7 +10,7 @@ if(!$core->isLogged())
 if(!($obj = $core->query(array('SELECT * FROM "profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
     die($core->lang('ERROR'));
 
-$vals = array();
+$vals = [];
 $vals['interests_a'] = explode("\n",$obj->interests);
 foreach($vals['interests_a'] as &$val)
     $val = trim($val);

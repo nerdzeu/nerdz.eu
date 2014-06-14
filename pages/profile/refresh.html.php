@@ -27,7 +27,7 @@ $mess = $beforeHpid ? $core->getNMessagesBeforeHpid($limit,$beforeHpid,$id) : $c
 if(!$mess || (!$logged && $beforeHpid))
     die(); //empty so javascript client code stop making requests
 
-$vals = array();
+$vals = [];
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/postlist.html.php';
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('profile/postlist');

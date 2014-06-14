@@ -7,7 +7,7 @@ $core = new notify();
 
 if($core->isLogged())
 {
-    $e = $vals = array();
+    $e = $vals = [];
     $a = $core->show(null, !isset ($_POST['doNotDelete']));
     $y = count($a);
     $f = true;
@@ -62,7 +62,7 @@ if($core->isLogged())
     $raggr = 1; //set variable via POST to decide if we have to raggrupate notifys or not
     if($raggr)
     {
-        $x = $str = array();
+        $x = $str = [];
         $c = 0;
         
         for($i=0;$i<$y;++$i)

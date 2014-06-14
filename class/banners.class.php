@@ -9,7 +9,7 @@ final class banners
 
     public function __construct()
     {
-        $this->banners = array();
+        $this->banners = [];
         
         $cache = 'bannerarray'.SITE_HOST;
         if(apc_exists($cache))
@@ -31,7 +31,7 @@ final class banners
 
     public function getBanners($formato = null,$fornitore = null,$limit = 0)
     {
-        $ret = array();
+        $ret = [];
 
         if(is_string($formato))
         {

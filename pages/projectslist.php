@@ -20,7 +20,7 @@ switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 
 $order = isset($_GET['desc']) && $_GET['desc'] == 1 ? 'DESC' : 'ASC';
 
-$vals = array();
+$vals = [];
 
 $q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
 
@@ -33,7 +33,7 @@ else
             $orderbycounter ? array($q) : array("%{$q}%"));
 }
 
-$vals['list_a'] = array();
+$vals['list_a'] = [];
 
 if(($r = $core->query($query,db::FETCH_STMT)))
 {

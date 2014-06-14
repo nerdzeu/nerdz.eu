@@ -52,7 +52,7 @@ final class pm extends messages
                     UNION
                     (SELECT MAX("time") AS times, "to" as otherid, to_read FROM pms WHERE "from" = ? GROUP BY "to", to_read)
                 ) AS tmp
-                GROUP BY otherid, to_read ORDER BY "lasttime" DESC',
+                GROUP BY otherid, to_read ORDER BY to_read, "lasttime" DESC',
                 [
                     $_SESSION['nerdz_id'],
                     $_SESSION['nerdz_id']
@@ -60,7 +60,7 @@ final class pm extends messages
             ],db::FETCH_STMT)))
                 return false;
     
-            $times = $res = array();
+            $times = $res = [];
             $c = 0;
             while(($o = $rs->fetch(PDO::FETCH_OBJ)))
             {
@@ -87,7 +87,7 @@ final class pm extends messages
         
     public function read($fromid,$toid,$time,$pmid)
     {
-        $ret = array();
+        $ret = [];
             
         if(
                 !is_numeric($fromid) || !is_numeric($toid) || !is_numeric ($pmid) || !in_array($_SESSION['nerdz_id'],array($fromid,$toid)) ||
@@ -128,7 +128,7 @@ final class pm extends messages
     
     public function readConversation($from, $to, $afterPmId = null, $num = null, $start = 0)
     {
-        $ret = array();
+        $ret = [];
         
         if(!is_numeric($from) || !is_numeric($to) || (is_numeric ($num) && is_numeric ($start) && ($start < 0 || $start > 200 || $num < 0 || $num > 10)) /*|| !in_array($_SESSION['nerdz_id'],array($from,$to))*/)
             return $ret;

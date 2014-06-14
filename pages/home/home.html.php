@@ -7,7 +7,7 @@ ob_start(array('phpCore','minifyHtml'));
 $core = new messages();
 $messages = new messages();
 
-$vals = array();
+$vals = [];
 if(!($vals['logged_b'] = $logged = $core->isLogged()))
     die($core->lang('REGISTER'));
 
@@ -49,7 +49,7 @@ $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid
 
 if(!(
         $mess = $beforeHpid !== false ? 
-        $messsages->getNLatestBeforeHpid($limit, $beforeHpid, $vals['projects_b'],$onlyfollowed,$lang)
+        $messages->getNLatestBeforeHpid($limit, $beforeHpid, $vals['projects_b'],$onlyfollowed,$lang)
         :
         $messages->getLatests($limit, $vals['projects_b'],$onlyfollowed,$lang)
     )

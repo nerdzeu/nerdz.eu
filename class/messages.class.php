@@ -24,7 +24,7 @@ class messages extends phpCore
     public function getCodes($str)
     {
         $epos = $key = $i = $codecounter = 0;
-        $codes = $start = $end = $ret = array();
+        $codes = $start = $end = $ret = [];
         $ncod = 1;
 
         $zzz = strtolower($str);
@@ -447,7 +447,7 @@ class messages extends phpCore
 
         if(!($o = parent::query(
             [
-                'SELECT "hpid", "from", "to", "pid", "message", EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" = :hpid',
+                'SELECT *, EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" = :hpid',
                     [
                         ':hpid' => $hpid
                     ]
@@ -506,7 +506,7 @@ class messages extends phpCore
 
         if(!($result = parent::query(
             [
-                'SELECT "hpid", "from", "to", "pid", "message"  EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" < :hpid AND "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,
+                'SELECT "hpid", "from", "to", "pid", "message", EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" < :hpid AND "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$N,
                     [
                         ':id' => $id,
                         ':hpid' => $hpid
@@ -539,6 +539,7 @@ class messages extends phpCore
             require_once 'vendor/autoload.php';
             $client = new \Github\Client();
             $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
+            $message = $this->stripTags($message);
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
@@ -601,7 +602,7 @@ class messages extends phpCore
 
     public function getLatests($limit,$prj = null,$onlyfollowed = false,$lang = false)
     {
-        $ret = array();
+        $ret = [];
         $blist = parent::getBlacklist();
 
         if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
@@ -613,18 +614,18 @@ class messages extends phpCore
         {
             $followed = parent::getFollow($_SESSION['nerdz_id']);
             $followed[] = $_SESSION['nerdz_id'];
-            $glue = ($prj ? 'groups_posts.from' : 'posts.from').' IN ('.implode(',',$followed).')';
+            $glue = 'p."from" IN ('.implode(',',$followed).')';
         }
 
         if(!empty($blist))
         {
             $imp_blist = implode(',',$blist);
-            $glue.= ' AND '.($prj ? 'groups_posts.from' : 'posts.from')." NOT IN ({$imp_blist})".($prj ? '' : " AND posts.to NOT IN ({$imp_blist})");
+            $glue.= " AND p.\"from\" NOT IN ({$imp_blist})".($prj ? '' : " AND p.to NOT IN ({$imp_blist})");
         }
 
         $q = $prj ?
-        'SELECT groups.visible, groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND ("visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = groups_posts."to")) OR \''.$_SESSION['nerdz_id'].'\' = groups.owner ) ORDER BY groups_posts.hpid DESC LIMIT '.$limit :
-        'SELECT posts.hpid, posts.from, posts.to, posts.pid, posts.message, posts.notify, EXTRACT(EPOCH FROM posts.time) AS time,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE '.$glue.' ORDER BY posts.hpid DESC LIMIT '.$limit;
+        'SELECT g.visible, p.*, EXTRACT(EPOCH FROM p.time) AS time FROM "groups_posts" p INNER JOIN "groups" g ON p.to = g.counter INNER JOIN users u ON p."from" = u.counter WHERE '.$glue.' AND (g."visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = p."to")) OR \''.$_SESSION['nerdz_id'].'\' = g.owner ) ORDER BY p.hpid DESC LIMIT '.$limit :
+        'SELECT p.*, EXTRACT(EPOCH FROM p.time) AS time, u.lang FROM "posts" p INNER JOIN "users" u ON u.counter = p.to WHERE '.$glue.' ORDER BY p.hpid DESC LIMIT '.$limit;
 
         if(!($result = parent::query($q,db::FETCH_STMT)))
             return $ret;
@@ -634,7 +635,7 @@ class messages extends phpCore
 
     public function getNLatestBeforeHpid($N,$hpid,$prj = null,$onlyfollowed = false,$lang = false)
     {
-        $ret = array();
+        $ret = [];
         $blist = parent::getBlacklist();
         $glue = '';
 
@@ -650,18 +651,30 @@ class messages extends phpCore
         {
             $followed = parent::getFollow($_SESSION['nerdz_id']);
             $followed[] = $_SESSION['nerdz_id'];
-            $glue = ($prj ? 'groups_posts.from' : 'posts.from').' IN ('.implode(',',$followed).')';
+            $glue = 'p."from" IN ('.implode(',',$followed).')';
         }
 
         if(!empty($blist))
         {
             $imp_blist = implode(',',$blist);
-            $glue.= ' AND '.($prj ? 'groups_posts.from' : 'posts.from')." NOT IN ({$imp_blist})".($prj ? '' : " AND posts.to NOT IN ({$imp_blist})");
+            $glue.= " AND p.\"from\" NOT IN ({$imp_blist})".($prj ? '' : " AND p.to NOT IN ({$imp_blist})");
         }
 
         $q = $prj ?
-        array('SELECT groups.visible, groups_posts.hpid, groups_posts.from, groups_posts.to, groups_posts.pid, groups_posts.message, groups_posts.news, EXTRACT(EPOCH FROM groups_posts.time) AS time FROM "groups_posts" INNER JOIN "groups" ON groups_posts.to = groups.counter INNER JOIN users ON groups_posts."from" = users.counter WHERE '.$glue.' AND ("visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = groups_posts."to")) OR \''.$_SESSION['nerdz_id'].'\' = groups.owner ) AND "hpid" < :hpid ORDER BY groups_posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid)) :
-        array('SELECT posts.hpid, posts.from, posts.to, posts.pid, posts.message, posts.notify, EXTRACT(EPOCH FROM posts.time) AS time,users.lang FROM "posts" INNER JOIN "users" ON users.counter = posts.to WHERE '.(empty($glue) ? '' : "{$glue} AND ").' "hpid" < :hpid ORDER BY posts.hpid DESC LIMIT '.$N,array(':hpid' => $hpid));
+            [
+                'SELECT g.visible, p.*, EXTRACT(EPOCH FROM p.time) AS time FROM "groups_posts" p INNER JOIN "groups" g ON p.to = g.counter INNER JOIN users u ON p."from" = u.counter WHERE '.$glue.' AND (g."visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = p."to")) OR \''.$_SESSION['nerdz_id'].'\' = g.owner ) AND "hpid" < :hpid ORDER BY p.hpid DESC LIMIT '.$N,
+                     [
+                         ':hpid' => $hpid
+                     ]
+             ]
+             :
+             [
+                 'SELECT p.*, EXTRACT(EPOCH FROM p.time) AS time, u.lang FROM "posts" p INNER JOIN "users" u ON u.counter = p.to WHERE '.(empty($glue) ? '' : "{$glue} AND ").' "hpid" < :hpid ORDER BY p.hpid DESC LIMIT '.$N,
+                     [
+                         ':hpid' => $hpid
+                     ]
+             ]
+             ;
 
         if(!($result = parent::query($q,db::FETCH_STMT)))
             return $ret;
@@ -669,13 +682,13 @@ class messages extends phpCore
         return $this->getPostsArray($result,$prj);
     }
 
-    public function getPostsArray($result,$prj) /* In list is a parameter used for projects only. To disaplay news in project board, if posted as news */
+    public function getPostsArray($result,$prj)
     {
         $c=0;
-        $ret = array();
+        $ret = [];
         while(($row = $result->fetch(PDO::FETCH_OBJ)))
         {
-            $ret[$c]['news'] = (!$prj && ($row->from == USERS_NEWS)) || ($prj && ( $row->to == 1 /*hompage*/ || $row->news)); // per i progetti, le news sono nerdz
+            $ret[$c]['news'] = $row->news || (!$prj && ($row->to == USERS_NEWS)) || ($prj && ($row->to == PROJECTS_NEWS));
             $ret[$c]['hpid'] = $row->hpid;
             $ret[$c]['from'] = $row->from;
             $ret[$c]['to'] = $row->to;

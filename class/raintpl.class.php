@@ -96,7 +96,7 @@ final class RainTPL
      *
      * @var array
      */
-    public $var = array();
+    public $var = [];
 
     private $tpl = array(),        // variables to keep the template directories and info
             $cache = true;        // static cache enabled / disabled
@@ -516,7 +516,7 @@ final class RainTPL
              // reduce the path
             $path = preg_replace('/\w+\/\.\.\//', '', $this->base_url . self::$tpl_dir . $tpl_basedir );
 
-            $exp = $sub = array();
+            $exp = $sub = [];
             $tpld = str_replace($_SERVER['DOCUMENT_ROOT'],'',self::$tpl_dir);
 
             if( in_array( 'img', self::$path_replace_list ) )

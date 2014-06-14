@@ -25,7 +25,7 @@ $mess = $beforeHpid ? $messages->getNMessagesBeforeHpid($limit,$beforeHpid,$gid,
 if(!$mess || (!$logged && $beforeHpid))
     die(); //empty so javascript client code stop making requests
 
-$vals = array();
+$vals = [];
 //variable $mess is mandatory because the code below will work with that
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/postlist.html.php';
 $core->getTPL()->assign($vals);

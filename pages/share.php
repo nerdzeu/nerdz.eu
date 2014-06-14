@@ -1,4 +1,4 @@
 <?php
-$vals = array();
+$vals = [];
 $core->getTPL()->draw('base/share');
 ?>

@@ -19,7 +19,7 @@ if(!($from = $core->getUsername($o->from)))
 if(!($to = $core->getUsername($o->to)))
     $to =  '';
 
-$singlepostvals = array();
+$singlepostvals = [];
 $singlepostvals['revisions_n'] = $core->getRevisionsNumber($hpid);
 $singlepostvals['thumbs_n'] = $core->getThumbs($hpid);
 $singlepostvals['uthumb_n'] = $core->getUserThumb($hpid);

@@ -18,7 +18,7 @@ class comments extends messages
     private function getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
     {
         $i = 0;
-        $ret = array();
+        $ret = [];
         if($prj)
             $canremoveusers = $this->project->getMembersAndOwnerFromHpid($hpid);
 
@@ -78,7 +78,7 @@ class comments extends messages
     private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
         if(!$prj && in_array($to,parent::getBlacklist())) // se ho messo l'utente in blacklist, non mostro i commenti fatti ai suoi post
-            return array();
+            return [];
 
         $glue = $prj ? 'groups_' : '';
         // sorry for the bad indentation, but I'm not good at
@@ -102,7 +102,7 @@ class comments extends messages
           )
             return false;
         
-        $times = $gravurl = $users = $nonot = $lkd = $blist = $ret = array();
+        $times = $gravurl = $users = $nonot = $lkd = $blist = $ret = [];
         
         if (!$useLimitedQuery)
             $blist = $r->fetchAll(PDO::FETCH_COLUMN);
@@ -346,8 +346,10 @@ class comments extends messages
                             [
                                 'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
                                     SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
-                                $prj ? '' 
-                                : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)',
+                                    (
+                                        $prj ? ''
+                                        : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'
+                                    ),
                                 [
                                     ':hpid' => $hpid,
                                     ':id'   => $_SESSION['nerdz_id']

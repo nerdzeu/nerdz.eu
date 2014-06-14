@@ -485,20 +485,26 @@ BEGIN;
  
     DROP FUNCTION before_delete_group() CASCADE; -- and trigger
 
-    --TODO: qui sotto
     CREATE TABLE posts_notify(
-        "from" int8 not null references users(counter) on delete cascade.
+        "from" int8 not null references users(counter) on delete cascade,
         "to" int8 not null references users(counter) on delete cascade,
         "hpid" int8 not null references posts(hpid) on delete cascade,
         time timestamp(0) WITH TIME ZONE NOT NULL,
         primary key("from", "to", hpid)
     );
 
-    alter table groups_notify RENAME TO groups_posts_notify;
+    insert into posts_notify("from", "to", "hpid", "time")
+           select "from", "to", "hpid", "time" from posts where notify is true;
 
-    alter table groups_posts_notify add column
+    alter table posts drop column notify;
 
-    --TODO: fino a qui. E soprattutto after insert on post, vedere come funziona e se esiste e se è fatto
+    create function user_post() returns trigger as $$
+    begin
+        insert into posts_notify values(NEW."from", NEW."to", NEW."time");
+        return null;
+    end $$ language plpgsql;
+
+    create trigger after_insert_user_post after insert on posts for each row execute procedure user_post();
 
     -- fix groups_posts
 
@@ -843,7 +849,7 @@ BEGIN;
         RETURN NEW;
     END $$;
 
-    DROP FUNCTION IF EXIST before_insert_groups_post() CASCADE;
+    DROP FUNCTION IF EXISTS before_insert_groups_post() CASCADE;
 
     CREATE OR REPLACE FUNCTION group_post_control() RETURNS trigger
     LANGUAGE plpgsql
@@ -883,7 +889,7 @@ BEGIN;
         RETURN NEW;
     END $$;
 
-    CREATE TRIGGER before_insert_group_post BEFORE INSERT OR UPDATE ON groups_posts FOR EACH ROW EXECUTE group_post_control();
+    CREATE TRIGGER before_insert_group_post BEFORE INSERT OR UPDATE ON groups_posts FOR EACH ROW EXECUTE PROCEDURE group_post_control();
 
     CREATE OR REPLACE FUNCTION before_insert_on_groups_lurkers() RETURNS trigger
     LANGUAGE plpgsql
@@ -967,8 +973,8 @@ BEGIN;
             )
         )
 
-        INSERT INTO "groups_notify"("group", "to", "time") (
-            SELECT NEW."to", "user", NEW."time" FROM to_notify
+        INSERT INTO "groups_notify"("group", "to", "time", "hpid") (
+            SELECT NEW."to", "user", NEW."time", NEW."hpid" FROM to_notify
         );
 
         RETURN NULL;
@@ -977,7 +983,6 @@ BEGIN;
     CREATE TRIGGER after_insert_groups_post AFTER INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE after_insert_groups_post();
 
     -- comments fixes
-
     alter table comments add column editable boolean not null default true;
     alter table groups_comments add column editable boolean not null default true;
     

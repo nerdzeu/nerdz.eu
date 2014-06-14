@@ -7,11 +7,11 @@ ob_start(array('phpCore','minifyHtml'));
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
     
-$vals = array();
+$vals = [];
 $vals['tok_n'] = $core->getCsrfToken('edit');
 $longlangs  = $core->availableLanguages(1);
 
-$vals['langs_a'] = array();
+$vals['langs_a'] = [];
 $i = 0;
 foreach($longlangs as $id => $val)
 {

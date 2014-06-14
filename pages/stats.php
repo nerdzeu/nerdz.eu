@@ -1,8 +1,8 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/utils.class.php';
 $utils = new utils();
-$ret = array();
-$vals = array();
+$ret = [];
+$vals = [];
 
 $cache = 'nerdz_stats'.SITE_HOST;
 

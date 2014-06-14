@@ -3,7 +3,7 @@ if(!$core->isLogged())
     die(header('Location: /'));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';
-$vals = array();
+$vals = [];
 
 $banners = (new banners())->getBanners();
 $vals['banners_a'] = [];
@@ -15,7 +15,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
 $longlangs  = $core->availableLanguages(1);
 
-$vals['langs_a'] = array();
+$vals['langs_a'] = [];
 $i = 0;
 foreach($longlangs as $id => $val)
 {
@@ -31,7 +31,7 @@ if($tot>0)
 {
     if(!empty($l[0]))
     {
-        $myarray = array();
+        $myarray = [];
         $c = 0;
         for($i=0;$i<$tot;++$i)
         {
@@ -80,7 +80,7 @@ $vals['followedonlinetot_n'] = $c;
 if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
-$vals['ownerof_a'] = array();
+$vals['ownerof_a'] = [];
 $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
 {
@@ -92,7 +92,7 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
 if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
-$vals['memberof_a'] = array();
+$vals['memberof_a'] = [];
 $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
 {

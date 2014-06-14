@@ -32,7 +32,7 @@ switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 
 $order = isset($_GET['desc']) && $_GET['desc'] == 1 ? 'DESC' : 'ASC';
 
-$vals = array();
+$vals = [];
 
 $q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
 
@@ -42,7 +42,7 @@ $query = empty($q) ?
         "SELECT name,surname,username, counter, birth_date, EXTRACT(EPOCH FROM last) AS last FROM users ORDER BY {$orderby} {$order} LIMIT {$limit}" :
         array("SELECT name,surname,username, counter,birth_date,EXTRACT(EPOCH FROM last) AS last FROM users WHERE CAST({$orderby} AS TEXT) LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
 
-$vals['list_a'] = array();
+$vals['list_a'] = [];
 
 if(($r = $core->query($query,db::FETCH_STMT)))
 {

@@ -10,7 +10,7 @@ if(!$core->isLogged())
 if(!($obj = $core->query(array('SELECT * FROM "users" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
     die($core->lang('ERROR'));
     
-$vals = array();
+$vals = [];
 $vals['username_n'] = $obj->username;
 $vals['name_n'] = $obj->name;
 $vals['surname_n'] = $obj->surname;

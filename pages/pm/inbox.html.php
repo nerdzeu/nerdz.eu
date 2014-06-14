@@ -7,7 +7,7 @@ ob_start(array('phpCore','minifyHtml'));
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
 
-$vals = array();
+$vals = [];
 $vals['list_a'] = $core->getList();
 
 $core->getTPL()->assign($vals);

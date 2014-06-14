@@ -1,5 +1,5 @@
 <?php
-$vals = array();
+$vals = [];
 
 $vals['logged_b'] = $core->isLogged();
 if($vals['logged_b'])

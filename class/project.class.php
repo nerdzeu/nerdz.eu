@@ -88,7 +88,7 @@ class project extends phpCore
     public function getFollowers($gid)
     {
         if(!($stmt = parent::query(array('SELECT "user" FROM "groups_followers" WHERE "group" = :gid',array(':gid' => $gid)),db::FETCH_STMT)))
-            return array();
+            return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }

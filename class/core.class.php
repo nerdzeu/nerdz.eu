@@ -540,7 +540,7 @@ class phpCore
     {
         $root = $_SERVER['DOCUMENT_ROOT'].'/tpl/';
         $templates = array_diff(scandir($root), array('.','..','index.html'));
-        $ret = array();
+        $ret = [];
         $i = 0;
         foreach($templates as $val) {
             $ret[$i]['number'] = $val;

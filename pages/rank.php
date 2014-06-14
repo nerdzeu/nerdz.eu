@@ -9,7 +9,7 @@ $path = SITE_HOST. ($mo ? 'r_month.json' : 'rank.json');
 if(!apc_exists($path))
 {
     $res = $core->query('SELECT COUNT("hcid") AS cc,"from" FROM "comments" WHERE "from" <> '.DELETED_USERS.(!$mo ? $un_ti : '').' GROUP BY "from" ORDER BY cc DESC LIMIT 100',db::FETCH_STMT);
-    $rank = array();
+    $rank = [];
     
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/stuff.class.php';
     while(($o = $res->fetch(PDO::FETCH_OBJ)))
@@ -26,7 +26,7 @@ if(!apc_exists($path))
     $rank = array_reverse($rank,true);
 
     $i = 0;
-    $ret = array();
+    $ret = [];
     
     foreach($rank as $username => $val)
     {

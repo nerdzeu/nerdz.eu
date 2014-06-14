@@ -57,7 +57,7 @@ final class templateCfg
         else
         {
             if(!($txt = file_get_contents($templatepath)))
-                return array();
+                return [];
             // thanks for the following regexp to 1franck (http://là.pw/pb)
             $ret = json_decode (preg_replace ('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);
             if (!is_array ($ret))

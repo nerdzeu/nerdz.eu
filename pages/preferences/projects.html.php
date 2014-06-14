@@ -10,11 +10,11 @@ if(!$core->refererControl())
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
     
-$vals = array();
+$vals = [];
 $vals['tok_n'] = $core->getCsrfToken('edit');
 
 if(!($r = $core->query(array('SELECT "name","counter" FROM "groups" WHERE "owner" = ?',array($_SESSION['nerdz_id'])),db::FETCH_STMT)))
-    $vals['myprojects_a'] = array();
+    $vals['myprojects_a'] = [];
 else
 {
     $i = 0;

@@ -21,6 +21,32 @@ class db
         $this->dbh = new PDO('pgsql:host='.POSTGRESQL_HOST.';dbname='.POSTGRESQL_DATA_NAME.';port='.POSTGRESQL_PORT, POSTGRESQL_USER, POSTGRESQL_PASS);
         $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
         $this->dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+        // Fetch the IDs for special profiles/projects
+        $specialIds = null;
+        try
+        {
+            $stmt = $this->dbh->query('SELECT * FROM special_users');
+            $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        }
+        catch(PDOException $e) {
+            die($o->getTraceAsString());
+        }
+
+        define('USERS_NEWS', $specialIds['GLOBAL_NEWS']);
+        define('DELETED_USERS',$specialIds['DELETED']);
+
+        try
+        {
+            $stmt = $this->dbh->query('SELECT * FROM special_groups');
+            $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        }
+        catch(PDOException $e) {
+            die($o->getTraceAsString());
+        }
+
+        define('ISSUE_BOARD',$specialIds['ISSUE']);
+        define('PROJECTS_NEWS',$specialIds['GLOBAL_NEWS']);
     }
 
     private static function getInstance()

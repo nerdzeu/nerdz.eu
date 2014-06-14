@@ -59,7 +59,7 @@ class notify extends phpCore
 
     private function countPosts()
     {
-        if(!($o = parent::query(array('SELECT COUNT("hpid") AS cc FROM "posts" WHERE "notify" = TRUE AND "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT COUNT("hpid") AS cc FROM "posts_notify" WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
             return -1;
         
         return $o->cc;
@@ -93,7 +93,7 @@ class notify extends phpCore
 
     public function show($what = null,$del = true)
     {
-        $ret = array();
+        $ret = [];
         if(empty($what))
             $what = 'all';
             
@@ -123,7 +123,7 @@ class notify extends phpCore
 
     private function getUsers($del)
     {
-        $ret = array();
+        $ret = [];
         $i = 0;
         $result = parent::query(array('SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "comments_notify" WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT);
         
@@ -143,16 +143,23 @@ class notify extends phpCore
             ++$i;
         }
 
-        if($del && (db::NO_ERRNO != parent::query(array('DELETE FROM "comments_notify" WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO)))
-            return array();
+        if($del) {
+            parent::query(
+                [
+                    'DELETE FROM "comments_notify" WHERE "to" = :id',
+                    [
+                        ':id' => $_SESSION['nerdz_id']
+                    ]
+                ],db::NO_RETURN);
+        }
         return $ret;
     }
 
     private function getPosts($del)
     {
-        $ret = array();
+        $ret = [];
         $i = 0;
-        $result = parent::query(array('SELECT "pid","hpid","from",EXTRACT(EPOCH FROM "time") AS time FROM "posts" WHERE "notify" = TRUE AND "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT);
+        $result = parent::query(array('SELECT p."pid",n."hpid", n."from", EXTRACT(EPOCH FROM n."time") AS time FROM "posts_notify" n JOIN "posts" p ON p.hpid = n.hpid WHERE n."to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT);
         $to = parent::getUsername($_SESSION['nerdz_id']);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
@@ -166,16 +173,24 @@ class notify extends phpCore
             $ret[$i]['cmp'] = $o->time;
             $ret[$i]['board'] = true;
             $ret[$i]['project'] = false;
-            if($del && (db::NO_ERRNO != parent::query(array('UPDATE "posts" SET "notify" = FALSE WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),db::FETCH_ERRNO)))
-                return array();
             ++$i;
         }
+        if($del) {
+            parent::query(
+                [
+                    'DELETE FROM "posts_notify" WHERE "to" = :id',
+                    [
+                        ':id' => $_SESSION['nerdz_id']
+                    ]
+                ],db::NO_RETURN);
+        }
+
         return $ret;
     }
 
     private function getProjects($del)
     {
-        $ret = array();
+        $ret = [];
         $i = 0;
         $result = parent::query(array('SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments_notify" WHERE "to" = :id', array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT);
 
@@ -195,14 +210,21 @@ class notify extends phpCore
             ++$i;
         }
 
-        if($del && (db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "to" = :id', array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO)))
-            return array();
+        if($del) {
+            parent::query(
+                [
+                    'DELETE FROM "groups_comments_notify" WHERE "to" = :id',
+                    [
+                        ':id' => $_SESSION['nerdz_id']
+                    ]
+                ],db::NO_RETURN);
+        }
         return $ret;
     }
 
     private function getProjectsNews($del)
     {
-        $ret = array();
+        $ret = [];
         $i = 0;
         $result = parent::query(array('SELECT DISTINCT "group",EXTRACT(EPOCH FROM "time") AS time FROM "groups_notify" WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT);
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
@@ -215,14 +237,21 @@ class notify extends phpCore
             $ret[$i]['news'] = true;
             ++$i;
         }
-        if($del && (db::NO_ERRNO != parent::query(array('DELETE FROM "groups_notify" WHERE "to" = :id', array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO)))
-            return array();
+        if($del) {
+            parent::query(
+                [
+                    'DELETE FROM "groups_notify" WHERE "to" = :id',
+                    [
+                        ':id' => $_SESSION['nerdz_id']
+                    ]
+                ],db::NO_RETURN);
+        }
         return $ret;
     }
 
     private function getFollows($del)
     {
-        $ret = array();
+        $ret = [];
         $i = 0;
         $result = parent::query(array('SELECT "from",EXTRACT(EPOCH FROM "time") AS time FROM "follow" WHERE "to" = :id AND "notified" = TRUE',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT);
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
@@ -235,8 +264,15 @@ class notify extends phpCore
             ++$i;
         }
         
-        if($del && (db::NO_ERRNO != parent::query(array('UPDATE "follow" SET "notified" = FALSE WHERE "to" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO)))
-            return array();
+        if($del) {
+            parent::query(
+                [
+                    'UPDATE "follow" SET "notified" = FALSE WHERE "to" = :id',
+                    [
+                        ':id' => $_SESSION['nerdz_id']
+                    ]
+                ],db::NO_RETURN);
+        }
         return $ret;
     }
 
@@ -246,13 +282,18 @@ class notify extends phpCore
             return unserialize(apc_fetch($this->cachekey));
         else
         {
-            if(!($o = parent::query(array('SELECT "notify_story" FROM "users" WHERE "counter" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
-                return array();
+            if(!($o = parent::query(
+                [
+                    'SELECT "notify_story" FROM "users" WHERE "counter" = :id',
+                    [
+                        ':id' => $_SESSION['nerdz_id']
+                    ]
+                ],db::FETCH_OBJ))
+            )
+                return [];
         
             $ret = json_decode($o->notify_story,true);
-            //suppress warning because sometimes, acp_store raise a warning only to say how long the value spent n cache
-            //according to stackoverflow: [ http://stackoverflow.com/questions/6937528/apc-how-to-handle-gc-cache-warnings ] this can be safetly be ignored
-            @apc_store($this->cachekey,serialize($ret),300); //5 secondi
+            @apc_store($this->cachekey,serialize($ret),300);
             return $ret;
         }
     }
@@ -262,7 +303,15 @@ class notify extends phpCore
         $old = $this->story();
         if(empty($old))
         {
-            if(db::NO_ERRNO != parent::query(array('UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',array(':story' => json_encode($new,JSON_FORCE_OBJECT),':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+            if(db::NO_ERRNO != parent::query(
+                [
+                    'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
+                    [
+                        ':story' => json_encode($new,JSON_FORCE_OBJECT),
+                        ':id'    => $_SESSION['nerdz_id']
+                     ]
+                ],db::FETCH_ERRNO)
+            )
                 return false;
         }
         else
@@ -279,7 +328,15 @@ class notify extends phpCore
                 for($i=0, $c = count($new);$i<$c;++$i)
                     array_unshift($old,$new[$i]);
 
-            if(db::NO_ERRNO != parent::query(array('UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',array(':story' => json_encode($old,JSON_FORCE_OBJECT),':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+            if(db::NO_ERRNO != parent::query(
+                [
+                    'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
+                    [
+                        ':story' => json_encode($old,JSON_FORCE_OBJECT),
+                        ':id'    => $_SESSION['nerdz_id']
+                    ]
+                ],db::FETCH_ERRNO)
+            )
                 return false;
         }
         apc_delete($this->cachekey);

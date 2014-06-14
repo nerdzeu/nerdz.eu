@@ -21,7 +21,7 @@ $txt = trim(htmlspecialchars($_POST['q'],ENT_QUOTES,'UTF-8'));
 $blist = $core->getBlacklist();
 $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
-$vals = array();
+$vals = [];
 $group = false;
 $specific = isset($_GET['specific']);
 $query_param = array_merge(array(':like' => '%'.$txt.'%') ,$specific ? array(':to' => $_POST['id']) : array(), $beforeHpid ? array (':hpid' => $beforeHpid) : array());

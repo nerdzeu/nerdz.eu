@@ -13,7 +13,7 @@ if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
     
 $theme = isset($_POST['theme']) && is_string($_POST['theme']) ? trim($_POST['theme']) : '';
-$shorts = array();
+$shorts = [];
 $templates = $core->getAvailableTemplates();
 foreach($templates as $val) {
     $shorts[] = $val['number'];

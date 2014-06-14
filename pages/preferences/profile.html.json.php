@@ -103,7 +103,7 @@ if(isset($_POST['whitelist']))
     $oldlist = $core->getWhitelist($_SESSION['nerdz_id']);
 
     $m = array_filter(array_unique(explode("\n",$_POST['whitelist'])));
-    $newlist = array();
+    $newlist = [];
     foreach($m as $v)
     {
         $uid = $core->getUserId(trim($v));
@@ -116,7 +116,7 @@ if(isset($_POST['whitelist']))
         else
             die($core->jsonResponse('error',$core->lang('ERROR').': Invalid user - '.$v));
     }
-    $toremove = array();
+    $toremove = [];
     foreach($oldlist as $val)
         if(!in_array($val,$newlist))
             $toremove[] = $val;

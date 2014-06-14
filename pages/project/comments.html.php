@@ -24,7 +24,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $doShowForm = !isset ($_POST['hcid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']);
         if (empty ($_list) && !$doShowForm)
             die();
-        $vals = array();
+        $vals = [];
         
         $vals['currentuserprofile_n'] = phpCore::userLink($_SESSION['nerdz_id']);
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';

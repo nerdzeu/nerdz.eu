@@ -7,7 +7,7 @@ $comments = new comments();
 $project = new project();
 $vals['count_n'] = $count = count($mess);
 
-$members = $ret = array();
+$members = $ret = [];
 for($i=0;$i<$count;++$i)
 {
     if(!($from = $core->getUsername($mess[$i]['from'])))

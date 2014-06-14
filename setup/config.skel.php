@@ -73,12 +73,6 @@ $configuration = [
     // True if you want to enable Redis session sharing. Disable it
     // if you don't have predis or a Redis server. Enabled by default.
     'REDIS_ENABLED'          => true,
-    // IDs of special profiles/project.
-    // NERDZ will work if those IDs do not exist, until something
-    // which requires them is used. (like changing a nick, or deleting users)
-    'USERS_NEWS'             => 2,   // Used to show nick changes
-    'DELETED_USERS'          => 3,   // Contains the posts of deleted users
-    'ISSUE_BOARD'            => 106, // ID of the board used to report bugs
     // The key used to post issues to GitHub. Get it from your GitHub account.
     'ISSUE_GIT_KEY'          => '...',
     // True if you want to connect to pushed (http://git.io/hJ9-rg)

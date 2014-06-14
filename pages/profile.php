@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';//ok qui
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';//ok qui
 
-$vals = array();
+$vals = [];
 $vals['logged_b'] = $core->isLogged();
 $vals['id_n'] = $info->counter;
 
@@ -114,7 +114,7 @@ else
                 return (strtolower($a['username_n']) < strtolower($b['username_n'])) ? -1 : 1;
             }
 
-            $amigos = array();
+            $amigos = [];
             $c = 0;
             foreach($f as $val)
                 if(($name = $core->getUsername($val)))
@@ -127,14 +127,14 @@ else
             usort($amigos,'sortbyusername');
         }
         else
-            $amigos = array();
+            $amigos = [];
 
         $vals['gender_n'] = $core->lang($info->gender == 1 ? 'MALE' : 'FEMALE');
 
         $vals['biography_n'] = (new messages())->bbcode($info->biography,1);
         $vals['quotes_a'] = explode("\n",trim($info->quotes));
         if(count($vals['quotes_a']) == 1 && empty($vals['quotes_a'][0]))
-            $vals['quotes_a'] = array();
+            $vals['quotes_a'] = [];
         else
             foreach($vals['quotes_a'] as $qid => $val)
             {
@@ -145,7 +145,7 @@ else
                 
         $vals['interests_a'] = explode("\n",$info->interests);
         if(count($vals['interests_a']) == 1 && empty($vals['interests_a'][0]))
-            $vals['interests_a'] = array();
+            $vals['interests_a'] = [];
         else
             foreach($vals['interests_a'] as $qid => $val)
             {
@@ -157,7 +157,7 @@ else
         if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',$ida),db::FETCH_STMT)))
             die($core->lang('ERROR'));
             
-        $vals['ownerof_a'] = array();
+        $vals['ownerof_a'] = [];
         $i = 0;
         while(($o = $r->fetch(PDO::FETCH_OBJ)))
         {
@@ -169,7 +169,7 @@ else
         if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',$ida),db::FETCH_STMT)))
             die($core->lang('ERROR'));
             
-        $vals['memberof_a'] = array();
+        $vals['memberof_a'] = [];
         $i = 0;
         while(($o = $r->fetch(PDO::FETCH_OBJ)))
         {
@@ -181,7 +181,7 @@ else
         if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."group" WHERE "user" = :id',$ida),db::FETCH_STMT)))
             die($core->lang('ERROR'));
             
-        $vals['userof_a'] = array();
+        $vals['userof_a'] = [];
         $i = 0;
         while(($o =$r->fetch(PDO::FETCH_OBJ)))
         {

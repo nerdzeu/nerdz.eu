@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';//ok qui
 $core = new project();
 
-$vals = array();
+$vals = [];
 $enter = true;
 
 $vals['logged_b'] = $core->isLogged();
@@ -45,7 +45,7 @@ else
         $vals['name4link_n'] =  phpCore::projectLink($info->name);
 
         $vals['members_n'] = count($mem);
-        $vals['members_a'] = array();
+        $vals['members_a'] = [];
         $i = 0;
         foreach($mem as $uid)
         {
@@ -61,7 +61,7 @@ else
 
         $fol = $core->getFollowers($info->counter);
         $vals['users_n'] = count($fol);
-        $vals['users_a'] = array();
+        $vals['users_a'] = [];
         $i = 0;
         foreach($fol as $uid)
         {

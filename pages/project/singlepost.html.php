@@ -25,7 +25,7 @@ if(!($own = $core->getOwner($o->to)))
 
 $members = $core->getMembers($o->to);
 
-$singlepostvals = array();
+$singlepostvals = [];
 $singlepostvals['thumbs_n'] = $messages->getThumbs($hpid, true);
 $singlepostvals['revisions_n'] = $messages->getRevisionsNumber($hpid, true);
 $singlepostvals['uthumb_n'] = $messages->getUserThumb($hpid, true); 
@@ -40,7 +40,7 @@ $singlepostvals['datetime_n'] = $core->getDateTime($o->time);
 $singlepostvals['cmp_n'] = $o->time;
 
 $singlepostvals['canremovepost_b'] = $messages->canRemovePost((array)$o,$own, true);
-$singlepostvals['caneditpost_b'] = $messages->canEditPost((array)$o,$own,$members, true);
+$singlepostvals['caneditpost_b'] = $messages->canEditPost((array)$o, true);
 $singlepostvals['canshowlock_b'] = $messages->canShowLockForPost((array)$o, true);
 $singlepostvals['lock_b'] = $messages->hasLockedPost((array)$o, true);
 

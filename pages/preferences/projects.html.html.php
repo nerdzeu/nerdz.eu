@@ -9,7 +9,7 @@ $id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
 if(!$core->isLogged() || !$id || !($info = $core->getProjectObject($id)) || $info->owner != $_SESSION['nerdz_id'] )
     die($core->lang('ERROR'));
     
-$vals = array();
+$vals = [];
 
 function sortbyusername($a, $b)
 {
@@ -23,7 +23,7 @@ $vals['name_n'] = $info->name;
 $mem = $core->getMembers($info->counter);
 
 $vals['members_n'] = count($mem);
-$vals['members_a'] = array();
+$vals['members_a'] = [];
 
 foreach($mem as &$uid)
     $uid = $core->getUsername($uid);

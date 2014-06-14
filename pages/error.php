@@ -7,7 +7,7 @@ $errmsg[404] = 'Page not found';
 $errmsg[500] = 'Internal server error';
 $errmsg[501] = 'Not Implemented';
 $errmsg[502] = 'Bad Gateway';
-$vals = array();
+$vals = [];
 if($code)
 {
     if(isset($errmsg[$code]))

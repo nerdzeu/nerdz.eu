@@ -16,7 +16,7 @@ switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 
 $order = isset($_GET['asc']) && $_GET['asc'] == 1 ? 'ASC' : 'DESC';
 
-$vals = array();
+$vals = [];
 
 $vals['project_b'] = $prj;
 
@@ -60,7 +60,7 @@ else
     $nameMethod = 'getUsername';
 }
 
-$vals['list_a'] = array();
+$vals['list_a'] = [];
 
 if(($r = $core->query($query,db::FETCH_STMT)))
 {

@@ -6,7 +6,7 @@ $comments = new comments();
 
 $vals['count_n'] = $count = count($mess);
 
-$ret = array();
+$ret = [];
 for($i=0;$i<$count;++$i)
 {
     if(!($from = $core->getUsername($mess[$i]['from'])))
