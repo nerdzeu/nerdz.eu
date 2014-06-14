@@ -94,7 +94,7 @@ function N() /* THE FATHER of God (class/object/function)*/
         }
         else
         {
-            m = (117 - $obj.height()) / 2;
+            var m = (117 - $obj.height()) / 2;
             if (m > 1)
                 $obj.css ("margin-top", m);
         }
