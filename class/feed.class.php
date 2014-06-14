@@ -167,7 +167,7 @@ class feed extends messages
                 <description>'.$us.' NERDZ RSS</description>
                 <link>'.$this->baseurl.$urlprj.'</link>';
 
-        if(($m = parent::getProjectMessages($id,15)))
+        if(($m = parent::getMessages($id,15, true)))
             foreach($m as $post)
                 $xml .= $this->getProjectItem($post);
         else

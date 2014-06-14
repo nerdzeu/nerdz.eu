@@ -17,16 +17,15 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             die($core->jsonResponse('error',$core->lang('ERROR').'a'));
 
         die($core->jsonDbResponse(
-            $core->addProjectMessage(
+            $core->addMessage(
                 $_POST['to'],
                 isset($_POST['message']) ? $_POST['message'] : '',
-                isset($_POST['news'])
-            )
+                isset($_POST['news']), true)
         ));
     break;
     
     case 'del':
-        if(!isset($_SESSION['nerdz_delpost']) || empty($_POST['hpid']) || ($_SESSION['nerdz_delpost'] != $_POST['hpid']) || !$core->deleteProjectMessage($_POST['hpid']) )
+        if(!isset($_SESSION['nerdz_delpost']) || empty($_POST['hpid']) || ($_SESSION['nerdz_delpost'] != $_POST['hpid']) || !$core->deleteMessage($_POST['hpid'], true))
             die($core->jsonResponse('error',$core->lang('ERROR')));
         unset($_SESSION['nerdz_delpost']);
     break;
@@ -39,13 +38,16 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
     case 'get':
         if(
             empty($_POST['hpid']) ||
-            !($o = $core->getProjectMessage($_POST['hpid'],$edit = true))
+            !($o = $core->getMessage($_POST['hpid'], true))
           )
             die($core->jsonResponse('error',$core->lang('ERROR').'2'));
     break;
     
     case 'edit':
-        if(    empty($_POST['hpid']) || empty($_POST['message']) || !$core->editProjectMessage($_POST['hpid'],$_POST['message']) )
+        if(
+            empty($_POST['hpid']) || empty($_POST['message']) ||
+            !$core->editMessage($_POST['hpid'],$_POST['message'], true)
+          )
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
 

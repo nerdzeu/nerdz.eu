@@ -940,5 +940,58 @@ class messages extends phpCore
 
         return $ret == db::NO_ERRNO;
     }
+
+    public function getPostList($mess, $prj) {
+        require_once 'comments.class.php';
+        require_once 'project.class.php';
+        $comments = new comments();
+        $project = new project();
+
+        $count = count($mess);
+        $ret = [];
+        $logged = parent::isLogged();
+        $toFunc = 'get'.($prj ? 'ProjectName' : 'Username');
+        for($i=0;$i<$count;++$i)
+        {
+            if(!($from = parent::getUsername($mess[$i]['from'])))
+                $from = '';
+
+            if(!($to = parent::$toFunc($mess[$i]['to'])))
+                $to =  '';
+
+            $ret[$i]['thumbs_n'] = $this->getThumbs($mess[$i]['hpid'], $prj);
+            $ret[$i]['revisions_n'] = $this->getRevisionsNumber($mess[$i]['hpid'], $prj);
+            $ret[$i]['uthumb_n'] = $this->getUserThumb($mess[$i]['hpid'], $prj);
+            $ret[$i]['pid_n'] = $mess[$i]['pid'];
+            $ret[$i]['news_b'] = $mess[$i]['news'];
+            $ret[$i]['from4link_n'] = phpCore::userLink($from);
+            $ret[$i]['to4link_n'] = phpCore::projectLink($to);
+            $ret[$i]['fromid_n'] = $mess[$i]['from'];
+            $ret[$i]['toid_n'] = $mess[$i]['to'];
+            $ret[$i]['from_n'] = $from;
+            $ret[$i]['to_n'] = $to;
+            $ret[$i]['datetime_n'] = $mess[$i]['datetime'];
+            $ret[$i]['cmp_n'] = $mess[$i]['cmp'];
+
+            $ret[$i]['canremovepost_b'] = $this->canRemovePost($mess[$i], $prj);
+
+            $ret[$i]['caneditpost_b'] = $this->canEditPost($mess[$i], $prj);
+            $ret[$i]['canshowlock_b'] = $this->canShowLockForPost($mess[$i], $prj);
+            $ret[$i]['lock_b'] = $this->hasLockedPost($mess[$i], $prj);
+
+            $ret[$i]['canshowlurk_b'] = $logged ? !$ret[$i]['canshowlock_b'] : false;
+            $ret[$i]['lurk_b'] = $this->hasLurkedPost($mess[$i], $prj);
+            
+            $ret[$i]['canshowbookmark_b'] = $logged;
+            $ret[$i]['bookmark_b'] = $this->hasBookmarkedPost($mess[$i], $prj);
+
+            //miniature è settato quando è incluso da home
+            $ret[$i]['message_n'] = $this->bbcode($mess[$i]['message'],isset($miniature),$prj ? 'g' : 'u' ,$ret[$i]['pid_n'],$ret[$i]['toid_n']);
+            $ret[$i]['postcomments_n'] = $comments->countComments($mess[$i]['hpid'], $prj);
+            $ret[$i]['hpid_n'] = $mess[$i]['hpid'];
+        }
+
+        return $ret;
+    }
 }
 ?>
