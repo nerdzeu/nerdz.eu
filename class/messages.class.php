@@ -425,9 +425,9 @@ class messages extends phpCore
         return str_replace('%%12now is34%%',$this->lang('NOW_IS'),$message);
     }
 
-    public function countMessages($id, $prj = false)
+    public function countMessages($id, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'posts';
+        $table = ($project ? 'groups_' : '').'posts';
 
         if(!($o = parent::query(
             [
@@ -441,9 +441,9 @@ class messages extends phpCore
         return $o->cc;
     }
 
-    public function getMessage($hpid,$prj = false)
+    public function getMessage($hpid,$project = false)
     {
-        $table = ($prj ? 'groups_' : '').'posts';
+        $table = ($project ? 'groups_' : '').'posts';
 
         if(!($o = parent::query(
             [
@@ -458,68 +458,55 @@ class messages extends phpCore
         return $o;
     }
 
-    public function getMessages($id,$limit, $prj = false, $inHome = false)
+    public function getMessages($id,$limit, $options = [])
     {
-        $table = ($prj ? 'groups_' : '').'posts';
-        $blist = parent::getBlacklist();
+        extract($options);
+        $project      = !empty($project);
+        $inHome       = !empty($inHome);
+        $hpid         = !empty($hpid) ? $hpid : false;
+        $search       = !empty($search) ? $search : false;
 
+        if(!$id) {
+            $onlyfollowed = !empty($onlyFollowed);
+            $lang         = !empty($lang) ? $lang : false;
+            return $hpid 
+                ? $this->getNLatestBeforeHpid($limit, $hpid, $project, $onlyfollowed, $lang, $search)
+                : $this->getLatests($limit, $project, $onlyfollowed, $lang, $search); 
+        }
+
+        $table = ($project ? 'groups_' : '').'posts';
+        $blist = parent::getBlacklist();
         if(empty($blist))
             $glue = '';
         else
         {
             $imp_blist = implode(',',$blist);
             $glue = 'AND p."from" NOT IN ('.$imp_blist.') ';
-            if(!$prj) {
-                $glue .= 'AND p."to" NOT IN ('.$imp_blist.')';
+            if(!$project) {
+                $glue .= 'AND p."to" NOT IN ('.$imp_blist.') ';
             }
         }
 
-        if(!($result = parent::query(
-            [
-                'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE "to" = :id '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,
-                    [
-                        ':id' => $id
-                    ]
-            ],db::FETCH_STMT)))
-            return [];
-        return $this->getPostsArray($result, $prj, $inHome);
-    }
+        $glue .= $search ? ' AND p.message ILIKE :like' : '';
 
-    public function getNMessagesBeforeHpid($N,$hpid,$id, $prj = false, $inHome = false)
-    {
-        $table = ($prj ? 'groups_' : '').'posts';
-        $blist = parent::getBlacklist();
-
-        if($N > 20 || $N <= 0) //massimo 20 posts, defaults
-            $N = 20;
-
-        if(empty($blist))
-            $glue = '';
-        else
-        {
-            $imp_blist = implode(',',$blist);
-            $glue = 'AND p."from" NOT IN ('.$imp_blist.') ';
-            if(!$prj) {
-                $glue .= 'AND p."to" NOT IN ('.$imp_blist.')';
-            }
-        }
+        $query = 'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE "to" = :id '.$glue.' '.($hpid ? 'AND p."hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit;
+        $params = array_merge( [':id' => $id ],
+                $hpid   ? [ ':hpid' => $hpid ]        : [],
+                $search ? [ ':like' => '%'.$search.'%' ] : []);
 
         if(!($result = parent::query(
             [
-                'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" < :hpid AND p."to" = :id '.$glue.' ORDER BY p."hpid" DESC LIMIT '.$N,
-                    [
-                        ':id' => $id,
-                        ':hpid' => $hpid
-                    ]
-             ],db::FETCH_STMT)))
+                $query,
+                $params
+            ],db::FETCH_STMT))
+          )
             return [];
-
-        return $this->getPostsArray($result, $prj, $inHome);
+        return $this->getPostsArray($result, $project, $inHome);
     }
 
-    public function addMessage($to,$message, $news = false, $prj = false)
+    public function addMessage($to,$message, $news = false, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'posts';
+        $table = ($project ? 'groups_' : '').'posts';
 
         $retStr = parent::query(
             [
@@ -535,7 +522,7 @@ class messages extends phpCore
         if($retStr != db::NO_ERRSTR)
             return $retStr;
 
-        if($prj && $to == ISSUE_BOARD) {
+        if($project && $to == ISSUE_BOARD) {
             require_once 'vendor/autoload.php';
             $client = new \Github\Client();
             $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
@@ -549,9 +536,9 @@ class messages extends phpCore
         }
     }
 
-    public function deleteMessage($hpid, $prj = true)
+    public function deleteMessage($hpid, $project = true)
     {
-        $table = ($prj ? 'groups_' : '').'posts';
+        $table = ($project ? 'groups_' : '').'posts';
         $obj = new StdClass();
 
         if(!($obj = parent::query(
@@ -563,7 +550,7 @@ class messages extends phpCore
             ],db::FETCH_OBJ)))
             return 'ERROR';
 
-        return $this->canRemovePost([ 'from' => $obj->from, 'to' => $obj->to ], $prj) &&
+        return $this->canRemovePost([ 'from' => $obj->from, 'to' => $obj->to ], $project) &&
             db::NO_ERRNO == parent::query(
                 [
                     'DELETE FROM "'.$table.'" WHERE "hpid" = :hpid',
@@ -573,10 +560,10 @@ class messages extends phpCore
                 ],db::FETCH_ERRNO);
     }
 
-    public function editMessage($hpid,$message, $prj = false)
+    public function editMessage($hpid,$message, $project = false)
     {
         $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8');
-        $table = ($prj ? 'groups_' : '').'posts';
+        $table = ($project ? 'groups_' : '').'posts';
         $obj = new StdClass();
 
         if(!($obj = parent::query(
@@ -586,7 +573,7 @@ class messages extends phpCore
                     ':hpid' => $hpid
                 ]
             ],db::FETCH_OBJ)) ||
-            !$this->canEditPost(['from' => $obj->from, 'to' => $obj->to], $prj)
+            !$this->canEditPost(['from' => $obj->from, 'to' => $obj->to], $project)
           )
               return 'ERROR';
 
@@ -600,7 +587,7 @@ class messages extends phpCore
             ],db::FETCH_ERRSTR);
     }
 
-    public function getLatests($limit,$prj = false, $onlyfollowed = false,$lang = false)
+    private function getLatests($limit,$project = false, $onlyfollowed = false,$lang = false, $search = false)
     {
         $ret = [];
         $blist = parent::getBlacklist();
@@ -620,20 +607,35 @@ class messages extends phpCore
         if(!empty($blist))
         {
             $imp_blist = implode(',',$blist);
-            $glue.= " AND p.\"from\" NOT IN ({$imp_blist})".($prj ? '' : " AND p.to NOT IN ({$imp_blist})");
+            $glue.= " AND p.\"from\" NOT IN ({$imp_blist})".($project ? '' : " AND p.to NOT IN ({$imp_blist})");
         }
 
-        $q = $prj ?
-        'SELECT g.visible, p.*, EXTRACT(EPOCH FROM p.time) AS time FROM "groups_posts" p INNER JOIN "groups" g ON p.to = g.counter INNER JOIN users u ON p."from" = u.counter WHERE '.$glue.' AND (g."visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = p."to")) OR \''.$_SESSION['nerdz_id'].'\' = g.owner ) ORDER BY p.hpid DESC LIMIT '.$limit :
-        'SELECT p.*, EXTRACT(EPOCH FROM p.time) AS time, u.lang FROM "posts" p INNER JOIN "users" u ON u.counter = p.to WHERE '.$glue.' ORDER BY p.hpid DESC LIMIT '.$limit;
+        $params = [];
+
+        if($search) {
+            $glue .= ' AND p.message ILIKE :like';
+            $params = [ ':like' => $search ];
+        }
+
+        $q = $project
+        ?
+        [
+            'SELECT g.visible, p.*, EXTRACT(EPOCH FROM p.time) AS time FROM "groups_posts" p INNER JOIN "groups" g ON p.to = g.counter INNER JOIN users u ON p."from" = u.counter WHERE '.$glue.' AND (g."visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = p."to")) OR \''.$_SESSION['nerdz_id'].'\' = g.owner ) ORDER BY p.hpid DESC LIMIT '.$limit,
+           $params
+        ]
+        :
+        [
+            'SELECT p.*, EXTRACT(EPOCH FROM p.time) AS time, u.lang FROM "posts" p INNER JOIN "users" u ON u.counter = p.to WHERE '.$glue.' ORDER BY p.hpid DESC LIMIT '.$limit,
+            $params
+        ];
 
         if(!($result = parent::query($q,db::FETCH_STMT)))
             return $ret;
 
-        return $this->getPostsArray($result,$prj, true);
+        return $this->getPostsArray($result,$project, true);
     }
 
-    public function getNLatestBeforeHpid($N,$hpid,$prj = false,$onlyfollowed = false,$lang = false)
+    private function getNLatestBeforeHpid($N,$hpid,$project = false,$onlyfollowed = false,$lang = false, $search = false)
     {
         $ret = [];
         $blist = parent::getBlacklist();
@@ -657,39 +659,41 @@ class messages extends phpCore
         if(!empty($blist))
         {
             $imp_blist = implode(',',$blist);
-            $glue.= " AND p.\"from\" NOT IN ({$imp_blist})".($prj ? '' : " AND p.to NOT IN ({$imp_blist})");
+            $glue.= " AND p.\"from\" NOT IN ({$imp_blist})".($project ? '' : " AND p.to NOT IN ({$imp_blist})");
         }
 
-        $q = $prj ?
+        $params = [ ':hpid' => $hpid ];
+
+        if($search) {
+            $glue .= ' AND p.message ILIKE :like';
+            $params = array_merge($params, [ ':like' => $search ] );
+        }
+
+        $q = $project ?
             [
                 'SELECT g.visible, p.*, EXTRACT(EPOCH FROM p.time) AS time FROM "groups_posts" p INNER JOIN "groups" g ON p.to = g.counter INNER JOIN users u ON p."from" = u.counter WHERE '.$glue.' AND (g."visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = p."to")) OR \''.$_SESSION['nerdz_id'].'\' = g.owner ) AND "hpid" < :hpid ORDER BY p.hpid DESC LIMIT '.$N,
-                     [
-                         ':hpid' => $hpid
-                     ]
+                $params
              ]
              :
              [
                  'SELECT p.*, EXTRACT(EPOCH FROM p.time) AS time, u.lang FROM "posts" p INNER JOIN "users" u ON u.counter = p.to WHERE '.(empty($glue) ? '' : "{$glue} AND ").' "hpid" < :hpid ORDER BY p.hpid DESC LIMIT '.$N,
-                     [
-                         ':hpid' => $hpid
-                     ]
-             ]
-             ;
+                $params
+             ];
 
         if(!($result = parent::query($q,db::FETCH_STMT)))
             return $ret;
 
-        return $this->getPostsArray($result,$prj, true);
+        return $this->getPostsArray($result,$project, true);
     }
 
-    public function getPostsArray($result,$prj, $inHome = false)
+    public function getPostsArray($result,$project, $inHome = false)
     {
         $c=0;
         $ret = [];
         while(($row = $result->fetch(PDO::FETCH_OBJ)))
         {
             $ret[$c]['news'] = $inHome ? 
-                (!$prj && ($row->to == USERS_NEWS)) || ($prj && ($row->to == PROJECTS_NEWS))
+                (!$project && ($row->to == USERS_NEWS)) || ($project && ($row->to == PROJECTS_NEWS))
                 : $row->news;
             $ret[$c]['hpid'] = $row->hpid;
             $ret[$c]['from'] = $row->from;
@@ -703,30 +707,30 @@ class messages extends phpCore
         return $ret;
     }
 
-    public function canEditPost($post, $prj = false)
+    public function canEditPost($post, $project = false)
     {
         return parent::isLogged() && (
-            $prj ? 
+            $project ? 
             in_array($_SESSION['nerdz_id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
             : $_SESSION['nerdz_id'] == $post['from']
         );
     }
 
-    public function canRemovePost($post, $prj = false)
+    public function canRemovePost($post, $project = false)
     {
         return parent::isLogged() && (
-            $prj ?
+            $project ?
                 in_array($_SESSION['nerdz_id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
             : in_array($_SESSION['nerdz_id'], [ $post['to'], $post['from'] ] )
         );
     }
 
-    public function canShowLockForPost($post, $prj = false)
+    public function canShowLockForPost($post, $project = false)
     {
-        $table =  ($prj ? 'groups_' : '').'comments';
+        $table =  ($project ? 'groups_' : '').'comments';
         return parent::isLogged() && (
             (
-                $prj
+                $project
                 ? $_SESSION['nerdz_id'] == $post['from']
                 : in_array($_SESSION['nerdz_id'],array($post['from'],$post['to']))
             ) ||
@@ -741,9 +745,9 @@ class messages extends phpCore
             );
     }
 
-    public function hasLockedPost($post, $prj = false)
+    public function hasLockedPost($post, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'posts_no_notify';
+        $table = ($project ? 'groups_' : '').'posts_no_notify';
         return (
                 parent::isLogged() &&
                 parent::query(
@@ -757,9 +761,9 @@ class messages extends phpCore
                );
     }
 
-    public function hasLurkedPost($post, $prj = false)
+    public function hasLurkedPost($post, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'lurkers';
+        $table = ($project ? 'groups_' : '').'lurkers';
         return (
                 parent::isLogged() &&
                 parent::query(
@@ -773,9 +777,9 @@ class messages extends phpCore
                );
     }
 
-    public function hasBookmarkedPost($post, $prj = false)
+    public function hasBookmarkedPost($post, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'bookmarks';
+        $table = ($project ? 'groups_' : '').'bookmarks';
         return (
                 parent::isLogged() &&
                 parent::query(
@@ -843,8 +847,8 @@ class messages extends phpCore
                 str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))));
     } 
 
-    public function getThumbs($hpid, $prj = false) {
-        $table = ($prj ? 'groups_' : ''). 'thumbs';
+    public function getThumbs($hpid, $project = false) {
+        $table = ($project ? 'groups_' : ''). 'thumbs';
 
         $ret = parent::query(
             [
@@ -860,8 +864,8 @@ class messages extends phpCore
         return isset($ret->sum) ? $ret->sum : 0;
     }
 
-    public function getRevisionsNumber($hpid, $prj = false) {
-        $table = ($prj ? 'groups_' : ''). 'posts_revisions';
+    public function getRevisionsNumber($hpid, $project = false) {
+        $table = ($project ? 'groups_' : ''). 'posts_revisions';
 
         $ret = parent::query(
             [
@@ -877,8 +881,8 @@ class messages extends phpCore
         return isset($ret->rev_no) ? $ret->rev_no : 0;
     }
 
-    public function getRevision($hpid, $number,  $prj = false) {
-        $table = ($prj ? 'groups_' : ''). 'posts_revisions';
+    public function getRevision($hpid, $number,  $project = false) {
+        $table = ($project ? 'groups_' : ''). 'posts_revisions';
 
         return parent::query(
             [
@@ -894,11 +898,11 @@ class messages extends phpCore
         );
     }
 
-    public function getUserThumb($hpid, $prj = false) {
+    public function getUserThumb($hpid, $project = false) {
         if (!parent::isLogged()) {
           return 0;
         }
-        $table = $prj ? "groups_thumbs" : "thumbs";
+        $table = $project ? "groups_thumbs" : "thumbs";
 
         $ret = parent::query(
             [
@@ -919,12 +923,12 @@ class messages extends phpCore
         return 0;
     }
 
-    public function setThumbs($hpid, $vote, $prj = false) {
+    public function setThumbs($hpid, $vote, $project = false) {
         if (!parent::isLogged()) {
           return false;
         }
 
-        $table = $prj ? "groups_thumbs" : "thumbs";
+        $table = $project ? "groups_thumbs" : "thumbs";
 
         $ret = parent::query(
             [
@@ -941,7 +945,7 @@ class messages extends phpCore
         return $ret == db::NO_ERRNO;
     }
 
-    public function getPostList($mess, $prj) {
+    public function getPostList($mess, $project, $truncate = false) {
         require_once 'comments.class.php';
         require_once 'project.class.php';
         $comments = new comments();
@@ -950,7 +954,7 @@ class messages extends phpCore
         $count = count($mess);
         $ret = [];
         $logged = parent::isLogged();
-        $toFunc = 'get'.($prj ? 'ProjectName' : 'Username');
+        $toFunc = 'get'.($project ? 'ProjectName' : 'Username');
         for($i=0;$i<$count;++$i)
         {
             if(!($from = parent::getUsername($mess[$i]['from'])))
@@ -959,9 +963,9 @@ class messages extends phpCore
             if(!($to = parent::$toFunc($mess[$i]['to'])))
                 $to =  '';
 
-            $ret[$i]['thumbs_n'] = $this->getThumbs($mess[$i]['hpid'], $prj);
-            $ret[$i]['revisions_n'] = $this->getRevisionsNumber($mess[$i]['hpid'], $prj);
-            $ret[$i]['uthumb_n'] = $this->getUserThumb($mess[$i]['hpid'], $prj);
+            $ret[$i]['thumbs_n'] = $this->getThumbs($mess[$i]['hpid'], $project);
+            $ret[$i]['revisions_n'] = $this->getRevisionsNumber($mess[$i]['hpid'], $project);
+            $ret[$i]['uthumb_n'] = $this->getUserThumb($mess[$i]['hpid'], $project);
             $ret[$i]['pid_n'] = $mess[$i]['pid'];
             $ret[$i]['news_b'] = $mess[$i]['news'];
             $ret[$i]['from4link_n'] = phpCore::userLink($from);
@@ -973,21 +977,20 @@ class messages extends phpCore
             $ret[$i]['datetime_n'] = $mess[$i]['datetime'];
             $ret[$i]['cmp_n'] = $mess[$i]['cmp'];
 
-            $ret[$i]['canremovepost_b'] = $this->canRemovePost($mess[$i], $prj);
+            $ret[$i]['canremovepost_b'] = $this->canRemovePost($mess[$i], $project);
 
-            $ret[$i]['caneditpost_b'] = $this->canEditPost($mess[$i], $prj);
-            $ret[$i]['canshowlock_b'] = $this->canShowLockForPost($mess[$i], $prj);
-            $ret[$i]['lock_b'] = $this->hasLockedPost($mess[$i], $prj);
+            $ret[$i]['caneditpost_b'] = $this->canEditPost($mess[$i], $project);
+            $ret[$i]['canshowlock_b'] = $this->canShowLockForPost($mess[$i], $project);
+            $ret[$i]['lock_b'] = $this->hasLockedPost($mess[$i], $project);
 
             $ret[$i]['canshowlurk_b'] = $logged ? !$ret[$i]['canshowlock_b'] : false;
-            $ret[$i]['lurk_b'] = $this->hasLurkedPost($mess[$i], $prj);
+            $ret[$i]['lurk_b'] = $this->hasLurkedPost($mess[$i], $project);
             
             $ret[$i]['canshowbookmark_b'] = $logged;
-            $ret[$i]['bookmark_b'] = $this->hasBookmarkedPost($mess[$i], $prj);
+            $ret[$i]['bookmark_b'] = $this->hasBookmarkedPost($mess[$i], $project);
 
-            //miniature è settato quando è incluso da home
-            $ret[$i]['message_n'] = $this->bbcode($mess[$i]['message'],isset($miniature),$prj ? 'g' : 'u' ,$ret[$i]['pid_n'],$ret[$i]['toid_n']);
-            $ret[$i]['postcomments_n'] = $comments->countComments($mess[$i]['hpid'], $prj);
+            $ret[$i]['message_n'] = $this->bbcode($mess[$i]['message'],$truncate, $project ? 'g' : 'u' ,$ret[$i]['pid_n'],$ret[$i]['toid_n']);
+            $ret[$i]['postcomments_n'] = $comments->countComments($mess[$i]['hpid'], $project);
             $ret[$i]['hpid_n'] = $mess[$i]['hpid'];
         }
 

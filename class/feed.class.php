@@ -86,7 +86,7 @@ class feed extends messages
                 <description>Homepage [Users] - NERDZ RSS</description>
                 <link>'.$this->baseurl.'/home.php</link>';
 
-        if(($m = parent::getLatests(15)))
+        if(($m = parent::getMessages(null, 15)))
             foreach($m as $post)
                 $xml.= $this->getProfileItem($post);
         else
@@ -108,7 +108,7 @@ class feed extends messages
                 <description>Homepage [Projects] - NERDZ RSS</description>
                 <link>'.$this->baseurl.'/home.php?project=1</link>';
 
-        if(($m = parent::getLatests(15,true)))
+        if(($m = parent::getMessages(null, 15, [ 'project' => true ] )))
             foreach($m as $post)
                 $xml.= $this->getProjectItem($post);
         else
