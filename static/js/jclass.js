@@ -14,86 +14,90 @@ function N() /* THE FATHER of God (class/object/function)*/
             v.attr("src","/static/images/captcha.php?a"+Math.random()+'b');
     };
     
-    this.yt = function(a,vid)
+    this.yt = function(a, vid)
     {
-        a.removeClass("yt_frame");
+        a.removeClass ("yt_frame");
         var iframe;
-        switch(a.data("host")) {
-          case "youtube":
-            iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe>';
+        switch (a.data ("host"))
+        {
+            case "youtube":
+                iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe>';
             break;
-          case "vimeo":
-            iframe = '<iframe style="margin: auto" src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+            case "vimeo":
+                iframe = '<iframe style="margin: auto" src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             break;
-          case "dailymotion":
-            iframe = '<iframe style="margin: auto" frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
+            case "dailymotion":
+                iframe = '<iframe style="margin: auto" frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
             break;
-          case "facebook":
-            iframe = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='+vid+'" width="540" height="420" frameborder="0"></iframe>';
-            break;
-          default:
+            case "facebook":
+                iframe = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='+vid+'" width="540" height="420" frameborder="0"></iframe>';
             break;
         }
-        a.html('<div style="width:100%; text-align:center"><br />'+iframe+'</div>');
-        a.css('cursor','default');
+        a.html ('<div style="width:100%; text-align:center"><br />'+iframe+'</div>');
+        a.css ('cursor','default');
     };
     
     this.vimeoThumbnail = function(img) {
-        var video_id = $(img).parent().data("vid");
-        $.ajax({
-            type:'GET',
-            url: 'https://vimeo.com/api/v2/video/' + video_id + '.json',
-            jsonp: 'callback',
-            dataType: 'jsonp',
-            success: function(data){
+        var video_id = $(img).parent().data ("vid");
+        $.ajax ({
+            type:     "GET",
+            url:      "https://vimeo.com/api/v2/video/" + video_id + ".json",
+            jsonp:    "callback",
+            dataType: "jsonp",
+            success:  function (data) {
                 img.src = data[0].thumbnail_large;
             }
         });
     };
     
-    this.loadTweet = function(img) {
-      var id = $(img).data("id");
-      $.ajax({
-        type: "GET",
-        url: "/twitter_embed.php?twit="+id,
-        dataType: 'json',
-        success: function(json) {
-          if(json.errors) {
-            img.src = "/static/images/twitter_fail.png";
-            img.title = json.errors[0].message;
-            img.onload = '';
-            return false;
-          }
-          var div = $("<div/>").html(json.html);
-          div.find("script").remove();
-          div.insertBefore($(img));
-          $(img).remove();
-          if(!window.__twttrlr) {
-            var script = document.createElement( 'script' );
-            script.type = 'application/javascript';
-            script.src = "https://platform.twitter.com/widgets.js";
-            document.body.appendChild(script);
-          }
-          else
-            twttr.widgets.load();
-        }
-      });
+    this.loadTweet = function (img) {
+        var $img = $(img), id = $img.data("id");
+        $.ajax ({
+            type:     "GET",
+            url:      "/twitter_embed.php?twit=" + id,
+            dataType: "json",
+            success:  function (json) {
+                if (json.errors)
+                {
+                    $img.attr ({
+                        src:   "/static/images/twitter_fail.png",
+                        title: json.errors[0].message
+                    });
+                    img.onload = null;
+                    return false;
+                }
+                var $div = $(document.createElement ("div")).html (json.html);
+                $div.find ("script").remove();
+                $div.insertBefore ($img);
+                $img.remove();
+                if (!window.__twttrlr)
+                    $(document.createElement ("script")).attr ({
+                        type: "application/javascript",
+                        src:  "https://platform.twitter.com/widgets.js"
+                    }).appendTo ("body");
+                else
+                    twttr.widgets.load();
+            }
+        });
     };
     
-    this.imgErr = function(obj) {
-      $(obj).attr("src","/static/images/onErrorImg.php"); 
+    this.imgErr = function (obj) {
+        $(obj).attr ("src", "/static/images/onErrorImg.php"); 
     };
     
     this.imgLoad = function(obj) {
-      src = obj.src;
-      if(/onErrorImg\.php/i.test(src)) {
-        $(obj).prev().remove();
-        p = $(obj).parent().removeClass().removeAttr("onclick");
-      } else {
-        m = (117-$(obj).height())/2;
-        if (m>1)
-          $(obj).css("margin-top", m);
-      }
+        var $obj = $(obj);
+        if (/onErrorImg\.php/i.test ($obj.attr ("src")))
+        {
+            $obj.prev().remove();
+            $obj.parent().removeClass()[0].onclick = null;
+        }
+        else
+        {
+            var m = (117 - $obj.height()) / 2;
+            if (m > 1)
+                $obj.css ("margin-top", m);
+        }
     };
 
     /**
@@ -114,6 +118,14 @@ function N() /* THE FATHER of God (class/object/function)*/
         if (typeof window.Nstatic === 'object' && typeof window.Nstatic.lang === 'object')
             return this.getStaticData().lang;
         return {};
+    };
+
+    /**
+     * isLoggedIn
+     * Description: returns true if the user is logged in.
+     */
+    this.isLoggedIn = function() {
+        return $("#pmcounter").length > 0;
     };
 }
 
@@ -809,6 +821,9 @@ N.html = function()
         this.post('/pages/profile/notify.html.php', datJson, function(d) {
             done(d);
         });
+        // trigger the notification change event in case someone clicks on the counter
+        if (!doNotDelete)
+            $(document).trigger ('nerdz_internal:set_count', [ 'notification', 0 ]);
     };
 
 };
@@ -1119,6 +1134,9 @@ N.html.pm = function()
         this.post('read.html.php?action=conversation',jObj,function(d) {
             done(d);
         });
+        // trigger the pm count change if a conversation is being fetched
+        if (jObj.start === 0)
+            $(document).trigger ('nerdz_internal:set_count', [ 'pm', 0 ]);
     };
 
     /**
@@ -1292,97 +1310,82 @@ N.html.search = function()
 
 N.html.search = new N.html.search();
 
-/*
- * Azioni di compiere in ogni template
-*/
 $(document).ready(function() {
-    var logged = true;
-    /* Se esiste img#captcha, gli da la corretta path per l'immagine */
     N.reloadCaptcha(); 
-    if(typeof initGist == 'function') {
+    if (typeof initGist == 'function')
             initGist();
-    }
-    /*Aggiorna timestamp per status online, ogni minuto */
-    var timeupdate = function() {
-        if(logged) {
-            N.json.post('/pages/profile/online.json.php',{},function(d) {
-                if(d.status == 'error') {
-                logged = false;
-              }
-            });
-        }
-    };
-    timeupdate();
-    setInterval(timeupdate, 60000);
-    
-    /*Aggiorna #pmcounter (se esiste) ogni 16 secondi se ci sono nuovi pm */
-    var pmcount = function() {
-        var v = $("#pmcounter");
-        if(v.length) {
-            N.json.post('/pages/pm/notify.json.php',{}, function(obj) {
-                v.html(obj.status == 'ok' ? obj.message : '0');
-            });
-        }
-    };
-    pmcount();
-    setInterval(pmcount, 16000);
-    
-    /*Aggiorna #notifycounter (se esiste) ogni 12 secondi se ci sono nuove notifiche */
-    var notifycount = function() {
-        if(logged) {
-            var v = $("#notifycounter");
-            if(v.length) {
-                N.json.post('/pages/profile/notify.json.php',{}, function(obj) {
-                    v.html(obj.message);
-                    if(obj.status == 'error') {
-                        logged = false;
-                    }
 
-                });
-            }
-        }
+    // if we're not logged in, we are done.
+    if (!N.isLoggedIn())
+        return;
+
+    // runs every 60 seconds, sets the user online
+    var updateOnlineStatus = function() {
+        N.json.post ('/pages/profile/online.json.php', {}, function(){});
     };
-    notifycount();
-    setInterval(notifycount, 12000);
+    updateOnlineStatus();
+    setInterval (updateOnlineStatus, 60000);
     
-    var pval = 0, nval = 0;
-    var updateTitle = function() {
-        var s = '', n = $("#notifycounter"), p = $("#pmcounter"), go = false, val = 0;
-        if(n.length) {
-            val = parseInt(n.text());
-            if(!isNaN(val)) {
-                if(val !== 0 && val != nval) {
-                    document.title = document.title.replace(/\([0-9]+\)/g,'');
-                    s+="(" + val + ") ";
-                    go = true;
-                    nval = val;
-                }
-                else if(val === 0) {
-                    document.title = document.title.replace(/\([0-9]+\)/g,'');
-                }
+    // useful stuff for the notifications and pms
+    var lastCounters = { pm: 0, notification: 0 },
+        handleUpdate = function (context, value) {
+            var parsed = parseInt (value, 10);
+            if (!isNaN (value))
+            {
+                if (lastCounters[context] !== parsed)
+                    $(document).trigger ('nerdz:' + context, [ parsed, lastCounters[context] ]);
+                lastCounters[context] = parsed;
             }
-        }
-        
-        if(p.length) {
-            val = parseInt(p.text());
-            if(!isNaN(val)) {
-                if(val !== 0 && val != pval ) {
-                    document.title = document.title.replace(/\[[0-9]+\]/g,'');
-                    s+="["+ val + "] ";
-                    go = true;
-                    pval = val;
-                }
-                else if(val === 0) {
-                    document.title = document.title.replace(/\[[0-9]+\]/g,'');
-                }
+        };
+
+    // register the DOM event handlers that will handle new notifications and PMs
+    var updateTitle = function (schar, echar, counter, prev) {
+        var target = schar + counter + echar + ' ';
+        if (counter > 0 && prev === 0)
+            // give priority to the PMs
+            if (schar === '(' && lastCounters.pm !== 0)
+            {
+                var pos = document.title.indexOf (']') + 1; // + 1 gets the space too
+                document.title = document.title.substr (0, pos + 1) + target + document.title.substr (pos);
             }
-        }
-        
-        if(go) {
-            document.title = s + document.title;
-            go = false;
-        }
+            else
+                document.title = target + document.title;
+        else
+            document.title = document.title.replace (
+                new RegExp ('\\' + schar + '\\d+\\' + echar + '\\s'),
+                counter > 0 ? target : ''
+            );
     };
+
+    $(document).on ('nerdz:notification.nerdz', function (e, counter, prev) {
+        updateTitle ('(', ')', counter, prev);
+    }).on ('nerdz:pm.nerdz', function (e, counter, prev) {
+        updateTitle ('[', ']', counter, prev);
+    }).on ('nerdz_internal:set_count.nerdz', function (e, context, target) {
+        // internal event, should not be used outside of this class.
+        handleUpdate (context, target);
+    });
+
+    // runs every 16 seconds, updates the PM counter
+    var $pmCounter      = $('#pmcounter'),
+        updatePmCounter = function() {
+            N.json.post ('/pages/pm/notify.json.php', {}, function (obj) {
+                var sval = obj.status === 'ok' ? obj.message : '0';
+                $pmCounter.html (sval);
+                handleUpdate ('pm', sval);
+            });
+        };
+    updatePmCounter();
+    setInterval (updatePmCounter, 16000);
     
-    setInterval(updateTitle,1000);
+    // runs every 12 seconds, updates the notifications counter
+    var $notifyCounter      = $('#notifycounter'),
+        updateNotifyCounter = function() {
+            N.json.post ('/pages/profile/notify.json.php', {}, function (obj) {
+                $notifyCounter.html (obj.message);
+                handleUpdate ('notification', obj.message);
+            });
+        };
+    updateNotifyCounter();
+    setInterval (updateNotifyCounter, 12000);
 });
