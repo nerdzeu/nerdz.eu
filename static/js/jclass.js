@@ -51,30 +51,49 @@ function N() /* THE FATHER of God (class/object/function)*/
     };
     
     this.loadTweet = function (img) {
-        var $img = $(img), id = $img.data("id");
+        var $img = $(img);
+        if (!("processedTweets" in this)) this.processedTweets = [];
+        // FIXME: this UUID stuff is used to circumvent a stupid (and unknown)
+        // bug in something which calls the .onload() handler more than once.
+        // Setting a flag like .data ("processed", true) does not work, and for
+        // some reason the object differs in the second onload call. If someone
+        // is able to fix this, then please do it.
+        // NOTE: using the twitter ID as a UUID is not a viable choice, because
+        // multiple [twitter] tags with the same ID will fail.
+        if ($.inArray ($img.data ("uuid"), this.processedTweets) !== -1) return;
+        this.processedTweets.push ($img.data ("uuid"));
+        var id = $img.data ("id"), failHandler = function (msg) {
+            img.onload = null;
+            $img.attr ({
+                src:   "/static/images/twitter_fail.png",
+                title: msg
+            });
+        };
+        // Potential bug fixer: you may use the following line to check if you
+        // have fixed the issue.
+        //console.log ("Processing tweet: " + id);
+        // sanitize the tweet id
+        if (id.indexOf ("/") !== -1)
+            id = id.split ("/").pop();
+        if (!/^\d+$/.test (id))
+            return failHandler ("Invalid ID");
         $.ajax ({
-            type:     "GET",
-            url:      "/twitter_embed.php?twit=" + id,
+            type:     "POST",
+            url:      "/embed_tweet.php",
             dataType: "json",
+            data:     { id: id },
+            cache:    true,
             success:  function (json) {
                 if (json.errors)
-                {
-                    $img.attr ({
-                        src:   "/static/images/twitter_fail.png",
-                        title: json.errors[0].message
-                    });
-                    img.onload = null;
-                    return false;
-                }
+                    return failHandler (json.errors[0].message);
                 var $div = $(document.createElement ("div")).html (json.html);
-                $div.find ("script").remove();
                 $div.insertBefore ($img);
                 $img.remove();
                 if (!window.__twttrlr)
-                    $(document.createElement ("script")).attr ({
+                    document.body.appendChild ($(document.createElement ("script")).attr ({
                         type: "application/javascript",
                         src:  "https://platform.twitter.com/widgets.js"
-                    }).appendTo ("body");
+                    })[0]);
                 else
                     twttr.widgets.load();
             }
