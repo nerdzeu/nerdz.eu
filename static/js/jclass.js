@@ -78,15 +78,15 @@ function N() /* THE FATHER of God (class/object/function)*/
         if (!/^\d+$/.test (id))
             return failHandler ("Invalid ID");
         $.ajax ({
-            type:     "GET",
-            url:      "https://api.twitter.com/1/statuses/oembed.json?id=" + id,
-            dataType: "jsonp",
+            type:     "POST",
+            url:      "/embed_tweet.php",
+            dataType: "json",
+            data:     { id: id },
             cache:    true,
             success:  function (json) {
                 if (json.errors)
                     return failHandler (json.errors[0].message);
                 var $div = $(document.createElement ("div")).html (json.html);
-                $div.find ("script").remove();
                 $div.insertBefore ($img);
                 $img.remove();
                 if (!window.__twttrlr)
