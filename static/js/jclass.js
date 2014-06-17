@@ -77,6 +77,14 @@ function N() /* THE FATHER of God (class/object/function)*/
             id = id.split ("/").pop();
         if (!/^\d+$/.test (id))
             return failHandler ("Invalid ID");
+
+        if (!window.__twttrlr) {
+            document.body.appendChild ($(document.createElement ("script")).attr ({
+                type: "application/javascript",
+                src:  "https://platform.twitter.com/widgets.js"
+            })[0]);
+        }
+
         $.ajax ({
             type:     "POST",
             url:      "/embed_tweet.php",
@@ -89,13 +97,7 @@ function N() /* THE FATHER of God (class/object/function)*/
                 var $div = $(document.createElement ("div")).html (json.html);
                 $div.insertBefore ($img);
                 $img.remove();
-                if (!window.__twttrlr)
-                    document.body.appendChild ($(document.createElement ("script")).attr ({
-                        type: "application/javascript",
-                        src:  "https://platform.twitter.com/widgets.js"
-                    })[0]);
-                else
-                    twttr.widgets.load();
+                twttr.widgets.load();
             }
         });
     };
