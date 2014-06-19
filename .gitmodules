@@ -1,6 +1,3 @@
-[submodule "tpl/4"]
-	path = tpl/4
-	url = git://github.com/Robertof/nerdz-template-pro-theme.git
 [submodule "tpl/3"]
 	path = tpl/3
 	url = git://github.com/Twentyone/nerdz-template-stillblack.git
@@ -16,3 +13,6 @@
 [submodule "class/pushed-php-client"]
 	path = class/pushed-php-client
 	url = git://github.com/mcilloni/pushed-php-client.git
+[submodule "tpl/4"]
+	path = tpl/4
+	url = https://github.com/Robertof/nerdz-template-pro-theme
