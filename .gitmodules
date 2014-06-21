@@ -1,18 +1,18 @@
 [submodule "tpl/3"]
 	path = tpl/3
-	url = git://github.com/Twentyone/nerdz-template-stillblack.git
+	url = https://github.com/Twentyone/nerdz-template-stillblack
 [submodule "tpl/2"]
-        path = tpl/2
-        url = git://github.com/DrJest/nerdz-template-metro.git
+    path = tpl/2
+    url = https://github.com/DrJest/nerdz-template-metro
 [submodule "tpl/1"]
-        path = tpl/1
-        url = git://github.com/nerdzeu/nerdz-template-black-mobile.git
+    path = tpl/1
+    url = https://github.com/nerdzeu/nerdz-template-black-mobile
 [submodule "tpl/0"]
-        path = tpl/0
-        url = git://github.com/nerdzeu/nerdz-template-black.git
-[submodule "class/pushed-php-client"]
-	path = class/pushed-php-client
-	url = git://github.com/mcilloni/pushed-php-client.git
+    path = tpl/0
+    url = https://github.com/nerdzeu/nerdz-template-black
 [submodule "tpl/4"]
 	path = tpl/4
 	url = https://github.com/Robertof/nerdz-template-pro-theme
+[submodule "class/pushed-php-client"]
+	path = class/pushed-php-client
+	url = https://github.com/mcilloni/pushed-php-client
