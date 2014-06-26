@@ -1439,13 +1439,6 @@ $(document).ready(function() {
     // if we're not logged in, we are done.
     if (!N.isLoggedIn())
         return;
-
-    // runs every 60 seconds, sets the user online
-    var updateOnlineStatus = function() {
-        N.json.post ('/pages/profile/online.json.php', {}, function(){});
-    };
-    updateOnlineStatus();
-    setInterval (updateOnlineStatus, 60000);
     
     // useful stuff for the notifications and pms
     var lastCounters = { pm: 0, notification: 0 },
@@ -1487,26 +1480,53 @@ $(document).ready(function() {
         handleUpdate (context, target);
     });
 
-    // runs every 16 seconds, updates the PM counter
-    var $pmCounter      = $('#pmcounter'),
-        updatePmCounter = function() {
-            N.json.post ('/pages/pm/notify.json.php', {}, function (obj) {
-                var sval = obj.status === 'ok' ? obj.message : '0';
-                $pmCounter.html (sval);
-                handleUpdate ('pm', sval);
-            });
+
+    var $pmCounter = $('#pmcounter'), $notifyCounter = $('#notifycounter');
+
+    // If the browser supports SSE
+    if(typeof(EventSource) !== "undefined") {
+        var notificationSource = new EventSource("/pages/profile/notifyEvent.json.php");
+        notificationSource.addEventListener("pm", function(e) {
+            var obj = JSON.parse(e.data);
+            var sval = obj.status === 'ok' ? obj.message : '0';
+            $pmCounter.html (sval);
+            handleUpdate ('pm', sval);
+        });
+
+        notificationSource.addEventListener("notification", function(e) {
+            var obj = JSON.parse(e.data);
+            $notifyCounter.html (obj.message);
+            handleUpdate ('notification', obj.message);
+        });
+
+    } else { // use old legacy polling
+
+        // runs every 60 seconds, sets the user online
+        var updateOnlineStatus = function() {
+            N.json.post ('/pages/profile/online.json.php', {}, function(){});
         };
-    updatePmCounter();
-    setInterval (updatePmCounter, 16000);
-    
-    // runs every 12 seconds, updates the notifications counter
-    var $notifyCounter      = $('#notifycounter'),
-        updateNotifyCounter = function() {
-            N.json.post ('/pages/profile/notify.json.php', {}, function (obj) {
-                $notifyCounter.html (obj.message);
-                handleUpdate ('notification', obj.message);
-            });
-        };
-    updateNotifyCounter();
-    setInterval (updateNotifyCounter, 12000);
+        updateOnlineStatus();
+        setInterval (updateOnlineStatus, 60000);
+
+        // runs every 16 seconds, updates the PM counter
+        var updatePmCounter = function() {
+                N.json.post ('/pages/pm/notify.json.php', {}, function (obj) {
+                    var sval = obj.status === 'ok' ? obj.message : '0';
+                    $pmCounter.html (sval);
+                    handleUpdate ('pm', sval);
+                });
+            };
+        updatePmCounter();
+        setInterval (updatePmCounter, 16000);
+        
+        // runs every 12 seconds, updates the notifications counter
+        var updateNotifyCounter = function() {
+                N.json.post ('/pages/profile/notify.json.php', {}, function (obj) {
+                    $notifyCounter.html (obj.message);
+                    handleUpdate ('notification', obj.message);
+                });
+            };
+        updateNotifyCounter();
+        setInterval (updateNotifyCounter, 12000);
+    }
 });

@@ -13,6 +13,21 @@ class notify extends phpCore
         parent::__construct();
         $this->cachekey = parent::isLogged() ? "{$_SESSION['nerdz_id']}notifystory".SITE_HOST : '';
     }
+
+    public function countPms()
+    {
+        if(!($o = parent::query(
+            [
+                'SELECT COUNT(DISTINCT "from") as cc FROM ( 
+                    SELECT "from" FROM "pms" WHERE "to" = :id AND "to_read" = TRUE
+                 ) AS tmp1',
+                [
+                    ':id' => $_SESSION['nerdz_id']
+                ]
+            ],db::FETCH_OBJ)))
+            return 0;
+        return $o->cc;
+    }
     
     public function count($what = null,$rag = null)
     {

@@ -500,7 +500,9 @@ BEGIN;
 
     create function user_post() returns trigger as $$
     begin
-        insert into posts_notify values(NEW."from", NEW."to", NEW."time");
+        IF NEW."from" <> NEW."to" THEN
+            insert into posts_notify("from", "to", "hpid", "time") values(NEW."from", NEW."to", NEW."hpid", NEW."time");
+        END IF;
         return null;
     end $$ language plpgsql;
 
@@ -947,6 +949,13 @@ BEGIN;
         PERFORM blacklist_control(NEW."from", NEW."to");
         RETURN NEW;
     END $$;
+
+    -- fixes groups_notify table
+    alter table groups_notify add column hpid bigint references groups_posts(hpid);
+    with firsts as (select min(hpid) as firstPost, "to" from groups_posts group by "to")
+    -- put dummy values
+    update groups_notify set hpid = f.firstpost from firsts f where f.to = groups_notify."group";
+    alter table groups_notify alter column hpid set not null;
 
     CREATE OR REPLACE FUNCTION after_insert_groups_post() RETURNS trigger
     LANGUAGE plpgsql

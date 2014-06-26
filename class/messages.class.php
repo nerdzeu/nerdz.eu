@@ -505,13 +505,17 @@ class messages extends phpCore
         return $this->getPostsArray($result, $project, $inHome);
     }
 
-    public function addMessage($to,$message, $news = false, $project = false)
+    public function addMessage($to,$message, $options = [])
     {
+        extract($options);
+        $news = !empty($news);
+        $project = !empty($project);
+
         $table = ($project ? 'groups_' : '').'posts';
 
         $retStr = parent::query(
             [
-                'INSERT INTO "'.$table.'" ("from","to","message", "news") VALUES (:id,:to,:message: news)',
+                'INSERT INTO "'.$table.'" ("from","to","message", "news") VALUES (:id,:to,:message, :news)',
                 [
                     ':id' => $_SESSION['nerdz_id'],
                     ':to' => $to,
@@ -946,27 +950,26 @@ class messages extends phpCore
         return $ret == db::NO_ERRNO;
     }
 
-    public function getPostList($mess, $project, $truncate = false) {
+    public function getPostList($mess, $prj, $truncate = false) {
         require_once 'comments.class.php';
-        require_once 'project.class.php';
         $comments = new comments();
-        $project = new project();
 
         $count = count($mess);
         $ret = [];
         $logged = parent::isLogged();
-        $toFunc = 'get'.($project ? 'ProjectName' : 'Username');
+        $toFunc = [ $this, 'get'.($prj ? 'ProjectName' : 'Username') ];
+
         for($i=0;$i<$count;++$i)
         {
             if(!($from = parent::getUsername($mess[$i]['from'])))
                 $from = '';
 
-            if(!($to = parent::$toFunc($mess[$i]['to'])))
+            if(!($to = $toFunc($mess[$i]['to'])))
                 $to =  '';
 
-            $ret[$i]['thumbs_n'] = $this->getThumbs($mess[$i]['hpid'], $project);
-            $ret[$i]['revisions_n'] = $this->getRevisionsNumber($mess[$i]['hpid'], $project);
-            $ret[$i]['uthumb_n'] = $this->getUserThumb($mess[$i]['hpid'], $project);
+            $ret[$i]['thumbs_n'] = $this->getThumbs($mess[$i]['hpid'], $prj);
+            $ret[$i]['revisions_n'] = $this->getRevisionsNumber($mess[$i]['hpid'], $prj);
+            $ret[$i]['uthumb_n'] = $this->getUserThumb($mess[$i]['hpid'], $prj);
             $ret[$i]['pid_n'] = $mess[$i]['pid'];
             $ret[$i]['news_b'] = $mess[$i]['news'];
             $ret[$i]['from4link_n'] = phpCore::userLink($from);
@@ -978,20 +981,20 @@ class messages extends phpCore
             $ret[$i]['datetime_n'] = $mess[$i]['datetime'];
             $ret[$i]['cmp_n'] = $mess[$i]['cmp'];
 
-            $ret[$i]['canremovepost_b'] = $this->canRemovePost($mess[$i], $project);
+            $ret[$i]['canremovepost_b'] = $this->canRemovePost($mess[$i], $prj);
 
-            $ret[$i]['caneditpost_b'] = $this->canEditPost($mess[$i], $project);
-            $ret[$i]['canshowlock_b'] = $this->canShowLockForPost($mess[$i], $project);
-            $ret[$i]['lock_b'] = $this->hasLockedPost($mess[$i], $project);
+            $ret[$i]['caneditpost_b'] = $this->canEditPost($mess[$i], $prj);
+            $ret[$i]['canshowlock_b'] = $this->canShowLockForPost($mess[$i], $prj);
+            $ret[$i]['lock_b'] = $this->hasLockedPost($mess[$i], $prj);
 
             $ret[$i]['canshowlurk_b'] = $logged ? !$ret[$i]['canshowlock_b'] : false;
-            $ret[$i]['lurk_b'] = $this->hasLurkedPost($mess[$i], $project);
+            $ret[$i]['lurk_b'] = $this->hasLurkedPost($mess[$i], $prj);
             
             $ret[$i]['canshowbookmark_b'] = $logged;
-            $ret[$i]['bookmark_b'] = $this->hasBookmarkedPost($mess[$i], $project);
+            $ret[$i]['bookmark_b'] = $this->hasBookmarkedPost($mess[$i], $prj);
 
-            $ret[$i]['message_n'] = $this->bbcode($mess[$i]['message'],$truncate, $project ? 'g' : 'u' ,$ret[$i]['pid_n'],$ret[$i]['toid_n']);
-            $ret[$i]['postcomments_n'] = $comments->countComments($mess[$i]['hpid'], $project);
+            $ret[$i]['message_n'] = $this->bbcode($mess[$i]['message'],$truncate, $prj ? 'g' : 'u' ,$ret[$i]['pid_n'],$ret[$i]['toid_n']);
+            $ret[$i]['postcomments_n'] = $comments->countComments($mess[$i]['hpid'], $prj);
             $ret[$i]['hpid_n'] = $mess[$i]['hpid'];
         }
 

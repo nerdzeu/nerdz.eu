@@ -44,7 +44,13 @@ else
 
 //search
 $specific = isset($_GET['specific']);
+$action   = isset($_GET['action']) && $_GET['action'] === 'profile' ? 'profile' : 'project';
 $search   = !empty($_POST['q']) && $specific && $id ? trim(htmlspecialchars($_POST['q'], ENT_QUOTES,'UTF-8')) : false;
+//rewrite $path if searching not in home
+if($specific) {
+    $path = $action;
+    $prj = $action == 'project';
+}
 
 $mess = $messages->getMessages($id, $limit,
         array_merge(
@@ -56,11 +62,11 @@ $mess = $messages->getMessages($id, $limit,
         ));
 
 if(!$mess || (!$logged && $beforeHpid))
-    die(); //empty so javascript client code stop making requests
+    die(''); //empty so javascript client code stop making requsts
 
 $vals = [];
 $vals['count_n'] = count($mess);
-$vals['list_a'] = $messages->getPostList($mess,$prj, $truncate);
+$vals['list_a'] = $messages->getPostList($mess, $prj, $truncate);
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw($path.'/postlist');
 ?>

@@ -1,0 +1,4 @@
+- Move all common snippets of code to /pages/common/
+- ^ implies remove redoundant code
+- Fix database again and again
+- Fix edit

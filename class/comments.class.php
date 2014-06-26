@@ -224,7 +224,7 @@ class comments extends messages
 
     public function getComment($hcid, $prj = false)
     {
-        $tbl = ($prj ? 'groups_' : '').'comments';
+        $table = ($prj ? 'groups_' : '').'comments';
 
         if(!($o = parent::query(
                         [

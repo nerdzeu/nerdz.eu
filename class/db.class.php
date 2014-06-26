@@ -30,7 +30,7 @@ class db
             $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         }
         catch(PDOException $e) {
-            die($o->getTraceAsString());
+            die($e->getTraceAsString());
         }
 
         define('USERS_NEWS', $specialIds['GLOBAL_NEWS']);
@@ -42,7 +42,7 @@ class db
             $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         }
         catch(PDOException $e) {
-            die($o->getTraceAsString());
+            die($e->getTraceAsString());
         }
 
         define('ISSUE_BOARD',$specialIds['ISSUE']);
