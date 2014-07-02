@@ -22,7 +22,6 @@ $CONSTANTS = [
     'HTTPS_DOMAIN'         => '',
     'LOGIN_SSL_ONLY'       => false,
     'MINIFICATION_JS_CMD'  => 'uglifyjs %path% -c unused=false',
-    'MINIFICATION_CSS_CMD' => 'csstidy %path% --allow_html_in_templates=false --compress_colors=true --compress_font-weight=true --remove_last_\;=true --remove_bslash=true --template=highest --preserve_css=true --silent=true',
     'POSTGRESQL_HOST'      => -1, // null does not work since isset() is a faget
     'POSTGRESQL_DATA_NAME' => -1,
     'POSTGRESQL_USER'      => -1,
