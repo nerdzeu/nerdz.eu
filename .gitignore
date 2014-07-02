@@ -9,7 +9,6 @@ class/config/index.php
 utils/*
 google*
 mobile/*
-pages/executables/*
 BingSiteAuth.xml
 NerdzMessenger.apk
 smapxml
