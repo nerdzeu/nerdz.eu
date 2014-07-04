@@ -2,7 +2,8 @@
 // Used for minification of JS/CSS files. Also used to minify
 // template files by templatecfg.class
 // constants.inc.php: for MINIFICATION_*_CMD
-require_once $_SERVER['DOCUMENT_ROOT'] . '/class/config/constants.inc.php';
+require_once 'config/constants.inc.php';
+
 final class Minification
 {
     const PATH_VAR = '%path%'; // private constants do not exist :(
@@ -14,7 +15,18 @@ final class Minification
 
     public static function minifyCss ($path)
     {
-        return shell_exec (str_ireplace (self::PATH_VAR, $path, MINIFICATION_CSS_CMD));
+        require_once 'vendor/autoload.php';
+        $css = new csstidy();
+        $css->set_cfg('allow_html_in_templates', false);
+        $css->set_cfg('compress_colors', true);
+        $css->set_cfg('compress_font-weight', true);
+        $css->set_cfg('remove_last_', true);
+        $css->set_cfg('remove_bslash', true);
+        $css->set_cfg('template', 'highest');
+        $css->set_cfg('preserve_css', true);
+        $css->set_cfg('silent', true);
+        $css->parse(file_get_contents($path));
+        return $css->print->plain();
     }
 
     public static function minifyTemplateFile ($mTimeFile, $fileToMinify, $targetMinifiedFile, $ext)

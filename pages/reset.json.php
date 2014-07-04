@@ -35,7 +35,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
 $mail = new PHPMailer();
 $mail->IsSMTP();
 $mail->SMTPAuth = true;
-$mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for GMail
+#$mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for GMail
+$mail->SMTPSecure = "tls";
 $mail->Host = SMTP_SERVER;
 $mail->Port = SMTP_PORT;
 $mail->Username = SMTP_USER;

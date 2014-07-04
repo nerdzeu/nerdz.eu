@@ -9,7 +9,6 @@ class/config/index.php
 utils/*
 google*
 mobile/*
-pages/executables/*
 BingSiteAuth.xml
 NerdzMessenger.apk
 smapxml
@@ -21,3 +20,4 @@ y_key_85b60785628865ce.html
 composer.lock
 *.jade
 *.less
+.htaccess
