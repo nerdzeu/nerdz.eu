@@ -46,6 +46,7 @@ function N() /* THE FATHER of God (class/object/function)*/
             dataType: "jsonp",
             success:  function (data) {
                 img.src = data[0].thumbnail_large;
+                img.onload = null;
             }
         });
     };
