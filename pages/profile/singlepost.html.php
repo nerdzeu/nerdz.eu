@@ -8,10 +8,7 @@ ob_start(array('phpCore','minifyHtml'));
 $core = new messages();
 $comments = new comments();
 
-if(
-    empty($hpid) ||
-    !($o = $core->getMessage($hpid,$edit = false))
-  )
+if(empty($hpid) || !($o = $core->getMessage($hpid)))
     die($core->lang('ERROR'));
 
 if(!($from = $core->getUsername($o->from)))

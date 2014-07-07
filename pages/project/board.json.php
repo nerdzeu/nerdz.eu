@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-$core = new project();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
+$core = new messages();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
@@ -20,8 +20,11 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             $core->addMessage(
                 $_POST['to'],
                 isset($_POST['message']) ? $_POST['message'] : '',
-                isset($_POST['news']), true)
-        ));
+                [
+                    'news' => isset($_POST['news']),
+                    'project' => true
+                ]))
+            );
     break;
     
     case 'del':

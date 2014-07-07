@@ -16,7 +16,9 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if($to <= 0)
             $to = $_SESSION['nerdz_id'];
     
-         die($core->jsonDbResponse($core->addMessage($to,isset($_POST['message']) ? $_POST['message'] : '')));
+        die($core->jsonDbResponse(
+            $core->addMessage($to,isset($_POST['message']) ? $_POST['message'] : '')
+        ));
     break;
     
     case 'del':
@@ -33,7 +35,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
     case 'get':
         if(
             empty($_POST['hpid']) ||
-            !($o = $core->getMessage($_POST['hpid'],$edit = true))
+            !($o = $core->getMessage($_POST['hpid']))
           )
             die($core->jsonResponse('error',$core->lang('ERROR').'2'));
     break;

@@ -63,10 +63,9 @@ $configuration = [
     // minification if you don't need it or don't want to install
     // uglifyjs and csstidy. Enabled by default.
     'MINIFICATION_ENABLED'   => false,
-    // Specify the command used to minify JS/CSS files.
+    // Specify the command used to minify JS files.
     // %path% will be replaced with the file to be minified.
     // Comment these options if the default commands are okay for you.
-    //'MINIFICATION_CSS_CMD' => 'something-css %path%',
     //'MINIFICATION_JS_CMD'  => 'something-js  %path%',
 
     // Misc configuration

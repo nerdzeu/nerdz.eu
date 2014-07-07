@@ -162,12 +162,17 @@ class phpCore
         file_put_contents($path,$string."\n", FILE_APPEND);
         chmod($path,0775);
     }
+
+    public function toJsonResponse($status, $message)
+    {
+        $ret = is_array($status) ? $status : ['status' => $status, 'message' => $message];
+        return json_encode($ret,JSON_FORCE_OBJECT);
+    }
    
     public function jsonResponse($status, $message = '')
     {
         header('Content-type: application/json; charset=utf-8');
-        $ret = is_array($status) ? $status : ['status' => $status, 'message' => $message];
-        return json_encode($ret,JSON_FORCE_OBJECT);
+        return $this->toJsonResponse($status, $message);
     }
     
     public function logout()

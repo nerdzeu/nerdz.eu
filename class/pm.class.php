@@ -112,13 +112,6 @@ final class pm extends messages
         
         return $ret;
     }
-    
-    public function countNew()
-    {
-        if(!($o = parent::query(array('SELECT COUNT(DISTINCT "from") as cc FROM (SELECT "from" FROM "pms" WHERE "to" = :id AND "to_read" = TRUE) AS tmp1',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
-            return -1;
-        return $o->cc;
-    }
         
     public function deleteConversation($from, $to)
    {

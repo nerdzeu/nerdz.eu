@@ -1,6 +1,6 @@
 <?php
-$prj = false;
+$prj      = false;
 $truncate = false;
-$path = 'profile';
+$path     = 'profile';
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.html.php';
 ?>
