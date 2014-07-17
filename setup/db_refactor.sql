@@ -18,6 +18,10 @@ BEGIN;
     ('ISSUE', %%ISSUE%%),
     ('GLOBAL_NEWS', %%GROUPS_NEWS%%);
 
+    ALTER TABLE posts ADD COLUMN "news" BOOLEAN NOT NULL DEFAULT FALSE;
+    update posts set news = true where "to" = (select counter from "special_users" where role = 'GLOBAL_NEWS');
+    update groups_posts set news = true where "to" = (select counter from "special_groups" where role = 'GLOBAL_NEWS');
+
     CREATE TABLE flood_limits(
         table_name regclass not null primary key,
         time interval minute to second not null
@@ -122,17 +126,20 @@ BEGIN;
         END IF;
 
 
-        IF TG_OP = 'UPDATE' THEN
+        IF TG_OP = 'UPDATE' THEN -- no pid increment
             SELECT NOW() INTO NEW.time;
-        ELSE -- no pid increment
-
+        ELSE
             SELECT "pid" INTO NEW.pid FROM (
                 SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "posts"
                 WHERE "to" = NEW."to"
                 ORDER BY "hpid" DESC
                 FETCH FIRST ROW ONLY), 1 ) AS "pid"
             ) AS T1;
+        END IF;
 
+        -- if to = GLOBAL_NEWS set the news filed to true
+        IF NEW."to" = (SELECT counter FROM special_users where "role" = 'GLOBAL_NEWS') THEN
+            SELECT true INTO NEW.news;
         END IF;
         
         RETURN NEW;
@@ -160,7 +167,6 @@ BEGIN;
 
     -- fix table layout and indexes
     ALTER TABLE profiles ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
-    ALTER TABLE posts ADD COLUMN "news" BOOLEAN NOT NULL DEFAULT FALSE;
     ALTER TABLE users ADD CONSTRAINT uniqueMail UNIQUE(email);
     ALTER TABLE users ADD CONSTRAINT uniqueUsername UNIQUE(username);
 
@@ -886,6 +892,11 @@ BEGIN;
                 ORDER BY "hpid" DESC
                 FETCH FIRST ROW ONLY), 1) AS "pid"
             ) AS T1;
+        END IF;
+
+        -- if to = GLOBAL_NEWS set the news filed to true
+        IF NEW."to" = (SELECT counter FROM special_groups where "role" = 'GLOBAL_NEWS') THEN
+            SELECT true INTO NEW.news;
         END IF;
 
         RETURN NEW;
