@@ -2,3 +2,4 @@
 - ^ implies remove redoundant code
 - Fix database again and again
 - Fix edit
+Change language handling. Move common language to nerdz core. Search for not found string in template path

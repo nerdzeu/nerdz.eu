@@ -7,7 +7,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 class messages extends phpCore
 {
     // regular expressions used to parse the [video] bbcode
-    const YOUTUBE_REGEXP  = '#^https?://(?:www\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
+    const YOUTUBE_REGEXP  = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
     const VIMEO_REGEXP    = '#^https?://(?:www\.)?vimeo\.com.+?(\d+)$#i';
     const DMOTION_REGEXP  = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
     const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/photo\.php(?:\?v=|\?.+?&v=)(\d+)#i';
@@ -501,7 +501,7 @@ class messages extends phpCore
                 $params
             ],db::FETCH_STMT))
           )
-            return [];
+          return [];
         return $this->getPostsArray($result, $project, $inHome);
     }
 
@@ -693,20 +693,20 @@ class messages extends phpCore
 
     public function getPostsArray($result,$project, $inHome = false)
     {
-        $c=0;
+        $c = 0;
         $ret = [];
         while(($row = $result->fetch(PDO::FETCH_OBJ)))
         {
-            $ret[$c]['news'] = $inHome ? 
-                (!$project && ($row->to == USERS_NEWS)) || ($project && ($row->to == PROJECTS_NEWS))
+            $ret[$c]['news'] = $inHome
+                ? (!$project && ($row->to == USERS_NEWS)) || ($project && ($row->to == PROJECTS_NEWS))
                 : $row->news;
-            $ret[$c]['hpid'] = $row->hpid;
-            $ret[$c]['from'] = $row->from;
-            $ret[$c]['to'] = $row->to;
-            $ret[$c]['pid'] = $row->pid;
-            $ret[$c]['message'] = $ret[$c]['news'] ? $this->parseNewsMessage($row->message) : $row->message;
+            $ret[$c]['hpid']     = $row->hpid;
+            $ret[$c]['from']     = $row->from;
+            $ret[$c]['to']       = $row->to;
+            $ret[$c]['pid']      = $row->pid;
+            $ret[$c]['message']  = $ret[$c]['news'] ? $this->parseNewsMessage($row->message) : $row->message;
             $ret[$c]['datetime'] = parent::getDateTime($row->time);
-            $ret[$c]['cmp'] = $row->time;
+            $ret[$c]['cmp']      = $row->time;
             ++$c;
         }
         return $ret;
@@ -958,6 +958,7 @@ class messages extends phpCore
         $ret = [];
         $logged = parent::isLogged();
         $toFunc = [ $this, 'get'.($prj ? 'ProjectName' : 'Username') ];
+        $toFuncLink = [ $this, ($prj ? 'project' : 'user').'Link' ];
 
         for($i=0;$i<$count;++$i)
         {
@@ -973,7 +974,7 @@ class messages extends phpCore
             $ret[$i]['pid_n'] = $mess[$i]['pid'];
             $ret[$i]['news_b'] = $mess[$i]['news'];
             $ret[$i]['from4link_n'] = phpCore::userLink($from);
-            $ret[$i]['to4link_n'] = phpCore::projectLink($to);
+            $ret[$i]['to4link_n'] = $toFuncLink($to);
             $ret[$i]['fromid_n'] = $mess[$i]['from'];
             $ret[$i]['toid_n'] = $mess[$i]['to'];
             $ret[$i]['from_n'] = $from;
