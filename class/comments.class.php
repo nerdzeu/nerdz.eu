@@ -47,7 +47,7 @@ class comments extends project
             $ret[$i]['hpid_n'] = $hpid;
             $ret[$i]['thumbs_n'] = $this->getThumbs($o->hcid, $prj);
             $ret[$i]['uthumb_n'] = $this->getUserThumb($o->hcid, $prj);
-            
+
             if($luck)
             {
                 $ret[$i]['canshowlock_b'] = false;
@@ -76,7 +76,7 @@ class comments extends project
         //non controllo il valore di ritorno, perché non è un errore grave per cui ritornare false, ci pensa poi la classe per le notifiche a gestire tutto
         if(parent::isLogged() && $i > 1)
             parent::query(array('DELETE FROM "'.$glue.'comments_notify" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['nerdz_id'],$hpid)),db::NO_RETURN);
-        
+
         return $ret;
     }
 
@@ -93,7 +93,7 @@ class comments extends project
                        array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe))
                     : ($useLimitedQuery ?
                         // sort by hcid, descending, then reverse the order (ascending)
-                       array('SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid FROM (SELECT "from", "to", "time", "message", "hcid" FROM "'.$glue.'comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) AND "to" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) ORDER BY "hcid" DESC LIMIT ? OFFSET ?) AS q ORDER BY q.hcid ASC', array ($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $maxNum, $startFrom))
+                       array('SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid FROM (SELECT "from", "to", "time", "message", "hcid" FROM "'.$glue.'comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) AND "to" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) ORDER BY "hcid" DESC LIMIT ? OFFSET ?) AS q ORDER BY q.hcid ASC', array ($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $maxNum, $startFrom))
                      : array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',array(':hpid' => $hpid)))
                     );
         //print $queryArr[]
@@ -103,15 +103,15 @@ class comments extends project
         if(
             !($f = parent::query(array('SELECT DISTINCT "from" FROM "'.$glue.'comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
             !($ll = parent::query(array('SELECT "from" FROM "'.$glue.'comments_no_notify" WHERE "hpid" = :hpid AND "to" = :id',array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)) || //quelli da non notificare
-            !($r = ($useLimitedQuery ? true : parent::query(array('SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
+            !($r = ($useLimitedQuery ? true : parent::query(array('SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['nerdz_id'])),db::FETCH_STMT)))
           )
             return false;
-        
+
         $times = $gravurl = $users = $nonot = $lkd = $blist = $ret = array();
-        
+
         if (!$useLimitedQuery)
             $blist = $r->fetchAll(PDO::FETCH_COLUMN);
-        
+
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
         $grav = new gravatar();
 
@@ -133,7 +133,7 @@ class comments extends project
         $cg = $prj ? 'gc' : 'pc'; //per txt version code in commenti
 
         $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
-        
+
         /* Per il beforeHcid, nel caso in cui nella fase di posting si siano uniti gli ultimi messaggi
            allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty e fuck off*/
         if($olderThanMe && empty($ret))
@@ -142,13 +142,13 @@ class comments extends project
                 return false;
             $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         }
-  
+
         return $ret;
     }
 
     public function parseCommentQuotes($message)
     {
-        
+
         $i = 0;
         $pattern = '#\[quote=([0-9]+)\|p\]#i';
         while(preg_match($pattern,$message) && (++$i < 11))
@@ -202,7 +202,7 @@ class comments extends project
                 $enter = true;
                 $lastlen = $i + 1;
             }
-            
+
             if($enter && !$divs) { //termine blocco
                 $ret[] = $tmp;
                 $tmp = '';
@@ -220,7 +220,7 @@ class comments extends project
     {
         $quotes = substr_count($str,'<div class="qu_main">');
         $toremove = $quotes > 2 ? $quotes-2 : 0; //se ci sono più di due quote l'uno nell'altro mantengo gli ultimi due messaggi quotati
-        
+
         if($toremove)
         {
             //devo mantenere i mittenti più esterni, eliminare  i più interni
@@ -250,7 +250,7 @@ class comments extends project
                     $todelete .= $str[$k];
                 $str = str_replace($todelete,'',$str);
             }
-            
+
             return str_replace($strpos,$newquote,$str); //metto i quote al posto giusto
         }
         return $str;
@@ -325,7 +325,7 @@ class comments extends project
     {
         if(!($o = parent::query(array('SELECT "to","pid","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
             return false;
-        
+
         return $this->showControl($o->from,$o->to,$hpid,$o->pid);
     }
 
@@ -333,7 +333,7 @@ class comments extends project
     {
         if(!($o = parent::query(array('SELECT "to","pid","from" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ)))
             return false;
-        
+
         return $this->showControl($o->from,$o->to,$hpid,$o->pid,false,$hcid);
     }
 
@@ -374,7 +374,7 @@ class comments extends project
     {
         if(parent::isLogged())
         {
-            if(!($o = parent::query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) AND "to" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?)',array($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+            if(!($o = parent::query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) AND "to" NOT IN (SELECT "to" AS a FROM "blacklist" WHERE "from" = ?)',array($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
                 return false;
         }
         else
@@ -383,7 +383,7 @@ class comments extends project
 
         return $o->cc;
     }
-    
+
     public function getProjectComment($hcid)
     {
         if(!($o = parent::query(array('SELECT "message" FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),db::FETCH_OBJ)))
@@ -397,7 +397,7 @@ class comments extends project
 
         return db::NO_ERRNO == parent::query(array('UPDATE "groups_comments" SET message = :message WHERE "hcid" = :hcid',array(':message' => $message, ':hcid' => $oldMsgObj->hcid)),db::FETCH_ERRNO);
     }
-    
+
     private function appendComment($oldMsgObj,$newMessage)
     {
         $message = $oldMsgObj->message.'[hr]'.trim( $this->parseCommentQuotes( htmlspecialchars($newMessage,ENT_QUOTES,'UTF-8') ) );
@@ -414,7 +414,7 @@ class comments extends project
         $newMessage = $message; //required for appendComment
 
         $message = trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
-            
+
         if(
             empty($message) ||
             !($obj = parent::query(array('SELECT "to","from" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_OBJ))
@@ -487,7 +487,7 @@ class comments extends project
 
         if(!($c = parent::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
             return false;
-    
+
         if($c->cc == 0)
             if(db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['nerdz_id'],':hpid' => $o->hpid)),db::FETCH_ERRNO))
                 return false;
@@ -499,7 +499,7 @@ class comments extends project
     {
         if(parent::isLogged())
         {
-            if(!($o = parent::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?)',array($hpid,$_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+            if(!($o = parent::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "to" AS a FROM "blacklist" WHERE "from" = ?)',array($hpid,$_SESSION['nerdz_id'])),db::FETCH_OBJ)))
                 return false;
         }
         else
@@ -508,7 +508,7 @@ class comments extends project
 
         return $o->cc;
     }
-    
+
     public function getThumbs($hcid, $prj = false) {
         $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
 
@@ -562,12 +562,12 @@ class comments extends project
         }
 
         $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
-        
+
         $ret = parent::query(
             [
               'WITH new_values (hcid, "user", vote) AS ( VALUES(CAST(:hcid AS int8), CAST(:user AS int8), CAST(:vote AS int8))),
-              upsert AS ( 
-                  UPDATE '.$table.' AS m 
+              upsert AS (
+                  UPDATE '.$table.' AS m
                   SET vote = nv.vote
                   FROM new_values AS nv
                   WHERE m.hcid = nv.hcid
@@ -577,9 +577,9 @@ class comments extends project
               INSERT INTO '.$table.' (hcid, "user", vote)
               SELECT hcid, "user", vote
               FROM new_values
-              WHERE NOT EXISTS (SELECT 1 
-                                FROM upsert AS up 
-                                WHERE up.hcid = new_values.hcid 
+              WHERE NOT EXISTS (SELECT 1
+                                FROM upsert AS up
+                                WHERE up.hcid = new_values.hcid
                                   AND up.user = new_values.user)',
               [
                 ':hcid' => (int) $hcid,
