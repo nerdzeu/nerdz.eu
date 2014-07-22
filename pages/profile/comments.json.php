@@ -18,18 +18,18 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 
         if(!$hpid)
             die($core->jsonResponse('error',$core->lang('ERROR')));
-            
+
         $r = $core->addComment($hpid,$_POST['message']);
-        
+
         if($r === false)
             die($core->jsonResponse('error',$core->lang('ERROR')));
         elseif($r === null)
             die($core->jsonResponse('error','Flood'));
     break;
-    
+
     case 'del':
         $hcid = isset($_POST['hcid']) && is_numeric($_POST['hcid']) ? $_POST['hcid'] : false;
-        
+
         if(!$hcid || !$core->delComment($hcid))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;

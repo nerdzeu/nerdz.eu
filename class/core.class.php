@@ -19,7 +19,7 @@ class phpCore
     private $lang;
     private $tpl_no;
     private $templateCfg;
-    
+
     public function __construct()
     {
         try
@@ -91,7 +91,7 @@ class phpCore
             $langFiles = $this->templateCfg->getTemplateVars($page)['langs'];
 
             $default = $langFiles['default'];
-           
+
             $defaultLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/{$default}"),true);
             if($nullPage) {
                 $_LANG = $defaultLang;
@@ -108,12 +108,12 @@ class phpCore
         return nl2br(htmlspecialchars($_LANG[$index],ENT_QUOTES,'UTF-8'));
     }
 
-    
-    public function isMobile() 
+
+    public function isMobile()
     {
         return (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == MOBILE_HOST);
     }
-    
+
     public function getSiteName()
     {
         return $this->isMobile() ? 'NERDZmobile' : 'NERDZ';
@@ -150,25 +150,25 @@ class phpCore
     {
         return $this->tpl;
     }
-   
+
     public function dumpException($e, $moredata = false)
     {
         $this->dumpErrorString((($moredata != false) ? "{$moredata}: " : '').$e->getMessage());
     }
-    
+
     public function dumpErrorString($string)
     {
         $path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
         file_put_contents($path,$string."\n", FILE_APPEND);
         chmod($path,0775);
     }
-   
+
     public function jsonResponse($status, $message)
     {
         header('Content-type: application/json');
         return json_encode(array('status' => $status, 'message' => $message),JSON_FORCE_OBJECT);
     }
-    
+
     public function logout()
     {
         if($this->isLogged())
@@ -216,13 +216,13 @@ class phpCore
 
     /**
      * Executes a query.
-     * Its return value varies according to the $action parameter, which should 
+     * Its return value varies according to the $action parameter, which should
      * be a constant member of db.
-     * 
+     *
      * @param string $query
      * @param int $action
-     * @return null|boolean|object 
-     * 
+     * @return null|boolean|object
+     *
      */
     public function query($query,$action = db::NO_RETURN, $all = false)
     {
@@ -280,7 +280,7 @@ class phpCore
             return false;
         return $o->motivation;
     }
- 
+
     public function availableLanguages($long = null)
     {
         //qui non ci imteressiamo se il file delle lingue è stato modificato, in tal caso si attende che scada la cache affinché si aggiorni, non si forza
@@ -326,21 +326,21 @@ class phpCore
         {
             $langs = [];
             $lang_parse = [];
-            
+
             // break up string into pieces (languages and q factors)
             preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
-            
+
             if (!empty($lang_parse[1]))
             {
                 // create a list like "en" => 0.8
                 $langs = array_combine($lang_parse[1], $lang_parse[4]);
-                        
+
                  // set default to 1 for any without q factor
                 foreach ($langs as $lang => $val)
                     if (empty($val))
                         $langs[$lang] = 1;
              }
-            // sort list based on value    
+            // sort list based on value
             arsort($langs, SORT_NUMERIC);
             return $langs;
         }
@@ -358,23 +358,23 @@ class phpCore
                     return $av;
         return 'en'; //non dovremmo mai arrivare qui
     }
-    
+
     public function updateBoardLanguage($lang)
     {
         if(!$this->isLogged())
             return false;
-            
+
         return $this->query(array('UPDATE "users" SET "board_lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO) == db::NO_ERRNO;
     }
-    
+
     public function updateUserLanguage($lang)
     {
         if(!$this->isLogged())
             return false;
-            
+
         return $this->query(array('UPDATE "users" SET "lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO) == db::NO_ERRNO;
     }
-    
+
     public function getBoardLanguage($id)
     {
         if($this->isLogged() && $id == $_SESSION['nerdz_id'])
@@ -383,7 +383,7 @@ class phpCore
             {
                 if(!($o = $this->query(array('SELECT "board_lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
                     return false;
-                    
+
                 if(empty($o->board_lang))
                 {
                     $_SESSION['nerdz_board_lang'] = $this->getBrowserLanguage();
@@ -395,13 +395,13 @@ class phpCore
             }
             return $_SESSION['nerdz_board_lang'];
         }
-        
+
         if(!($o = $this->query(array('SELECT "board_lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
             return false;
-            
+
         return empty($o->board_lang) ? $this->getBrowserLanguage() : $o->board_lang;
     }
-    
+
     public function getUserLanguage($id)
     {
         if($this->isLogged() && $id == $_SESSION['nerdz_id'])
@@ -410,7 +410,7 @@ class phpCore
             {
                 if(!($o = $this->query(array('SELECT "lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
                     return false;
-                    
+
                 if(empty($o->lang))
                 {
                     $_SESSION['nerdz_lang'] = $this->getBrowserLanguage();
@@ -422,10 +422,10 @@ class phpCore
             }
             return $_SESSION['nerdz_lang'];
         }
-        
+
         if(!($o = $this->query(array('SELECT "lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
             return false;
-            
+
         return empty($o->lang) ? $this->getBrowserLanguage() : $o->lang;
     }
 
@@ -454,6 +454,14 @@ class phpCore
     public function closedProfile($id)
     {
         return $this->query(array('SELECT "counter" FROM "closed_profiles" WHERE "counter" = :id',array(':id' => $id)),db::ROW_COUNT);
+    }
+
+    public function getRealBlacklist()
+    {
+        if((!$this->isLogged())||(!($r = $this->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT))))
+            return [];
+
+        return $r->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function getBlacklist()
@@ -487,7 +495,7 @@ class phpCore
     }
 
     public function isLogged()
-    {     
+    {
         return (isset($_SESSION['nerdz_logged']) && $_SESSION['nerdz_logged']);
     }
 
@@ -502,7 +510,7 @@ class phpCore
             return false;
         return $o->name;
     }
-    
+
     public function getEmail($id)
     {
         if(!($o = $this->query(array('SELECT "email" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
@@ -544,7 +552,7 @@ class phpCore
         }
         return $ret;
     }
-    
+
     public function getMobileTemplate($id = null)
     {
         $logged = $this->isLogged();
@@ -565,7 +573,7 @@ class phpCore
             else
                 return $_SESSION['nerdz_template'];
         }
-        
+
         if(!($o = $this->query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
             return '1';
 
@@ -596,7 +604,7 @@ class phpCore
             else
                 return $_SESSION['nerdz_template'];
         }
-        
+
         if(!($o = $this->query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
             return '0';
 
@@ -648,7 +656,7 @@ class phpCore
     public function getDateTime($timestamp)
     {
         $timezone = $this->getUserTimezone($this->isLogged() ? $_SESSION['nerdz_id'] : 0);
-        
+
         $date = new DateTime();
         $date->setTimestamp($timestamp);
         $date->setTimeZone(new DateTimezone($timezone));
@@ -724,7 +732,7 @@ class phpCore
     }
 
     public function setPush($id,$value) {
-    
+
         if(!is_bool($value) || !is_numeric($id)) {
             return false;
         }
@@ -737,7 +745,7 @@ class phpCore
         if (!($o = $this->query(['SELECT "push" FROM "profiles" WHERE "counter" = :user',[':user' => $id]],db::FETCH_OBJ))){
             return false;
         }
-            
+
         return $o->push;
     }
 
@@ -775,7 +783,7 @@ class phpCore
         $str = explode("\n",$str);
         foreach($str as &$val)
            $val = trim(str_replace("\t",'',$val));
-        
+
         return implode('',$str);
     }
 

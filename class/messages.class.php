@@ -70,7 +70,7 @@ class messages extends phpCore
             $totalcode = $code['code'];
             $lang = $code['lang'];
             $codeurl = '';
-            
+
             if($pid && $id)
             {
                 if(isset($type))
@@ -88,7 +88,7 @@ class messages extends phpCore
             }
             else
                 $pid = $id = 0;
-            
+
             $str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
                                '<div class="nerdz-code-wrapper">
                                     <div class="nerdz-code-title">'.$lang.':</div><pre class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
@@ -228,7 +228,7 @@ class messages extends phpCore
                 $ret .= '</ol>';
 
                 return $ret;
-                
+
                 },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i',function($m) {
@@ -242,7 +242,7 @@ class messages extends phpCore
                 $ret .= '</ol>';
 
                 return $ret;
-                
+
                 },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
@@ -256,7 +256,7 @@ class messages extends phpCore
                 $ret .= '</ol>';
 
                 return $ret;
-                
+
         },$str,10);
 
         // Quote in comments, new version
@@ -333,15 +333,15 @@ class messages extends phpCore
             }
             else if (filter_var ($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
                 return '<audio preload="none" controls src="'.htmlspecialchars ($uri, ENT_QUOTES, 'UTF-8').'"></audio>';
-            else 
+            else
                 return $m[0];
         },$str,10);
-        
+
         $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#i',function($m) use($ssl) {
             // The reason for the 'data-uuid' attribute is in the jclass.js file, in the loadTweet function.
             return '<img data-id="'.$m[1].'" data-uuid="'.mt_rand().'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)">';
         },$str,10);
-        
+
         if($truncate)
         {
             $videoCallback = function($m) use($ssl) {
@@ -398,7 +398,7 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
             $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
-            
+
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
                     return '<img src="'.messages::imgValidUrl($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
             },$str);
@@ -439,7 +439,7 @@ class messages extends phpCore
 
     public function getMessages($id,$limit)
     {
-        $blist = parent::getBlacklist();
+        $blist = parent::getRealBlacklist();
 
         if(empty($blist))
             $glue = '';
@@ -456,7 +456,7 @@ class messages extends phpCore
 
     public function getNMessagesBeforeHpid($N,$hpid,$id)
     {
-        $blist = parent::getBlacklist();
+        $blist = parent::getRealBlacklist();
 
         if($N > 20 || $N <= 0) //massimo 20 posts, defaults
             $N = 20;
@@ -511,7 +511,7 @@ class messages extends phpCore
     public function getLatests($limit,$prj = null,$onlyfollowed = false,$lang = false)
     {
         $ret = array();
-        $blist = parent::getBlacklist();
+        $blist = parent::getRealBlacklist();
 
         if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
         {
@@ -544,7 +544,7 @@ class messages extends phpCore
     public function getNLatestBeforeHpid($N,$hpid,$prj = null,$onlyfollowed = false,$lang = false)
     {
         $ret = array();
-        $blist = parent::getBlacklist();
+        $blist = parent::getRealBlacklist();
         $glue = '';
 
         if($N > 20 || $N <= 0) //massimo 20 posts, defaults
@@ -597,7 +597,7 @@ class messages extends phpCore
         return $ret;
     }
 
-    public function canEditPost($post) 
+    public function canEditPost($post)
     {
         if(parent::isLogged())
             if(($_SESSION['nerdz_id'] == $post['to']) && ($_SESSION['nerdz_id'] == $post['from']))
@@ -701,7 +701,7 @@ class messages extends phpCore
                 str_ireplace('[hr]','',
                 str_ireplace('[wat]','',
                 str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))));
-    } 
+    }
 
     public function getThumbs($hpid, $prj = false) {
         $table = $prj ? "groups_thumbs" : "thumbs";
@@ -759,8 +759,8 @@ class messages extends phpCore
         $ret = parent::query(
             [
               'WITH new_values (hpid, "user", vote) AS ( VALUES(CAST(:hpid AS int8), CAST(:user AS int8), CAST(:vote AS int8))),
-              upsert AS ( 
-                  UPDATE '.$table.' AS m 
+              upsert AS (
+                  UPDATE '.$table.' AS m
                   SET vote = nv.vote
                   FROM new_values AS nv
                   WHERE m.hpid = nv.hpid
@@ -770,9 +770,9 @@ class messages extends phpCore
               INSERT INTO '.$table.' (hpid, "user", vote)
               SELECT hpid, "user", vote
               FROM new_values
-              WHERE NOT EXISTS (SELECT 1 
-                                FROM upsert AS up 
-                                WHERE up.hpid = new_values.hpid 
+              WHERE NOT EXISTS (SELECT 1
+                                FROM upsert AS up
+                                WHERE up.hpid = new_values.hpid
                                   AND up.user = new_values.user)',
               [
                 ':hpid' => (int) $hpid,
