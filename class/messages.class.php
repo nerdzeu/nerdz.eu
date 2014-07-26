@@ -187,7 +187,7 @@ class messages extends phpCore
                 $ret .= '</ol>';
 
                 return $ret;
-                
+
                 },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i',function($m) {
@@ -201,7 +201,7 @@ class messages extends phpCore
                 $ret .= '</ol>';
 
                 return $ret;
-                
+
                 },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
@@ -215,7 +215,7 @@ class messages extends phpCore
                 $ret .= '</ol>';
 
                 return $ret;
-                
+
         },$str,10);
 
         // Quote in comments, new version
@@ -292,15 +292,15 @@ class messages extends phpCore
             }
             else if (filter_var ($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
                 return '<audio preload="none" controls src="'.htmlspecialchars ($uri, ENT_QUOTES, 'UTF-8').'"></audio>';
-            else 
+            else
                 return $m[0];
         },$str,10);
-        
+
         $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#i',function($m) use($ssl) {
             // The reason for the 'data-uuid' attribute is in the jclass.js file, in the loadTweet function.
             return '<img data-id="'.$m[1].'" data-uuid="'.mt_rand().'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)">';
         },$str,10);
-        
+
         if($truncate)
         {
             $videoCallback = function($m) use($ssl) {
@@ -357,7 +357,7 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
             $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
-            
+
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
                     return '<img src="'.messages::imgValidUrl($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
             },$str);
@@ -430,8 +430,13 @@ class messages extends phpCore
                 : $this->getLatests($limit, $project, $onlyfollowed, $lang, $search); 
         }
 
+        $blist = parent::getRealBlacklist();
+
+        if($N > 20 || $N <= 0) //massimo 20 posts, defaults
+            $N = 20;
+
         $table = ($project ? 'groups_' : '').'posts';
-        $blist = parent::getBlacklist();
+
         if(empty($blist))
             $glue = '';
         else
@@ -685,7 +690,7 @@ class messages extends phpCore
                 str_ireplace('[hr]','',
                 str_ireplace('[wat]','',
                 str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))));
-    } 
+    }
 
     public function getThumbs($hpid, $project = false) {
         $table = ($project ? 'groups_' : ''). 'thumbs';

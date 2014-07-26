@@ -49,7 +49,7 @@ $singlepostvals['hpid_n'] = $o->hpid;
 $singlepostvals['news_b'] = isset($o->news) ? $o->news : false;
 
 $core->getTPL()->assign($singlepostvals);
-    
+
 if($draw)
     $core->getTPL()->draw('profile/post');
 else

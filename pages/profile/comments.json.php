@@ -19,10 +19,10 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 
         die($core->jsonDbResponse($core->addComment($hpid,$_POST['message'])));
     break;
-    
+
     case 'del':
         $hcid = isset($_POST['hcid']) && is_numeric($_POST['hcid']) ? $_POST['hcid'] : false;
-        
+
         if(!$hcid || !$core->delComment($hcid))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;

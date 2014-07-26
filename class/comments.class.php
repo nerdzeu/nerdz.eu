@@ -71,34 +71,50 @@ class comments extends messages
         //non controllo il valore di ritorno, perché non è un errore grave per cui ritornare false, ci pensa poi la classe per le notifiche a gestire tutto
         if(parent::isLogged() && $i > 1)
             parent::query(array('DELETE FROM "'.$glue.'comments_notify" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['nerdz_id'],$hpid)),db::NO_RETURN);
-        
+
         return $ret;
     }
 
     private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
-        if(!$prj && in_array($to,parent::getBlacklist())) // se ho messo l'utente in blacklist, non mostro i commenti fatti ai suoi post
-            return [];
-
         $glue = $prj ? 'groups_' : '';
         // sorry for the bad indentation, but I'm not good at
         // making things pretty >:(
         $useLimitedQuery = is_numeric ($maxNum) && is_numeric ($startFrom);
-        $queryArr = ( $olderThanMe ?
-                       array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe))
-                    : ($useLimitedQuery ?
-                        // sort by hcid, descending, then reverse the order (ascending)
-                       array('SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid, q.editable FROM (SELECT "from", "to", "time", "message", "hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = ? AND "from" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) AND "to" NOT IN (SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?) ORDER BY "hcid" DESC LIMIT ? OFFSET ?) AS q ORDER BY q.hcid ASC', array ($hpid, $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $_SESSION['nerdz_id'], $maxNum, $startFrom))
-                     : array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',array(':hpid' => $hpid)))
-                    );
-        //print $queryArr[]
+        $queryArr = $olderThanMe
+            ? [
+                'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"',
+                    [
+                        ':hpid' => $hpid,
+                        ':hcid' => $olderThanMe
+                    ]
+            ]
+            : (
+                $useLimitedQuery // sort by hcid, descending, then reverse the order (ascending)
+                ? [
+                        'SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid, q.editable FROM (SELECT "from", "to", "time", "message", "hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) AND "to" NOT IN (SELECT "from" FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id) ORDER BY "hcid" DESC LIMIT :limit OFFSET :offset) AS q ORDER BY q.hcid ASC', 
+                        [
+                            ':hpid' => $hpid,
+                            ':id'   => $_SESSION['nerdz_id'],
+                            ':limit' => $maxNum,
+                            ':offset' => $startFrom
+                        ]
+                     ]
+                     : [
+                         'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',
+                             [
+                                 ':hpid' => $hpid
+                             ]
+                       ]
+              );
+
         if(!($res = parent::query($queryArr, db::FETCH_STMT)))
             return false;
 
         if(
             !($f = parent::query(array('SELECT DISTINCT "from" FROM "'.$glue.'comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),db::FETCH_STMT)) ||
             !($ll = parent::query(array('SELECT "from" FROM "'.$glue.'comments_no_notify" WHERE "hpid" = :hpid AND "to" = :id',array(':hpid' => $hpid,':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)) || //quelli da non notificare
-            !($r = ($useLimitedQuery ? true : parent::query(array('SELECT "from" AS a FROM "blacklist" WHERE "to" = ? UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['nerdz_id'],$_SESSION['nerdz_id'])),db::FETCH_STMT)))
+            !($r = ($useLimitedQuery ? true : parent::query(array('SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['nerdz_id'])),db::FETCH_STMT)))
           )
             return false;
         
@@ -106,7 +122,7 @@ class comments extends messages
         
         if (!$useLimitedQuery)
             $blist = $r->fetchAll(PDO::FETCH_COLUMN);
-        
+
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
         $grav = new gravatar();
 
@@ -128,7 +144,7 @@ class comments extends messages
         $cg = $prj ? 'gc' : 'pc'; //per txt version code in commenti
 
         $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
-        
+
         /* Per il beforeHcid, nel caso in cui nella fase di posting si siano uniti gli ultimi messaggi
            allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty */
         if($olderThanMe && empty($ret))
@@ -137,12 +153,12 @@ class comments extends messages
                 return false;
             $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         }
-  
+
         return $ret;
     }
 
     public function parseCommentQuotes($message)
-    {        
+    {
         $i = 0;
         $pattern = '#\[quote=([0-9]+)\|p\]#i';
         while(preg_match($pattern,$message) && (++$i < 11))
@@ -174,6 +190,7 @@ class comments extends messages
 
     public function addComment($hpid,$message, $prj = false)
     {
+
         $posts = ($prj ? 'groups_' : '').'posts';
         $comments = ($prj ? 'groups_' : '').'comments';
 
@@ -276,6 +293,7 @@ class comments extends messages
                  )
           )
             return false;
+
         return $this->showControl ($o->from, $o->to, $hpid, $o->pid, $prj, false, $num, $cycle * $num);
     }
 
@@ -394,7 +412,6 @@ class comments extends messages
                 [
                   ':hcid' => $hcid
                 ]
-
             ],
             db::FETCH_OBJ
         );
@@ -413,12 +430,11 @@ class comments extends messages
                     ':hcid' => $hcid,
                     ':number' => $number
                 ]
-
             ],
             db::FETCH_OBJ
         );
     }
-    
+
     public function getThumbs($hcid, $prj = false) {
         $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
 
@@ -472,7 +488,7 @@ class comments extends messages
         }
 
         $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
-        
+
         $ret = parent::query(
             [
               'INSERT INTO '.$table.' (hcid, "from", vote) VALUES(:hcid, :from, :vote)',
