@@ -16,13 +16,9 @@ $limit = isset($_POST['limit']) ? $core->limitControl($_POST['limit'],10) : 10;
 
 $logged = $core->isLogged();
 
-if($logged && is_numeric(strpos($_SERVER['REQUEST_URI'],'refresh.html.php')) && (true === $core->isInBlacklist($_SESSION['nerdz_id'],$id)))
-    die('Hax0r c4n\'t fuck nerdz pr00tectionz');
-
 $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
 $mess = $beforeHpid ? $core->getNMessagesBeforeHpid($limit,$beforeHpid,$id) : $core->getMessages($id,$limit);
-
 
 if(!$mess || (!$logged && $beforeHpid))
     die(); //empty so javascript client code stop making requests

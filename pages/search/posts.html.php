@@ -18,7 +18,7 @@ if(isset($_POST['id']) && !is_numeric($_POST['id']))
 
 $txt = trim(htmlspecialchars($_POST['q'],ENT_QUOTES,'UTF-8'));
 
-$blist = $core->getBlacklist();
+$blist = $core->getRealBlacklist();
 $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
 $vals = array();
@@ -44,7 +44,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
             )
             die($core->lang('ERROR'));
     break;
-    
+
     case 'project':
         $group = true;
         $glue = ' AND "groups_posts"."to" NOT IN (SELECT "counter" FROM "groups" WHERE "visible" IS FALSE) ';
