@@ -82,9 +82,6 @@ class comments extends project
 
     private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
-        if(!$prj && in_array($to,parent::getRealBlacklist())) // se ho messo l'utente in blacklist, non mostro i commenti fatti ai suoi post
-            return array();
-
         $glue = $prj ? 'groups_' : '';
         // sorry for the bad indentation, but I'm not good at
         // making things pretty >:(
