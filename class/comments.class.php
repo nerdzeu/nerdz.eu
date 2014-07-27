@@ -78,9 +78,8 @@ class comments extends messages
     private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
         $glue = $prj ? 'groups_' : '';
-        // sorry for the bad indentation, but I'm not good at
-        // making things pretty >:(
         $useLimitedQuery = is_numeric ($maxNum) && is_numeric ($startFrom);
+
         $queryArr = $olderThanMe
             ? [
                 'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"',
@@ -92,20 +91,20 @@ class comments extends messages
             : (
                 $useLimitedQuery // sort by hcid, descending, then reverse the order (ascending)
                 ? [
-                        'SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid, q.editable FROM (SELECT "from", "to", "time", "message", "hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) AND "to" NOT IN (SELECT "from" FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id) ORDER BY "hcid" DESC LIMIT :limit OFFSET :offset) AS q ORDER BY q.hcid ASC', 
+                        'SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid, q.editable FROM (SELECT "from", "to", "time", "message", "hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) AND "to" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) ORDER BY "hcid" DESC LIMIT :limit OFFSET :offset) AS q ORDER BY q.hcid ASC', 
                         [
                             ':hpid' => $hpid,
                             ':id'   => $_SESSION['nerdz_id'],
                             ':limit' => $maxNum,
                             ':offset' => $startFrom
                         ]
-                     ]
-                     : [
-                         'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',
-                             [
-                                 ':hpid' => $hpid
-                             ]
-                       ]
+                  ]
+               : [
+                     'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',
+                        [
+                           ':hpid' => $hpid
+                        ]
+                 ]
               );
 
         if(!($res = parent::query($queryArr, db::FETCH_STMT)))
