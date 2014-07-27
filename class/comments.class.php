@@ -77,6 +77,9 @@ class comments extends messages
 
     private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
+        if(!$prj && in_array($to,parent::getRealBlacklist())) // $to is in my blacklist -> don't show comments
+            return [];
+
         $glue = $prj ? 'groups_' : '';
         $useLimitedQuery = is_numeric ($maxNum) && is_numeric ($startFrom);
 
