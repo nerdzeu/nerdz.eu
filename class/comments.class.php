@@ -82,6 +82,9 @@ class comments extends project
 
     private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
+        if(!$prj && in_array($to,parent::getRealBlacklist())) // $to is in my blacklist -> don't show comments
+            return [];
+
         $glue = $prj ? 'groups_' : '';
         // sorry for the bad indentation, but I'm not good at
         // making things pretty >:(
