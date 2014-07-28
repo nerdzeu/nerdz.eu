@@ -272,6 +272,9 @@ class comments extends project
           )
             return false;
 
+        if(parent::isInBlacklist($_SESSION['nerdz_id'], $obj->to))
+            return false;
+
         //for possible multiple append bug fix+
         if(($user = $stmt->fetch(PDO::FETCH_OBJ))) // if exists a previous message
         {
