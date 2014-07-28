@@ -18,9 +18,25 @@ BEGIN;
     ('ISSUE', %%ISSUE%%),
     ('GLOBAL_NEWS', %%GROUPS_NEWS%%);
 
+    ALTER TABLE posts ADD COLUMN "lang" VARCHAR(2) NOT NULL DEFAULT 'en';
+    update posts set lang = u.lang from users u where u.counter = "to";
+
+    ALTER TABLE groups_posts ADD COLUMN "lang" VARCHAR(2) NOT NULL DEFAULT 'en';
+    update groups_posts set lang = u.lang from users u where u.counter = "from";
+
     ALTER TABLE posts ADD COLUMN "news" BOOLEAN NOT NULL DEFAULT FALSE;
     update posts set news = true where "to" = (select counter from "special_users" where role = 'GLOBAL_NEWS');
     update groups_posts set news = true where "to" = (select counter from "special_groups" where role = 'GLOBAL_NEWS');
+
+    create table deleted_users(
+        counter int8 not null,
+        username varchar(90) not null,
+        "time" timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        motivation text,
+        primary key(counter, username, time)
+    );
+
+    
 
     CREATE TABLE flood_limits(
         table_name regclass not null primary key,
@@ -169,6 +185,9 @@ BEGIN;
     ALTER TABLE profiles ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
     ALTER TABLE users ADD CONSTRAINT uniqueMail UNIQUE(email);
     ALTER TABLE users ADD CONSTRAINT uniqueUsername UNIQUE(username);
+
+    ALTER TABLE users ADD COLUMN "registration_time" timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW();
+    UPDATE users SET registration_time = p.time FROM posts p where counter = p."to" AND hpid = (select min(hpid) from posts where "to" = p."to");
 
     ALTER TABLE posts ADD CONSTRAINT uniquePostPidHpid UNIQUE(hpid, pid);
     ALTER TABLE groups_posts ADD CONSTRAINT uniqueGroupsPostPidHpid UNIQUE(hpid, pid);
@@ -417,6 +436,14 @@ BEGIN;
     $func$ LANGUAGE plpgsql;
 
     CREATE TRIGGER before_delete_user BEFORE DELETE ON users FOR EACH ROW EXECUTE PROCEDURE before_delete_user();
+
+    CREATE OR REPLACE FUNCTION after_delete_user() RETURNS TRIGGER AS $$
+    begin
+        insert into deleted_users(counter, username) values(OLD.counter, OLD.username);
+        -- if the user gives a motivation, the upper level might update this row
+    end $$ language plpgsql;
+
+    CREATE TRIGGER after_delete_user AFTER DELETE ON users FOR EACH ROW EXECUTE PROCEDURE after_delete_user();
 
     -- fix posts   
     ALTER TABLE "posts_no_notify"

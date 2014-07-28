@@ -17,9 +17,6 @@ $comments = new comments();
 $logged   = $core->isLogged();
 $id       = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
 
-if($logged && is_numeric(strpos($_SERVER['REQUEST_URI'],'refresh.html.php')) && (true === $core->isInBlacklist($_SESSION['nerdz_id'],$id)))
-    die('Hax0r c4n\'t fuck nerdz pr00tectionz');
-
 // boards
 $limit      = isset($_POST['limit']) ? $core->limitControl($_POST['limit'],10)     : 10;
 $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
@@ -32,34 +29,29 @@ if(isset($_POST['onlyfollowed']))
 }
 else
 {
-    if(($lang = isset($_POST['lang']) ? $_POST['lang'] : false))
-    {
-        $languages = $core->availableLanguages();
-        $languages[] = '*'; //any language
-        if(!in_array($lang,$languages))
-            $lang = false;
-    }
+    $lang = isset($_POST['lang']) ? $_POST['lang'] : false;
     $onlyfollowed = false;
 }
 
 //search
 $specific = isset($_GET['specific']);
 $action   = isset($_GET['action']) && $_GET['action'] === 'profile' ? 'profile' : 'project';
-$search   = !empty($_POST['q']) && $specific && $id ? trim(htmlspecialchars($_POST['q'], ENT_QUOTES,'UTF-8')) : false;
+$search   = !empty($_POST['q']) ? trim(htmlspecialchars($_POST['q'], ENT_QUOTES,'UTF-8')) : false;
 //rewrite $path if searching not in home
 if($specific) {
     $path = $action;
     $prj = $action == 'project';
 }
 
-$mess = $messages->getMessages($id, $limit,
-        array_merge(
-            [ 'project' => $prj ],
-            $beforeHpid     ? [ 'hpid'         => $beforeHpid ]    : [],
-            $onlyfollowed   ? [ 'onlyfollowed' => $onlyfollowed ]  : [],
-            $lang           ? [ 'lang'         => $lang ]          : [],
-            $search         ? [ 'search'       => $search ]        : []
-        ));
+$mess = $messages->getMessages($id,
+    array_merge(
+        [ 'project' => $prj ],
+        $limit          ? [ 'limit'        => $limit ]         : [],
+        $beforeHpid     ? [ 'hpid'         => $beforeHpid ]    : [],
+        $onlyfollowed   ? [ 'onlyfollowed' => $onlyfollowed ]  : [],
+        $lang           ? [ 'lang'         => $lang ]          : [],
+        $search         ? [ 'search'       => $search ]        : []
+    ));
 
 if(!$mess || (!$logged && $beforeHpid))
     die(''); //empty so javascript client code stop making requsts

@@ -3,3 +3,6 @@
 - Fix database again and again
 - Fix edit
 Change language handling. Move common language to nerdz core. Search for not found string in template path
+Improve search support (search onlyfollowed, lang, ecc.)
+Create search page
+Create backend search engine with optimizations (searching with like sucks)

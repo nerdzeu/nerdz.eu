@@ -416,56 +416,83 @@ class messages extends phpCore
     public function getMessages($id, $options = [])
     {
         extract($options);
-        $limit        = !empty($limit);
+        $limit        = !empty($limit)  ? $limit : 10;
+        $lang         = !empty($lang)   ? $lang : false;
+        $hpid         = !empty($hpid)   ? $hpid : false;
+        $search       = !empty($search) ? $search : false;
         $project      = !empty($project);
         $inHome       = !empty($inHome);
-        $hpid         = !empty($hpid) ? $hpid : false;
-        $search       = !empty($search) ? $search : false;
+        $onlyfollowed = !empty($onlyfollowed);
 
-        if(!$id) {
-            $onlyfollowed = !empty($onlyFollowed);
-            $lang         = !empty($lang) ? $lang : false;
-            return $hpid 
-                ? $this->getNLatestBeforeHpid($limit, $hpid, $project, $onlyfollowed, $lang, $search)
-                : $this->getLatests($limit, $project, $onlyfollowed, $lang, $search); 
-        }
-
-        $blist = parent::getRealBlacklist();
-
-        if($N > 20 || $N <= 0) //massimo 20 posts, defaults
-            $N = 20;
+        $anyone       = $lang === '*';
+        $search4Lang  = false;
 
         $table = ($project ? 'groups_' : '').'posts';
 
-        if(empty($blist))
-            $glue = '';
-        else
+        $glue = $id ? ' "to" = :id ' : 'TRUE';
+        var_dump($options);
+
+        if($onlyfollowed) {
+            $followed = array_merge(parent::getFollow($_SESSION['nerdz_id']), (array)$_SESSION['nerdz_id']);
+            $glue    .= ' AND p."from" IN ('.implode(',',$followed).') ';
+        } elseif($lang && !$anyone) {
+            $languages = array_merge(parent::availableLanguages(), (array)'*');
+            if(!in_array($lang,$languages))
+                $lang = parent::isLogged() ? parent::getUserLanguage($_SESSION['nerdz_id']) : 'en';
+
+            $glue .= ' AND p.lang = :lang ';
+            $search4Lang = true;
+        }
+
+        if($limit > 20 || $limit <= 0) // at most 20 posts
+            $limit = 20;
+
+        $blist = parent::getRealBlacklist();
+
+        if(!empty($blist))
         {
             $imp_blist = implode(',',$blist);
-            $glue = 'AND p."from" NOT IN ('.$imp_blist.') ';
+            $glue .= ' AND p."from" NOT IN ('.$imp_blist.') ';
             if(!$project) {
-                $glue .= 'AND p."to" NOT IN ('.$imp_blist.') ';
+                $glue .= ' AND p."to" NOT IN ('.$imp_blist.') ';
             }
         }
 
-        $glue .= $search ? ' AND p.message ILIKE :like' : '';
+        $glue .= $search ? ' AND p.message ILIKE :like ' : '';
+        $glue .= $hpid   ? ' AND p.hpid < :hpid ' : '';
 
-        $query = 'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE "to" = :id '.$glue.' '.($hpid ? 'AND p."hpid" < :hpid' : '').' ORDER BY "hpid" DESC LIMIT '.$limit;
-        $params = array_merge( [':id' => $id ],
-                $hpid   ? [ ':hpid' => $hpid ]        : [],
-                $search ? [ ':like' => '%'.$search.'%' ] : []);
+        $join = '';
+        if($project) {
+            $join  = ' INNER JOIN "groups" g ON p.to = g.counter INNER JOIN "users"  u ON p."from" = u.counter ';
+            $glue .= ' AND (g."visible" IS TRUE ';
+
+            if(parent::isLogged())
+                $glue .= ' OR (\''.$_SESSION['nerdz_id'].'\' IN (
+                            SELECT "user" FROM groups_members WHERE "group" = p."to"
+                           )) OR \''.$_SESSION['nerdz_id'].'\' = g.owner';
+            $glue .= ') ';
+        }
+
+        var_dump($glue);
 
         if(!($result = parent::query(
             [
-                $query,
-                $params
+                'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p '.$join.' WHERE '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,
+                array_merge(
+                    $id             ? [ ':id'   => $id ]             : [],
+                    $search4Lang    ? [ ':lang' => $lang]            : [],
+                    $hpid           ? [ ':hpid' => $hpid ]           : [],
+                    $search         ? [ ':like' => '%'.$search.'%' ] : []
+                )
+
             ],db::FETCH_STMT))
           )
           return [];
+
         return $this->getPostsArray($result, $project, $inHome);
     }
 
-    public function addMessage($to,$message, $options = [])
+    public function addMessage($to, $message, $options = [])
     {
         extract($options);
         $news = !empty($news);
@@ -882,105 +909,6 @@ class messages extends phpCore
             ++$i;
         }
         return $str;
-    }
-
-    private function getLatests($limit,$project = false, $onlyfollowed = false,$lang = false, $search = false)
-    {
-        $ret = [];
-        $blist = parent::getBlacklist();
-
-        if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
-        {
-            $lang = $lang ? $lang : parent::getUserLanguage($_SESSION['nerdz_id']);
-            $glue = $lang == '*' ? 'TRUE' : "\"lang\" = '{$lang}'";
-        }
-        elseif($onlyfollowed)
-        {
-            $followed = parent::getFollow($_SESSION['nerdz_id']);
-            $followed[] = $_SESSION['nerdz_id'];
-            $glue = 'p."from" IN ('.implode(',',$followed).')';
-        }
-
-        if(!empty($blist))
-        {
-            $imp_blist = implode(',',$blist);
-            $glue.= " AND p.\"from\" NOT IN ({$imp_blist})".($project ? '' : " AND p.to NOT IN ({$imp_blist})");
-        }
-
-        $params = [];
-
-        if($search) {
-            $glue .= ' AND p.message ILIKE :like';
-            $params = [ ':like' => $search ];
-        }
-
-        $q = $project
-        ?
-        [
-            'SELECT g.visible, p.*, EXTRACT(EPOCH FROM p.time) AS time FROM "groups_posts" p INNER JOIN "groups" g ON p.to = g.counter INNER JOIN users u ON p."from" = u.counter WHERE '.$glue.' AND (g."visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = p."to")) OR \''.$_SESSION['nerdz_id'].'\' = g.owner ) ORDER BY p.hpid DESC LIMIT '.$limit,
-           $params
-        ]
-        :
-        [
-            'SELECT p.*, EXTRACT(EPOCH FROM p.time) AS time, u.lang FROM "posts" p INNER JOIN "users" u ON u.counter = p.to WHERE '.$glue.' ORDER BY p.hpid DESC LIMIT '.$limit,
-            $params
-        ];
-
-        if(!($result = parent::query($q,db::FETCH_STMT)))
-            return $ret;
-
-        return $this->getPostsArray($result,$project, true);
-    }
-
-    private function getNLatestBeforeHpid($N,$hpid,$project = false,$onlyfollowed = false,$lang = false, $search = false)
-    {
-        $ret = [];
-        $blist = parent::getBlacklist();
-        $glue = '';
-
-        if($N > 20 || $N <= 0) //massimo 20 posts, defaults
-            $N = 20;
-
-        if(($lang && !$onlyfollowed) || (!$lang && !$onlyfollowed))
-        {
-            $lang = $lang ? $lang : parent::getUserLanguage($_SESSION['nerdz_id']);
-            $glue = $lang == '*' ? 'TRUE' : "\"lang\" = '{$lang}'";
-        }
-        elseif($onlyfollowed)
-        {
-            $followed = parent::getFollow($_SESSION['nerdz_id']);
-            $followed[] = $_SESSION['nerdz_id'];
-            $glue = 'p."from" IN ('.implode(',',$followed).')';
-        }
-
-        if(!empty($blist))
-        {
-            $imp_blist = implode(',',$blist);
-            $glue.= " AND p.\"from\" NOT IN ({$imp_blist})".($project ? '' : " AND p.to NOT IN ({$imp_blist})");
-        }
-
-        $params = [ ':hpid' => $hpid ];
-
-        if($search) {
-            $glue .= ' AND p.message ILIKE :like';
-            $params = array_merge($params, [ ':like' => $search ] );
-        }
-
-        $q = $project ?
-            [
-                'SELECT g.visible, p.*, EXTRACT(EPOCH FROM p.time) AS time FROM "groups_posts" p INNER JOIN "groups" g ON p.to = g.counter INNER JOIN users u ON p."from" = u.counter WHERE '.$glue.' AND (g."visible" = TRUE OR (\''.$_SESSION['nerdz_id'].'\' IN (SELECT "user" FROM groups_members WHERE "group" = p."to")) OR \''.$_SESSION['nerdz_id'].'\' = g.owner ) AND "hpid" < :hpid ORDER BY p.hpid DESC LIMIT '.$N,
-                $params
-             ]
-             :
-             [
-                 'SELECT p.*, EXTRACT(EPOCH FROM p.time) AS time, u.lang FROM "posts" p INNER JOIN "users" u ON u.counter = p.to WHERE '.(empty($glue) ? '' : "{$glue} AND ").' "hpid" < :hpid ORDER BY p.hpid DESC LIMIT '.$N,
-                $params
-             ];
-
-        if(!($result = parent::query($q,db::FETCH_STMT)))
-            return $ret;
-
-        return $this->getPostsArray($result,$project, true);
     }
 
     private function getPostsArray($result,$project, $inHome = false)

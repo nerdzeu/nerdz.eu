@@ -21,7 +21,14 @@ $vals['caniblacklist_b'] = false;
 
 if($vals['logged_b'])
 {
-    $vals['canifollow_b'] = !$core->query(array('SELECT "to" FROM "follow" WHERE "from" = :me AND "to" = :id',array(':me' => $_SESSION['nerdz_id'],':id' => $info->counter)),db::ROW_COUNT);
+    $vals['canifollow_b'] = 0 == $core->query(
+        [
+            'SELECT "to" FROM "follow" WHERE "from" = :me AND "to" = :id',
+            [
+                ':me' => $_SESSION['nerdz_id'],
+                ':id' => $info->counter
+            ]
+        ],db::ROW_COUNT);
 }
 
 $vals['privateprofile_b'] = !$info->private;
@@ -33,11 +40,21 @@ if($enter)
     $vals['gravatarurl_n'] = (new gravatar())->getURL($info->counter);
 
     $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/onErrorImg.php';
-    $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://www.nerdz.eu/' : $info->website;
+    $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.SITE_HOST : $info->website;
 
     if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$vals['website4link_n']))
         $vals['website4link_n'] = 'http://'.$vals['website4link_n'];
 
+    $ida = [ ':id' => $info->counter ];
+
+    if(!($o = $core->query(
+        [
+            'SELECT EXTRACT(EPOCH FROM "registration_time") AS registration_time from "users" WHERE "counter" = :id',
+            $ida
+        ],db::FETCH_OBJ)))
+            die($core->lang('ERROR'));
+
+    $vals['registrationtime_n'] = $core->getDateTime($o->registration_time);
     $vals['username_n'] = $info->username;
     $vals['username4link_n'] = phpCore::userLink($info->username);
     $vals['lang_n'] = $core->getUserLanguage($info->counter);
@@ -49,22 +66,30 @@ if($enter)
     list($year, $month, $day) = explode('-',$info->birth_date);
     $vals['birthdate_n'] = $day.'/'.$month.'/'.$year;
 
-    $ida = array(':id' => $info->counter);
-
     $apc_name = 'count_comments_'.$info->counter.SITE_HOST;
 
     if(!apc_exists($apc_name))
     {
 
-        if(!($o = $core->query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',$ida),db::FETCH_OBJ)))
+        if(!($o = $core->query(
+            [
+                'SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',
+                $ida
+            ],db::FETCH_OBJ)
+        ))
             die($core->lang('ERROR'));
 
         $n = $o->cc;
 
-        if(!($o = $core->query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',$ida),db::FETCH_OBJ)))
+        if(!($o = $core->query(
+            [
+                'SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',
+                $ida
+            ],db::FETCH_OBJ)
+        ))
             die($core->lang('ERROR'));
 
-        $n+=$o->cc;
+        $n += $o->cc;
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/stuff.class.php';
         $a = stuff::stupid($n);
         $a['n'] = $n;
@@ -80,7 +105,12 @@ if($enter)
 
     $vals['totalcomments_n'] = $a['n'];
 
-    if(!($o = $core->query(array('SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',$ida),db::FETCH_OBJ)))
+    if(!($o = $core->query(
+        [
+            'SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',
+            $ida
+        ],db::FETCH_OBJ)
+    ))
         die($core->lang('ERROR'));
 
     $vals['lastvisit_n'] = $core->getDateTime($o->last);
@@ -142,7 +172,12 @@ if($enter)
                 unset($vals['interests_a'][$qid]);
         }
 
-    if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',$ida),db::FETCH_STMT)))
+    if(!($r = $core->query(
+        [
+            'SELECT "name" FROM "groups" WHERE "owner" = :id',
+            $ida
+        ],db::FETCH_STMT)
+    ))
         die($core->lang('ERROR'));
 
     $vals['ownerof_a'] = [];
@@ -154,7 +189,12 @@ if($enter)
         ++$i;
     }
 
-    if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',$ida),db::FETCH_STMT)))
+    if(!($r = $core->query(
+        [
+            'SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',
+            $ida
+        ],db::FETCH_STMT)
+    ))
         die($core->lang('ERROR'));
 
     $vals['memberof_a'] = [];
@@ -166,7 +206,12 @@ if($enter)
         ++$i;
     }
 
-    if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."group" WHERE "user" = :id',$ida),db::FETCH_STMT)))
+    if(!($r = $core->query(
+        [
+            'SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."group" WHERE "user" = :id',
+            $ida
+        ],db::FETCH_STMT)
+    ))
         die($core->lang('ERROR'));
 
     $vals['userof_a'] = [];
@@ -196,7 +241,16 @@ if($enter)
     $found = false;
     if($vals['singlepost_b'])
     {
-        if(!($post = $core->query(array('SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array(':pid' => $pid, ':id' => $info->counter)),db::FETCH_OBJ)))
+        if(!($post = $core->query(
+            [
+                'SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',
+                array_merge(
+                   [ ':pid' => $pid ],
+                   $ida
+                )
+            ]
+               ,db::FETCH_OBJ)
+           ))
         {
             $core->getTPL()->assign('banners_a',$vals['banners_a']);
             $core->getTPL()->draw('profile/postnotfound');
