@@ -19,6 +19,9 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!$hpid)
             die($core->jsonResponse('error',$core->lang('ERROR')));
 
+        if ($core->query(array('SELECT * FROM BLACKLIST, (SELECT "from", "to" FROM POSTS WHERE hpid = ?) AS X WHERE BLACKLIST."from" NOT IN (X."from", X."to") AND BLACKLIST."to" = ?'), array($hpid,$_SESSION['nerdz_id']), db::ROW_COUNT))
+            die($core->jsonResponse('error', $core->lang('ERROR')));
+
         $r = $core->addComment($hpid,$_POST['message']);
 
         if($r === false)
