@@ -5,13 +5,13 @@ $core = new Messages();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
- 
+
 if(!$core->refererControl())
     die($core->jsonResponse('error','CSRF'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
-    case 'add':            
+    case 'add':
         $to = intval(isset($_POST['to']) ? $_POST['to'] : 0);
         if($to <= 0)
             $to = $_SESSION['id'];
@@ -20,7 +20,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             $core->addMessage($to,isset($_POST['message']) ? $_POST['message'] : '')
         ));
     break;
-    
+
     case 'del':
         if(    !isset($_SESSION['delpost']) || empty($_POST['hpid']) || ($_SESSION['delpost'] != $_POST['hpid']) || !$core->deleteMessage($_POST['hpid']) )
             die($core->jsonResponse('error',$core->lang('ERROR')));
@@ -31,7 +31,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $_SESSION['delpost'] = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
         die($core->jsonResponse('ok',$core->lang('ARE_YOU_SURE')));
     break;
-    
+
     case 'get':
         if(
             empty($_POST['hpid']) ||
@@ -39,7 +39,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
           )
             die($core->jsonResponse('error',$core->lang('ERROR').'2'));
     break;
-    
+
     case 'edit':
         if(    empty($_POST['hpid']) || !$core->editMessage($_POST['hpid'],$_POST['message']) )
             die($core->jsonResponse('error',$core->lang('ERROR')));

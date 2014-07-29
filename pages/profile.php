@@ -29,6 +29,14 @@ if($vals['logged_b'])
                 ':id' => $info->counter
             ]
         ],Db::ROW_COUNT);
+
+    $vals['caniblacklist_b'] = 0 == $core->query(
+        [
+            'SELECT "to" FROM "blacklist" WHERE "from" = :me',
+            [
+                ':me' => $_SESSION['nerdz_id']
+            ]
+        ], db::ROW_COUNT);
 }
 
 $vals['privateprofile_b'] = !$info->private;
