@@ -3,7 +3,7 @@ namespace NERDZ\Core;
 /*
  * Classe per la creazione di immagini di errore
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 final class ErrorImg extends Core
 {

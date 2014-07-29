@@ -1,4 +1,6 @@
 <?php
+namespace NERDZ\Core;
+
 /**
  * File: Browser.php
  * Author: Chris Schuld (http://chrisschuld.com/)
@@ -6,7 +8,7 @@
  * @version 1.9
  * @package PegasusPHP
  * Amnended by: Paolo Galeone - for nerdz.eu
-
+ *
  * Copyright (C) 2008-2010 Chris Schuld  (chris@chrisschuld.com)
  *
  * This program is free software; you can redistribute it and/or

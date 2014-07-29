@@ -1,11 +1,6 @@
 <?php
 namespace NERDZ\Core;
 
-// Use of composer autoloader
-//$loader = require 'vendor/autoload.php';
-
-//$loader->add(__NAMESPACE__,  __DIR__);
-
 class Autoloader
 {
     public static function load($class) {
@@ -27,12 +22,17 @@ class Autoloader
         // append with .class.php
         $file = $base_dir . strtolower(str_replace('\\', '/', $relative_class)) . '.class.php';
 
-        // if the file is readable and exists, require it
+
+
+        // if the file is readable and exists, require_once it
         if (is_readable($file)) {
-            require $file;
+            require_once $file;
         }
     }
 }
 
 spl_autoload_register(__NAMESPACE__ . '\\Autoloader::load');
+
+// Define NERDZ constants
+Config::init();
 ?>

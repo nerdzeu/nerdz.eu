@@ -7,7 +7,7 @@ namespace NERDZ\Core;
  * Inoltre, gestisce la minimizzazione e la compressione dei file css e javascript che i template useranno
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 final class TemplateConfig
 {
@@ -27,8 +27,8 @@ final class TemplateConfig
     public function getTemplateVars($page = null)
     {
         $templatepath = $_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/template.values";
-        $cachename = "tpl-{$this->tpl_no}-vars".SITE_HOST;
-        $cachevaluestime = "tpl-{$this->tpl_no}-values-time".SITE_HOST;
+        $cachename = "tpl-{$this->tpl_no}-vars".Config\SITE_HOST;
+        $cachevaluestime = "tpl-{$this->tpl_no}-values-time".Config\SITE_HOST;
 
         $control = false;
 
@@ -152,7 +152,7 @@ final class TemplateConfig
                 unset($path);
                 return;
             }
-            if (!\NERDZ\Config\MINIFICATION_ENABLED)
+            if (!Config\MINIFICATION_ENABLED)
             {
                 $path .= '?'.filemtime($userfile); //force cache refresh if file is changed
                 return;

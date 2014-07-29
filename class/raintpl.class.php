@@ -1,8 +1,4 @@
 <?php
-namespace NERDZ\Core;
-
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/config/constants.inc.php';
-
 /**
  *  RainTPL
  *  -------
@@ -13,9 +9,13 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/config/constants.inc.php';
  *    
  *     Modified a lots of times by: Paolo Galeone
  *
- *     @Note: ho totalmente rimosso la cache, in quanto è impossibile usarla con tutto il dinamismo di nerdz
- *            ma ovviamente rimane la compilazione dei template
+ *  @note NERDZ is tool dynamic, cache removed. Added to NERDZ\Core namespace.
+ *  Now RainTPL is integrated with the NERDZ language support
  */
+
+namespace NERDZ\Core;
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 final class RainTPL
 {
@@ -38,7 +38,7 @@ final class RainTPL
      *
      * @var string
      */
-    //static $base_url = STATIC_DOMAIN;
+    //static $base_url = Config\STATIC_DOMAIN;
     private $base_url = '';
 
     /**
@@ -110,12 +110,12 @@ final class RainTPL
         if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //ssl
         {
             $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/ssltmp/';
-            $this->base_url = 'https://'.SITE_HOST;
+            $this->base_url = 'https://'.Config\SITE_HOST;
         }
         else
         {
             $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/tmp/';
-            $this->base_url = STATIC_DOMAIN;
+            $this->base_url = Config\STATIC_DOMAIN;
         }
     }
 
@@ -163,9 +163,7 @@ final class RainTPL
         }
 
 
-        // Cache is off and, return_string is false
-        // Rain just echo the template
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+        // Cache is off and return_string is false, Rain just echo the template
         $core = new Core();
         if(!$return_string)
         {
@@ -260,7 +258,7 @@ final class RainTPL
         $template_code = preg_replace_callback ( "/##XML(.*?)XML##/s", array($this, 'xml_reSubstitution'), $template_code ); 
 
         //compile template
-        $template_compiled = "<?php if(!class_exists('raintpl') || !isset(\$core) ){die;}?>" . $this->compileTemplate( $template_code, $tpl_basedir );
+        $template_compiled = "<?php if(!class_exists('raintpl') || !isset(\$core) ){die('core not set');}?>" . $this->compileTemplate( $template_code, $tpl_basedir );
         
 
         // fix the php-eating-newline-after-closing-tag-problem
@@ -840,7 +838,7 @@ final class RainTPL
 /**
  * Basic Rain tpl exception.
  */
-class RainTpl_Exception extends Exception
+class RainTpl_Exception extends \Exception
 {
     /**
      * Path of template file with error.

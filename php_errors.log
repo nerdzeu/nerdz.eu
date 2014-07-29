@@ -1,0 +1,107 @@
+[29-Jul-2014 12:28:04 Europe/Rome] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/nessuno/nerdz_env/nerdz/class/raintpl.class.php on line 174
+[29-Jul-2014 12:28:04 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:28:04 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:28:04 Europe/Rome] PHP   2. NERDZ\Core\Core->__construct() /home/nessuno/nerdz_env/nerdz/home.php:7
+[29-Jul-2014 12:28:04 Europe/Rome] PHP   3. spl_autoload_call() /home/nessuno/nerdz_env/nerdz/home.php:47
+[29-Jul-2014 12:28:04 Europe/Rome] PHP   4. NERDZ\Core\Autoloader::load() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:28:42 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:28:42 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:28:42 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:28:42 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:28:42 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:28:42 Europe/Rome] PHP   4. require_once() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:169
+[29-Jul-2014 12:28:42 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:28:42 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:28:42 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:28:42 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:28:42 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:28:42 Europe/Rome] PHP   4. require_once() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:169
+[29-Jul-2014 12:29:21 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:29:21 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:29:21 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:29:21 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:29:21 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:29:21 Europe/Rome] PHP   4. require_once() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:169
+[29-Jul-2014 12:29:21 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:29:21 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:29:21 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:29:21 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:29:21 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:29:21 Europe/Rome] PHP   4. require_once() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:169
+[29-Jul-2014 12:29:57 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 20
+[29-Jul-2014 12:29:57 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:29:57 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:29:57 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:29:57 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:29:57 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:29:57 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:35
+[29-Jul-2014 12:33:21 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:33:21 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:33:21 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:33:21 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:33:21 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:33:22 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:33:22 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:33:23 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:33:23 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:33:23 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:33:23 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:33:23 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:33:23 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:33:23 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:35:19 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:35:19 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:35:19 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:35:19 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:35:19 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:35:19 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:35:19 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37
+[29-Jul-2014 12:36:30 Europe/Rome] PHP Fatal error:  Class 'NERDZ\Core\csstidy' not found in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 22
+[29-Jul-2014 12:36:30 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:36:30 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/home.php:0
+[29-Jul-2014 12:36:30 Europe/Rome] PHP   2. NERDZ\Core\TemplateConfig->getTemplateVars() /home/nessuno/nerdz_env/nerdz/home.php:18
+[29-Jul-2014 12:36:30 Europe/Rome] PHP   3. NERDZ\Core\TemplateConfig->validatePath() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:114
+[29-Jul-2014 12:36:30 Europe/Rome] PHP   4. NERDZ\Core\Minification::minifyTemplateFile() /home/nessuno/nerdz_env/nerdz/class/templateconfig.class.php:170
+[29-Jul-2014 12:36:30 Europe/Rome] PHP   5. NERDZ\Core\Minification::minifyCss() /home/nessuno/nerdz_env/nerdz/class/minification.class.php:37

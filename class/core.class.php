@@ -1,7 +1,9 @@
 <?php
 namespace NERDZ\Core;
-require_once 'config/constants.inc.php';
 use NERDZ\Core\Config;
+use PDO;
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 // Usage of redis to share sessions with other applications
 if(Config\REDIS_ENABLED)
@@ -36,8 +38,8 @@ class Core
 
         $this->browser = new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
-        if($this->browser->isMobile() && isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== MOBILE_HOST)
-            die(header('Location: http://'.MOBILE_HOST.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')));
+        if($this->browser->isMobile() && isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== Config\MOBILE_HOST)
+            die(header('Location: http://'.Config\MOBILE_HOST.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')));
 
         $this->autoLogin(); //set nerdz_template value on autologin (according to mobile or destktop version)
         $this->lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['id']) : $this->getBrowserLanguage();
@@ -68,7 +70,7 @@ class Core
     {
         // we don't worrie about language file modifications, since this ones shouldn't occur often
         $nullPage = !$page;
-        $cache = "language-file-{$this->lang}-{$this->tpl_no}".SITE_HOST.'-'.( $nullPage ? 'default' : $page );
+        $cache = "language-file-{$this->lang}-{$this->tpl_no}".Config\SITE_HOST.'-'.( $nullPage ? 'default' : $page );
         if(apc_exists($cache))
             $_LANG = unserialize(apc_fetch($cache));
         else
@@ -96,7 +98,7 @@ class Core
 
     public function isMobile()
     {
-        return isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == MOBILE_HOST;
+        return isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == Config\MOBILE_HOST;
     }
 
     public function getSiteName()
@@ -107,9 +109,9 @@ class Core
     public function getSafeCookieDomainName()
     {
         // use a simple algorithm to determine the common parts between
-        // MOBILE_HOST and SITE_HOST.
-        $mobile_host = explode ('.', MOBILE_HOST);
-        $site_host   = explode ('.', SITE_HOST);
+        // Config\MOBILE_HOST and Config\SITE_HOST.
+        $mobile_host = explode ('.', Config\MOBILE_HOST);
+        $site_host   = explode ('.', Config\SITE_HOST);
         $chost       = [];
         for ($i = 0; $i < min (count ($site_host), count ($mobile_host)); $i++)
         {
@@ -278,7 +280,7 @@ class Core
     public function availableLanguages($long = null)
     {
         //qui non ci imteressiamo se il file delle lingue è stato modificato, in tal caso si attende che scada la cache affinché si aggiorni, non si forza
-        $cache = 'AvailableLanguages'.SITE_HOST;
+        $cache = 'AvailableLanguages'.Config\SITE_HOST;
         if(apc_exists($cache))
         {
             $ret = unserialize(apc_fetch($cache));
@@ -694,8 +696,8 @@ class Core
 
     public function refererControl()
     {
-        //no needs to check if referrer is nerdz.eu since nerdz.eu is redirect by the server to SITE_HOST
-        return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],array(SITE_HOST,MOBILE_HOST));
+        //no needs to check if referrer is nerdz.eu since nerdz.eu is redirect by the server to Config\SITE_HOST
+        return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],array(Config\SITE_HOST,Config\MOBILE_HOST));
     }
 
     public function getCsrfToken($n = '')
@@ -822,7 +824,7 @@ class Core
 
     public static function getVersion()
     {
-        $cache = 'NERDZVersion' . SITE_HOST;
+        $cache = 'NERDZVersion' . Config\SITE_HOST;
         if (apc_exists ($cache))
             return apc_fetch ($cache);
         if (!is_dir ($_SERVER['DOCUMENT_ROOT'] . '/.git') ||

@@ -2,7 +2,7 @@
 
 ob_start('ob_gzhandler');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/pushed-php-client/pushed.class.php';
 
 function jsonResponse($object) {

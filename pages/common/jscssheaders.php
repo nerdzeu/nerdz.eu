@@ -1,8 +1,11 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core;
+use NERDZ\Core\Config;
 // Displays the stuff contained in the <head> tag.
 $logged = $core->isLogged();
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';
-$uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
+$uagdata = (new Core\Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
 $tno = $core->getTemplate();
 /* BEGIN MOBILE_META_TAGS */
 if ($core->isMobile()) { ?>
@@ -11,7 +14,7 @@ if ($core->isMobile()) { ?>
 <?php
 } /* END MOBILE_META_TAGS */
 $is_ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-$static_domain = $is_ssl ? '' : STATIC_DOMAIN;
+$static_domain = $is_ssl ? '' : Config\STATIC_DOMAIN;
 /* BEGIN WINDOWS_META_TAGS */
 if ($uagdata['platform'] == 'Windows' && (float)$uagdata['version'] >= 10) {
 ?>
@@ -74,8 +77,8 @@ echo unserialize(apc_fetch('tracking_js'));
 /* BEGIN SSL_VARIABLES (used by the JS API) */
 ?>
         var Nssl = {
-            login:     <?=LOGIN_SSL_ONLY ? 'true' : 'false'?>,
-            domain:    "<?=HTTPS_DOMAIN?>"
+            login:     <?=Config\LOGIN_SSL_ONLY ? 'true' : 'false'?>,
+            domain:    "<?=Config\HTTPS_DOMAIN?>"
         };
 <?php
 /* END SSL_VARIABLES */
@@ -109,6 +112,6 @@ if ($logged && ($blist = $core->getBlacklist()))
 }
 else { ?> </script> <?php }
 /* END BLACKLIST_STUFF */
-if ($logged && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ))) && !empty($o->userscript))
+if ($logged && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Core\Db::FETCH_OBJ))) && !empty($o->userscript))
     echo '<script type="application/javascript" src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
 ?>

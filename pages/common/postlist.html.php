@@ -1,12 +1,12 @@
 <?php
-// require $prj, $truncate, $path variables
+// require_once $prj, $truncate, $path variables
 if(!isset($prj, $truncate, $path))
     die('$prj, $truncate, $path required');
 
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 ob_start(array('Core','minifyHtml'));
 

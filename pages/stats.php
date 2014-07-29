@@ -18,7 +18,7 @@ if(apc_exists('nerdz_stats'))
     $ret = unserialize(apc_fetch('nerdz_stats'));
 else
 {
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
     $core = new Core();
 
     $queries = [

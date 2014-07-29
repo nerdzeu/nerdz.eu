@@ -1,6 +1,6 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 $core = new Core();
     
 if($core->isLogged())

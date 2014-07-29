@@ -1,10 +1,12 @@
 <?php
-    ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-    
-    $core = new Core();
-    $tplcfg = $core->getTemplateCfg();
-    ob_start(array('Core','minifyHtml'));
+ob_start('ob_gzhandler');
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+
+use NERDZ\Core\Core;
+
+$core = new Core();
+$tplcfg = $core->getTemplateCfg();
+ob_start(array('NERDZ\Core\Core','minifyHtml'));
 ?>
 <!DOCTYPE html>
 <html lang="en">

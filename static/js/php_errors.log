@@ -1,0 +1,220 @@
+[29-Jul-2014 12:15:10 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:15:10 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:15:10 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:15:10 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:15:10 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:15:10 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:15:10 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:15:10 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:18:45 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:18:45 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:18:45 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:18:45 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:18:45 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:18:45 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:18:45 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:18:45 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:22:00 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:22:00 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:22:00 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:22:00 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:22:00 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:22:00 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:22:00 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:22:00 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:23:39 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:23:39 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:23:39 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:23:39 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:23:39 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:23:39 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:23:39 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:23:39 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:23:59 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:23:59 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:23:59 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:23:59 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:23:59 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:23:59 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:23:59 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:23:59 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:14 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:14 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:14 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:14 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:14 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:14 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:14 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:14 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:14 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:14 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:14 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:14 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:14 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:14 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:14 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:14 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:15 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:15 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:15 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:15 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:15 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:15 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:15 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:15 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:15 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:15 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:15 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:15 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:15 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:15 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:15 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:15 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:24 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:24 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:24 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:24 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:24 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:24 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:24 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:24 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:24 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:24 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:24 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:24 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:24:24 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:24:24 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:24:24 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:24:24 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:25:49 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:25:49 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:25:49 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:25:49 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:25:49 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:25:49 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:25:49 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:25:49 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:46 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:46 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:46 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:46 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:46 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:46 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:46 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:46 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:46 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:46 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:46 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:46 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:46 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:46 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:46 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:46 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:47 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:47 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:52 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:52 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:52 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:52 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:26:52 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:26:52 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:26:52 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:26:52 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:27 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:27 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:27 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:27 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:27 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:27 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:27 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:27 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:28 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:28 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:55 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:55 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:55 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:55 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:55 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:55 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:55 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:55 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:55 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:55 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:55 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:55 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:27:55 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:27:55 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:27:55 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:27:55 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:28:11 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:28:11 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:28:11 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:28:11 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:28:11 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:28:11 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:28:11 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:28:11 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:28:25 Europe/Rome] PHP Warning:  require_once(config/constants.inc.php): failed to open stream: No such file or directory in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:28:25 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:28:25 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:28:25 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:28:25 Europe/Rome] PHP Fatal error:  require_once(): Failed opening required 'config/constants.inc.php' (include_path='.:/usr/share/pear') in /home/nessuno/nerdz_env/nerdz/class/minification.class.php on line 6
+[29-Jul-2014 12:28:25 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:28:25 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:28:25 Europe/Rome] PHP   2. require_once() /home/nessuno/nerdz_env/nerdz/static/js/api.php:5
+[29-Jul-2014 12:37:32 Europe/Rome] PHP Fatal error:  Undefined constant 'NERDZ\Config\MINIFICATION_ENABLED' in /home/nessuno/nerdz_env/nerdz/static/js/api.php on line 10
+[29-Jul-2014 12:37:32 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:37:32 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:37:52 Europe/Rome] PHP Fatal error:  Undefined constant 'NERDZ\Config\MINIFICATION_ENABLED' in /home/nessuno/nerdz_env/nerdz/static/js/api.php on line 10
+[29-Jul-2014 12:37:52 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:37:52 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:39:21 Europe/Rome] PHP Fatal error:  Undefined constant 'NERDZ\Config\MINIFICATION_ENABLED' in /home/nessuno/nerdz_env/nerdz/static/js/api.php on line 10
+[29-Jul-2014 12:39:21 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:39:21 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0
+[29-Jul-2014 12:39:26 Europe/Rome] PHP Fatal error:  Undefined constant 'NERDZ\Config\MINIFICATION_ENABLED' in /home/nessuno/nerdz_env/nerdz/static/js/api.php on line 10
+[29-Jul-2014 12:39:26 Europe/Rome] PHP Stack trace:
+[29-Jul-2014 12:39:26 Europe/Rome] PHP   1. {main}() /home/nessuno/nerdz_env/nerdz/static/js/api.php:0

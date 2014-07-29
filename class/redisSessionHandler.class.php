@@ -2,6 +2,7 @@
 namespace NERDZ\Core;
 //First we load the Predis autoloader
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
+use Predis;
 
 Predis\Autoloader::register();
 
@@ -15,10 +16,11 @@ Predis\Autoloader::register();
  * @date            2012-04-11
  * @author          deisss
  * @licence         LGPLv3
- *
+ * 
+ * @other           Improved version to support namespace and included in NERDZ\Core namespace (Paolo Galeone [ nessuno@nerdz.eu ] )
  * This class is used to store session data with redis, it store in json the session to be used more easily in Node.JS
  */
-class redisSessionHandler implements SessionHandlerInterface
+class redisSessionHandler implements \SessionHandlerInterface
 {
     private $host = '127.0.0.1';
     private $port = 6379;

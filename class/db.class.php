@@ -2,9 +2,11 @@
 namespace NERDZ\Core;
 use PDO;
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
+
 class Db
 {
-    public $Dbh;
+    public $dbh;
     private static $instance;
 
     const NO_ERRSTR      = '';
@@ -19,36 +21,42 @@ class Db
 
     private function __construct()
     {
-        require 'config/constants.inc.php';
-        $this->Dbh = new PDO('pgsql:host='.POSTGRESQL_HOST.';Dbname='.POSTGRESQL_DATA_NAME.';port='.POSTGRESQL_PORT, POSTGRESQL_USER, POSTGRESQL_PASS);
-        $this->Dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
-        $this->Dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+        $this->dbh = new PDO(
+            'pgsql:host='.Config\POSTGRESQL_HOST.
+            ';dbname='.Config\POSTGRESQL_DATA_NAME.
+            ';port='.Config\POSTGRESQL_PORT,
+            Config\POSTGRESQL_USER,
+            Config\POSTGRESQL_PASS
+        );
+
+        $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
+        $this->dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
         // Fetch the IDs for special profiles/projects
         $specialIds = null;
         try
         {
-            $stmt = $this->Dbh->query('SELECT * FROM special_users');
+            $stmt = $this->dbh->query('SELECT * FROM special_users');
             $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         }
         catch(PDOException $e) {
             die($e->getTraceAsString());
         }
 
-        define('USERS_NEWS', $specialIds['GLOBAL_NEWS']);
-        define('DELETED_USERS',$specialIds['DELETED']);
+        Config::add('USERS_NEWS', $specialIds['GLOBAL_NEWS']);
+        Config::add('DELETED_USERS',$specialIds['DELETED']);
 
         try
         {
-            $stmt = $this->Dbh->query('SELECT * FROM special_groups');
+            $stmt = $this->dbh->query('SELECT * FROM special_groups');
             $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         }
         catch(PDOException $e) {
             die($e->getTraceAsString());
         }
 
-        define('ISSUE_BOARD',$specialIds['ISSUE']);
-        define('PROJECTS_NEWS',$specialIds['GLOBAL_NEWS']);
+        Config::add('ISSUE_BOARD',$specialIds['ISSUE']);
+        Config::add('PROJECTS_NEWS',$specialIds['GLOBAL_NEWS']);
     }
 
     private static function getInstance()
@@ -61,7 +69,7 @@ class Db
 
     public static function getDB()
     {
-        return self::getInstance()->Dbh;
+        return self::getInstance()->dbh;
     }
 }
 

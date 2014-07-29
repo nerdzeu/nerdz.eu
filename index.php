@@ -1,14 +1,16 @@
 <?php
-    ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-    
-    $core = new Core();
-    $tplcfg = $core->getTemplateCfg();
+ob_start('ob_gzhandler');
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
-    if($core->isLogged())
-        die(header('Location: home.php'));
+use NERDZ\Core\Core;
+   
+$core = new Core();
+$tplcfg = $core->getTemplateCfg();
 
-    ob_start(array('Core','minifyHtml'));
+if($core->isLogged())
+    die(header('Location: home.php'));
+
+ob_start(array('Core','minifyHtml'));
 
 ?>
 <!DOCTYPE html>
@@ -30,9 +32,9 @@
     <body>
         <div id="body">
 <?php
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
 ?>
         </div>
     </body>

@@ -3,7 +3,7 @@ namespace NERDZ\Core;
 /*
  * Classe per la gestione di Gravatar
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 class Gravatar extends Core
 {
