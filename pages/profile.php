@@ -22,6 +22,7 @@ $vals['caniblacklist_b'] = false;
 if($vals['logged_b'])
 {
     $vals['canifollow_b'] = !$core->query(array('SELECT "to" FROM "follow" WHERE "from" = :me AND "to" = :id',array(':me' => $_SESSION['nerdz_id'],':id' => $info->counter)),db::ROW_COUNT);
+    $vals['caniblacklist_b'] = !$core->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :me', array(':me' => $_SESSION['nerdz_id'])), db::ROW_COUNT);
 }
 
 $vals['privateprofile_b'] = !$info->private;

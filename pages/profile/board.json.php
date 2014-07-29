@@ -5,17 +5,20 @@ $core = new messages();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
- 
+
 if(!$core->refererControl())
     die($core->jsonResponse('error','CSRF'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
-    case 'add':            
+    case 'add':
         $to = intval(isset($_POST['to']) ? $_POST['to'] : 0);
         if($to <= 0)
             $to = $_SESSION['nerdz_id'];
-    
+
+        if ($core->query(array('SELECT * FROM BLACKLIST WHERE "from" = ? AND "to" = ?', array($_SESSION['nerdz_id'], $to)), db::ROW_COUNT))
+            die($core->jsonResponse('error', $core->lang('ERROR')));
+
         $retval = $core->addMessage($to,isset($_POST['message']) ? $_POST['message'] : '');
         if($retval === 0)
         {
@@ -26,7 +29,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         else if($retval === false)
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
-    
+
     case 'del':
         if(    !isset($_SESSION['nerdz_delpost']) || empty($_POST['hpid']) || ($_SESSION['nerdz_delpost'] != $_POST['hpid']) || !$core->deleteMessage($_POST['hpid']) )
             die($core->jsonResponse('error',$core->lang('ERROR')));
@@ -37,7 +40,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $_SESSION['nerdz_delpost'] = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
         die($core->jsonResponse('ok',$core->lang('ARE_YOU_SURE')));
     break;
-    
+
     case 'get':
         if(
             empty($_POST['hpid']) ||
@@ -45,7 +48,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
           )
             die($core->jsonResponse('error',$core->lang('ERROR').'2'));
     break;
-    
+
     case 'edit':
         if(    empty($_POST['hpid']) || !$core->editMessage($_POST['hpid'],$_POST['message']) )
             die($core->jsonResponse('error',$core->lang('ERROR')));
