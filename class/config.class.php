@@ -5,6 +5,8 @@
  */
 namespace NERDZ\Core;
 
+//define('DEBUG', 1);
+
 use NERDZ\Core\Config\Variables;
 
 class Config
@@ -78,6 +80,8 @@ class Config
     public static function add($key, $value)
     {
         define(__NAMESPACE__.'\\Config\\'.$key, $value);
+        if(defined('DEBUG'))
+            echo __NAMESPACE__.'\\Config\\', $key, ' => ' , $value, "\n";
     }
 }
 ?>
