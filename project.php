@@ -1,12 +1,12 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
      
-    $core = new phpCore();
-    $project = new project();
-    $messages = new messages();
+    $core = new Core();
+    $project = new Project();
+    $Messages = new Messages();
     $tplcfg = $core->getTemplateCfg();
     
     $gid = isset($_GET['gid']) && is_numeric($_GET['gid']) ? $_GET['gid'] : false;
@@ -27,7 +27,7 @@
             $found = true;
             $name = $info->name;
             if($pid && !$info->private && $info->visible)
-                if(!($post = $core->query(array('SELECT "message" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),db::FETCH_OBJ)))
+                if(!($post = $core->query(array('SELECT "message" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),Db::FETCH_OBJ)))
                 {
                     $post = new stdClass();
                     $post->message = '';
@@ -37,9 +37,9 @@
     }
     else
         $name = 'Create';
-    ob_start(array('phpCore','minifyHtml'));
+    ob_start(array('Core','minifyHtml'));
 
-    $a = explode(' ',$messages->parseNewsMessage($messages->stripTags(str_replace("\n",' ',$post->message))));
+    $a = explode(' ',$Messages->parseNewsMessage($Messages->stripTags(str_replace("\n",' ',$post->message))));
 
     $i = 25;
     while((isset($a[$i])))

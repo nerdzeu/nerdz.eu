@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/utils.class.php';
-$utils = new utils();
+$utils = new Utils();
 $ret = [];
 $vals = [];
 
@@ -8,7 +8,7 @@ $cache = 'nerdz_stats'.SITE_HOST;
 
 function createArray(&$core, &$ret, $query, $position) {
 
-    if(!($o = $core->query($query, db::FETCH_OBJ)))
+    if(!($o = $core->query($query, Db::FETCH_OBJ)))
         $ret[$position] = -1;
     else
         $ret[$position] = $o->cc;
@@ -19,7 +19,7 @@ if(apc_exists('nerdz_stats'))
 else
 {
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-    $core = new phpCore();
+    $core = new Core();
 
     $queries = [
         0 => 'SELECT COUNT(counter) AS cc FROM users',

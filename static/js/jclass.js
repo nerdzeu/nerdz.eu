@@ -413,7 +413,7 @@ N.json.profile = function()
      */
     this.noNotifyFromUserInPost = function(jObj,done)
     {
-        this.post('nonotify.json.php?action=add',jObj,function(d) {
+        this.post('noNotification.json.php?action=add',jObj,function(d) {
             done(d);
         });
     };
@@ -425,7 +425,7 @@ N.json.profile = function()
      */
     this.noNotifyForThisPost = function(jObj,done)
     {
-        this.post('nonotify.json.php?action=add',jObj,function(d) {
+        this.post('noNotification.json.php?action=add',jObj,function(d) {
             done(d);
         });
     };
@@ -438,7 +438,7 @@ N.json.profile = function()
      */
     this.reNotifyFromUserInPost = function(jObj,done)
     {
-        this.post('nonotify.json.php?action=del',jObj,function(d) {
+        this.post('noNotification.json.php?action=del',jObj,function(d) {
             done(d);
         });
     };
@@ -450,7 +450,7 @@ N.json.profile = function()
      */
     this.reNotifyForThisPost = function(jObj,done)
     {
-        this.post('nonotify.json.php?action=del',jObj,function(d) {
+        this.post('noNotification.json.php?action=del',jObj,function(d) {
             done(d);
         });
     };
@@ -704,7 +704,7 @@ N.json.project = function()
      */
     this.noNotifyFromUserInPost = function(jObj,done)
     {
-        this.post('nonotify.json.php?action=add',jObj,function(d) {
+        this.post('noNotification.json.php?action=add',jObj,function(d) {
             done(d);
         });
     };
@@ -716,7 +716,7 @@ N.json.project = function()
      */
     this.noNotifyForThisPost = function(jObj,done)
     {
-        this.post('nonotify.json.php?action=add',jObj,function(d) {
+        this.post('noNotification.json.php?action=add',jObj,function(d) {
             done(d);
         });
     };
@@ -729,7 +729,7 @@ N.json.project = function()
      */
     this.reNotifyFromUserInPost = function(jObj,done)
     {
-        this.post('nonotify.json.php?action=del',jObj,function(d) {
+        this.post('noNotification.json.php?action=del',jObj,function(d) {
             done(d);
         });
     };
@@ -741,7 +741,7 @@ N.json.project = function()
      */
     this.reNotifyForThisPost = function(jObj,done)
     {
-        this.post('nonotify.json.php?action=del',jObj,function(d) {
+        this.post('noNotification.json.php?action=del',jObj,function(d) {
             done(d);
         });
     };
@@ -940,7 +940,7 @@ N.html = function()
     this.getNotifications = function(done, doNotDelete)
     {
         var datJson = ( typeof doNotDelete !== 'undefined' && doNotDelete === true ) ? { doNotDelete: true } : {};
-        this.post('/pages/profile/notify.html.php', datJson, function(d) {
+        this.post('/pages/profile/Notification.html.php', datJson, function(d) {
             done(d);
         });
         // trigger the notification change event in case someone clicks on the counter
@@ -1276,11 +1276,11 @@ N.html.pm = function()
     };
     
     /**
-     * get the list of new pms
+     * get the list of new Pmss
      */
     this.getNotifications = function(done)
     {
-        this.post('notify.html.php',{},function(d) {
+        this.post('Notification.html.php',{},function(d) {
             done(d);
         });
     };
@@ -1482,11 +1482,11 @@ $(document).ready(function() {
     });
 
 
-    var $pmCounter = $('#pmcounter'), $notifyCounter = $('#notifycounter');
+    var $pmCounter = $('#pmcounter'), $NotificationCounter = $('#Notificationcounter');
 
     // If the browser supports SSE
     if(typeof(EventSource) !== "undefined") {
-        var notificationSource = new EventSource("/pages/profile/notifyEvent.json.php");
+        var notificationSource = new EventSource("/pages/profile/NotificationEvent.json.php");
         notificationSource.addEventListener("pm", function(e) {
             var obj = JSON.parse(e.data);
             var sval = obj.status === 'ok' ? obj.message : '0';
@@ -1496,7 +1496,7 @@ $(document).ready(function() {
 
         notificationSource.addEventListener("notification", function(e) {
             var obj = JSON.parse(e.data);
-            $notifyCounter.html (obj.message);
+            $NotificationCounter.html (obj.message);
             handleUpdate ('notification', obj.message);
         });
 
@@ -1511,7 +1511,7 @@ $(document).ready(function() {
 
         // runs every 16 seconds, updates the PM counter
         var updatePmCounter = function() {
-                N.json.post ('/pages/pm/notify.json.php', {}, function (obj) {
+                N.json.post ('/pages/pm/Notification.json.php', {}, function (obj) {
                     var sval = obj.status === 'ok' ? obj.message : '0';
                     $pmCounter.html (sval);
                     handleUpdate ('pm', sval);
@@ -1522,8 +1522,8 @@ $(document).ready(function() {
         
         // runs every 12 seconds, updates the notifications counter
         var updateNotifyCounter = function() {
-                N.json.post ('/pages/profile/notify.json.php', {}, function (obj) {
-                    $notifyCounter.html (obj.message);
+                N.json.post ('/pages/profile/Notification.json.php', {}, function (obj) {
+                    $NotificationCounter.html (obj.message);
                     handleUpdate ('notification', obj.message);
                 });
             };

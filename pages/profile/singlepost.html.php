@@ -2,11 +2,11 @@
 //necessita di $hpid e $draw SEMPRE
 //questa pagina viene sempre inclusa, quindi non necessita di ob_start e altri include che tanto fanno gli altri file (ma tanto usiamo require once che è meglio per star sicuri)
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
-ob_start(array('phpCore','minifyHtml'));
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+ob_start(array('Core','minifyHtml'));
 
-$core = new messages();
-$comments = new comments();
+$core = new Messages();
+$comments = new Comments();
 
 if(empty($hpid) || !($o = $core->getMessage($hpid)))
     die($core->lang('ERROR'));
@@ -21,8 +21,8 @@ $singlepostvals['revisions_n'] = $core->getRevisionsNumber($hpid);
 $singlepostvals['thumbs_n'] = $core->getThumbs($hpid);
 $singlepostvals['uthumb_n'] = $core->getUserThumb($hpid);
 $singlepostvals['pid_n'] = $o->pid;
-$singlepostvals['from4link_n'] = phpCore::userLink($from);
-$singlepostvals['to4link_n'] = phpCore::userLink($to);
+$singlepostvals['from4link_n'] = Core::userLink($from);
+$singlepostvals['to4link_n'] = Core::userLink($to);
 $singlepostvals['fromid_n'] = $o->from;
 $singlepostvals['toid_n'] = $o->to;
 $singlepostvals['from_n'] = $from;

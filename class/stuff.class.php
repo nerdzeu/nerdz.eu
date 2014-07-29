@@ -1,10 +1,11 @@
 <?php
+namespace NERDZ\Core;
 /* 
  * Classe statica che gestisce la "roba" di nerdz.
  * Le cose imbecilli che variano al variare di alcuni semplici parametri, saranno incluse qui
  */
 
-final class stuff
+final class Stuff
 {
     public static function stupid($n)
     {

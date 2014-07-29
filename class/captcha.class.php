@@ -2,13 +2,15 @@
 /*
  * Classe per la creazione e il controllo di un semplice captcha
  */
+namespace NERDZ\Core;
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
 final class Captcha
 {
     private function generate()
     {
-        $_SESSION['nerdz_captcha'] = $this->randomString(CAPTCHA_LEVEL);
+        $_SESSION['captcha'] = $this->randomString(CAPTCHA_LEVEL);
     }
 
     public function show()
@@ -24,7 +26,7 @@ final class Captcha
         $image = imagecreate(90,30);
         $background_color = imagecolorallocate($image,0,0,0);
         $textcolor = imagecolorallocate($image,$red,$green,$blue);
-        imagestring($image,5,18,8,$_SESSION['nerdz_captcha'],$textcolor);
+        imagestring($image,5,18,8,$_SESSION['captcha'],$textcolor);
         for($i=0;$i<20;++$i)
         {
             $x1 = rand(1,80);
@@ -40,9 +42,9 @@ final class Captcha
 
     public function check($var)
     {
-        if(!isset($_SESSION['nerdz_captcha']))
+        if(!isset($_SESSION['captcha']))
             return false;
-        $c = $var == $_SESSION['nerdz_captcha'];
+        $c = $var == $_SESSION['captcha'];
         return $c;
     }
 

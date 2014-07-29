@@ -1,4 +1,5 @@
 <?php
+namespace NERDZ\Core;
 //First we load the Predis autoloader
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
 

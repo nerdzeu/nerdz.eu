@@ -1,10 +1,11 @@
 <?php
+namespace NERDZ\Core;
 /*
- * Classe per la gestione di gravatar
+ * Classe per la gestione di Gravatar
  */
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-class gravatar extends phpCore
+class Gravatar extends Core
 {
     public function __construct()
     {
@@ -13,10 +14,10 @@ class gravatar extends phpCore
 
     public function getURL($id)
     {
-        if(!($o = parent::query(array('SELECT "email" FROM "users","profiles" WHERE "users"."counter" = ? AND "profiles"."counter" = ?',array($id, $id)),db::FETCH_OBJ)))
-            return 'https://www.gravatar.com/avatar/0';
+        if(!($o = parent::query(array('SELECT "email" FROM "users","profiles" WHERE "users"."counter" = ? AND "profiles"."counter" = ?',array($id, $id)),Db::FETCH_OBJ)))
+            return 'https://www.Gravatar.com/avatar/0';
 
-        return 'https://www.gravatar.com/avatar/'.md5(strtolower($o->email));
+        return 'https://www.Gravatar.com/avatar/'.md5(strtolower($o->email));
     }
 }
 ?>

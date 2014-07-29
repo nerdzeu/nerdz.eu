@@ -1,32 +1,31 @@
 <?php
-require_once 'db.class.php';
-require_once 'raintpl.class.php';
-require_once 'templatecfg.class.php';
-require_once 'browser.class.php';
+namespace NERDZ\Core;
+require_once 'config/constants.inc.php';
+use NERDZ\Core\Config;
 
-//Per la condivisione delle sessioni (tramite redis) con node.js. L'inclusione ha session_start();
-if(REDIS_ENABLED)
+// Usage of redis to share sessions with other applications
+if(Config\REDIS_ENABLED)
     require_once 'redisSessionHandler.class.php';
 else
     session_start();
 
 if(isset($_GET['id']) && !is_numeric($_GET['id']) && !is_array($_GET['id']))
-    $_GET['id'] = (new phpCore())->getUserId(trim($_GET['id']));
+    $_GET['id'] = (new Core())->getUserId(trim($_GET['id']));
 
-class phpCore
+class Core
 {
     private $db;
     private $tpl;
     private $lang;
     private $tpl_no;
-    private $templateCfg;
+    private $templateConfig;
     private $browser;
 
     public function __construct()
     {
         try
         {
-            $this->db = db::getDB();
+            $this->db = Db::getDB();
         }
         catch(PDOException $e)
         {
@@ -37,32 +36,32 @@ class phpCore
 
         $this->browser = new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
-        if($this->browser->isMobile())
+        if($this->browser->isMobile() && isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== MOBILE_HOST)
             die(header('Location: http://'.MOBILE_HOST.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')));
 
         $this->autoLogin(); //set nerdz_template value on autologin (according to mobile or destktop version)
-        $this->lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['nerdz_id']) : $this->getBrowserLanguage();
+        $this->lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['id']) : $this->getBrowserLanguage();
 
         $this->tpl = new RainTPL();
-        $this->tpl->configure('tpl_dir',"{$_SERVER['DOCUMENT_ROOT']}/tpl/{$_SESSION['nerdz_template']}/");
+        $this->tpl->configure('tpl_dir',"{$_SERVER['DOCUMENT_ROOT']}/tpl/{$_SESSION['template']}/");
 
         $this->tpl_no = $this->tpl->getActualTemplateNumber();
 
-        $this->templateCfg = new templateCfg($this);
+        $this->templateConfig = new TemplateConfig($this);
 
-        if($this->isLogged() && (($motivation = $this->isInBanList($_SESSION['nerdz_id']))))
+        if($this->isLogged() && (($motivation = $this->isInBanList($_SESSION['id']))))
         {
             require_once $_SERVER['DOCUMENT_ROOT'].'/data/bannedUser.php';
             die();
         }
 
         $idiots = [];
-        if(!empty($idiots) && $this->isLogged() && in_array($_SESSION['nerdz_id'], $idiots))
+        if(!empty($idiots) && $this->isLogged() && in_array($_SESSION['id'], $idiots))
             $this->logout();
     }
 
     public function getTemplateCfg() {
-        return $this->templateCfg;
+        return $this->templateConfig;
     }
 
     public function lang($index,$page = null)
@@ -74,7 +73,7 @@ class phpCore
             $_LANG = unserialize(apc_fetch($cache));
         else
         {
-            $langFiles = $this->templateCfg->getTemplateVars($page)['langs'];
+            $langFiles = $this->templateConfig->getTemplateVars($page)['langs'];
 
             $default = $langFiles['default'];
 
@@ -184,7 +183,7 @@ class phpCore
                      ':user' => $username,
                      ':pass' => $shaPass
                  ]
-             ],db::FETCH_OBJ))
+             ],Db::FETCH_OBJ))
          )
             return false;
 
@@ -196,13 +195,13 @@ class phpCore
             setcookie ('nerdz_u',  md5($shaPass), $exp_time, '/', $chost, false, true);
         }
 
-        $_SESSION['nerdz_logged'] = true;
-        $_SESSION['nerdz_id'] = $o->counter;
-        $_SESSION['nerdz_username'] = $o->username;
-        $_SESSION['nerdz_lang'] = $this->getUserLanguage($o->counter);
-        $_SESSION['nerdz_board_lang'] = $this->getBoardLanguage($o->counter);
-        $_SESSION['nerdz_template'] = $this->getTemplate($o->counter);
-        $_SESSION['nerdz_mark_offline'] = $setOffline;
+        $_SESSION['logged'] = true;
+        $_SESSION['id'] = $o->counter;
+        $_SESSION['username'] = $o->username;
+        $_SESSION['lang'] = $this->getUserLanguage($o->counter);
+        $_SESSION['board_lang'] = $this->getBoardLanguage($o->counter);
+        $_SESSION['template'] = $this->getTemplate($o->counter);
+        $_SESSION['mark_offline'] = $setOffline;
 
         return true;
     }
@@ -210,14 +209,14 @@ class phpCore
     /**
      * Executes a query.
      * Its return value varies according to the $action parameter, which should
-     * be a constant member of db.
+     * be a constant member of Db.
      *
      * @param string $query
      * @param int $action
      * @return null|boolean|object
      *
      */
-    public function query($query,$action = db::NO_RETURN, $all = false)
+    public function query($query,$action = Db::NO_RETURN, $all = false)
     {
         $stmt = null; //PDO statement
 
@@ -235,10 +234,10 @@ class phpCore
         {
             $this->dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
 
-            if($action == db::FETCH_ERRNO) {
+            if($action == Db::FETCH_ERRNO) {
                 return $stmt->errorInfo()[1];
             }
-            if($action == db::FETCH_ERRSTR) {
+            if($action == Db::FETCH_ERRSTR) {
                 return $stmt->errorInfo()[2];
             }
 
@@ -249,20 +248,20 @@ class phpCore
 
         switch($action)
         {
-            case db::FETCH_ERRNO:
-                return db::NO_ERRNO;
+            case Db::FETCH_ERRNO:
+                return Db::NO_ERRNO;
 
-            case db::FETCH_STMT:
+            case Db::FETCH_STMT:
                 return $stmt;
 
-            case db::FETCH_OBJ: {
+            case Db::FETCH_OBJ: {
                 return ($all === false) ? $stmt->fetch(PDO::FETCH_OBJ) : $stmt->fetchAll(PDO::FETCH_OBJ);
             }
 
-            case db::ROW_COUNT:
+            case Db::ROW_COUNT:
                 return $stmt->rowCount();
 
-            case db::NO_RETURN:
+            case Db::NO_RETURN:
                 return true;
         }
 
@@ -271,7 +270,7 @@ class phpCore
 
     private function isInBanList($user)
     {
-        if(!($o = $this->query(array('SELECT "motivation" FROM "ban" WHERE "user" = :user',array(':user' => $user)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "motivation" FROM "ban" WHERE "user" = :user',array(':user' => $user)),Db::FETCH_OBJ)))
             return false;
         return $o->motivation;
     }
@@ -359,7 +358,7 @@ class phpCore
         if(!$this->isLogged())
             return false;
 
-        return $this->query(array('UPDATE "users" SET "board_lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO) == db::NO_ERRNO;
+        return $this->query(array('UPDATE "users" SET "board_lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO) == Db::NO_ERRNO;
     }
 
     public function updateUserLanguage($lang)
@@ -367,31 +366,31 @@ class phpCore
         if(!$this->isLogged())
             return false;
 
-        return $this->query(array('UPDATE "users" SET "lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO) == db::NO_ERRNO;
+        return $this->query(array('UPDATE "users" SET "lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO) == Db::NO_ERRNO;
     }
 
     public function getBoardLanguage($id)
     {
-        if($this->isLogged() && $id == $_SESSION['nerdz_id'])
+        if($this->isLogged() && $id == $_SESSION['id'])
         {
-            if(empty($_SESSION['nerdz_board_lang']))
+            if(empty($_SESSION['board_lang']))
             {
-                if(!($o = $this->query(array('SELECT "board_lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+                if(!($o = $this->query(array('SELECT "board_lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
                     return false;
 
                 if(empty($o->board_lang))
                 {
-                    $_SESSION['nerdz_board_lang'] = $this->getBrowserLanguage();
-                    if(!$this->updateBoardLanguage($_SESSION['nerdz_board_lang']))
+                    $_SESSION['board_lang'] = $this->getBrowserLanguage();
+                    if(!$this->updateBoardLanguage($_SESSION['board_lang']))
                         return false;
                 }
                 else
-                    $_SESSION['nerdz_board_lang'] = $o->board_lang;
+                    $_SESSION['board_lang'] = $o->board_lang;
             }
-            return $_SESSION['nerdz_board_lang'];
+            return $_SESSION['board_lang'];
         }
 
-        if(!($o = $this->query(array('SELECT "board_lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "board_lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return false;
 
         return empty($o->board_lang) ? $this->getBrowserLanguage() : $o->board_lang;
@@ -399,26 +398,26 @@ class phpCore
 
     public function getUserLanguage($id)
     {
-        if($this->isLogged() && $id == $_SESSION['nerdz_id'])
+        if($this->isLogged() && $id == $_SESSION['id'])
         {
-            if(empty($_SESSION['nerdz_lang']))
+            if(empty($_SESSION['lang']))
             {
-                if(!($o = $this->query(array('SELECT "lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+                if(!($o = $this->query(array('SELECT "lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
                     return false;
 
                 if(empty($o->lang))
                 {
-                    $_SESSION['nerdz_lang'] = $this->getBrowserLanguage();
-                    if(!$this->updateUserLanguage($_SESSION['nerdz_lang']))
+                    $_SESSION['lang'] = $this->getBrowserLanguage();
+                    if(!$this->updateUserLanguage($_SESSION['lang']))
                         return false;
                 }
                 else
-                    $_SESSION['nerdz_lang'] = $o->lang;
+                    $_SESSION['lang'] = $o->lang;
             }
-            return $_SESSION['nerdz_lang'];
+            return $_SESSION['lang'];
         }
 
-        if(!($o = $this->query(array('SELECT "lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return false;
 
         return empty($o->lang) ? $this->getBrowserLanguage() : $o->lang;
@@ -426,14 +425,14 @@ class phpCore
 
     public function getFollow($id)
     {
-        if(!($stmt = $this->query(array('SELECT "to" FROM "follow" WHERE "from" = :id',array(':id' => $id)),db::FETCH_STMT)))
+        if(!($stmt = $this->query(array('SELECT "to" FROM "follow" WHERE "from" = :id',array(':id' => $id)),Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function getFriends($id) {
-        if(!($stmt = $this->query(array('select "to" from (select "to" from follow where "from" = :id) as f inner join (select "from" from follow where "to" = :id) as e on f.to = e.from', array(':id' => $id)), db::FETCH_STMT)))
+        if(!($stmt = $this->query(array('select "to" from (select "to" from follow where "from" = :id) as f inner join (select "from" from follow where "to" = :id) as e on f.to = e.from', array(':id' => $id)), Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -441,21 +440,21 @@ class phpCore
 
     public function isOnline($id)
     {
-        if(!($o = $this->query(array('SELECT ("last" + INTERVAL \'300 SECONDS\') > NOW() AS online,"viewonline" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT ("last" + INTERVAL \'300 SECONDS\') > NOW() AS online,"viewonline" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return false;
         return $o->viewonline && $o->online;
     }
 
     public function closedProfile($id)
     {
-        if(! ( $o = $this->query(array('SELECT "closed" FROM "profiles" WHERE "counter" = ?',array($id)),db::FETCH_OBJ)))
+        if(! ( $o = $this->query(array('SELECT "closed" FROM "profiles" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))
             return false;
         return $o->closed;
     }
 
     public function getRealBlacklist()
     {
-        if((!$this->isLogged())||(!($r = $this->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT))))
+        if((!$this->isLogged())||(!($r = $this->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT))))
             return [];
 
         return $r->fetchAll(PDO::FETCH_COLUMN);
@@ -464,12 +463,12 @@ class phpCore
     public function getBlacklist()
     {
         $ret = $blist = [];
-        if((!$this->isLogged())||(!($r = $this->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT))))
+        if((!$this->isLogged())||(!($r = $this->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT))))
             return $ret;
 
         $blist = $r->fetchAll(PDO::FETCH_COLUMN);
 
-        if((!($r = $this->query(array('SELECT DISTINCT "from" FROM "blacklist" WHERE "to" = :id' ,array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT))))
+        if((!($r = $this->query(array('SELECT DISTINCT "from" FROM "blacklist" WHERE "to" = :id' ,array(':id' => $_SESSION['id'])),Db::FETCH_STMT))))
             return $ret;
 
         return array_merge($blist, $r->fetchAll(PDO::FETCH_COLUMN));
@@ -477,7 +476,7 @@ class phpCore
 
     public function isInBlacklist($cattivo,$buono)
     {
-        if(!($stmt = $this->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :from',array(':from' => $buono)),db::FETCH_STMT)))
+        if(!($stmt = $this->query(array('SELECT "to" FROM "blacklist" WHERE "from" = :from',array(':from' => $buono)),Db::FETCH_STMT)))
             return false;
 
         return in_array($cattivo,$stmt->fetchAll(PDO::FETCH_COLUMN));
@@ -485,7 +484,7 @@ class phpCore
 
     public function getWhitelist($id)
     {
-        if(!($stmt = $this->query(array('SELECT "to" FROM "whitelist" WHERE "from" = :id',array(':id' => $id)),db::FETCH_STMT)))
+        if(!($stmt = $this->query(array('SELECT "to" FROM "whitelist" WHERE "from" = :id',array(':id' => $id)),Db::FETCH_STMT)))
             return false;
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -493,34 +492,34 @@ class phpCore
 
     public function isLogged()
     {
-        return (isset($_SESSION['nerdz_logged']) && $_SESSION['nerdz_logged']);
+        return (isset($_SESSION['logged']) && $_SESSION['logged']);
     }
 
     public function getUserObject($id)
     {
-        return $this->query(array('SELECT * FROM "users" u JOIN "profiles" p ON u.counter = p.counter WHERE p.counter = :id',array(':id' => $id)),db::FETCH_OBJ);
+        return $this->query(array('SELECT * FROM "users" u JOIN "profiles" p ON u.counter = p.counter WHERE p.counter = :id',array(':id' => $id)),Db::FETCH_OBJ);
     }
 
     public function getProjectName($gid)
     {
-        if(!($o = $this->query(array('SELECT "name" FROM "groups" WHERE "counter" = :gid',array(':gid' => $gid)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "name" FROM "groups" WHERE "counter" = :gid',array(':gid' => $gid)),Db::FETCH_OBJ)))
             return false;
         return $o->name;
     }
 
     public function getEmail($id)
     {
-        if(!($o = $this->query(array('SELECT "email" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "email" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return false;
         return $o->email;
     }
 
     public function getUsername($id=null)
     {
-        if($this->isLogged() && (($id===null) || $id == $_SESSION['nerdz_id']))
-            return $_SESSION['nerdz_username'];
+        if($this->isLogged() && (($id===null) || $id == $_SESSION['id']))
+            return $_SESSION['username'];
 
-        if(!($o = $this->query(array('SELECT "username" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "username" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return false;
         return $o->username;
     }
@@ -528,9 +527,9 @@ class phpCore
     public function getUserId($username = null)
     {
         if($this->isLogged() && ($username === null))
-            return $_SESSION['nerdz_id'];
+            return $_SESSION['id'];
 
-        if(!($id = $this->query(array('SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',array(':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8'))),db::FETCH_OBJ)))
+        if(!($id = $this->query(array('SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',array(':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8'))),Db::FETCH_OBJ)))
             return false;
 
         return $id->counter;
@@ -559,19 +558,19 @@ class phpCore
 
         if(!$id && $logged)
         {
-            if(!isset($_SESSION['nerdz_template']))
+            if(!isset($_SESSION['template']))
             {
-                if(!($o = $this->query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+                if(!($o = $this->query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
                     return false;
 
-                $_SESSION['nerdz_template'] = $o->mobile_template;
-                return $_SESSION['nerdz_template'];
+                $_SESSION['template'] = $o->mobile_template;
+                return $_SESSION['template'];
             }
             else
-                return $_SESSION['nerdz_template'];
+                return $_SESSION['template'];
         }
 
-        if(!($o = $this->query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return '1';
 
         return $o->mobile_template;
@@ -590,19 +589,19 @@ class phpCore
 
         if(!$id && $logged)
         {
-            if(!isset($_SESSION['nerdz_template']))
+            if(!isset($_SESSION['template']))
             {
-                if(!($o = $this->query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+                if(!($o = $this->query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
                     return false;
 
-                $_SESSION['nerdz_template'] = $o->template;
-                return $_SESSION['nerdz_template'];
+                $_SESSION['template'] = $o->template;
+                return $_SESSION['template'];
             }
             else
-                return $_SESSION['nerdz_template'];
+                return $_SESSION['template'];
         }
 
-        if(!($o = $this->query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return '0';
 
         return $o->template;
@@ -613,17 +612,17 @@ class phpCore
         if(!$this->isLogged())
             return  'UTC';
 
-        if(!$id && isset($_SESSION['nerdz_timezone']))
-            return $_SESSION['nerdz_timezone'];
+        if(!$id && isset($_SESSION['timezone']))
+            return $_SESSION['timezone'];
 
         if(!$id)
-            $id = $_SESSION['nerdz_id'];
+            $id = $_SESSION['id'];
 
-        if(!($o = $this->query(array('SELECT "timezone" FROM "users" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "timezone" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return 'UTC';
 
-        if($id ==  $_SESSION['nerdz_id'])
-             $_SESSION['nerdz_timezone'] = $o->timezone;
+        if($id ==  $_SESSION['id'])
+             $_SESSION['timezone'] = $o->timezone;
 
         return $o->timezone;
     }
@@ -633,26 +632,26 @@ class phpCore
         if(!$this->isLogged())
             return  'Y/m/d, H:i';
 
-        if(!$id && isset($_SESSION['nerdz_dateformat']))
-            return $_SESSION['nerdz_dateformat'];
+        if(!$id && isset($_SESSION['dateformat']))
+            return $_SESSION['dateformat'];
 
         if(!$id)
-            $id = $_SESSION['nerdz_id'];
+            $id = $_SESSION['id'];
 
-        if($id ==  $_SESSION['nerdz_id'] && isset($_SESSION['nerdz_dateformat']))
-             return $_SESSION['nerdz_dateformat'];
+        if($id ==  $_SESSION['id'] && isset($_SESSION['dateformat']))
+             return $_SESSION['dateformat'];
 
-        if(!($o = $this->query(array('SELECT "dateformat" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),db::FETCH_OBJ)))
+        if(!($o = $this->query(array('SELECT "dateformat" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return 'Y/m/d, H:i';
 
-        $_SESSION['nerdz_dateformat'] = $o->dateformat;
+        $_SESSION['dateformat'] = $o->dateformat;
 
         return $o->dateformat;
     }
 
     public function getDateTime($timestamp)
     {
-        $timezone = $this->getUserTimezone($this->isLogged() ? $_SESSION['nerdz_id'] : 0);
+        $timezone = $this->getUserTimezone($this->isLogged() ? $_SESSION['id'] : 0);
 
         $date = new DateTime();
         $date->setTimestamp($timestamp);
@@ -673,7 +672,7 @@ class phpCore
         if($tmp == $yesterday->format($format4compare))
             return $this->lang('YESTERDAY').' - '.$date->format('H:i');
 
-        return $date->format( $this->getUserDateformat($this->isLogged() ? $_SESSION['nerdz_id'] : 0) );
+        return $date->format( $this->getUserDateformat($this->isLogged() ? $_SESSION['id'] : 0) );
     }
 
     private function autoLogin()
@@ -682,12 +681,12 @@ class phpCore
             return false;
 
         //This session variable MUST be defined either if logged or not
-        $_SESSION['nerdz_template'] = $this->getTemplate();
+        $_SESSION['template'] = $this->getTemplate();
 
         //If there are no cookie, no autologin
         if(!isset($_COOKIE['nerdz_u']) || !isset($_COOKIE['nerdz_id']) || !is_numeric($_COOKIE['nerdz_id']))
             return false;
-        if(($obj = $this->query(array('SELECT "username","password" FROM "users" WHERE "counter" = :id',array(':id' => $_COOKIE['nerdz_id'])),db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u'])
+        if(($obj = $this->query(array('SELECT "username","password" FROM "users" WHERE "counter" = :id',array(':id' => $_COOKIE['nerdz_id'])),Db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u'])
             return $this->login($obj->username, $obj->password, true, false, true);
 
         return false;
@@ -701,15 +700,15 @@ class phpCore
 
     public function getCsrfToken($n = '')
     {
-        $_SESSION['nerdz_tok_'.$n] = isset($_SESSION['nerdz_tok_'.$n]) ? $_SESSION['nerdz_tok_'.$n] : md5(uniqid(rand(7,21)));
-        return $_SESSION['nerdz_tok_'.$n];
+        $_SESSION['tok_'.$n] = isset($_SESSION['tok_'.$n]) ? $_SESSION['tok_'.$n] : md5(uniqid(rand(7,21)));
+        return $_SESSION['tok_'.$n];
     }
 
     public function csrfControl($tok,$n = '')
     {
-        if(empty($_SESSION['nerdz_tok_'.$n]))
+        if(empty($_SESSION['tok_'.$n]))
             return false;
-        return $_SESSION['nerdz_tok_'.$n] === $tok;
+        return $_SESSION['tok_'.$n] === $tok;
     }
 
     public function limitControl($limit,$n)
@@ -739,7 +738,7 @@ class phpCore
     }
 
     public function wantsPush($id) {
-        if (!($o = $this->query(['SELECT "push" FROM "profiles" WHERE "counter" = :user',[':user' => $id]],db::FETCH_OBJ))){
+        if (!($o = $this->query(['SELECT "push" FROM "profiles" WHERE "counter" = :user',[':user' => $id]],Db::FETCH_OBJ))){
             return false;
         }
 
@@ -748,7 +747,7 @@ class phpCore
 
     public function floodPushRegControl($id) {
         //If there has been a request in the last 5 seconds, return false. Always update timer to NOW to cut off flooders.
-        if (!($o = $this->query(['SELECT EXTRACT(EPOCH FROM NOW() - "pushregtime") >= 3 AS valid FROM "profiles" WHERE "counter" = :user',[':user' => $id]],db::FETCH_OBJ))) {
+        if (!($o = $this->query(['SELECT EXTRACT(EPOCH FROM NOW() - "pushregtime") >= 3 AS valid FROM "profiles" WHERE "counter" = :user',[':user' => $id]],Db::FETCH_OBJ))) {
             return false;
         }
 
@@ -767,7 +766,7 @@ class phpCore
             $otherInfo = ': '.$otherInfo;
 
         $okRet = ['ok', 'OK'];
-        if(db::NO_ERRSTR == $msg)
+        if(Db::NO_ERRSTR == $msg)
             return $okRet;
 
         if(strpos($msg, '~') !== false) { // flood with time

@@ -3,7 +3,7 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
 
-$core = new phpCore();
+$core = new Core();
 $cptcka = new Captcha();
 
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
@@ -16,12 +16,12 @@ $email = isset($_POST['email']) ? trim($_POST['email']) : false;
 if(!$email || !filter_var($email,FILTER_VALIDATE_EMAIL))
     die($core->jsonResponse('error',$core->lang('MAIL_NOT_VALID')));
 
-if(!($obj = $core->query(array('SELECT "username","counter" FROM "users" WHERE "email" = :email',array(':email' => $email)),db::FETCH_OBJ)))
+if(!($obj = $core->query(array('SELECT "username","counter" FROM "users" WHERE "email" = :email',array(':email' => $email)),Db::FETCH_OBJ)))
     die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
 
 $pass = Captcha::randomString(MIN_LENGTH_PASS);
 
-if(db::NO_ERRNO != $core->query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),db::FETCH_ERRNO))
+if(Db::NO_ERRNO != $core->query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),Db::FETCH_ERRNO))
     die($core->jsonResponse('error',$core->lang('ERROR').': retry'));
 
 $subject = 'NERDZ PASSWORD';

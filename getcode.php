@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
-$core = new messages();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+$core = new Messages();
 
 $ncode = isset($_GET['ncode']) && is_numeric($_GET['ncode']) && intval($_GET['ncode']) > 0 ? $_GET['ncode'] : 1;
 --$ncode;
@@ -27,13 +27,13 @@ if((isset($id) || isset($gid)) && isset($_GET['pid']) && is_numeric($_GET['pid']
 if((isset($id) || isset($gid)) && isset($pid))
 {
     $new = isset($id) ? $id : $gid;
-    if(!($o = $core->query(array('SELECT "message" FROM "'.(isset($id) ? '' : 'groups_').'posts" WHERE "pid" = :pid AND "to" = :new',array(':pid' => $pid, ':new' => $new)),db::FETCH_OBJ)))
+    if(!($o = $core->query(array('SELECT "message" FROM "'.(isset($id) ? '' : 'groups_').'posts" WHERE "pid" = :pid AND "to" = :new',array(':pid' => $pid, ':new' => $new)),Db::FETCH_OBJ)))
         die('Error');
 }
 elseif(isset($pcid) || isset($gcid))
 {
     $new = isset($pcid) ? $pcid : $gcid;
-    if(!($o = $core->query(array('SELECT "message" FROM "'.(isset($pcid) ? '' : 'groups_').'comments" WHERE "hcid" = ?',array($new)),db::FETCH_OBJ)))
+    if(!($o = $core->query(array('SELECT "message" FROM "'.(isset($pcid) ? '' : 'groups_').'comments" WHERE "hcid" = ?',array($new)),Db::FETCH_OBJ)))
         die('error');
 }
 else

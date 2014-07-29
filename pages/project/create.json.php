@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
 
-$core = new project();
+$core = new Project();
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
 
@@ -18,7 +18,7 @@ if(!$cptcka->check($captcha))
 $create = true; //required by validateproject.php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateproject.php';
 
-if(db::NO_ERRNO != $core->query(
+if(Db::NO_ERRNO != $core->query(
     [
         'INSERT INTO groups ("description","owner","name") VALUES (:description,:owner,:name)',
          [
@@ -26,7 +26,7 @@ if(db::NO_ERRNO != $core->query(
              ':owner' => $group['owner'],
              ':name' => $group['name']
          ]
-     ],db::FETCH_ERRNO)
+     ],Db::FETCH_ERRNO)
  )
     die($core->jsonResponse('error',$core->lang('ERROR')));
         

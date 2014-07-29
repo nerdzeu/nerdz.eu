@@ -1,9 +1,9 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/pm.class.php';
-ob_start(array('phpCore','minifyHtml'));
+ob_start(array('Core','minifyHtml'));
 
-$core = new pm();
+$core = new Pms();
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
 
@@ -13,7 +13,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         $from = isset($_POST['from']) && is_numeric($_POST['from']) ? $_POST['from'] : false;
         $to   = isset($_POST['to']) && is_numeric($_POST['to']) ? $_POST['to'] : false;
 
-        if (!$from || !$to || !in_array ($_SESSION['nerdz_id'], array ($from, $to)))
+        if (!$from || !$to || !in_array ($_SESSION['id'], array ($from, $to)))
             die($core->lang('ERROR'));
 
         $conv = null;
@@ -26,7 +26,7 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         $doShowForm = !isset ($_POST['pmid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']);
         if (!$doShowForm && empty ($conv))
             die();
-        $vals['toid_n'] = ( $_SESSION['nerdz_id'] != $to ? $to : $from );
+        $vals['toid_n'] = ( $_SESSION['id'] != $to ? $to : $from );
         $vals['to_n'] = $core->getUsername ($vals['toid_n']);
         if (!$vals['to_n']) die ($core->lang ('ERROR'));
         $vals['list_a'] = $conv;

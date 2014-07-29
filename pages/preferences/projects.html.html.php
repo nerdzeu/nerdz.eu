@@ -1,12 +1,12 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-$project = new project();
-ob_start(array('phpCore','minifyHtml'));
+$project = new Project();
+ob_start(array('Core','minifyHtml'));
 
 $id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
 
-if(!$project->isLogged() || !$id || !($info = $project->getObject($id)) || $info->owner != $_SESSION['nerdz_id'] )
+if(!$project->isLogged() || !$id || !($info = $project->getObject($id)) || $info->owner != $_SESSION['id'] )
     die($project->lang('ERROR'));
     
 $vals = [];

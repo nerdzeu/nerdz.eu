@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$core = new phpCore();
+$core = new Core();
 
 if(!($logged = $core->isLogged()))
     die($core->lang('REGISTER'));

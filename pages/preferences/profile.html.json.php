@@ -2,7 +2,7 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-$core = new phpCore();
+$core = new Core();
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
     
@@ -28,16 +28,16 @@ $user['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])  
 $closed             = isset($_POST['closed']);
 $flag = true;
 
-if(!empty($user['website']) && !phpCore::isValidURL($user['website']))
+if(!empty($user['website']) && !Core::isValidURL($user['website']))
     die($core->jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
     
-if(!empty($user['userscript']) && !phpCore::isValidURL($user['userscript']))
+if(!empty($user['userscript']) && !Core::isValidURL($user['userscript']))
     die($core->jsonResponse('error','Userscript: '.$core->lang('INVALID_URL')));
 
 if(!empty($user['github']) && !preg_match('#^https?://(www\.)?github\.com/[a-z0-9]+$#i',$user['github']))
     die($core->jsonResponse('error','GitHub: '.$core->lang('INVALID_URL')));
 
-if(false == ($obj = $core->getUserObject($_SESSION['nerdz_id'])))
+if(false == ($obj = $core->getUserObject($_SESSION['id'])))
     die($core->jsonResponse('error',$core->lang('ERROR')));
     
 if(!empty($user['jabber']) && (false == filter_var($user['jabber'],FILTER_VALIDATE_EMAIL)))
@@ -80,27 +80,27 @@ $par = array(':interests' => $user['interests'],
              ':counter' => $obj->counter);
     
 if(
-    db::NO_ERRNO != $core->query(array('UPDATE profiles SET "interests" = :interests, "biography" = :biography, "quotes" = :quotes, "website" = :website, "dateformat" = :dateformat,
+    Db::NO_ERRNO != $core->query(array('UPDATE profiles SET "interests" = :interests, "biography" = :biography, "quotes" = :quotes, "website" = :website, "dateformat" = :dateformat,
       "github" = :github, "jabber" = :jabber, "yahoo" = :yahoo,
-      "userscript" = :userscript, "facebook" = :facebook, "twitter" = :twitter, "steam" = :steam, "skype" = :skype WHERE "counter" = :counter',$par),db::FETCH_ERRNO)
+      "userscript" = :userscript, "facebook" = :facebook, "twitter" = :twitter, "steam" = :steam, "skype" = :skype WHERE "counter" = :counter',$par),Db::FETCH_ERRNO)
  )
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
 if($closed)
 {
-    if(!$core->closedProfile($_SESSION['nerdz_id']))
-        if(db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => true, ':counter' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+    if(!$core->closedProfile($_SESSION['id']))
+        if(Db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => true, ':counter' => $_SESSION['id'])),Db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
 }
 else
-    if(db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => false, ':counter' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+    if(Db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => false, ':counter' => $_SESSION['id'])),Db::FETCH_ERRNO))
         die($core->jsonResponse('error',$core->lang('ERROR')));
 
-$_SESSION['nerdz_dateformat'] = $user['dateformat'];
+$_SESSION['dateformat'] = $user['dateformat'];
 
 if(isset($_POST['whitelist']))
 {
-    $oldlist = $core->getWhitelist($_SESSION['nerdz_id']);
+    $oldlist = $core->getWhitelist($_SESSION['id']);
 
     $m = array_filter(array_unique(explode("\n",$_POST['whitelist'])));
     $newlist = [];
@@ -109,7 +109,7 @@ if(isset($_POST['whitelist']))
         $uid = $core->getUserId(trim($v));
         if(is_numeric($uid))
         {
-            if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['nerdz_id'], ':uid' => $uid)),db::FETCH_ERRNO),array(db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
+            if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['id'], ':uid' => $uid)),Db::FETCH_ERRNO),array(Db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
                 die($core->jsonResponse('error',$core->lang('ERROR').'1'));
             $newlist[] = $uid;
         }
@@ -122,7 +122,7 @@ if(isset($_POST['whitelist']))
             $toremove[] = $val;
 
     foreach($toremove as $val)
-        if(db::NO_ERRNO != $core->query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['nerdz_id'], ':val' => $val)),db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != $core->query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['id'], ':val' => $val)),Db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR').'4'));
 }
         

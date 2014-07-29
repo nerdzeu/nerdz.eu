@@ -1,9 +1,10 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/config/constants.inc.php';
+namespace NERDZ\Core;
+use PDO;
 
-class db
+class Db
 {
-    public $dbh;
+    public $Dbh;
     private static $instance;
 
     const NO_ERRSTR      = '';
@@ -18,15 +19,16 @@ class db
 
     private function __construct()
     {
-        $this->dbh = new PDO('pgsql:host='.POSTGRESQL_HOST.';dbname='.POSTGRESQL_DATA_NAME.';port='.POSTGRESQL_PORT, POSTGRESQL_USER, POSTGRESQL_PASS);
-        $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
-        $this->dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+        require 'config/constants.inc.php';
+        $this->Dbh = new PDO('pgsql:host='.POSTGRESQL_HOST.';Dbname='.POSTGRESQL_DATA_NAME.';port='.POSTGRESQL_PORT, POSTGRESQL_USER, POSTGRESQL_PASS);
+        $this->Dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
+        $this->Dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
         // Fetch the IDs for special profiles/projects
         $specialIds = null;
         try
         {
-            $stmt = $this->dbh->query('SELECT * FROM special_users');
+            $stmt = $this->Dbh->query('SELECT * FROM special_users');
             $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         }
         catch(PDOException $e) {
@@ -38,7 +40,7 @@ class db
 
         try
         {
-            $stmt = $this->dbh->query('SELECT * FROM special_groups');
+            $stmt = $this->Dbh->query('SELECT * FROM special_groups');
             $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         }
         catch(PDOException $e) {
@@ -52,14 +54,14 @@ class db
     private static function getInstance()
     {
         if(empty(self::$instance))
-            self::$instance = new db();
+            self::$instance = new Db();
         
         return self::$instance;
     }
 
     public static function getDB()
     {
-        return self::getInstance()->dbh;
+        return self::getInstance()->Dbh;
     }
 }
 

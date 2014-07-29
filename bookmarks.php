@@ -1,14 +1,14 @@
 <?php
     ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
     
-    $core = new messages();
+    $core = new Messages();
     if(!$core->isLogged())
         die(header('Location: /'));
 
     $tplcfg = $core->getTemplateCfg();
     
-    ob_start(array('phpCore','minifyHtml'));
+    ob_start(array('Core','minifyHtml'));
 ?>
 <!DOCTYPE html>
 <html lang="en">

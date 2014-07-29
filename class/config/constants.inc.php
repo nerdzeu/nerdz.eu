@@ -3,8 +3,9 @@
  * constants.inc.php 
  * automatically defines constants and checks options in config/index.php
  */
-require_once $_SERVER['DOCUMENT_ROOT'] . '/class/config/index.php';
-if (!isset ($configuration) || !is_array ($configuration))
+namespace NERDZ\Core\Config;
+require_once __DIR__. DIRECTORY_SEPARATOR . 'index.php';
+if (!isset (\$configuration) || !is_array (\$configuration))
     trigger_error ('Invalid configuration: missing $configuration variable', E_USER_ERROR);
 
 $CONSTANTS = [
@@ -41,7 +42,7 @@ foreach ($configuration as $const_key => $const_val)
 {
     if (!isset ($CONSTANTS[$const_key]))
         trigger_error ('Unknown constant: ' . $const_key, E_USER_ERROR);
-    define ($const_key, $const_val);
+    define (__NAMESPACE__.'\\'.$const_key, $const_val);
     unset ($CONSTANTS[$const_key]);
 }
 
@@ -54,6 +55,4 @@ foreach ($CONSTANTS as $rkey => $rval)
 }
 
 define ('POSTGRESQL_DUP_KEY', 7);
-unset ($CONSTANTS, $configuration, $rkey, $rval, $const_key, $const_val);
-
 ?>

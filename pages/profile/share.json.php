@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
-$core = new messages();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+$core = new Messages();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
@@ -13,7 +13,7 @@ $url      = empty($_POST['url'])     ? false : trim($_POST['url']);
 $comment = empty($_POST['comment']) ? false : trim($_POST['comment']);
 $to      = empty($_POST['to'])         ? false : trim($_POST['to']);
 
-if(!$url || !phpCore::isValidURL($url))
+if(!$url || !Core::isValidURL($url))
     die($core->jsonResponse('error',$core->lang('INVALID_URL')));
 
 if($to)
@@ -22,9 +22,9 @@ if($to)
         die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
 }
 else
-    $to = $_SESSION['nerdz_id'];
+    $to = $_SESSION['id'];
 
-if($_SESSION['nerdz_id'] != $to)
+if($_SESSION['id'] != $to)
 {
     if($core->closedProfile($to))
         die($core->jsonResponse('error',$core->lang('CLOSED_PROFILE_DESCR')));
@@ -32,7 +32,7 @@ if($_SESSION['nerdz_id'] != $to)
     
 function share($to,$url,$message = NULL)
 {
-    $core = new messages();
+    $core = new Messages();
 
     if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$url))
         $url = "http://{$url}";
@@ -50,7 +50,7 @@ function share($to,$url,$message = NULL)
         return $core->addMessage($to,$message);
     }
 
-    $h = @get_headers($url,db::FETCH_OBJ);
+    $h = @get_headers($url,Db::FETCH_OBJ);
     if(false === $h)
         return false;
 

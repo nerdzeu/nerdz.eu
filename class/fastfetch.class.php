@@ -1,4 +1,5 @@
 <?php
+namespace NERDZ\Core;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/pm.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/fastfetcherror.class.php';
@@ -12,7 +13,7 @@ final class FastFetch {
 
     public function __construct() {
 
-        $this->mPm = new pm();
+        $this->mPm = new Pms();
 
     }
 
@@ -54,7 +55,7 @@ final class FastFetch {
                             'id' => $conversation['fromid_n'],
                             'last_message' => $result->message,
                             'last_sender' => $result->last_sender,
-                            'new_messages' => ($result->read) && ((int)$result->last_sender !== (int)$_SESSION['nerdz_id'])
+                            'new_Messages' => ($result->read) && ((int)$result->last_sender !== (int)$_SESSION['id'])
                            ];
 
                 $ret[] = $element;
@@ -70,7 +71,7 @@ final class FastFetch {
     }
 
     /**
-     * Fetches $limit messages starting with the $start-th in the conversation with user $otherId.
+     * Fetches $limit Messages starting with the $start-th in the conversation with user $otherId.
      * 
      * @param int $otherId 
      * @param int $start
@@ -97,7 +98,7 @@ final class FastFetch {
                     ':to2' => $otherId
                 ]
             ],
-            db::FETCH_OBJ,
+            Db::FETCH_OBJ,
             true 
         );
         
@@ -110,7 +111,7 @@ final class FastFetch {
             $row->timestamp = intval($row->timestamp);
         }
         
-        if(db::NO_ERRNO != 
+        if(Db::NO_ERRNO != 
             $this->mPm->query(
                 [
                     'UPDATE "pms" SET "read" = FALSE WHERE "from" = :from AND "to" = :id',
@@ -119,7 +120,7 @@ final class FastFetch {
                         ':id' => $me
                     ]
                 ],
-                db::FETCH_ERRNO
+                Db::FETCH_ERRNO
             )
         ) {
             throw new FFException(FFErrCode::SERVER_FAILURE);
@@ -139,7 +140,7 @@ final class FastFetch {
                 'SELECT counter FROM users WHERE LOWER(username) = LOWER(:user)',
                 [ ':user' => $userName ]
             ],
-            db::FETCH_OBJ
+            Db::FETCH_OBJ
         );
         
         if (!is_object($idObj)) {
@@ -149,6 +150,83 @@ final class FastFetch {
         return ['id' => $idObj->counter];
     }
 
+}
+
+/**
+    Error codes to be returned by FastFetch API.
+*/
+final class FFErrCode {
+    
+    /**
+     * Unknown error code.
+     */
+    const UNKNOWN = -0x1;
+    
+    /**
+     * Everything is good. Pretty useless.
+     */
+    const NOTHING_WRONG = 0x0;
+    
+    /**
+     * The user is not logged in.
+     */
+    const NOT_LOGGED = 0x1;
+    
+    /**
+     * The user has not provided an action.
+     */
+    const NO_ACTION = 0x2;
+    
+    /**
+     * The user has provided an invalid or unknown action.
+     */
+    const INVALID_ACTION = 0x3;
+    
+    /**
+     * The server is not passing a good moment. Please, leave him alone.
+     */
+    const SERVER_FAILURE = 0x4;
+    
+    /**
+     * The request is malformed.
+     */
+    const WRONG_REQUEST = 0x5;
+    
+    /**
+     * The user has not provided an user id to be used with the the given action.
+     */
+    const NO_OTHER_ID = 0x6;
+    
+    /**
+     * The user has provided a limit which is higher than the max.
+     */
+    const LIMIT_EXCEEDED = 0x7;
+    
+    /**
+     * The given username has not been found.
+     */
+    const USER_NOT_FOUND = 0x8;
+
+}
+
+/**
+ * Exception returned from FastFetch.
+ */
+final class FFException extends Exception {
+    
+    /**
+     * A FFErrCode.
+     * @var int
+     */
+    public $code;
+    
+    public function __construct($code) {
+       
+        parent::__construct("FFError with code $code", $code, NULL);
+        $this->mCode = $code;
+        
+    }
+    
 }
 
 ?>

@@ -3,14 +3,14 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
 
-$core = new project();
+$core = new Project();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
 
 $id = $_POST['id'] = isset($_POST['id']) && is_numeric($_POST['id']) ? trim($_POST['id']) : false;
 
-if($_SESSION['nerdz_id'] != $core->getOwnerByGid($id) || !$core->refererControl())
+if($_SESSION['id'] != $core->getOwnerByGid($id) || !$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR')));
     
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
@@ -21,7 +21,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!($capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : '')))
             die($core->jsonResponse('error',$core->lang('ERROR').': '.$core->lang('CAPTCHA')));
 
-        if(db::NO_ERRNO != $core->query(array('DELETE FROM "groups" WHERE "counter" = ?',array($id)),db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != $core->query(array('DELETE FROM "groups" WHERE "counter" = ?',array($id)),Db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     
@@ -32,7 +32,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         // Members
         $_POST['members'] = isset($_POST['members']) ? $_POST['members'] : '';
 
-        if(!($res = $core->query(array('SELECT "user" FROM groups_members where "group" = ?',array($id)),db::FETCH_STMT)))
+        if(!($res = $core->query(array('SELECT "user" FROM groups_members where "group" = ?',array($id)),Db::FETCH_STMT)))
             die($core->jsonResponse('error',$core->lang('ERROR').'2'));
 
         $oldmem = $res->fetchAll(PDO::FETCH_COLUMN);
@@ -55,19 +55,19 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         //members to add
         $toadd = array_diff($newmem, $oldmem);
         foreach($toadd as $uid) {
-            $ret = $core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),db::FETCH_ERRSTR);
+            $ret = $core->query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),Db::FETCH_ERRSTR);
 
-            if($ret != db::NO_ERRSTR)
+            if($ret != Db::NO_ERRSTR)
                 die($core->jsonDbResponse($ret, $userMap[$uid]));
         }
 
         // members to remove
         $toremove = array_diff($oldmem, $newmem);
         foreach($toremove as $val)
-            if(db::NO_ERRNO != $core->query(array('DELETE FROM groups_members WHERE "group" = :id AND "user" = :val',array(':id' => $id,':val' => $val)),db::FETCH_ERRNO))
+            if(Db::NO_ERRNO != $core->query(array('DELETE FROM groups_members WHERE "group" = :id AND "user" = :val',array(':id' => $id,':val' => $val)),Db::FETCH_ERRNO))
                 die($core->jsonResponse('error',$core->lang('ERROR').'4'));
       
-        if(db::NO_ERRNO != $core->query(
+        if(Db::NO_ERRNO != $core->query(
             [
                 'UPDATE "groups" SET "description" = :desc, "website" = :website, "photo" = :photo,
                 "private" = :private, "open" = :open, "goal" = :goal, "visible" = :visible WHERE "counter" = :id',
@@ -81,7 +81,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                     ':visible' => $group['visible'],
                     ':id'      => $id
                 ]
-            ],db::FETCH_ERRNO)
+            ],Db::FETCH_ERRNO)
         )
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;

@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
-$core = new messages();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+$core = new Messages();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
@@ -28,13 +28,13 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
     break;
     
     case 'del':
-        if(!isset($_SESSION['nerdz_delpost']) || empty($_POST['hpid']) || ($_SESSION['nerdz_delpost'] != $_POST['hpid']) || !$core->deleteMessage($_POST['hpid'], true))
+        if(!isset($_SESSION['delpost']) || empty($_POST['hpid']) || ($_SESSION['delpost'] != $_POST['hpid']) || !$core->deleteMessage($_POST['hpid'], true))
             die($core->jsonResponse('error',$core->lang('ERROR')));
-        unset($_SESSION['nerdz_delpost']);
+        unset($_SESSION['delpost']);
     break;
 
     case 'delconfirm':
-        $_SESSION['nerdz_delpost'] = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
+        $_SESSION['delpost'] = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
         die($core->jsonResponse('ok',$core->lang('ARE_YOU_SURE')));
     break;
     

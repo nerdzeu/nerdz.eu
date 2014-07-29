@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
-$core = new comments();
+$core = new Comments();
 
 if(!$core->isLogged() || empty($_GET['message']))
     $_GET['message'] = $core->lang('ERROR');

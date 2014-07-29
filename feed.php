@@ -1,10 +1,11 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/feed.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+
 ob_start('ob_gzhandler');
-ob_start(array('phpCore','minifyHtml'));
+ob_start(array('\\NERDZ\\Core\\Core','minifyHtml'));
 header('Content-type: application/rss+xml');
 
-$feed = new feed();
+$feed = new NERDZ\Core\Feed();
 
 if(isset($_GET['id']) && is_numeric($_GET['id']) && !isset($_GET['project']))
     echo $feed->getProfileFeed($_GET['id']);

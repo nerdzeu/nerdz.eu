@@ -3,10 +3,10 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
-    $core = new phpCore();
-    $tplcfg = new templateCfg($core);;
+    $core = new Core();
+    $tplcfg = new TemplateConfig($core);;
     
-    ob_start(array('phpCore','minifyHtml'));
+    ob_start(array('Core','minifyHtml'));
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$core = new phpCore();
+$core = new Core();
 
 $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 
@@ -17,9 +17,9 @@ if($core->isLogged())
             [
                 'SELECT "password" FROM "users" WHERE counter = :id',
                 [
-                    ':id' => $_SESSION['nerdz_id']
+                    ':id' => $_SESSION['id']
                 ]
-            ], db::FETCH_OBJ)
+            ], Db::FETCH_OBJ)
         ))
             die($core->jsonResponse('error',$core->lang('ERROR')));
 
@@ -146,7 +146,7 @@ foreach($user as $id => $value)
 if(count(array_filter($user)) != count($user))
     die($core->jsonResponse('error',$core->lang('ERROR').': INVALID UTF-8'));
 
-if(!$core->isLogged() && mb_strlen($user['username'],'UTF-8') >= 90) //Username with convertited entities is too long for db field
+if(!$core->isLogged() && mb_strlen($user['username'],'UTF-8') >= 90) //Username with convertited entities is too long for Db field
     die($core->jsonResponse('error',$core->lang('USERNAME_LONG')));
 
 if(isset($user['email'][350]))

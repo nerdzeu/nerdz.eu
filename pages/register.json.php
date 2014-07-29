@@ -3,7 +3,7 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-$core = new phpCore();
+$core = new Core();
 $cptcka = new Captcha();
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 
@@ -32,9 +32,9 @@ $ret = $core->query(
               ':remote_addr'     => $_SERVER['REMOTE_ADDR'],
               ':http_user_agent' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
          ]
-     ], db::FETCH_ERRSTR);
+     ], Db::FETCH_ERRSTR);
 
-if($ret != db::NO_ERRSTR)
+if($ret != Db::NO_ERRSTR)
     die($core->jsonDbResponse($ret));
 
 if(!$core->login($user['username'], $user['password']))

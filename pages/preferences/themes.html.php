@@ -1,8 +1,8 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$core = new phpCore();
-ob_start(array('phpCore','minifyHtml'));
+$core = new Core();
+ob_start(array('Core','minifyHtml'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
@@ -20,7 +20,7 @@ foreach($templates as $val)
     $vals['themes_a'][$i]['tplname_n'] = $val['name'];
     ++$i;
 }
-$vals['mytplno_n'] = $core->getTemplate($_SESSION['nerdz_id']);
+$vals['mytplno_n'] = $core->getTemplate($_SESSION['id']);
 $vals['mobile_b'] = $_SERVER['HTTP_HOST'] == MOBILE_HOST;
 
 $core->getTPL()->assign($vals);

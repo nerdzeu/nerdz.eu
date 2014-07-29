@@ -8,11 +8,11 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-ob_start(array('phpCore','minifyHtml'));
+ob_start(array('Core','minifyHtml'));
 
-$core     = new phpCore();
-$messages = new messages();
-$comments = new comments();
+$core     = new Core();
+$Messages = new Messages();
+$comments = new Comments();
 
 $logged   = $core->isLogged();
 $id       = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
@@ -43,7 +43,7 @@ if($specific) {
     $prj = $action == 'project';
 }
 
-$mess = $messages->getMessages($id,
+$mess = $Messages->getMessages($id,
     array_merge(
         [ 'project' => $prj ],
         $limit          ? [ 'limit'        => $limit ]         : [],
@@ -58,7 +58,7 @@ if(!$mess || (!$logged && $beforeHpid))
 
 $vals = [];
 $vals['count_n'] = count($mess);
-$vals['list_a'] = $messages->getPostList($mess, $prj, $truncate);
+$vals['list_a'] = $Messages->getPostList($mess, $prj, $truncate);
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw($path.'/postlist');
 ?>

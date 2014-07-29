@@ -2,14 +2,14 @@
 if(!$core->isLogged())
     die(header('Location: /'));
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Banners.class.php';
 $vals = [];
 
-$banners = (new banners())->getBanners();
-$vals['banners_a'] = [];
-shuffle($banners);
-foreach($banners as $ban)
-    $vals['banners_a'][$ban[1]] = $ban[2];
+$Banners = (new Banners())->getBanners();
+$vals['Banners_a'] = [];
+shuffle($Banners);
+foreach($Banners as $ban)
+    $vals['Banners_a'][$ban[1]] = $ban[2];
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
@@ -24,7 +24,7 @@ foreach($longlangs as $id => $val)
     ++$i;
 }
 
-$l = $core->getFollow($_SESSION['nerdz_id']);
+$l = $core->getFollow($_SESSION['id']);
 $tot = count($l);
 
 if($tot>0)
@@ -35,14 +35,14 @@ if($tot>0)
         $c = 0;
         for($i=0;$i<$tot;++$i)
         {
-            if(!($o = $core->query(array('SELECT "birth_date" FROM "users" WHERE "counter" = :id',array(':id' => $l[$i])),db::FETCH_OBJ)))
+            if(!($o = $core->query(array('SELECT "birth_date" FROM "users" WHERE "counter" = :id',array(':id' => $l[$i])),Db::FETCH_OBJ)))
             {
                 echo $core->lang('ERROR');
                 break;
             }
             $myarray[$i]['id_n'] = $l[$i];
             $myarray[$i]['username_n'] = $core->getUsername($l[$i]);
-            $myarray[$i]['username4link_n'] = phpCore::userLink($myarray[$i]['username_n']);
+            $myarray[$i]['username4link_n'] = Core::userLink($myarray[$i]['username_n']);
             $myarray[$i]['online_b'] = $core->isOnline($l[$i]);
             if($myarray[$i]['online_b'])
                 ++$c;
@@ -77,7 +77,7 @@ else
 $vals['followedtot_n'] = $tot;
 $vals['followedonlinetot_n'] = $c;
 
-if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
 $vals['ownerof_a'] = [];
@@ -85,11 +85,11 @@ $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
 {
     $vals['ownerof_a'][$i]['name_n'] = $o->name;
-    $vals['ownerof_a'][$i]['name4link_n'] = phpCore::projectLink($o->name);
+    $vals['ownerof_a'][$i]['name4link_n'] = Core::projectLink($o->name);
     ++$i;
 }
 
-if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',array(':id' => $_SESSION['nerdz_id'])),db::FETCH_STMT)))
+if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
 $vals['memberof_a'] = [];
@@ -97,7 +97,7 @@ $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
 {
     $vals['memberof_a'][$i]['name_n'] = $o->name;
-    $vals['memberof_a'][$i]['name4link_n'] = phpCore::projectLink($o->name);
+    $vals['memberof_a'][$i]['name4link_n'] = Core::projectLink($o->name);
     ++$i;
 }
 

@@ -35,7 +35,7 @@ try {
             $response = $ff->fetchConversations();
             break;
 
-        case 'messages': {
+        case 'Messages': {
 
             if (!isset($_GET['otherid']) || !is_numeric($_GET['otherid'])) {
                 throw new FFException(FFErrCode::NO_OTHER_ID);

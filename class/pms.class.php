@@ -1,10 +1,11 @@
 <?php
+namespace NERDZ\Core;
 /*
  * Classe per la gestione dei PM, i nomi sono esplicativi.
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
 
-final class pm extends messages
+final class pm extends Messages
 {
 
     public function __construct()
@@ -14,9 +15,9 @@ final class pm extends messages
 
     public function send($to,$message)
     {
-        $retVal = parent::query(array('INSERT INTO "pms" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['nerdz_id'],':to' => $to,':message' => $message)),db::FETCH_ERRSTR);
+        $retVal = parent::query(array('INSERT INTO "pms" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['id'],':to' => $to,':message' => $message)),Db::FETCH_ERRSTR);
 
-        $wentWell = $retVal == db::NO_ERRSTR;
+        $wentWell = $retVal == Db::NO_ERRSTR;
 
         if($wentWell && parent::wantsPush($to) && PUSHED_ENABLED) {
         
@@ -54,10 +55,10 @@ final class pm extends messages
                 ) AS tmp
                 GROUP BY otherid, to_read ORDER BY to_read, "lasttime" DESC',
                 [
-                    $_SESSION['nerdz_id'],
-                    $_SESSION['nerdz_id']
+                    $_SESSION['id'],
+                    $_SESSION['id']
                 ]
-            ],db::FETCH_STMT)))
+            ],Db::FETCH_STMT)))
                 return false;
     
             $times = $res = [];
@@ -65,12 +66,12 @@ final class pm extends messages
             while(($o = $rs->fetch(PDO::FETCH_OBJ)))
             {
                 $from = $this->getUsername($o->from);
-                $res[$c]['from4link_n'] = phpCore::userLink($from);
+                $res[$c]['from4link_n'] = Core::userLink($from);
                 $res[$c]['from_n'] = $from;
                 $res[$c]['datetime_n'] = parent::getDateTime($o->lasttime);
                 $res[$c]['timestamp_n'] = $o->lasttime;
                 $res[$c]['fromid_n'] = $o->from;
-                $res[$c]['toid_n'] = $_SESSION['nerdz_id'];
+                $res[$c]['toid_n'] = $_SESSION['id'];
                 $res[$c]['toread_n'] = $o->to_read;
                 $times[$c] = $o->lasttime;
                 ++$c;
@@ -90,15 +91,15 @@ final class pm extends messages
         $ret = [];
             
         if(
-                !is_numeric($fromid) || !is_numeric($toid) || !is_numeric ($pmid) || !in_array($_SESSION['nerdz_id'],array($fromid,$toid)) ||
-                !($res = parent::query(array('SELECT "message","to_read" FROM "pms" WHERE "from" = :from AND "to" = :to AND "pmid" = :pmid',array(':from' => $fromid, ':to' => $toid, ':pmid' => $pmid)),db::FETCH_STMT))
+                !is_numeric($fromid) || !is_numeric($toid) || !is_numeric ($pmid) || !in_array($_SESSION['id'],array($fromid,$toid)) ||
+                !($res = parent::query(array('SELECT "message","to_read" FROM "pms" WHERE "from" = :from AND "to" = :to AND "pmid" = :pmid',array(':from' => $fromid, ':to' => $toid, ':pmid' => $pmid)),Db::FETCH_STMT))
           )
             return false;
 
         if(($o = $res->fetch(PDO::FETCH_OBJ)))
         {
             $from = $this->getUsername($fromid);
-            $ret['from4link_n'] = phpCore::userLink($from);
+            $ret['from4link_n'] = Core::userLink($from);
             $ret['from_n'] = $from;
             $ret['datetime_n'] = parent::getDateTime($time);
             $ret['fromid_n'] = $fromid;
@@ -107,7 +108,7 @@ final class pm extends messages
             $ret['read_b'] = $o->to_read;
             $ret['pmid_n'] = $pmid;
             $ret['timestamp_n'] = $time;
-            //$ret['realto_n'] = $fromid != $_SESSION['nerdz_id'] ? $from : $this->getUsername ($toid);
+            //$ret['realto_n'] = $fromid != $_SESSION['id'] ? $from : $this->getUsername ($toid);
         }
         
         return $ret;
@@ -115,28 +116,28 @@ final class pm extends messages
         
     public function deleteConversation($from, $to)
    {
-        return is_numeric($from) && is_numeric($to) && in_array($_SESSION['nerdz_id'],array($from,$to)) && 
-            db::NO_ERRNO == parent::query(array('DELETE FROM "pms" WHERE ("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)',array($from,$to,$to,$from)),db::FETCH_ERRNO);
+        return is_numeric($from) && is_numeric($to) && in_array($_SESSION['id'],array($from,$to)) && 
+            Db::NO_ERRNO == parent::query(array('DELETE FROM "pms" WHERE ("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)',array($from,$to,$to,$from)),Db::FETCH_ERRNO);
     }
     
     public function readConversation($from, $to, $afterPmId = null, $num = null, $start = 0)
     {
         $ret = [];
         
-        if(!is_numeric($from) || !is_numeric($to) || (is_numeric ($num) && is_numeric ($start) && ($start < 0 || $start > 200 || $num < 0 || $num > 10)) /*|| !in_array($_SESSION['nerdz_id'],array($from,$to))*/)
+        if(!is_numeric($from) || !is_numeric($to) || (is_numeric ($num) && is_numeric ($start) && ($start < 0 || $start > 200 || $num < 0 || $num > 10)) /*|| !in_array($_SESSION['id'],array($from,$to))*/)
             return $ret;
         $__enableLimit = is_numeric ($num) && is_numeric ($start);
         $query = $__enableLimit ?
                         //"SELECT q.from, q.to, q.time FROM (SELECT "from", "to", "time" FROM "pms" WHERE (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid""
                         'SELECT q.from, q.to, q.time, q.pmid FROM (SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time, "pmid" FROM "pms" WHERE (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" DESC LIMIT ? OFFSET ?) AS q ORDER BY q.pmid ASC' :
                         'SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time, "pmid" FROM "pms" WHERE '.($afterPmId ? '"pmid" > ? AND ' : '').' (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" ASC';
-        if (!($res = parent::query (array ($query, ($__enableLimit ? array ($from, $to, $to, $from, $num, $start * $num) : ( $afterPmId ? array ($afterPmId, $from, $to, $to, $from) : array ($from, $to, $to, $from)))), db::FETCH_STMT)))
+        if (!($res = parent::query (array ($query, ($__enableLimit ? array ($from, $to, $to, $from, $num, $start * $num) : ( $afterPmId ? array ($afterPmId, $from, $to, $to, $from) : array ($from, $to, $to, $from)))), Db::FETCH_STMT)))
                   /*!($res = parent::query(
                     array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time FROM "pms" WHERE '.($afterPmId ? '"pmid" > ? AND ' : '').' (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" ASC',
                     $afterPmId ?
                         array($afterPmId,$from, $to,$to,$from) :
                         array($from, $to,$to,$from)
-                    ),db::FETCH_STMT)))*/
+                    ),Db::FETCH_STMT)))*/
             return $ret;
 
         $ret = $res->fetchAll(PDO::FETCH_FUNC,array($this,'read'));
@@ -146,11 +147,11 @@ final class pm extends messages
         {
             if(!($res = parent::query(
                     array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"pmid" FROM "pms" WHERE "pmid" = ? AND (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" ASC',array($afterPmId,$from, $to,$to,$from)
-                          ),db::FETCH_STMT)))
+                          ),Db::FETCH_STMT)))
                 return $ret;
             $ret = $res->fetchAll(PDO::FETCH_FUNC,array($this,'read'));
         }
-        if(db::NO_ERRNO != parent::query(array('UPDATE "pms" SET "to_read" = FALSE WHERE "from" = :from AND "to" = :id',array(':from' => $from, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != parent::query(array('UPDATE "pms" SET "to_read" = FALSE WHERE "from" = :from AND "to" = :id',array(':from' => $from, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO))
             return false;
         
         return $ret;
@@ -158,7 +159,7 @@ final class pm extends messages
 
     public function countPms ($from, $to)
     {
-        if (!is_numeric ($from) || !is_numeric ($to) || !($res = parent::query (array ('SELECT COUNT("pmid") AS pc FROM "pms" WHERE (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?))', array ($from, $to, $to, $from)), db::FETCH_OBJ)))
+        if (!is_numeric ($from) || !is_numeric ($to) || !($res = parent::query (array ('SELECT COUNT("pmid") AS pc FROM "pms" WHERE (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?))', array ($from, $to, $to, $from)), Db::FETCH_OBJ)))
             return 0;
         return $res->pc;
     }    
@@ -173,12 +174,12 @@ final class pm extends messages
                 [
                     'WITH thisconv AS (SELECT "from",time,message,to_read FROM pms WHERE("from" = :me AND "to" = :other) OR  ("from" = :otheragain AND  "to" = :meagain)) SELECT "from" as last_sender,message,to_read FROM thisconv WHERE time = (SELECT MAX(time) FROM thisconv)',
                     [
-                        ':me' => $_SESSION['nerdz_id'],
-                        ':meagain' => $_SESSION['nerdz_id'],
+                        ':me' => $_SESSION['id'],
+                        ':meagain' => $_SESSION['id'],
                         ':other' => $otherId,
                         ':otheragain' => $otherId
                     ]                    
-                ], db::FETCH_OBJ                
+                ], Db::FETCH_OBJ                
             );
             
             if (isset($res->message)) {

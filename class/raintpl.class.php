@@ -1,4 +1,5 @@
 <?php
+namespace NERDZ\Core;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/config/constants.inc.php';
 
@@ -15,7 +16,6 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/config/constants.inc.php';
  *     @Note: ho totalmente rimosso la cache, in quanto è impossibile usarla con tutto il dinamismo di nerdz
  *            ma ovviamente rimane la compilazione dei template
  */
-
 
 final class RainTPL
 {
@@ -166,7 +166,7 @@ final class RainTPL
         // Cache is off and, return_string is false
         // Rain just echo the template
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-        $core = new phpCore();
+        $core = new Core();
         if(!$return_string)
         {
             extract( $this->var, EXTR_OVERWRITE );
@@ -363,7 +363,7 @@ final class RainTPL
                                  '$tpl_dir_temp = self::$tpl_dir;' .
                                  '$tpl->assign( $this->var );' .
                                  ( !$loop_level ? null : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
-                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,db::FETCH_OBJ) != "/" ? "/" : "" ) . $template );'.
+                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,Db::FETCH_OBJ) != "/" ? "/" : "" ) . $template );'.
                                  '}' .
                                  '?>';
                 else
@@ -372,7 +372,7 @@ final class RainTPL
                                  '$tpl_dir_temp = self::$tpl_dir;' .
                                  '$tpl->assign( $this->var );' .
                                  ( !$loop_level ? '' : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
-                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,db::FETCH_OBJ) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
+                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,Db::FETCH_OBJ) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
                                  '?>';
 
             }
@@ -757,7 +757,7 @@ final class RainTPL
                                 (
                                     preg_match('#\_[n|b]$|\_a(\[.+?\])?'.$arith.'$|key[0-9]+'.$arith.'$|value[0-9]+(\[.+?\])?'.$arith.'$|counter[0-9]+'.$arith.'$#i',"$php_var$extra_var") ? //match loop variables, template variable [ boolean: _b, array: _a, nerdz values n]
                                     (
-                                         preg_match('#^\$banners_a#',"$php_var$extra_var") ?
+                                         preg_match('#^\$Banners_a#',"$php_var$extra_var") ?
                                          "isset($php_var$extra_var) ? $php_var$extra_var : ''"  :
                                          "$php_var$extra_var"
                                     ) :
@@ -774,7 +774,7 @@ final class RainTPL
     }
 
     /**
-     * Check if function is in black list (sandbox)
+     * Check if function is in black list (sanDbox)
      *
      * @param string $code
      * @param string $tag

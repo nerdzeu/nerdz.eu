@@ -1,13 +1,13 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$core = new phpCore();
-ob_start(array('phpCore','minifyHtml'));
+$core = new Core();
+ob_start(array('Core','minifyHtml'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
 
-if(!($obj = $core->query(array('SELECT * FROM "profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ)))
+if(!($obj = $core->query(array('SELECT * FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ)))
     die($core->lang('ERROR'));
 
 $vals = [];
@@ -30,9 +30,9 @@ $vals['steam_n'] = $obj->steam;
 $vals['skype_n'] = $obj->skype;
 $vals['github_n'] = $obj->github;
 $vals['userscript_n'] = $obj->userscript;
-$vals['closedprofile_b'] = $core->closedProfile($_SESSION['nerdz_id']);
+$vals['closedprofile_b'] = $core->closedProfile($_SESSION['id']);
 $vals['canshowwhitelist_b'] = $vals['closedprofile_b'];
-$wl = $core->getWhitelist($_SESSION['nerdz_id']);
+$wl = $core->getWhitelist($_SESSION['id']);
 $i = 0;
 foreach($wl as &$val)
     $vals['whitelist_a'][$i++] = $core->getUsername($val);

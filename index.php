@@ -2,13 +2,13 @@
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
     
-    $core = new phpCore();
+    $core = new Core();
     $tplcfg = $core->getTemplateCfg();
 
     if($core->isLogged())
         die(header('Location: home.php'));
 
-    ob_start(array('phpCore','minifyHtml'));
+    ob_start(array('Core','minifyHtml'));
 
 ?>
 <!DOCTYPE html>

@@ -1,8 +1,8 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/pm.class.php';
-$core = new pm();
-ob_start(array('phpCore','minifyHtml'));
+$core = new Pms();
+ob_start(array('Core','minifyHtml'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));

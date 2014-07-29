@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-$core = new project();
+$core = new Project();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
@@ -13,7 +13,7 @@ if(empty($_POST['description']) || ! is_string($_POST['description'])) //always 
     die($core->jsonResponse('error',$core->lang('MUST_COMPLETE_FORM')."\n\n".$core->lang('MISSING').":\n".$core->lang('DESCRIPTION')));
 
 $group['description'] = $_POST['description'];
-$group['owner']       = $_SESSION['nerdz_id'];
+$group['owner']       = $_SESSION['id'];
 
 //required for creation
 if(isset($create))
@@ -66,15 +66,15 @@ if(!isset($_POST['goal']))
 if(!isset($_POST['website']))
     $_POST['website'] = '';
        
-if(!empty($_POST['website']) && !phpCore::isValidURL($_POST['website']))
+if(!empty($_POST['website']) && !Core::isValidURL($_POST['website']))
     die($core->jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
     
 if(!empty($_POST['photo']))
 {
-    if(!phpCore::isValidURL($_POST['photo']))
+    if(!Core::isValidURL($_POST['photo']))
         die($core->jsonResponse('error',$core->lang('PHOTO').': '.$core->lang('INVALID_URL')));
         
-    if(!($head = get_headers($_POST['photo'],db::FETCH_OBJ)) || !isset($head['Content-Type']))
+    if(!($head = get_headers($_POST['photo'],Db::FETCH_OBJ)) || !isset($head['Content-Type']))
         die($core->jsonResponse('error','Something wrong with your project image'));
         
     if(false === strpos($head['Content-Type'],'image'))

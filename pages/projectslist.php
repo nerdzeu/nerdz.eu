@@ -35,7 +35,7 @@ else
 
 $vals['list_a'] = [];
 
-if(($r = $core->query($query,db::FETCH_STMT)))
+if(($r = $core->query($query,Db::FETCH_STMT)))
 {
     $i = 0;
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
@@ -43,7 +43,7 @@ if(($r = $core->query($query,db::FETCH_STMT)))
         $vals['list_a'][$i]['id_n'] = $o->counter;
         $vals['list_a'][$i]['name_n'] = $o->name;
         $vals['list_a'][$i]['description_n'] = $o->description;
-        $vals['list_a'][$i]['name4link_n'] = phpCore::projectLink($o->name);
+        $vals['list_a'][$i]['name4link_n'] = Core::projectLink($o->name);
         ++$i;
     }
 }

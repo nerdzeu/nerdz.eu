@@ -1,8 +1,9 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
+namespace NERDZ\Core;
 
-class feed extends messages
+require_once 'autoload.php';
+
+class Feed extends Messages
 {
     private $ssl, $baseurl;
  
@@ -122,10 +123,10 @@ class feed extends messages
         if(!($us = parent::getUsername($id)))
             return $this->error('Invalid user ID');
 
-        $urluser = phpCore::userLink($us);
+        $urluser = Core::userLink($us);
         $us = $this->xmlentity($us);
     
-        if(!parent::isLogged() && (!($p = parent::query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($id)),db::FETCH_OBJ)) || $p->private))
+        if(!parent::isLogged() && (!($p = parent::query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)) || $p->private))
                 return $this->error('Private profile OR undefined error');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -150,13 +151,13 @@ class feed extends messages
         if(!($us = parent::getProjectName($id)))
             return $this->error('Invalid project ID');
 
-        $urlprj = phpCore::projectLink($us);
+        $urlprj = Core::projectLink($us);
         $us = $this->xmlentity($us);
     
-        if(!($p = parent::query(array('SELECT "private","owner" FROM "groups" WHERE "counter" = ?',array($id)),db::FETCH_OBJ)))
+        if(!($p = parent::query(array('SELECT "private","owner" FROM "groups" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))
             return $this->error('Undefined error');
 
-        if($p->private && (!parent::isLogged() || (!in_array($_SESSION['nerdz_id'], parent::getMembers($id)) && $_SESSION['nerdz_id'] != $p->owner)))
+        if($p->private && (!parent::isLogged() || (!in_array($_SESSION['id'], parent::getMembers($id)) && $_SESSION['id'] != $p->owner)))
             return $this->error('Closed project');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>

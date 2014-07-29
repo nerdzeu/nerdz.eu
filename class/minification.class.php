@@ -1,4 +1,5 @@
 <?php
+namespace NERDZ\Core;
 // Used for minification of JS/CSS files. Also used to minify
 // template files by templatecfg.class
 // constants.inc.php: for MINIFICATION_*_CMD
@@ -10,7 +11,7 @@ final class Minification
 
     public static function minifyJs ($path)
     {
-        return shell_exec (str_ireplace (self::PATH_VAR, $path, MINIFICATION_JS_CMD));
+        return shell_exec (str_ireplace (self::PATH_VAR, $path, \NERDZ\Config\MINIFICATION_JS_CMD));
     }
 
     public static function minifyCss ($path)

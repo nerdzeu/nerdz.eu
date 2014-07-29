@@ -2,7 +2,7 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-$core = new phpCore();
+$core = new Core();
 
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
@@ -21,7 +21,7 @@ $params = [
      ':email'    => $user['email'],
      ':gender'   => $user['gender'],
      ':date'     => $birth['date'],
-     ':id'       => $_SESSION['nerdz_id']
+     ':id'       => $_SESSION['id']
 ];
 
 if($updatedPassword) {
@@ -33,12 +33,12 @@ $ret = $core->query(
         'UPDATE users SET "timezone" = :timezone, "name" = :name,
         "surname" = :surname,"email" = :email,"gender" = :gender, "birth_date" = :date
         '.($updatedPassword ? ', "password" = ENCODE(DIGEST(:password, \'SHA1\'), \'HEX\')' : '').' WHERE counter = :id', $params
-    ],db::FETCH_ERRSTR);
+    ],Db::FETCH_ERRSTR);
 
-if($ret != db::NO_ERRSTR)
+if($ret != Db::NO_ERRSTR)
     die($core->jsonDbResponse($ret));
 
-if(!$core->login($core->getUsername(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['nerdz_mark_offline'], !$updatedPassword))
+if(!$core->login($core->getUsername(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['mark_offline'], !$updatedPassword))
     die($core->jsonResponse('error',$core->lang('ERROR').': Login'));
 
 die($core->jsonResponse('error','OK'));

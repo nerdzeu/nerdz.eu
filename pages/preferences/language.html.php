@@ -1,8 +1,8 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-$core = new phpCore();
-ob_start(array('phpCore','minifyHtml'));
+$core = new Core();
+ob_start(array('Core','minifyHtml'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
@@ -19,8 +19,8 @@ foreach($longlangs as $id => $val)
     $vals['langs_a'][$i]['shortlang_n'] = $id;
     ++$i;
 }
-$vals['mylang_n'] = $core->getUserLanguage($_SESSION['nerdz_id']);
-$vals['myboardlang_n'] = $core->getBoardLanguage($_SESSION['nerdz_id']);
+$vals['mylang_n'] = $core->getUserLanguage($_SESSION['id']);
+$vals['myboardlang_n'] = $core->getBoardLanguage($_SESSION['id']);
 
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('preferences/language');

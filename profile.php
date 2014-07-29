@@ -1,8 +1,8 @@
 <?php
     ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
     
-    $core = new messages();
+    $core = new Messages();
     $tplcfg = $core->getTemplateCfg();
     
     $id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : false;
@@ -22,7 +22,7 @@
             $username = $info->username;
             if($pid)
             {
-                if((!$core->isLogged() && $info->private) || !($post = $core->query(array('SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array($pid,$id)),db::FETCH_OBJ)))
+                if((!$core->isLogged() && $info->private) || !($post = $core->query(array('SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array($pid,$id)),Db::FETCH_OBJ)))
                 {
                     $post = new stdClass();
                     $post->message = '';
@@ -39,7 +39,7 @@
     else
         die(header('Location: /index.php'));
 
-    ob_start(array('phpCore','minifyHtml'));
+    ob_start(array('Core','minifyHtml'));
 
     $a = explode(' ',$core->parseNewsMessage($core->stripTags(str_replace("\n",' ',$post->message))));
 

@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
-if(!($o = (new phpCore())->query('SELECT "username" FROM "users" ORDER BY "counter" DESC',db::FETCH_OBJ)))
-    die('db error');
+if(!($o = (new Core())->query('SELECT "username" FROM "users" ORDER BY "counter" DESC',Db::FETCH_OBJ)))
+    die('Db error');
 
-die(header('Location: /'.phpCore::userLink($o->username)));
+die(header('Location: /'.Core::userLink($o->username)));
 ?>

@@ -2,10 +2,10 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-ob_start(array('phpCore','minifyHtml'));
+ob_start(array('Core','minifyHtml'));
 
-$core = new project();
-$comments = new comments();
+$core = new Project();
+$comments = new Comments();
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));

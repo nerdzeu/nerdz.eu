@@ -36,7 +36,7 @@ $vals = [];
 
 $q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
 
-$db = $core->getDB();
+$Db = $core->getDB();
 
 $query = empty($q) ?
         "SELECT name,surname,username, counter, birth_date, EXTRACT(EPOCH FROM last) AS last FROM users ORDER BY {$orderby} {$order} LIMIT {$limit}" :
@@ -44,7 +44,7 @@ $query = empty($q) ?
 
 $vals['list_a'] = [];
 
-if(($r = $core->query($query,db::FETCH_STMT)))
+if(($r = $core->query($query,Db::FETCH_STMT)))
 {
     $i = 0;
     while($o = $r->fetch(PDO::FETCH_OBJ))
@@ -54,7 +54,7 @@ if(($r = $core->query($query,db::FETCH_STMT)))
         $vals['list_a'][$i]['name_n'] = $o->name;
         $vals['list_a'][$i]['surname_n'] = $o->surname;
         $vals['list_a'][$i]['username_n'] = $o->username;
-        $vals['list_a'][$i]['username4link_n'] = phpCore::userLink($o->username);
+        $vals['list_a'][$i]['username4link_n'] = Core::userLink($o->username);
         ++$i;
     }
 }

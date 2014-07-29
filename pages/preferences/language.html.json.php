@@ -2,7 +2,7 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-$core = new phpCore();
+$core = new Core();
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
     
@@ -23,14 +23,14 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!$core->updateUserLanguage($lang))
             die($core->jsonResponse('error',$core->lang('ERROR')));
         
-        $_SESSION['nerdz_lang'] = $lang;
+        $_SESSION['lang'] = $lang;
     break;
     
     case 'boardlang':
         if(!$core->updateBoardLanguage($lang))
             die($core->jsonResponse('error',$core->lang('ERROR')));
 
-        $_SESSION['nerdz_board_lang'] = $lang;
+        $_SESSION['board_lang'] = $lang;
     break;
     
     default:

@@ -1,10 +1,11 @@
 <?php
+namespace NERDZ\Core;
 /*
  * Classe per la creazione di immagini di errore
  */
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-final class errorImg extends phpCore
+final class ErrorImg extends Core
 {
     public function __construct($langindex)
     {

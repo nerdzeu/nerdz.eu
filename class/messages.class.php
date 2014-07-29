@@ -1,8 +1,9 @@
 <?php
+namespace NERDZ\Core;
 require_once 'core.class.php';
 require_once 'project.class.php';
 
-class messages extends phpCore
+class Messages extends Core
 {
     // regular expressions used to parse the [video] bbcode
     const YOUTUBE_REGEXP  = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
@@ -15,7 +16,7 @@ class messages extends phpCore
     public function __construct()
     {
         parent::__construct();
-        $this->project = new project();
+        $this->project = new Project();
     }
 
     public function getCodes($str)
@@ -64,7 +65,7 @@ class messages extends phpCore
     public static function imgValidUrl($url, $domain, $sslEnabled)
     {
         $url = strip_tags(trim($url));
-        if (!phpCore::isValidURL($url))
+        if (!Core::isValidURL($url))
             return $domain.'/static/images/invalidImgUrl.php';
 
         if($sslEnabled) {
@@ -106,14 +107,14 @@ class messages extends phpCore
 
         $validURL = function($m) {
             $m[1] = trim($m[1]);
-            if(!phpCore::isValidURL($m[1]))
+            if(!Core::isValidURL($m[1]))
             {
                 $m[1] = 'www.'.$m[1];
-                if(!phpCore::isValidURL($m[1]))
+                if(!Core::isValidURL($m[1]))
                     return '<b>'.parent::lang('INVALID_URL').'</b>';
             }
             $url = preg_match('#^(http(s)?:\/\/)|(ftp:\/\/)#im',$m[1]) ? $m[1] : 'http://'.$m[1];
-            return isset($m[2]) ? '<a href="'.messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
+            return isset($m[2]) ? '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
         };
 
         $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#i',function($m) use ($validURL) {
@@ -138,10 +139,10 @@ class messages extends phpCore
         $str = preg_replace('#\[wat\]#i','<span style="font-size:22pt">WAT</span>',$str); //easter egg [never change]
 
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#i',function($m) {
-                return '<a href="/'.phpCore::userLink($m[1])."\">{$m[1]}</a>";
+                return '<a href="/'.Core::userLink($m[1])."\">{$m[1]}</a>";
                 },$str);
         $str = preg_replace_callback('#\[project\](.+?)\[/project\]#i',function($m) {
-                return '<a href="/'.phpCore::projectLink($m[1])."\">{$m[1]}</a>";
+                return '<a href="/'.Core::projectLink($m[1])."\">{$m[1]}</a>";
                 },$str);
         $str = preg_replace_callback('#\[wiki=([a-z]{2})\](.+?)\[/wiki\]#i',function($m) {
                 return '<a href="http://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ','_',html_entity_decode($m[2],ENT_QUOTES,'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
@@ -327,7 +328,7 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
-                    $url = messages::imgValidUrl($m[1], $domain, $ssl);
+                    $url = Messages::imgValidUrl($m[1], $domain, $ssl);
                     return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
                                     <span>
                                         '.parent::lang('IMAGES').'
@@ -359,7 +360,7 @@ class messages extends phpCore
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
-                    return '<img src="'.messages::imgValidUrl($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
+                    return '<img src="'.Messages::imgValidUrl($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
             },$str);
         }
 
@@ -390,7 +391,7 @@ class messages extends phpCore
                 [
                     ':id' => $id
                 ]
-            ],db::FETCH_OBJ)))
+            ],Db::FETCH_OBJ)))
             return 0;
 
         return $o->cc;
@@ -406,7 +407,7 @@ class messages extends phpCore
                     [
                         ':hpid' => $hpid
                     ]
-            ],db::FETCH_OBJ))
+            ],Db::FETCH_OBJ))
         )
             return new StdClass();
 
@@ -433,12 +434,12 @@ class messages extends phpCore
         var_dump($options);
 
         if($onlyfollowed) {
-            $followed = array_merge(parent::getFollow($_SESSION['nerdz_id']), (array)$_SESSION['nerdz_id']);
+            $followed = array_merge(parent::getFollow($_SESSION['id']), (array)$_SESSION['id']);
             $glue    .= ' AND p."from" IN ('.implode(',',$followed).') ';
         } elseif($lang && !$anyone) {
             $languages = array_merge(parent::availableLanguages(), (array)'*');
             if(!in_array($lang,$languages))
-                $lang = parent::isLogged() ? parent::getUserLanguage($_SESSION['nerdz_id']) : 'en';
+                $lang = parent::isLogged() ? parent::getUserLanguage($_SESSION['id']) : 'en';
 
             $glue .= ' AND p.lang = :lang ';
             $search4Lang = true;
@@ -467,9 +468,9 @@ class messages extends phpCore
             $glue .= ' AND (g."visible" IS TRUE ';
 
             if(parent::isLogged())
-                $glue .= ' OR (\''.$_SESSION['nerdz_id'].'\' IN (
+                $glue .= ' OR (\''.$_SESSION['id'].'\' IN (
                             SELECT "user" FROM groups_members WHERE "group" = p."to"
-                           )) OR \''.$_SESSION['nerdz_id'].'\' = g.owner';
+                           )) OR \''.$_SESSION['id'].'\' = g.owner';
             $glue .= ') ';
         }
 
@@ -485,7 +486,7 @@ class messages extends phpCore
                     $search         ? [ ':like' => '%'.$search.'%' ] : []
                 )
 
-            ],db::FETCH_STMT))
+            ],Db::FETCH_STMT))
           )
           return [];
 
@@ -504,14 +505,14 @@ class messages extends phpCore
             [
                 'INSERT INTO "'.$table.'" ("from","to","message", "news") VALUES (:id,:to,:message, :news)',
                 [
-                    ':id'      => $_SESSION['nerdz_id'],
+                    ':id'      => $_SESSION['id'],
                     ':to'      => $to,
                     ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8'),
                     ':news'    => $news
                 ]
-            ],db::FETCH_ERRSTR);
+            ],Db::FETCH_ERRSTR);
 
-        if($retStr != db::NO_ERRSTR)
+        if($retStr != Db::NO_ERRSTR)
             return $retStr;
 
         if($project && $to == ISSUE_BOARD) {
@@ -539,17 +540,17 @@ class messages extends phpCore
                 [
                     ':hpid' => $hpid
                 ]
-            ],db::FETCH_OBJ)))
+            ],Db::FETCH_OBJ)))
             return 'ERROR';
 
         return $this->canRemovePost([ 'from' => $obj->from, 'to' => $obj->to ], $project) &&
-            db::NO_ERRNO == parent::query(
+            Db::NO_ERRNO == parent::query(
                 [
                     'DELETE FROM "'.$table.'" WHERE "hpid" = :hpid',
                     [
                         ':hpid' => $hpid
                     ]
-                ],db::FETCH_ERRNO);
+                ],Db::FETCH_ERRNO);
     }
 
     public function editMessage($hpid,$message, $project = false)
@@ -564,7 +565,7 @@ class messages extends phpCore
                 [
                     ':hpid' => $hpid
                 ]
-            ],db::FETCH_OBJ)) ||
+            ],Db::FETCH_OBJ)) ||
             !$this->canEditPost(['from' => $obj->from, 'to' => $obj->to], $project)
           )
               return 'ERROR';
@@ -576,15 +577,15 @@ class messages extends phpCore
                     ':message' => $message,
                     ':hpid'    => $hpid
                 ]
-            ],db::FETCH_ERRSTR);
+            ],Db::FETCH_ERRSTR);
     }
  
     public function canEditPost($post, $project = false)
     {
         return parent::isLogged() && (
             $project ? 
-            in_array($_SESSION['nerdz_id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
-            : $_SESSION['nerdz_id'] == $post['from']
+            in_array($_SESSION['id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
+            : $_SESSION['id'] == $post['from']
         );
     }
 
@@ -592,8 +593,8 @@ class messages extends phpCore
     {
         return parent::isLogged() && (
             $project ?
-                in_array($_SESSION['nerdz_id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
-            : in_array($_SESSION['nerdz_id'], [ $post['to'], $post['from'] ] )
+                in_array($_SESSION['id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
+            : in_array($_SESSION['id'], [ $post['to'], $post['from'] ] )
         );
     }
 
@@ -603,23 +604,23 @@ class messages extends phpCore
         return parent::isLogged() && (
             (
                 $project
-                ? $_SESSION['nerdz_id'] == $post['from']
-                : in_array($_SESSION['nerdz_id'],array($post['from'],$post['to']))
+                ? $_SESSION['id'] == $post['from']
+                : in_array($_SESSION['id'],array($post['from'],$post['to']))
             ) ||
             parent::query(
                      [
                          'SELECT DISTINCT "from" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
                          [
                              ':hpid' => $post['hpid'],
-                             ':id' => $_SESSION['nerdz_id']
+                             ':id' => $_SESSION['id']
                          ]
-                     ], db::ROW_COUNT) > 0
+                     ], Db::ROW_COUNT) > 0
             );
     }
 
     public function hasLockedPost($post, $project = false)
     {
-        $table = ($project ? 'groups_' : '').'posts_no_notify';
+        $table = ($project ? 'groups_' : '').'posts_no_Notification';
         return (
                 parent::isLogged() &&
                 parent::query(
@@ -627,9 +628,9 @@ class messages extends phpCore
                         'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :id',
                         [
                             ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['nerdz_id']
+                            ':id'   => $_SESSION['id']
                         ]
-                    ],db::ROW_COUNT) > 0
+                    ],Db::ROW_COUNT) > 0
                );
     }
 
@@ -643,9 +644,9 @@ class messages extends phpCore
                         'SELECT "post" FROM "'.$table.'" WHERE "post" = :hpid AND "user" = :id',
                         [
                             ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['nerdz_id']
+                            ':id'   => $_SESSION['id']
                         ]
-                    ],db::ROW_COUNT) > 0
+                    ],Db::ROW_COUNT) > 0
                );
     }
 
@@ -659,9 +660,9 @@ class messages extends phpCore
                         'SELECT "hpid" FROM "bookmarks" WHERE "hpid" = :hpid AND "from" = :id',
                         [
                             ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['nerdz_id']
+                            ':id'   => $_SESSION['id']
                         ]
-                    ],db::ROW_COUNT) > 0
+                    ],Db::ROW_COUNT) > 0
                );
     }
 
@@ -730,7 +731,7 @@ class messages extends phpCore
                 ]
 
             ],
-            db::FETCH_OBJ
+            Db::FETCH_OBJ
         );
 
         return isset($ret->sum) ? $ret->sum : 0;
@@ -747,7 +748,7 @@ class messages extends phpCore
                 ]
 
             ],
-            db::FETCH_OBJ
+            Db::FETCH_OBJ
         );
 
         return isset($ret->rev_no) ? $ret->rev_no : 0;
@@ -766,7 +767,7 @@ class messages extends phpCore
                 ]
 
             ],
-            db::FETCH_OBJ
+            Db::FETCH_OBJ
         );
     }
 
@@ -781,11 +782,11 @@ class messages extends phpCore
                 'SELECT "vote" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :from',
                 [
                   ':hpid' => $hpid,
-                  ':from' => $_SESSION['nerdz_id']
+                  ':from' => $_SESSION['id']
                 ]
 
             ],
-            db::FETCH_OBJ
+            Db::FETCH_OBJ
         );
 
         if (isset($ret->vote)) {
@@ -807,19 +808,19 @@ class messages extends phpCore
                 'INSERT INTO '.$table.'(hpid, "from", vote) VALUES(:hpid, :from, :vote)',
               [
                 ':hpid' => (int) $hpid,
-                ':from' => (int) $_SESSION['nerdz_id'],
+                ':from' => (int) $_SESSION['id'],
                 ':vote' => (int) $vote
               ]
             ],
-            db::FETCH_ERRNO
+            Db::FETCH_ERRNO
         );
 
-        return $ret == db::NO_ERRNO;
+        return $ret == Db::NO_ERRNO;
     }
 
     public function getPostList($mess, $prj, $truncate = false) {
         require_once 'comments.class.php';
-        $comments = new comments();
+        $comments = new Comments();
 
         $count = count($mess);
         $ret = [];
@@ -840,7 +841,7 @@ class messages extends phpCore
             $ret[$i]['uthumb_n'] = $this->getUserThumb($mess[$i]['hpid'], $prj);
             $ret[$i]['pid_n'] = $mess[$i]['pid'];
             $ret[$i]['news_b'] = $mess[$i]['news'];
-            $ret[$i]['from4link_n'] = phpCore::userLink($from);
+            $ret[$i]['from4link_n'] = Core::userLink($from);
             $ret[$i]['to4link_n'] = $toFuncLink($to);
             $ret[$i]['fromid_n'] = $mess[$i]['from'];
             $ret[$i]['toid_n'] = $mess[$i]['to'];

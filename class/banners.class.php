@@ -1,19 +1,21 @@
 <?php
 /*
- * Classe per la gestione dei banners
+ * Classe per la gestione dei Banners
  */
 
-final class banners
+namespace NERDZ\Core;
+
+final class Banners
 {
-    private $banners;
+    private $Banners;
 
     public function __construct()
     {
-        $this->banners = [];
+        $this->Banners = [];
         
         $cache = 'bannerarray'.SITE_HOST;
         if(apc_exists($cache))
-           $this->banners = unserialize(apc_fetch($cache));
+           $this->Banners = unserialize(apc_fetch($cache));
         else
         {
             $path = $_SERVER['DOCUMENT_ROOT'].'/data/banner.list';
@@ -22,9 +24,9 @@ final class banners
                 foreach ($arr as $line)
                 {
                     $elms = explode ('.', $line, 3);
-                    $this->banners[] = array ($elms[0], $elms[1], $elms[2]);
+                    $this->Banners[] = array ($elms[0], $elms[1], $elms[2]);
                 }
-                @apc_store($cache,serialize($this->banners),7200);
+                @apc_store($cache,serialize($this->Banners),7200);
             }
         }
     }
@@ -35,18 +37,18 @@ final class banners
 
         if(is_string($formato))
         {
-            foreach($this->banners as $a)
+            foreach($this->Banners as $a)
                 if($a[1] == $formato)
                     $ret[] = $a;
         }
         elseif(is_string($fornitore))
         {
-            foreach($this->banners as $a)
+            foreach($this->Banners as $a)
                 if($a[0] == $fornitore)
                     $ret[] = $a;
         }
         else
-            $ret = $this->banners;
+            $ret = $this->Banners;
 
         if($limit)
         {

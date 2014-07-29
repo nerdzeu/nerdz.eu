@@ -1,6 +1,7 @@
 <?php
+namespace NERDZ\Core;
 
-class utils
+class Utils
 {
     public function apc_getLastModified($key)
     {

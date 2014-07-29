@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/pm.class.php';
 ob_start('ob_gzhandler');
-$core = new pm();
+$core = new Pms();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));

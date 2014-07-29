@@ -2,7 +2,7 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/core.class.php';
 
-$core = new phpCore();
+$core = new Core();
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
     
@@ -24,10 +24,10 @@ if(!in_array($theme,$shorts))
 
 $column = (MOBILE_HOST == $_SERVER['HTTP_HOST'] ? 'mobile_' : '').'template';
 
-if(db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "'.$column.'" = :theme WHERE "counter" = :id',array(':theme' => $theme, ':id' => $_SESSION['nerdz_id'])),db::FETCH_ERRNO))
+if(Db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "'.$column.'" = :theme WHERE "counter" = :id',array(':theme' => $theme, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO))
     die($core->jsonResponse('error','Update: ' . $core->lang('ERROR')));
 
-$_SESSION['nerdz_template'] = $theme;
+$_SESSION['template'] = $theme;
 
 die($core->jsonResponse('ok','OK'));
 

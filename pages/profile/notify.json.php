@@ -1,8 +1,8 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/notify.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Notification.class.php';
 
-$core = new notify();
+$core = new Notification();
 
 if($core->isLogged())
     die($core->jsonResponse('ok',$core->count(false,true)));

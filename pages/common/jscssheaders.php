@@ -109,6 +109,6 @@ if ($logged && ($blist = $core->getBlacklist()))
 }
 else { ?> </script> <?php }
 /* END BLACKLIST_STUFF */
-if ($logged && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['nerdz_id'])),db::FETCH_OBJ))) && !empty($o->userscript))
+if ($logged && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ))) && !empty($o->userscript))
     echo '<script type="application/javascript" src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
 ?>

@@ -1,5 +1,5 @@
 <?php
-$lang = $core->isLogged() ? $core->getUserLanguage($_SESSION['nerdz_id']) : $core->getBrowserLanguage();
+$lang = $core->isLogged() ? $core->getUserLanguage($_SESSION['id']) : $core->getBrowserLanguage();
 
 $vals = [];
 $vals['bbcode_n'] = file_get_contents("{$_SERVER['DOCUMENT_ROOT']}/tpl/{$core->getTemplate()}/langs/{$lang}/bbcode.html");

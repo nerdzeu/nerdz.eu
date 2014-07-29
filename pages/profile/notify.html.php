@@ -1,9 +1,9 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/notify.class.php';
-ob_start(array('phpCore','minifyHtml'));
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Notification.class.php';
+ob_start(array('Core','minifyHtml'));
 
-$core = new notify();
+$core = new Notification();
 
 if($core->isLogged())
 {
@@ -50,7 +50,7 @@ if($core->isLogged())
             $e[$i][5] = $a[$i]['to_project'];
         }
         $e[$i][1] = $a[$i]['cmp'];
-        $e[$i][2] = isset($a[$i]['to']) ? $a[$i]['to'] : $_SESSION['nerdz_id'];
+        $e[$i][2] = isset($a[$i]['to']) ? $a[$i]['to'] : $_SESSION['id'];
         $e[$i][3] = isset($a[$i]['pid']) ? $a[$i]['pid'] : false;
         $e[$i][9] = isset($a[$i]['from']) ? $a[$i]['from'] : 0;
     }
@@ -58,8 +58,8 @@ if($core->isLogged())
     if($f && !$core->updateStory($a))
         die($core->lang('ERROR'));
         
-    usort($e,array('notify','echoSort'));
-    $raggr = 1; //set variable via POST to decide if we have to raggrupate notifys or not
+    usort($e,array('Notification','echoSort'));
+    $raggr = 1; //set variable via POST to decide if we have to raggrupate Notifications or not
     if($raggr)
     {
         $x = $str = [];
@@ -74,7 +74,7 @@ if($core->isLogged())
                 $str[$c]['type_n'] = 'new_follower';
                 $str[$c]['datetime_n'] = $core->getDateTime($e[$i][1]);
                 $str[$c]['from_n'] = $e[$i][8];
-                $str[$c]['from4link_n'] = phpCore::userLink($e[$i][8]);
+                $str[$c]['from4link_n'] = Core::userLink($e[$i][8]);
                 ++$c;
             }
             else
@@ -87,7 +87,7 @@ if($core->isLogged())
                     {
                         //ci sono nuovi commenti sul profilo xxx.yyy 
                         $str[$c]['type_n'] = 'profile_comments';
-                        $str[$c]['to4link_n'] = phpCore::userLink($e[$i][5]).$e[$i][3];
+                        $str[$c]['to4link_n'] = Core::userLink($e[$i][5]).$e[$i][3];
                         $str[$c]['to_n'] = $e[$i][5];
                         $str[$c]['pid_n'] = $e[$i][3];
                     }
@@ -96,9 +96,9 @@ if($core->isLogged())
                         // xxx ha postato qualcosa sulla tua board (from* è sempre se stesso)
                         $str[$c]['type_n'] = 'new_post_on_profile';
                         
-                        $str[$c]['from4link_n'] = phpCore::userLink($e[$i][8]);
+                        $str[$c]['from4link_n'] = Core::userLink($e[$i][8]);
                         $str[$c]['from_n'] = $e[$i][8];
-                        $str[$c]['to4link_n'] = phpCore::userLink($e[$i][5]).$e[$i][3];
+                        $str[$c]['to4link_n'] = Core::userLink($e[$i][5]).$e[$i][3];
                         $str[$c]['to_n'] = $e[$i][5];
                         $str[$c]['pid_n'] = $e[$i][3];
                     }
@@ -106,7 +106,7 @@ if($core->isLogged())
                     {
                         //ci sono nuovi commenti sul progetto xxx:yyy
                         $str[$c]['type_n'] = 'project_comments';
-                        $str[$c]['to4link_n'] = phpCore::projectLink($e[$i][5]).$e[$i][3];
+                        $str[$c]['to4link_n'] = Core::projectLink($e[$i][5]).$e[$i][3];
                         $str[$c]['to_n'] = $e[$i][5];
                         $str[$c]['pid_n'] = $e[$i][3];
                     }
@@ -114,7 +114,7 @@ if($core->isLogged())
                     {
                         //novità sul progetto xxx:
                         $str[$c]['type_n'] = 'news_project';
-                        $str[$c]['to4link_n'] = phpCore::projectLink($e[$i][5]);
+                        $str[$c]['to4link_n'] = Core::projectLink($e[$i][5]);
                         $str[$c]['to_n'] = $e[$i][5];
                     }
                     ++$c;
@@ -124,7 +124,7 @@ if($core->isLogged())
         $vals['list_a'] = $str;
         
         $core->getTPL()->assign($vals);
-        $core->getTPL()->draw('profile/notify');
+        $core->getTPL()->draw('profile/Notification');
     }
     else
         for($i=0;$i<$y;++$i)

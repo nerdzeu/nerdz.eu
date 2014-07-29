@@ -1,4 +1,5 @@
 <?php
+namespace NERDZ\Core;
 /*
  * Classe per la gestione dei template in senso stretto.
  * Si occupa di ottenere le variabili obbligatorie e facoltative dei template.
@@ -8,18 +9,18 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/raintpl.class.php';
 
-final class templateCfg
+final class TemplateConfig
 {
     private $tpl_no;
     private $lang;
     private $tpl;
-    private $phpCore;
+    private $Core;
 
-    public function __construct($phpCore)
+    public function __construct($Core)
     {
-        $this->phpCore = $phpCore;
-        $this->tpl = $this->phpCore->getTPL();
-        $this->lang = $this->phpCore->isLogged() ? $this->phpCore->getBoardLanguage($_SESSION['nerdz_id']) : $this->phpCore->getBrowserLanguage();
+        $this->Core = $Core;
+        $this->tpl = $this->Core->getTPL();
+        $this->lang = $this->Core->isLogged() ? $this->Core->getBoardLanguage($_SESSION['id']) : $this->Core->getBrowserLanguage();
         $this->tpl_no = $this->tpl->getActualTemplateNumber();
     }
 
@@ -124,12 +125,12 @@ final class templateCfg
                 // Practically this is called ONE time on each invocation.
                 if (isset ($ret[$id]['staticData']['lang']) && is_array ($ret[$id]['staticData']['lang']))
                 {
-                    $dbg = debug_backtrace (DEBUG_BACKTRACE_IGNORE_ARGS);
-                    if (isset ($dbg[1]['function']) && $dbg[1]['function'] === 'lang') continue;
+                    $Dbg = debug_backtrace (DEBUG_BACKTRACE_IGNORE_ARGS);
+                    if (isset ($Dbg[1]['function']) && $Dbg[1]['function'] === 'lang') continue;
                     foreach ($ret[$id]['staticData']['lang'] as $key => $entry)
                     {
                         if (!is_numeric ($key)) continue;
-                        $ret[$id]['staticData']['lang'][$entry] = $this->phpCore->lang ($entry);
+                        $ret[$id]['staticData']['lang'][$entry] = $this->Core->lang ($entry);
                         unset ($ret[$id]['staticData']['lang'][$key]);
                     }
                 }
@@ -143,7 +144,7 @@ final class templateCfg
 
     private function validatePath(&$path,$id)
     {
-        if(!phpCore::isValidURL($path))
+        if(!Core::isValidURL($path))
         {
             $userfile = "{$_SERVER['DOCUMENT_ROOT']}/tpl/{$this->tpl_no}/{$path}";
             if(!file_exists($userfile))
@@ -151,7 +152,7 @@ final class templateCfg
                 unset($path);
                 return;
             }
-            if (!MINIFICATION_ENABLED)
+            if (!\NERDZ\Config\MINIFICATION_ENABLED)
             {
                 $path .= '?'.filemtime($userfile); //force cache refresh if file is changed
                 return;

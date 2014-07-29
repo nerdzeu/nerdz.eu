@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/banners.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/messages.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Banners.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
 
 $vals = [];
 $vals['logged_b'] = $core->isLogged();
@@ -8,13 +8,13 @@ $vals['id_n'] = $info->counter;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-$banners = (new banners())->getBanners();
-$vals['banners_a'] = [];
-shuffle($banners);
-foreach($banners as $ban)
-    $vals['banners_a'][$ban[1]] = $ban[2];
+$Banners = (new Banners())->getBanners();
+$vals['Banners_a'] = [];
+shuffle($Banners);
+foreach($Banners as $ban)
+    $vals['Banners_a'][$ban[1]] = $ban[2];
 
-$vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['nerdz_id'] != $info->counter);
+$vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $info->counter);
 
 $vals['canifollow_b'] = false;
 $vals['caniblacklist_b'] = false;
@@ -25,10 +25,10 @@ if($vals['logged_b'])
         [
             'SELECT "to" FROM "follow" WHERE "from" = :me AND "to" = :id',
             [
-                ':me' => $_SESSION['nerdz_id'],
+                ':me' => $_SESSION['id'],
                 ':id' => $info->counter
             ]
-        ],db::ROW_COUNT);
+        ],Db::ROW_COUNT);
 }
 
 $vals['privateprofile_b'] = !$info->private;
@@ -36,8 +36,8 @@ $enter = (!$vals['privateprofile_b'] && $vals['logged_b']) || ($vals['privatepro
 
 if($enter)
 {
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/gravatar.class.php';
-    $vals['gravatarurl_n'] = (new gravatar())->getURL($info->counter);
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Gravatar.class.php';
+    $vals['Gravatarurl_n'] = (new Gravatar())->getURL($info->counter);
 
     $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/onErrorImg.php';
     $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.SITE_HOST : $info->website;
@@ -51,12 +51,12 @@ if($enter)
         [
             'SELECT EXTRACT(EPOCH FROM "registration_time") AS registration_time from "users" WHERE "counter" = :id',
             $ida
-        ],db::FETCH_OBJ)))
+        ],Db::FETCH_OBJ)))
             die($core->lang('ERROR'));
 
     $vals['registrationtime_n'] = $core->getDateTime($o->registration_time);
     $vals['username_n'] = $info->username;
-    $vals['username4link_n'] = phpCore::userLink($info->username);
+    $vals['username4link_n'] = Core::userLink($info->username);
     $vals['lang_n'] = $core->getUserLanguage($info->counter);
     $vals['online_b'] = $core->isOnline($info->counter);
 
@@ -75,7 +75,7 @@ if($enter)
             [
                 'SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',
                 $ida
-            ],db::FETCH_OBJ)
+            ],Db::FETCH_OBJ)
         ))
             die($core->lang('ERROR'));
 
@@ -85,13 +85,13 @@ if($enter)
             [
                 'SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',
                 $ida
-            ],db::FETCH_OBJ)
+            ],Db::FETCH_OBJ)
         ))
             die($core->lang('ERROR'));
 
         $n += $o->cc;
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/stuff.class.php';
-        $a = stuff::stupid($n);
+        $a = Stuff::stupid($n);
         $a['n'] = $n;
 
         @apc_store($apc_name,serialize($a),300);
@@ -109,7 +109,7 @@ if($enter)
         [
             'SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',
             $ida
-        ],db::FETCH_OBJ)
+        ],Db::FETCH_OBJ)
     ))
         die($core->lang('ERROR'));
 
@@ -118,7 +118,7 @@ if($enter)
     if(!$core->closedProfile($info->counter))
         $vals['canwrite_b'] = true;
     else
-        $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['nerdz_id'] || in_array($_SESSION['nerdz_id'],$core->getWhitelist($info->counter)));
+        $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['id'] || in_array($_SESSION['id'],$core->getWhitelist($info->counter)));
 
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';//ok qui
     $vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
@@ -138,7 +138,7 @@ if($enter)
             if(($name = $core->getUserName($val)))
             {
                 $amigos[$c]['username_n'] = $name;
-                $amigos[$c]['username4link_n'] = phpCore::userLink($name);
+                $amigos[$c]['username4link_n'] = Core::userLink($name);
                 ++$c;
             }
 
@@ -149,7 +149,7 @@ if($enter)
 
     $vals['gender_n'] = $core->lang($info->gender == 1 ? 'MALE' : 'FEMALE');
 
-    $vals['biography_n'] = (new messages())->bbcode($info->biography,1);
+    $vals['biography_n'] = (new Messages())->bbcode($info->biography,1);
     $vals['quotes_a'] = explode("\n",trim($info->quotes));
     if(count($vals['quotes_a']) == 1 && empty($vals['quotes_a'][0]))
         $vals['quotes_a'] = [];
@@ -176,7 +176,7 @@ if($enter)
         [
             'SELECT "name" FROM "groups" WHERE "owner" = :id',
             $ida
-        ],db::FETCH_STMT)
+        ],Db::FETCH_STMT)
     ))
         die($core->lang('ERROR'));
 
@@ -185,7 +185,7 @@ if($enter)
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['ownerof_a'][$i]['name_n'] = $o->name;
-        $vals['ownerof_a'][$i]['name4link_n'] = phpCore::projectLink($o->name);
+        $vals['ownerof_a'][$i]['name4link_n'] = Core::projectLink($o->name);
         ++$i;
     }
 
@@ -193,7 +193,7 @@ if($enter)
         [
             'SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',
             $ida
-        ],db::FETCH_STMT)
+        ],Db::FETCH_STMT)
     ))
         die($core->lang('ERROR'));
 
@@ -202,7 +202,7 @@ if($enter)
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['memberof_a'][$i]['name_n'] = $o->name;
-        $vals['memberof_a'][$i]['name4link_n'] = phpCore::projectLink($o->name);
+        $vals['memberof_a'][$i]['name4link_n'] = Core::projectLink($o->name);
         ++$i;
     }
 
@@ -210,7 +210,7 @@ if($enter)
         [
             'SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."group" WHERE "user" = :id',
             $ida
-        ],db::FETCH_STMT)
+        ],Db::FETCH_STMT)
     ))
         die($core->lang('ERROR'));
 
@@ -219,7 +219,7 @@ if($enter)
     while(($o =$r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['userof_a'][$i]['name_n'] = $o->name;
-        $vals['userof_a'][$i]['name4link_n'] = phpCore::projectLink($o->name);
+        $vals['userof_a'][$i]['name4link_n'] = Core::projectLink($o->name);
         ++$i;
     }
 
@@ -249,10 +249,10 @@ if($enter)
                    $ida
                 )
             ]
-               ,db::FETCH_OBJ)
+               ,Db::FETCH_OBJ)
            ))
         {
-            $core->getTPL()->assign('banners_a',$vals['banners_a']);
+            $core->getTPL()->assign('Banners_a',$vals['Banners_a']);
             $core->getTPL()->draw('profile/postnotfound');
         }
         else
