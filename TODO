@@ -6,3 +6,5 @@ Change language handling. Move common language to nerdz core. Search for not fou
 Improve search support (search onlyfollowed, lang, ecc.)
 Create search page
 Create backend search engine with optimizations (searching with like sucks)
+Remove POSTGRESQL constant from php code
+Re-enable SSE in jclass.js, undertand why and fix the sse freeze other ajax requests

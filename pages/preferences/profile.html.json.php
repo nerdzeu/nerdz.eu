@@ -1,8 +1,9 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-
+use NERDZ\Core\Db;
 $core = new NERDZ\Core\Core();
+
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
     
@@ -64,37 +65,71 @@ if(!empty($user['steam']) && strlen($user['steam']) > 35)
 foreach($user as &$value)
     $value = htmlspecialchars($value,ENT_QUOTES,'UTF-8');
 
-$par = array(':interests' => $user['interests'],
-             ':biography' => $user['biography'],
-             ':quotes'  => $user['quotes'],
-             ':website' => $user['website'],
-             ':dateformat' => $user['dateformat'],
-             ':github' => $user['github'],
-             ':jabber' => $user['jabber'],
-             ':yahoo' => $user['yahoo'],
-             ':userscript' => $user['userscript'],
-             ':facebook' => $user['facebook'],
-             ':twitter' => $user['twitter'],
-             ':steam' => $user['steam'],
-             ':skype' => $user['skype'],
-             ':counter' => $obj->counter);
+$par = [
+    ':interests' => $user['interests'],
+     ':biography' => $user['biography'],
+     ':quotes'  => $user['quotes'],
+     ':website' => $user['website'],
+     ':dateformat' => $user['dateformat'],
+     ':github' => $user['github'],
+     ':jabber' => $user['jabber'],
+     ':yahoo' => $user['yahoo'],
+     ':userscript' => $user['userscript'],
+     ':facebook' => $user['facebook'],
+     ':twitter' => $user['twitter'],
+     ':steam' => $user['steam'],
+     ':skype' => $user['skype'],
+     ':counter' => $obj->counter
+];
     
 if(
-    Db::NO_ERRNO != $core->query(array('UPDATE profiles SET "interests" = :interests, "biography" = :biography, "quotes" = :quotes, "website" = :website, "dateformat" = :dateformat,
-      "github" = :github, "jabber" = :jabber, "yahoo" = :yahoo,
-      "userscript" = :userscript, "facebook" = :facebook, "twitter" = :twitter, "steam" = :steam, "skype" = :skype WHERE "counter" = :counter',$par),Db::FETCH_ERRNO)
+    Db::NO_ERRNO != $core->query(
+        [
+            'UPDATE profiles SET 
+            "interests"  = :interests,
+            "biography"  = :biography,
+            "quotes"     = :quotes,
+            "website"    = :website,
+            "dateformat" = :dateformat,
+            "github"     = :github,
+            "jabber"     = :jabber,
+            "yahoo"      = :yahoo,
+            userscript"  = :userscript,
+            "facebook"   = :facebook,
+            "twitter"    = :twitter,
+            "steam"      = :steam,
+            "skype"      = :skype
+            WHERE "counter" = :counter',
+           $par
+        ],Db::FETCH_ERRNO)
  )
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
 if($closed)
 {
     if(!$core->closedProfile($_SESSION['id']))
-        if(Db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => true, ':counter' => $_SESSION['id'])),Db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != $core->query(
+                    [
+                        'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',
+                        [
+                            ':closed'  => true,
+                            ':counter' => $_SESSION['id']
+                        ]
+                    ],Db::FETCH_ERRNO)
+          )
             die($core->jsonResponse('error',$core->lang('ERROR')));
 }
-else
-    if(Db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',array(':closed' => false, ':counter' => $_SESSION['id'])),Db::FETCH_ERRNO))
+else {
+    if(Db::NO_ERRNO != $core->query(
+                [
+                    'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',
+                    [
+                        ':closed'  => false,
+                        ':counter' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_ERRNO))
         die($core->jsonResponse('error',$core->lang('ERROR')));
+}
 
 $_SESSION['dateformat'] = $user['dateformat'];
 

@@ -1485,7 +1485,7 @@ $(document).ready(function() {
     var $pmCounter = $('#pmcounter'), $notifyCounter = $('#notifycounter');
 
     // If the browser supports SSE
-    if(typeof(EventSource) !== "undefined") {
+    if(false && typeof(EventSource) !== "undefined") {
         var notificationSource = new EventSource("/pages/profile/notifyEvent.json.php");
         notificationSource.addEventListener("pm", function(e) {
             var obj = JSON.parse(e.data);

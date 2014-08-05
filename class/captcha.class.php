@@ -10,7 +10,7 @@ final class Captcha
 {
     private function generate()
     {
-        $_SESSION['captcha'] = $this->randomString(CAPTCHA_LEVEL);
+        $_SESSION['captcha'] = $this->randomString(Config\CAPTCHA_LEVEL);
     }
 
     public function show()

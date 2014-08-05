@@ -1,6 +1,6 @@
 <?php
 namespace NERDZ\Core;
-use PDO;
+use PDO, PDOException;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 

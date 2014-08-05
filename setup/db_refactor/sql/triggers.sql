@@ -540,7 +540,7 @@ BEGIN
     RETURN NEW;
 END $$;
 
-CREATE FUNCTION before_insert_groups_lurkers() RETURNS trigger
+CREATE FUNCTION before_insert_group_post_lurker() RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 DECLARE postFrom int8;
@@ -557,7 +557,7 @@ BEGIN
     RETURN NEW;
 END $$;
 
-CREATE FUNCTION before_insert_lurkers() RETURNS trigger
+CREATE FUNCTION before_insert_user_post_lurker() RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 DECLARE tmp RECORD;
@@ -629,6 +629,9 @@ BEGIN
     RETURN NULL;
 END $$;
 
+-- pms --
+CREATE TRIGGER before_insert_pm  BEFORE INSERT ON pms FOR EACH ROW EXECUTE PROCEDURE before_insert_pm();
+
 -- posts --
   -- before insert/update 
 CREATE TRIGGER post_control BEFORE INSERT OR UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE post_control();
@@ -639,6 +642,11 @@ create trigger after_insert_user_post after insert on posts for each row execute
 CREATE TRIGGER after_update_post_message AFTER UPDATE ON posts FOR EACH ROW
 WHEN ( NEW.message <> OLD.message )
 EXECUTE PROCEDURE save_post_revision();
+
+-- user post lurker
+CREATE TRIGGER before_insert_user_post_lurker BEFORE INSERT ON lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
+-- group post lurker
+CREATE TRIGGER before_insert_group_post_lurker BEFORE INSERT ON groups_lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
 
 -- groups_posts --
   -- before insert/update

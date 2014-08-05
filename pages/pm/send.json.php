@@ -1,6 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/pm.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Pms;
 
 $core = new Pms();
 

@@ -50,7 +50,7 @@ $enter = (!$vals['privateprofile_b'] && $vals['logged_b']) || ($vals['privatepro
 
 if($enter)
 {
-    $vals['Gravatarurl_n'] = (new Gravatar())->getURL($info->counter);
+    $vals['gravatarurl_n'] = (new Gravatar())->getURL($info->counter);
 
     $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/onErrorImg.php';
     $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.Config\SITE_HOST : $info->website;

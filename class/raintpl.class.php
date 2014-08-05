@@ -354,7 +354,7 @@ final class RainTPL
                 // if the cache is active
                 if( isset($code[ 2 ]) )
                     //dynamic include
-                    $compiled_code .= '<?php $tpl = new RainTPL;' .
+                    $compiled_code .= '<?php require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\'; $tpl = new NERDZ\Core\RainTPL();' .
                                  'if( $cache = $tpl->cache( $template = basename("'.$include_var.'") ) )' .
                                  '    echo $cache;' .
                                  'else{ ' .
