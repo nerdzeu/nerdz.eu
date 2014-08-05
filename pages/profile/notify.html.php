@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Notification.class.php';
-ob_start(array('Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
 $core = new Notification();
 
@@ -74,7 +74,7 @@ if($core->isLogged())
                 $str[$c]['type_n'] = 'new_follower';
                 $str[$c]['datetime_n'] = $core->getDateTime($e[$i][1]);
                 $str[$c]['from_n'] = $e[$i][8];
-                $str[$c]['from4link_n'] = NERDZ\Core\NERDZ\Core\NERDZ\Core\NERDZ\Core\Core::userLink($e[$i][8]);
+                $str[$c]['from4link_n'] = \NERDZ\Core\Core::userLink($e[$i][8]);
                 ++$c;
             }
             else
@@ -87,7 +87,7 @@ if($core->isLogged())
                     {
                         //ci sono nuovi commenti sul profilo xxx.yyy 
                         $str[$c]['type_n'] = 'profile_comments';
-                        $str[$c]['to4link_n'] = NERDZ\Core\NERDZ\Core\NERDZ\Core\NERDZ\Core\Core::userLink($e[$i][5]).$e[$i][3];
+                        $str[$c]['to4link_n'] = \NERDZ\Core\Core::userLink($e[$i][5]).$e[$i][3];
                         $str[$c]['to_n'] = $e[$i][5];
                         $str[$c]['pid_n'] = $e[$i][3];
                     }
@@ -96,9 +96,9 @@ if($core->isLogged())
                         // xxx ha postato qualcosa sulla tua board (from* è sempre se stesso)
                         $str[$c]['type_n'] = 'new_post_on_profile';
                         
-                        $str[$c]['from4link_n'] = NERDZ\Core\NERDZ\Core\NERDZ\Core\NERDZ\Core\Core::userLink($e[$i][8]);
+                        $str[$c]['from4link_n'] = \NERDZ\Core\Core::userLink($e[$i][8]);
                         $str[$c]['from_n'] = $e[$i][8];
-                        $str[$c]['to4link_n'] = NERDZ\Core\NERDZ\Core\NERDZ\Core\NERDZ\Core\Core::userLink($e[$i][5]).$e[$i][3];
+                        $str[$c]['to4link_n'] = \NERDZ\Core\Core::userLink($e[$i][5]).$e[$i][3];
                         $str[$c]['to_n'] = $e[$i][5];
                         $str[$c]['pid_n'] = $e[$i][3];
                     }
@@ -106,7 +106,7 @@ if($core->isLogged())
                     {
                         //ci sono nuovi commenti sul progetto xxx:yyy
                         $str[$c]['type_n'] = 'project_comments';
-                        $str[$c]['to4link_n'] = NERDZ\Core\NERDZ\Core\Core::projectLink($e[$i][5]).$e[$i][3];
+                        $str[$c]['to4link_n'] = \NERDZ\Core\Core::projectLink($e[$i][5]).$e[$i][3];
                         $str[$c]['to_n'] = $e[$i][5];
                         $str[$c]['pid_n'] = $e[$i][3];
                     }
@@ -114,7 +114,7 @@ if($core->isLogged())
                     {
                         //novità sul progetto xxx:
                         $str[$c]['type_n'] = 'news_project';
-                        $str[$c]['to4link_n'] = NERDZ\Core\NERDZ\Core\Core::projectLink($e[$i][5]);
+                        $str[$c]['to4link_n'] = \NERDZ\Core\Core::projectLink($e[$i][5]);
                         $str[$c]['to_n'] = $e[$i][5];
                     }
                     ++$c;

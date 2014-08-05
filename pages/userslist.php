@@ -54,7 +54,7 @@ if(($r = $core->query($query,Db::FETCH_STMT)))
         $vals['list_a'][$i]['name_n'] = $o->name;
         $vals['list_a'][$i]['surname_n'] = $o->surname;
         $vals['list_a'][$i]['username_n'] = $o->username;
-        $vals['list_a'][$i]['username4link_n'] = NERDZ\Core\Core::userLink($o->username);
+        $vals['list_a'][$i]['username4link_n'] = \NERDZ\Core\Core::userLink($o->username);
         ++$i;
     }
 }

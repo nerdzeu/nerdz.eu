@@ -39,7 +39,7 @@
     else
         die(header('Location: /index.php'));
 
-    ob_start(array('Core','minifyHtml'));
+    ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
     $a = explode(' ',$core->parseNewsMessage($core->stripTags(str_replace("\n",' ',$post->message))));
 

@@ -20,7 +20,7 @@ if($fl)
 <script type="application/javascript">
 (function() {
     var gi = document.createElement('script'); gi.type = 'application/javascript'; gi.async = true;
-    gi.src = '<?php echo ($ssl ? '' : STATIC_DOMAIN). '/static/js/gistBlogger.jsmin.js';?>';
+    gi.src = '<?php echo ($ssl ? '' : NERDZ\Core\Config\STATIC_DOMAIN). '/static/js/gistBlogger.jsmin.js';?>';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gi,s);
 })();
 </script>

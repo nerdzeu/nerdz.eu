@@ -755,7 +755,7 @@ final class RainTPL
                                 (
                                     preg_match('#\_[n|b]$|\_a(\[.+?\])?'.$arith.'$|key[0-9]+'.$arith.'$|value[0-9]+(\[.+?\])?'.$arith.'$|counter[0-9]+'.$arith.'$#i',"$php_var$extra_var") ? //match loop variables, template variable [ boolean: _b, array: _a, nerdz values n]
                                     (
-                                         preg_match('#^\$Banners_a#',"$php_var$extra_var") ?
+                                         preg_match('#^\$banners_a#',"$php_var$extra_var") ?
                                          "isset($php_var$extra_var) ? $php_var$extra_var : ''"  :
                                          "$php_var$extra_var"
                                     ) :

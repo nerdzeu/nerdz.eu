@@ -6,12 +6,13 @@ if(!isset($prj, $truncate, $path))
 ob_start('ob_gzhandler');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core;
 
-ob_start(array('Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
-$core     = new Core();
-$Messages = new Messages();
-$comments = new Comments();
+$core     = new Core\Core();
+$messages = new Core\Messages();
+$comments = new Core\Comments();
 
 $logged   = $core->isLogged();
 $id       = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
@@ -42,7 +43,7 @@ if($specific) {
     $prj = $action == 'project';
 }
 
-$mess = $Messages->getMessages($id,
+$mess = $messages->getMessages($id,
     array_merge(
         [ 'project' => $prj ],
         $limit          ? [ 'limit'        => $limit ]         : [],
@@ -57,7 +58,7 @@ if(!$mess || (!$logged && $beforeHpid))
 
 $vals = [];
 $vals['count_n'] = count($mess);
-$vals['list_a'] = $Messages->getPostList($mess, $prj, $truncate);
+$vals['list_a'] = $messages->getPostList($mess, $prj, $truncate);
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw($path.'/postlist');
 ?>

@@ -3,7 +3,7 @@
 //questa pagina viene sempre inclusa, quindi non necessita di ob_start e altri include che tanto fanno gli altri file (ma tanto usiamo require_once once che è meglio per star sicuri)
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
-ob_start(array('Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
 $core = new Messages();
 $comments = new Comments();
@@ -21,8 +21,8 @@ $singlepostvals['revisions_n'] = $core->getRevisionsNumber($hpid);
 $singlepostvals['thumbs_n'] = $core->getThumbs($hpid);
 $singlepostvals['uthumb_n'] = $core->getUserThumb($hpid);
 $singlepostvals['pid_n'] = $o->pid;
-$singlepostvals['from4link_n'] = NERDZ\Core\NERDZ\Core\Core::userLink($from);
-$singlepostvals['to4link_n'] = NERDZ\Core\NERDZ\Core\Core::userLink($to);
+$singlepostvals['from4link_n'] = \NERDZ\Core\Core::userLink($from);
+$singlepostvals['to4link_n'] = \NERDZ\Core\Core::userLink($to);
 $singlepostvals['fromid_n'] = $o->from;
 $singlepostvals['toid_n'] = $o->to;
 $singlepostvals['from_n'] = $from;

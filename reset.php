@@ -7,7 +7,7 @@
     
     if($core->isLogged())
         die(header("Location: home.php"));
-    ob_start(array('Core','minifyHtml'));
+    ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 ?>
 <!DOCTYPE html>
 <html lang="en">

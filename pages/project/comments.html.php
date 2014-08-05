@@ -2,7 +2,7 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 $core = new Comments();
-ob_start(array('Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
@@ -26,7 +26,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             die();
         $vals = [];
         
-        $vals['currentuserprofile_n'] = NERDZ\Core\Core::userLink($_SESSION['id']);
+        $vals['currentuserprofile_n'] = \NERDZ\Core\Core::userLink($_SESSION['id']);
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/Gravatar.class.php';
         $vals['currentuserGravatar_n'] = (new Gravatar())->getURL($_SESSION['id']);
         $vals['currentusername_n'] = $core->getUsername();

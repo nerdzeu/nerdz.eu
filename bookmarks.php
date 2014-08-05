@@ -8,7 +8,7 @@
 
     $tplcfg = $core->getTemplateCfg();
     
-    ob_start(array('Core','minifyHtml'));
+    ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 ?>
 <!DOCTYPE html>
 <html lang="en">

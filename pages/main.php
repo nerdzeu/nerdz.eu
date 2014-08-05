@@ -8,10 +8,10 @@ use NERDZ\Core\Db;
 $vals = [];
 
 $Banners = (new Core\Banners())->getBanners();
-$vals['Banners_a'] = [];
+$vals['banners_a'] = [];
 shuffle($Banners);
 foreach($Banners as $ban)
-    $vals['Banners_a'][$ban[1]] = $ban[2];
+    $vals['banners_a'][$ban[1]] = $ban[2];
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
@@ -44,7 +44,7 @@ if($tot>0)
             }
             $myarray[$i]['id_n'] = $l[$i];
             $myarray[$i]['username_n'] = $core->getUsername($l[$i]);
-            $myarray[$i]['username4link_n'] = NERDZ\Core\Core::userLink($myarray[$i]['username_n']);
+            $myarray[$i]['username4link_n'] = \NERDZ\Core\Core::userLink($myarray[$i]['username_n']);
             $myarray[$i]['online_b'] = $core->isOnline($l[$i]);
             if($myarray[$i]['online_b'])
                 ++$c;
@@ -87,7 +87,7 @@ $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
 {
     $vals['ownerof_a'][$i]['name_n'] = $o->name;
-    $vals['ownerof_a'][$i]['name4link_n'] = NERDZ\Core\Core::projectLink($o->name);
+    $vals['ownerof_a'][$i]['name4link_n'] = \NERDZ\Core\Core::projectLink($o->name);
     ++$i;
 }
 

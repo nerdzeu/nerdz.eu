@@ -141,7 +141,7 @@ class Messages extends Core
         $str = preg_replace('#\[wat\]#i','<span style="font-size:22pt">WAT</span>',$str); //easter egg [never change]
 
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#i',function($m) {
-                return '<a href="/'.NERDZ\Core\NERDZ\Core\Core::userLink($m[1])."\">{$m[1]}</a>";
+                return '<a href="/'.NERDZ\Core\Core::userLink($m[1])."\">{$m[1]}</a>";
                 },$str);
         $str = preg_replace_callback('#\[project\](.+?)\[/project\]#i',function($m) {
                 return '<a href="/'.NERDZ\Core\Core::projectLink($m[1])."\">{$m[1]}</a>";
@@ -843,7 +843,7 @@ class Messages extends Core
             $ret[$i]['uthumb_n'] = $this->getUserThumb($mess[$i]['hpid'], $prj);
             $ret[$i]['pid_n'] = $mess[$i]['pid'];
             $ret[$i]['news_b'] = $mess[$i]['news'];
-            $ret[$i]['from4link_n'] = NERDZ\Core\NERDZ\Core\Core::userLink($from);
+            $ret[$i]['from4link_n'] = \NERDZ\Core\Core::userLink($from);
             $ret[$i]['to4link_n'] = $toFuncLink($to);
             $ret[$i]['fromid_n'] = $mess[$i]['from'];
             $ret[$i]['toid_n'] = $mess[$i]['to'];

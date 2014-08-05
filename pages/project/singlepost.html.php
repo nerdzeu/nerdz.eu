@@ -4,7 +4,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
-ob_start(array('Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
 $core = new Project();
 $comments = new Comments();
@@ -30,8 +30,8 @@ $singlepostvals['thumbs_n'] = $Messages->getThumbs($hpid, true);
 $singlepostvals['revisions_n'] = $Messages->getRevisionsNumber($hpid, true);
 $singlepostvals['uthumb_n'] = $Messages->getUserThumb($hpid, true); 
 $singlepostvals['pid_n'] = $o->pid;
-$singlepostvals['from4link_n'] = NERDZ\Core\Core::userLink($from);
-$singlepostvals['to4link_n'] = NERDZ\Core\Core::projectLink($to);
+$singlepostvals['from4link_n'] = \NERDZ\Core\Core::userLink($from);
+$singlepostvals['to4link_n'] = \NERDZ\Core\Core::projectLink($to);
 $singlepostvals['fromid_n'] = $o->from;
 $singlepostvals['toid_n'] = $o->to;
 $singlepostvals['from_n'] = $from;
