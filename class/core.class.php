@@ -1,6 +1,5 @@
 <?php
 namespace NERDZ\Core;
-use NERDZ\Core\Config;
 use PDO;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -655,14 +654,14 @@ class Core
     {
         $timezone = $this->getUserTimezone($this->isLogged() ? $_SESSION['id'] : 0);
 
-        $date = new DateTime();
+        $date = new \DateTime();
         $date->setTimestamp($timestamp);
-        $date->setTimeZone(new DateTimezone($timezone));
+        $date->setTimeZone(new \DateTimezone($timezone));
 
-        $today = new DateTime('now');
-        $today->setTimezone(new DateTimezone($timezone));
+        $today = new \DateTime('now');
+        $today->setTimezone(new \DateTimezone($timezone));
 
-        $yesterday = new DateTime();
+        $yesterday = new \DateTime();
         $yesterday->setTimestamp($today->getTimestamp() - 86400);
 
         $format4compare = 'Y-m-d';

@@ -1,7 +1,9 @@
 <?php
 namespace NERDZ\Core;
-require_once 'core.class.php';
-require_once 'project.class.php';
+
+use PDO;
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 class Messages extends Core
 {
@@ -81,9 +83,9 @@ class Messages extends Core
             }
 
             // url hosted on a non ssl host - use camo or our trusted proxy
-            return CAMO_KEY == '' ?
+            return Config\CAMO_KEY == '' ?
                 'https://i0.wp.com/' . preg_replace ('#^http://|^ftp://#i', '', strip_tags($url)) :
-                $domain.'/secure/image/'.hash_hmac('sha1', $url, CAMO_KEY).'?url='.urlencode($url);
+                $domain.'/secure/image/'.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
         }
         return strip_tags($url);
     }
@@ -103,7 +105,7 @@ class Messages extends Core
         }
 
         $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-        $domain = $ssl ? 'https://'.SITE_HOST : STATIC_DOMAIN;
+        $domain = $ssl ? 'https://'.Config\SITE_HOST : Config\STATIC_DOMAIN;
 
         $validURL = function($m) {
             $m[1] = trim($m[1]);
