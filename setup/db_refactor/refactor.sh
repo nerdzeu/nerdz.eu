@@ -14,7 +14,12 @@ groups_news="1"
 
 tmp=$(mktemp)
 
-cat db_refactor.sql > $tmp
+echo "BEGIN;" > $tmp
+cat sql/functions.sql >> $tmp
+cat sql/tables.sql >> $tmp
+cat sql/triggers.sql >> $tmp
+
+echo "COMMIT;" >> $tmp
 
 sed -i -e "s/%%DELETED_USER%%/$deleted/g" $tmp
 sed -i -e "s/%%USERS_NEWS%%/$users_news/g" $tmp

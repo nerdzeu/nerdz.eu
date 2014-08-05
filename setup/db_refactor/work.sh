@@ -2,5 +2,5 @@
 
 cd ~/nerdz_env/nerdz-test-db/
 ./initdb.sh postgres nerdz
-cd ~/nerdz_env/nerdz/setup
+cd ~/nerdz_env/nerdz/setup/db_refactor
 ./refactor.sh
