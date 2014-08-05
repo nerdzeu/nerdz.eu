@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$core = new Core();
+$core = new NERDZ\Core\Core();
     
 if($core->isLogged())
     die($core->jsonResponse('error',$core->lang('ALREADY_LOGGED')));

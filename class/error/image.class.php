@@ -1,16 +1,15 @@
 <?php
-namespace NERDZ\Core;
-/*
- * Classe per la creazione di immagini di errore
- */
+namespace NERDZ\Core\Error;
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
-final class ErrorImg extends Core
+use NERDZ\Core\Core;
+
+final class Image extends Core
 {
     public function __construct($langindex)
     {
         parent::__construct();
-
         ob_clean();
         header('Content-Type: image/png');
         $red = rand(100,255);

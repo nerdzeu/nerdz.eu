@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$core = new Core();
+$core = new NERDZ\Core\Core();
 
 $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 

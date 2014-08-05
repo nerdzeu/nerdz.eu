@@ -1,6 +1,9 @@
 <?php
     ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+    use NERDZ\Core\Messages;
+    use NERDZ\Core\Db;
+    use NERDZ\Core\Config;
     
     $core = new Messages();
     $tplcfg = $core->getTemplateCfg();
@@ -22,7 +25,7 @@
             $username = $info->username;
             if($pid)
             {
-                if((!$core->isLogged() && $info->private) || !($post = $core->query(array('SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',array($pid,$id)),Db::FETCH_OBJ)))
+                if((!$core->isLogged() && $info->private) || !($post = $core->query(['SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',[':pid' => $pid, ':id' => $id]],Db::FETCH_OBJ)))
                 {
                     $post = new stdClass();
                     $post->message = '';
@@ -80,7 +83,7 @@
         echo ' #', $pid;
     echo ' @ '.$core->getSiteName();
 ?></title>
-        <link rel="alternate" type="application/atom+xml" title="<?php echo $username; ?>" href="http://<?php echo SITE_HOST; ?>/feed.php?id=<?php echo $id; ?>" />
+        <link rel="alternate" type="application/atom+xml" title="<?php echo $username; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $id; ?>" />
 <?php
     $headers = $tplcfg->getTemplateVars('profile');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

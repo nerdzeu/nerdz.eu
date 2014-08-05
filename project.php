@@ -4,7 +4,7 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
      
-    $core = new Core();
+    $core = new NERDZ\Core\Core();
     $project = new Project();
     $Messages = new Messages();
     $tplcfg = $core->getTemplateCfg();

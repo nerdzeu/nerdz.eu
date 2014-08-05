@@ -9,7 +9,7 @@
  *    
  *     Modified a lots of times by: Paolo Galeone
  *
- *  @note NERDZ is tool dynamic, cache removed. Added to NERDZ\Core namespace.
+ *  @note NERDZ is too dynamic => cache removed. Added to NERDZ\Core namespace.
  *  Now RainTPL is integrated with the NERDZ language support
  */
 

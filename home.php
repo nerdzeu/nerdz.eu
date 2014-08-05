@@ -4,7 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 use NERDZ\Core\Core;
 
-$core = new Core();
+$core = new NERDZ\Core\Core();
 $tplcfg = $core->getTemplateCfg();
 ob_start(array('NERDZ\Core\Core','minifyHtml'));
 ?>

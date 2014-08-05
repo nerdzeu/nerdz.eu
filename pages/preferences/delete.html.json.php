@@ -3,7 +3,7 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
 
-$core = new Core();
+$core = new NERDZ\Core\Core();
 
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));

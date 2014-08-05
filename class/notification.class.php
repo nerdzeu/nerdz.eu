@@ -12,7 +12,7 @@ class Notification extends Core
     public function __construct()
     {
         parent::__construct();
-        $this->cachekey = parent::isLogged() ? "{$_SESSION['id']}Notificationstory".SITE_HOST : '';
+        $this->cachekey = parent::isLogged() ? "{$_SESSION['id']}Notificationstory".Config\SITE_HOST : '';
     }
 
     public function countPms()
@@ -64,8 +64,8 @@ class Notification extends Core
 
     private function countUsers()
     {
-        $q = $this->rag ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM "comments_Notification" WHERE "to" = :id GROUP BY "hpid") AS c' :
-                          'SELECT COUNT("to") AS cc FROM "comments_Notification" WHERE "to" = :id';
+        $q = $this->rag ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM "comments_notify" WHERE "to" = :id GROUP BY "hpid") AS c' :
+                          'SELECT COUNT("to") AS cc FROM "comments_notify" WHERE "to" = :id';
         
         if(!($o = parent::query(array($q,array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
             return -1;
@@ -75,7 +75,7 @@ class Notification extends Core
 
     private function countPosts()
     {
-        if(!($o = parent::query(array('SELECT COUNT("hpid") AS cc FROM "posts_Notification" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT COUNT("hpid") AS cc FROM "posts_notify" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
             return -1;
         
         return $o->cc;
@@ -83,8 +83,8 @@ class Notification extends Core
 
     private function countProjects()
     {
-        $q = $this->rag ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM groups_comments_Notification WHERE "to" = :id GROUP BY "hpid") AS c' :
-                          'SELECT COUNT("to") AS cc FROM "groups_comments_Notification" WHERE "to" = :id';
+        $q = $this->rag ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM groups_comments_notify WHERE "to" = :id GROUP BY "hpid") AS c' :
+                          'SELECT COUNT("to") AS cc FROM "groups_comments_notify" WHERE "to" = :id';
             
         if(!($o = parent::query(array($q,array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
             return -1;
@@ -94,7 +94,7 @@ class Notification extends Core
 
     private function countProjectsNews()
     {
-        if(!($o = parent::query(array('SELECT COUNT(DISTINCT "group") AS cc FROM "groups_Notification" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+        if(!($o = parent::query(array('SELECT COUNT(DISTINCT "group") AS cc FROM "groups_notify" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
             return -1;
         return $o->cc;
     }
@@ -141,7 +141,7 @@ class Notification extends Core
     {
         $ret = [];
         $i = 0;
-        $result = parent::query(array('SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "comments_Notification" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = parent::query(array('SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "comments_notify" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
         
         while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = parent::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ)))
         {
@@ -162,7 +162,7 @@ class Notification extends Core
         if($del) {
             parent::query(
                 [
-                    'DELETE FROM "comments_Notification" WHERE "to" = :id',
+                    'DELETE FROM "comments_notify" WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -175,7 +175,7 @@ class Notification extends Core
     {
         $ret = [];
         $i = 0;
-        $result = parent::query(array('SELECT p."pid",n."hpid", n."from", EXTRACT(EPOCH FROM n."time") AS time FROM "posts_Notification" n JOIN "posts" p ON p.hpid = n.hpid WHERE n."to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = parent::query(array('SELECT p."pid",n."hpid", n."from", EXTRACT(EPOCH FROM n."time") AS time FROM "posts_notify" n JOIN "posts" p ON p.hpid = n.hpid WHERE n."to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
         $to = parent::getUsername($_SESSION['id']);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
@@ -194,7 +194,7 @@ class Notification extends Core
         if($del) {
             parent::query(
                 [
-                    'DELETE FROM "posts_Notification" WHERE "to" = :id',
+                    'DELETE FROM "posts_notify" WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -208,7 +208,7 @@ class Notification extends Core
     {
         $ret = [];
         $i = 0;
-        $result = parent::query(array('SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments_Notification" WHERE "to" = :id', array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = parent::query(array('SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments_notify" WHERE "to" = :id', array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = parent::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ)))
         {
@@ -229,7 +229,7 @@ class Notification extends Core
         if($del) {
             parent::query(
                 [
-                    'DELETE FROM "groups_comments_Notification" WHERE "to" = :id',
+                    'DELETE FROM "groups_comments_notify" WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -242,7 +242,7 @@ class Notification extends Core
     {
         $ret = [];
         $i = 0;
-        $result = parent::query(array('SELECT DISTINCT "group",EXTRACT(EPOCH FROM "time") AS time FROM "groups_Notification" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = parent::query(array('SELECT DISTINCT "group",EXTRACT(EPOCH FROM "time") AS time FROM "groups_notify" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
         {
             $ret[$i]['project'] = true;
@@ -256,7 +256,7 @@ class Notification extends Core
         if($del) {
             parent::query(
                 [
-                    'DELETE FROM "groups_Notification" WHERE "to" = :id',
+                    'DELETE FROM "groups_notify" WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]

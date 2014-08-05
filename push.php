@@ -10,7 +10,7 @@ function jsonResponse($object) {
     exit(json_encode($object, JSON_UNESCAPED_UNICODE));
 }
 
-$core = new Core();
+$core = new NERDZ\Core\Core();
 try {
     
     if(!$core->isLogged()) {

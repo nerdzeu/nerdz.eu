@@ -10,9 +10,9 @@ use NERDZ\Core;
 
 ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
-$core     = new Core\Core();
-$messages = new Core\Messages();
-$comments = new Core\Comments();
+$core     = new NERDZ\Core\Core();
+$messages = new NERDZ\Core\Messages();
+$comments = new NERDZ\Core\Comments();
 
 $logged   = $core->isLogged();
 $id       = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;

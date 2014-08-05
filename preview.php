@@ -3,7 +3,7 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/templatecfg.class.php';
     
-    $core = new Core();
+    $core = new NERDZ\Core\Core();
     $tplcfg = new TemplateConfig($core);;
     
     ob_start(array('NERDZ\\Core\\Core','minifyHtml'));

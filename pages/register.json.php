@@ -3,7 +3,7 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
-$core = new Core();
+$core = new NERDZ\Core\Core();
 $cptcka = new Captcha();
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 

@@ -1,6 +1,12 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/Banners.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+
+use NERDZ\Core\Banners;
+use NERDZ\Core\Browser;
+use NERDZ\Core\Config;
+use NERDZ\Core\Db;
+use NERDZ\Core\Gravatar;
+use NERDZ\Core\Messages;
+use NERDZ\Core\Stuff;
 
 $vals = [];
 $vals['logged_b'] = $core->isLogged();
@@ -34,7 +40,7 @@ if($vals['logged_b'])
         [
             'SELECT "to" FROM "blacklist" WHERE "from" = :me',
             [
-                ':me' => $_SESSION['nerdz_id']
+                ':me' => $_SESSION['id']
             ]
         ], db::ROW_COUNT);
 }
@@ -44,11 +50,10 @@ $enter = (!$vals['privateprofile_b'] && $vals['logged_b']) || ($vals['privatepro
 
 if($enter)
 {
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Gravatar.class.php';
     $vals['Gravatarurl_n'] = (new Gravatar())->getURL($info->counter);
 
-    $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/onErrorImg.php';
-    $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.SITE_HOST : $info->website;
+    $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/onErrorImg.php';
+    $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.Config\SITE_HOST : $info->website;
 
     if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$vals['website4link_n']))
         $vals['website4link_n'] = 'http://'.$vals['website4link_n'];
@@ -74,7 +79,7 @@ if($enter)
     list($year, $month, $day) = explode('-',$info->birth_date);
     $vals['birthdate_n'] = $day.'/'.$month.'/'.$year;
 
-    $apc_name = 'count_comments_'.$info->counter.SITE_HOST;
+    $apc_name = 'count_comments_'.$info->counter.Config\SITE_HOST;
 
     if(!apc_exists($apc_name))
     {

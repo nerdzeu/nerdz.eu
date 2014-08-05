@@ -1,7 +1,7 @@
 <?php
 namespace NERDZ\Core;
-
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use PDO;
 
 class project extends Core
 {
