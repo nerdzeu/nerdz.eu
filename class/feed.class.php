@@ -123,7 +123,7 @@ class Feed extends Messages
         if(!($us = parent::getUsername($id)))
             return $this->error('Invalid user ID');
 
-        $urluser = Core::userLink($us);
+        $urluser = NERDZ\Core\NERDZ\Core\Core::userLink($us);
         $us = $this->xmlentity($us);
     
         if(!parent::isLogged() && (!($p = parent::query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)) || $p->private))
@@ -151,7 +151,7 @@ class Feed extends Messages
         if(!($us = parent::getProjectName($id)))
             return $this->error('Invalid project ID');
 
-        $urlprj = Core::projectLink($us);
+        $urlprj = NERDZ\Core\NERDZ\Core\Core::projectLink($us);
         $us = $this->xmlentity($us);
     
         if(!($p = parent::query(array('SELECT "private","owner" FROM "groups" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))

@@ -26,7 +26,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             die();
         $vals = [];
         
-        $vals['currentuserprofile_n'] = Core::userLink($_SESSION['id']);
+        $vals['currentuserprofile_n'] = NERDZ\Core\Core::userLink($_SESSION['id']);
         require_once $_SERVER['DOCUMENT_ROOT'].'/class/Gravatar.class.php';
         $vals['currentuserGravatar_n'] = (new Gravatar())->getURL($_SESSION['id']);
         $vals['currentusername_n'] = $core->getUsername();

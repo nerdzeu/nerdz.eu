@@ -13,7 +13,7 @@ final class Banners
     {
         $this->Banners = [];
         
-        $cache = 'bannerarray'.SITE_HOST;
+        $cache = 'bannerarray'.Config\SITE_HOST;
         if(apc_exists($cache))
            $this->Banners = unserialize(apc_fetch($cache));
         else

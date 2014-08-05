@@ -2,10 +2,12 @@
 if(!$core->isLogged())
     die(header('Location: /'));
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/Banners.class.php';
+use NERDZ\Core;
+use NERDZ\Core\Db;
+
 $vals = [];
 
-$Banners = (new Banners())->getBanners();
+$Banners = (new Core\Banners())->getBanners();
 $vals['Banners_a'] = [];
 shuffle($Banners);
 foreach($Banners as $ban)
@@ -42,7 +44,7 @@ if($tot>0)
             }
             $myarray[$i]['id_n'] = $l[$i];
             $myarray[$i]['username_n'] = $core->getUsername($l[$i]);
-            $myarray[$i]['username4link_n'] = Core::userLink($myarray[$i]['username_n']);
+            $myarray[$i]['username4link_n'] = NERDZ\Core\Core::userLink($myarray[$i]['username_n']);
             $myarray[$i]['online_b'] = $core->isOnline($l[$i]);
             if($myarray[$i]['online_b'])
                 ++$c;
@@ -85,7 +87,7 @@ $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
 {
     $vals['ownerof_a'][$i]['name_n'] = $o->name;
-    $vals['ownerof_a'][$i]['name4link_n'] = Core::projectLink($o->name);
+    $vals['ownerof_a'][$i]['name4link_n'] = NERDZ\Core\Core::projectLink($o->name);
     ++$i;
 }
 
@@ -97,7 +99,7 @@ $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
 {
     $vals['memberof_a'][$i]['name_n'] = $o->name;
-    $vals['memberof_a'][$i]['name4link_n'] = Core::projectLink($o->name);
+    $vals['memberof_a'][$i]['name4link_n'] = NERDZ\Core\NERDZ\Core\Core::projectLink($o->name);
     ++$i;
 }
 

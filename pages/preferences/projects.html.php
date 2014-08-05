@@ -21,7 +21,7 @@ else
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['myprojects_a'][$i]['name_n'] = $o->name;
-        $vals['myprojects_a'][$i]['name4link_n'] = Core::projectLink($o->name);
+        $vals['myprojects_a'][$i]['name4link_n'] = NERDZ\Core\Core::projectLink($o->name);
         $vals['myprojects_a'][$i]['id_n'] = $o->counter;
         ++$i;
     }

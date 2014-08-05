@@ -4,8 +4,7 @@ if(!isset($prj, $truncate, $path))
     die('$prj, $truncate, $path required');
 
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 ob_start(array('Core','minifyHtml'));

@@ -1,11 +1,5 @@
 <?php
 namespace NERDZ\Core;
-/*
- * Classe per la gestione dei commenti
- */
-
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
 
 class comments extends Messages
 {
@@ -33,7 +27,7 @@ class comments extends Messages
             $ret[$i]['toid_n'] = $o->to;
             $ret[$i]['from_n'] = $users[$o->from];
             $ret[$i]['uid_n'] = "c{$o->hcid}";
-            $ret[$i]['from4link_n'] = Core::userLink($users[$o->from]);
+            $ret[$i]['from4link_n'] = NERDZ\Core\Core::userLink($users[$o->from]);
             $ret[$i]['message_n'] = parent::bbcode($o->message,1,$cg,1,$o->hcid);
             $ret[$i]['datetime_n'] = parent::getDateTime($o->time);
             $ret[$i]['timestamp_n'] = $o->time;
