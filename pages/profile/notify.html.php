@@ -59,7 +59,7 @@ if($core->isLogged())
     if($f && !$core->updateStory($a))
         die($core->lang('ERROR'));
         
-    usort($e,array('Notification','echoSort'));
+    usort($e,array('NERDZ\\Core\\Notification','echoSort'));
     $raggr = 1; //set variable via POST to decide if we have to raggrupate Notifications or not
     if($raggr)
     {
@@ -125,7 +125,7 @@ if($core->isLogged())
         $vals['list_a'] = $str;
         
         $core->getTPL()->assign($vals);
-        $core->getTPL()->draw('profile/Notification');
+        $core->getTPL()->draw('profile/notify');
     }
     else
         for($i=0;$i<$y;++$i)

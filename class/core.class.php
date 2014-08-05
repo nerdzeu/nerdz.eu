@@ -1,12 +1,11 @@
 <?php
 namespace NERDZ\Core;
-use PDO, PDOException;
 
+use PDO, PDOException;
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
-// Usage of redis to share sessions with other applications
 if(Config\REDIS_ENABLED)
-    require_once 'redisSessionHandler.class.php';
+    require 'redisSessionHandler.class.php';
 else
     session_start();
 

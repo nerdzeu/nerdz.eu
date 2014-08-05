@@ -2,6 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Notification;
 use NERDZ\Core\Db;
+use NERDZ\Core\Config;
 
 $core = new Notification();
 
@@ -14,6 +15,19 @@ $push = function($event, $status, $message) use ($core) {
     flush();
 };
 
+$dontSendCacheLimiter = function() {
+    // http://stackoverflow.com/a/12315542
+    ini_set('session.use_only_cookies', false);
+    ini_set('session.use_cookies', false);
+    ini_set('session.use_trans_sid', false);
+    ini_set('session.cache_limiter', null);
+    if(Config\REDIS_ENABLED)
+        require 'redisSessionHandler.class.php';
+    else
+        session_start();
+};
+
+
 if(!$core->isLogged()) {
     $push('notification', 'error', $core->lang('REGISTER'));
     $push('pm', 'error', $core->lang('REGISTER'));
@@ -24,6 +38,8 @@ if(!$core->isLogged()) {
 
     $pm = $core->countPms();
     $push('pm', 'ok', $pm);
+
+    session_write_close(); //unlock $_SESSION (other scripts can now run)
 
     sleep(5);
     $viewonline = empty($_SESSION['mark_offline']) ? '1' : '0';
@@ -68,8 +84,10 @@ if(!$core->isLogged()) {
                              ':id'   => $_SESSION['id']
                          ]
                     ] ,Db::NO_RETURN);
-                
+
+                $dontSendCacheLimiter();
                 $_SESSION['remote_addr'] = $_SERVER['REMOTE_ADDR'];
+                session_write_close();
             }
        
             if(empty($o->http_user_agent) || empty($_SESSION['http_user_agent']) || 
@@ -83,7 +101,9 @@ if(!$core->isLogged()) {
                         ]
                     ], Db::NO_RETURN);
 
+                $dontSendCacheLimiter();
                 $_SESSION['http_user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+                session_write_close();
             }
         }
 

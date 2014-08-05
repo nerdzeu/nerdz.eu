@@ -1,8 +1,7 @@
 <?php
 namespace NERDZ\Core;
-/*
- * Classe per la gestione delle notifiche
- */
+use PDO;
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 class Notification extends Core

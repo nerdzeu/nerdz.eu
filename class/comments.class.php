@@ -1,6 +1,9 @@
 <?php
 namespace NERDZ\Core;
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
+use PDO;
+
 class comments extends Messages
 {
     private $project;
@@ -63,7 +66,7 @@ class comments extends Messages
 
             ++$i;
         }
-        //non controllo il valore di ritorno, perché non è un errore grave per cui ritornare false, ci pensa poi la classe per le notifiche a gestire tutto
+
         if(parent::isLogged() && $i > 1)
             parent::query(array('DELETE FROM "'.$glue.'comments_Notification" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['id'],$hpid)),Db::NO_RETURN);
 
@@ -120,7 +123,6 @@ class comments extends Messages
         if (!$useLimitedQuery)
             $blist = $r->fetchAll(PDO::FETCH_COLUMN);
 
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/Gravatar.class.php';
         $grav = new Gravatar();
 
         while(($o = $f->fetch(PDO::FETCH_OBJ)))

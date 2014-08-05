@@ -1,7 +1,10 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
-$core = new Comments();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Config;
+
+$core = new NERDZ\Core\Comments();
+
 ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
 if(!$core->isLogged())
@@ -27,10 +30,9 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals = [];
         
         $vals['currentuserprofile_n'] = \NERDZ\Core\Core::userLink($core->getUsername());
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/Gravatar.class.php';
-        $vals['currentuserGravatar_n'] = (new Gravatar())->getURL($core->getUserId());
+        $vals['currentusergravatar_n'] = (new NERDZ\Core\Gravatar())->getURL($core->getUserId());
         $vals['currentusername_n'] = $core->getUsername();
-        $vals['onerrorimgurl_n'] = STATIC_DOMAIN.'/static/images/red_x.png';
+        $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/red_x.png';
         $vals['list_a'] = $_list;
         $vals['showform_b'] = $doShowForm;
         $vals['hpid_n'] = $hpid;

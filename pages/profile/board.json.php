@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
-$core = new Messages();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+$core = new NERDZ\Core\Messages();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));

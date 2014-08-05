@@ -2,7 +2,6 @@
 namespace NERDZ\Core;
 
 use PDO;
-
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 class Messages extends Core

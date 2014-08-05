@@ -99,7 +99,7 @@ $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
 {
     $vals['memberof_a'][$i]['name_n'] = $o->name;
-    $vals['memberof_a'][$i]['name4link_n'] = NERDZ\Core\NERDZ\Core\Core::projectLink($o->name);
+    $vals['memberof_a'][$i]['name4link_n'] = \NERDZ\Core\Core::projectLink($o->name);
     ++$i;
 }
 
