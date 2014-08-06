@@ -11,7 +11,7 @@ class Notification extends Core
     public function __construct()
     {
         parent::__construct();
-        $this->cachekey = parent::isLogged() ? "{$_SESSION['id']}Notificationstory".Config\SITE_HOST : '';
+        $this->cachekey = parent::isLogged() ? "{$_SESSION['id']}notifystory".Config\SITE_HOST : '';
     }
 
     public function countPms()
@@ -299,7 +299,7 @@ class Notification extends Core
         {
             if(!($o = parent::query(
                 [
-                    'SELECT "Notification_story" FROM "users" WHERE "counter" = :id',
+                    'SELECT "notify_story" FROM "users" WHERE "counter" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -307,7 +307,7 @@ class Notification extends Core
             )
                 return [];
         
-            $ret = json_decode($o->Notification_story,true);
+            $ret = json_decode($o->notify_story,true);
             @apc_store($this->cachekey,serialize($ret),300);
             return $ret;
         }
@@ -320,7 +320,7 @@ class Notification extends Core
         {
             if(Db::NO_ERRNO != parent::query(
                 [
-                    'UPDATE "users" SET "Notification_story" = :story WHERE "counter" = :id',
+                    'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
                         ':story' => json_encode($new,JSON_FORCE_OBJECT),
                         ':id'    => $_SESSION['id']
@@ -345,7 +345,7 @@ class Notification extends Core
 
             if(Db::NO_ERRNO != parent::query(
                 [
-                    'UPDATE "users" SET "Notification_story" = :story WHERE "counter" = :id',
+                    'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
                         ':story' => json_encode($old,JSON_FORCE_OBJECT),
                         ':id'    => $_SESSION['id']

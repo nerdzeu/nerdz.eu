@@ -3,6 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Notification;
 use NERDZ\Core\Db;
 use NERDZ\Core\Config;
+use NERDZ\Core\RedisSessionHandler;
 
 $core = new Notification();
 
@@ -21,8 +22,9 @@ $dontSendCacheLimiter = function() {
     ini_set('session.use_cookies', false);
     ini_set('session.use_trans_sid', false);
     ini_set('session.cache_limiter', null);
-    if(Config\REDIS_ENABLED)
-        require 'redisSessionHandler.class.php';
+    if(Config\REDIS_ENABLED) {
+        new RedisSessionHandler();
+    }
     else
         session_start();
 };

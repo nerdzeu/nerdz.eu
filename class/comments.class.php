@@ -26,7 +26,7 @@ class comments extends Messages
                 continue;
 
             $ret[$i]['fromid_n'] = $o->from;
-            $ret[$i]['Gravatarurl_n'] = $gravurl[$o->from];
+            $ret[$i]['gravatarurl_n'] = $gravurl[$o->from];
             $ret[$i]['toid_n'] = $o->to;
             $ret[$i]['from_n'] = $users[$o->from];
             $ret[$i]['uid_n'] = "c{$o->hcid}";
@@ -68,7 +68,7 @@ class comments extends Messages
         }
 
         if(parent::isLogged() && $i > 1)
-            parent::query(array('DELETE FROM "'.$glue.'comments_Notification" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['id'],$hpid)),Db::NO_RETURN);
+            parent::query(array('DELETE FROM "'.$glue.'comments_notify" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['id'],$hpid)),Db::NO_RETURN);
 
         return $ret;
     }
@@ -113,7 +113,7 @@ class comments extends Messages
 
         if(
             !($f = parent::query(array('SELECT DISTINCT "from" FROM "'.$glue.'comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),Db::FETCH_STMT)) ||
-            !($ll = parent::query(array('SELECT "from" FROM "'.$glue.'comments_no_Notification" WHERE "hpid" = :hpid AND "to" = :id',array(':hpid' => $hpid,':id' => $_SESSION['id'])),Db::FETCH_STMT)) || //quelli da non notificare
+            !($ll = parent::query(array('SELECT "from" FROM "'.$glue.'comments_no_notify" WHERE "hpid" = :hpid AND "to" = :id',array(':hpid' => $hpid,':id' => $_SESSION['id'])),Db::FETCH_STMT)) || //quelli da non notificare
             !($r = ($useLimitedQuery ? true : parent::query(array('SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['id'])),Db::FETCH_STMT)))
           )
             return false;
@@ -291,7 +291,7 @@ class comments extends Messages
                         ],Db::FETCH_OBJ)
                  )
           )
-            return false;
+          return false;
 
         return $this->showControl ($o->from, $o->to, $hpid, $o->pid, $prj, false, $num, $cycle * $num);
     }
@@ -311,7 +311,7 @@ class comments extends Messages
             {
                 if(
                     Db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),Db::FETCH_ERRNO) ||
-                    Db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_Notification" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)
+                    Db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)
                   )
                     return false;
             }
@@ -322,7 +322,7 @@ class comments extends Messages
                 return false;
         
             if($c->cc == 0)
-                if(Db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_no_Notification" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
+                if(Db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
                     return false;
 
             return true;
@@ -338,7 +338,7 @@ class comments extends Messages
             &&
             parent::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_ERRNO) == Db::NO_ERRNO
             &&
-            parent::query(array('DELETE FROM "comments_Notification" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)  == Db::NO_ERRNO
+            parent::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)  == Db::NO_ERRNO
         );
         if($ok)
         {
@@ -346,7 +346,7 @@ class comments extends Messages
                 return false;
 
             if($c->cc == 0)
-                if(Db::NO_ERRNO != parent::query(array('DELETE FROM "comments_no_Notification" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
+                if(Db::NO_ERRNO != parent::query(array('DELETE FROM "comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
                     return false;
             return true;
         }

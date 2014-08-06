@@ -8,9 +8,9 @@ Predis\Autoloader::register();
 
 
 /**
- * redisSessionHandler class
- * @class           redisSessionHandler
- * @file            redisSessionHandler.class.php
+ * RedisSessionHandler class
+ * @class           RedisSessionHandler
+ * @file            RedisSessionHandler.class.php
  * @brief           This class is used to store session data with redis, it store in json the session to be used more easily in Node.JS/Golang
  * @version         0.1
  * @date            2012-04-11
@@ -20,7 +20,7 @@ Predis\Autoloader::register();
  * @other           Improved version to support namespace and included in NERDZ\Core namespace (Paolo Galeone [ nessuno@nerdz.eu ] )
  * This class is used to store session data with redis, it store in json the session to be used more easily in Node.JS
  */
-class redisSessionHandler implements \SessionHandlerInterface
+class RedisSessionHandler implements \SessionHandlerInterface
 {
     private $host = '127.0.0.1';
     private $port = 6379;
@@ -127,6 +127,4 @@ class redisSessionHandler implements \SessionHandlerInterface
         return true;
     }
 }
-
-new redisSessionHandler();
 ?>

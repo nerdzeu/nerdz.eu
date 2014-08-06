@@ -509,7 +509,7 @@ class Messages extends Core
                     ':id'      => $_SESSION['id'],
                     ':to'      => $to,
                     ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8'),
-                    ':news'    => $news
+                    ':news'    => $news ? 'true' : 'false'
                 ]
             ],Db::FETCH_ERRSTR);
 

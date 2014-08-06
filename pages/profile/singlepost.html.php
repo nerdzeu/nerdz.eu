@@ -1,8 +1,11 @@
 <?php
-//necessita di $hpid e $draw SEMPRE
-//questa pagina viene sempre inclusa, quindi non necessita di ob_start e altri include che tanto fanno gli altri file (ma tanto usiamo require_once once che è meglio per star sicuri)
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+if(!isset($hpid, $draw))
+    die('$hpid and $draw required');
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Messages;
+use NERDZ\Core\Comments;
+
 ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
 
 $core = new Messages();

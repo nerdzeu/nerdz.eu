@@ -57,7 +57,7 @@ if($core->isLogged())
     }
     
     if($f && !$core->updateStory($a))
-        die($core->lang('ERROR'));
+        die($core->lang('ERROR ASD'));
         
     usort($e,array('NERDZ\\Core\\Notification','echoSort'));
     $raggr = 1; //set variable via POST to decide if we have to raggrupate Notifications or not

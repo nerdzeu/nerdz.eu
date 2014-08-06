@@ -23,7 +23,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         else if (isset ($_POST['hcid']) && is_numeric ($_POST['hcid']))
             $_list = $core->getCommentsAfterHcid ($hpid, $_POST['hcid']);
         else
-            $_list = $core->getComments ($hpid);
+            die();
         $doShowForm = !isset ($_POST['hcid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']); 
         if (empty ($_list) && !$doShowForm)
             die();

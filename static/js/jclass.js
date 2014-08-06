@@ -1489,6 +1489,7 @@ $(document).ready(function() {
         var notificationSource = new EventSource("/pages/profile/notifyEvent.json.php");
         notificationSource.addEventListener("pm", function(e) {
             var obj = JSON.parse(e.data);
+            console.log(obj);
             var sval = obj.status === 'ok' ? obj.message : '0';
             $pmCounter.html (sval);
             handleUpdate ('pm', sval);
@@ -1496,6 +1497,7 @@ $(document).ready(function() {
 
         notificationSource.addEventListener("notification", function(e) {
             var obj = JSON.parse(e.data);
+            console.log(obj);
             $notifyCounter.html (obj.message);
             handleUpdate ('notification', obj.message);
         });

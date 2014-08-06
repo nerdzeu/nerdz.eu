@@ -5,7 +5,7 @@ use PDO, PDOException;
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 if(Config\REDIS_ENABLED)
-    require 'redisSessionHandler.class.php';
+    new RedisSessionHandler();
 else
     session_start();
 
