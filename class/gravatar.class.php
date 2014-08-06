@@ -14,7 +14,7 @@ class Gravatar extends Core
 
     public function getURL($id)
     {
-        if(!($o = parent::query(array('SELECT "email" FROM "users","profiles" WHERE "users"."counter" = ? AND "profiles"."counter" = ?',array($id, $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(array('SELECT "email" FROM "users","profiles" WHERE "users"."counter" = ? AND "profiles"."counter" = ?',array($id, $id)),Db::FETCH_OBJ)))
             return 'https://www.Gravatar.com/avatar/0';
 
         return 'https://www.Gravatar.com/avatar/'.md5(strtolower($o->email));

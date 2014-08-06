@@ -360,7 +360,7 @@ class Messages extends Core
     {
         $table = ($project ? 'groups_' : '').'posts';
 
-        if(!($o = parent::query(
+        if(!($o = Db::query(
             [
                 'SELECT COALESCE( MAX("pid"), 0 ) AS cc FROM "'.$table.'" WHERE "to" = :id',
                 [
@@ -376,7 +376,7 @@ class Messages extends Core
     {
         $table = ($project ? 'groups_' : '').'posts';
 
-        if(!($o = parent::query(
+        if(!($o = Db::query(
             [
                 'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" = :hpid',
                     [
@@ -451,7 +451,7 @@ class Messages extends Core
 
         var_dump($glue);
 
-        if(!($result = parent::query(
+        if(!($result = Db::query(
             [
                 'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p '.$join.' WHERE '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,
                 array_merge(
@@ -476,7 +476,7 @@ class Messages extends Core
 
         $table = ($project ? 'groups_' : '').'posts';
 
-        $retStr = parent::query(
+        $retStr = Db::query(
             [
                 'INSERT INTO "'.$table.'" ("from","to","message", "news") VALUES (:id,:to,:message, :news)',
                 [
@@ -509,7 +509,7 @@ class Messages extends Core
         $table = ($project ? 'groups_' : '').'posts';
         $obj = new StdClass();
 
-        if(!($obj = parent::query(
+        if(!($obj = Db::query(
             [
                 'SELECT "from","to" FROM "'.$table.'" WHERE "hpid" = :hpid',
                 [
@@ -519,7 +519,7 @@ class Messages extends Core
             return 'ERROR';
 
         return $this->canRemovePost([ 'from' => $obj->from, 'to' => $obj->to ], $project) &&
-            Db::NO_ERRNO == parent::query(
+            Db::NO_ERRNO == Db::query(
                 [
                     'DELETE FROM "'.$table.'" WHERE "hpid" = :hpid',
                     [
@@ -534,7 +534,7 @@ class Messages extends Core
         $table = ($project ? 'groups_' : '').'posts';
         $obj = new StdClass();
 
-        if(!($obj = parent::query(
+        if(!($obj = Db::query(
             [
                 'SELECT "from","to","pid" FROM "'.$table.'" WHERE "hpid" = :hpid',
                 [
@@ -545,7 +545,7 @@ class Messages extends Core
           )
               return 'ERROR';
 
-        return parent::query(
+        return Db::query(
             [
                 'UPDATE "'.$table.'" SET "message" = :message WHERE "hpid" = :hpid',
                 [
@@ -582,7 +582,7 @@ class Messages extends Core
                 ? $_SESSION['id'] == $post['from']
                 : in_array($_SESSION['id'],array($post['from'],$post['to']))
             ) ||
-            parent::query(
+            Db::query(
                      [
                          'SELECT DISTINCT "from" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
                          [
@@ -598,7 +598,7 @@ class Messages extends Core
         $table = ($project ? 'groups_' : '').'posts_no_notify';
         return (
                 parent::isLogged() &&
-                parent::query(
+                Db::query(
                     [
                         'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :id',
                         [
@@ -614,7 +614,7 @@ class Messages extends Core
         $table = ($project ? 'groups_' : '').'lurkers';
         return (
                 parent::isLogged() &&
-                parent::query(
+                Db::query(
                     [
                         'SELECT "post" FROM "'.$table.'" WHERE "post" = :hpid AND "user" = :id',
                         [
@@ -630,7 +630,7 @@ class Messages extends Core
         $table = ($project ? 'groups_' : '').'bookmarks';
         return (
                 parent::isLogged() &&
-                parent::query(
+                Db::query(
                     [
                         'SELECT "hpid" FROM "bookmarks" WHERE "hpid" = :hpid AND "from" = :id',
                         [
@@ -698,7 +698,7 @@ class Messages extends Core
     public function getThumbs($hpid, $project = false) {
         $table = ($project ? 'groups_' : ''). 'thumbs';
 
-        $ret = parent::query(
+        $ret = Db::query(
             [
                 'SELECT SUM("vote") AS "sum" FROM "'.$table.'" WHERE "hpid" = :hpid GROUP BY hpid',
                 [
@@ -715,7 +715,7 @@ class Messages extends Core
     public function getRevisionsNumber($hpid, $project = false) {
         $table = ($project ? 'groups_' : ''). 'posts_revisions';
 
-        $ret = parent::query(
+        $ret = Db::query(
             [
                 'SELECT COALESCE( MAX("rev_no"), 0 )  AS "rev_no" FROM "'.$table.'" WHERE "hpid" = :hpid',
                 [
@@ -732,7 +732,7 @@ class Messages extends Core
     public function getRevision($hpid, $number,  $project = false) {
         $table = ($project ? 'groups_' : ''). 'posts_revisions';
 
-        return parent::query(
+        return Db::query(
             [
                 'SELECT message, EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" = :hpid AND "rev_no" = :number',
                 [
@@ -752,7 +752,7 @@ class Messages extends Core
         }
         $table = $project ? "groups_thumbs" : "thumbs";
 
-        $ret = parent::query(
+        $ret = Db::query(
             [
                 'SELECT "vote" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :from',
                 [
@@ -778,7 +778,7 @@ class Messages extends Core
 
         $table = $project ? "groups_thumbs" : "thumbs";
 
-        $ret = parent::query(
+        $ret = Db::query(
             [
                 'INSERT INTO '.$table.'(hpid, "from", vote) VALUES(:hpid, :from, :vote)',
               [
@@ -801,7 +801,7 @@ class Messages extends Core
         $ret = [];
         $logged = parent::isLogged();
         $toFunc = [ $this, 'get'.($prj ? 'ProjectName' : 'Username') ];
-        $toFuncLink = [ $this, ($prj ? 'project' : 'user').'Link' ];
+        $toFuncLink = [ __NAMESPACE__.'\\Utils', ($prj ? 'project' : 'user').'Link' ];
 
         for($i=0;$i<$count;++$i)
         {

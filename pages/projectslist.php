@@ -35,7 +35,7 @@ else
 
 $vals['list_a'] = [];
 
-if(($r = $core->query($query,Db::FETCH_STMT)))
+if(($r = Db::query($query,Db::FETCH_STMT)))
 {
     $i = 0;
     while(($o = $r->fetch(PDO::FETCH_OBJ)))

@@ -19,11 +19,11 @@ switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
 {
     case 'add':
         //il trigger mi fa il controllo sul fatto che l'utente abbia postato o no (lo aggiunge solo se non ha postato)
-        if(!in_array($core->query(array('INSERT INTO "bookmarks"("from","hpid","time") VALUES(:to,:hpid,NOW())',array(':to' => $to, ':hpid' => $hpid)),Db::FETCH_ERRNO),array(Db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
+        if(!in_array(Db::query(array('INSERT INTO "bookmarks"("from","hpid","time") VALUES(:to,:hpid,NOW())',array(':to' => $to, ':hpid' => $hpid)),Db::FETCH_ERRNO),array(Db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
             die($core->jsonResponse('error',$core->lang('ERROR')));    
     break;
     case 'del':
-        if(Db::NO_ERRNO != $core->query(array('DELETE FROM "bookmarks" WHERE "from" = :to AND "hpid" = :hpid',array(':to' => $to,':hpid' => $hpid)),Db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != Db::query(array('DELETE FROM "bookmarks" WHERE "from" = :to AND "hpid" = :hpid',array(':to' => $to,':hpid' => $hpid)),Db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     default:

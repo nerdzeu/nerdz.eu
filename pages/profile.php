@@ -27,7 +27,7 @@ $vals['caniblacklist_b'] = false;
 
 if($vals['logged_b'])
 {
-    $vals['canifollow_b'] = 0 == $core->query(
+    $vals['canifollow_b'] = 0 == Db::query(
         [
             'SELECT "to" FROM "follow" WHERE "from" = :me AND "to" = :id',
             [
@@ -36,7 +36,7 @@ if($vals['logged_b'])
             ]
         ],Db::ROW_COUNT);
 
-    $vals['caniblacklist_b'] = 0 == $core->query(
+    $vals['caniblacklist_b'] = 0 == Db::query(
         [
             'SELECT "to" FROM "blacklist" WHERE "from" = :me AND "to" = :id',
             [
@@ -61,7 +61,7 @@ if($enter)
 
     $ida = [ ':id' => $info->counter ];
 
-    if(!($o = $core->query(
+    if(!($o = Db::query(
         [
             'SELECT EXTRACT(EPOCH FROM "registration_time") AS registration_time from "users" WHERE "counter" = :id',
             $ida
@@ -85,7 +85,7 @@ if($enter)
     if(!apc_exists($apc_name))
     {
 
-        if(!($o = $core->query(
+        if(!($o = Db::query(
             [
                 'SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',
                 $ida
@@ -95,7 +95,7 @@ if($enter)
 
         $n = $o->cc;
 
-        if(!($o = $core->query(
+        if(!($o = Db::query(
             [
                 'SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',
                 $ida
@@ -118,7 +118,7 @@ if($enter)
 
     $vals['totalcomments_n'] = $a['n'];
 
-    if(!($o = $core->query(
+    if(!($o = Db::query(
         [
             'SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',
             $ida
@@ -184,7 +184,7 @@ if($enter)
                 unset($vals['interests_a'][$qid]);
         }
 
-    if(!($r = $core->query(
+    if(!($r = Db::query(
         [
             'SELECT "name" FROM "groups" WHERE "owner" = :id',
             $ida
@@ -201,7 +201,7 @@ if($enter)
         ++$i;
     }
 
-    if(!($r = $core->query(
+    if(!($r = Db::query(
         [
             'SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',
             $ida
@@ -218,7 +218,7 @@ if($enter)
         ++$i;
     }
 
-    if(!($r = $core->query(
+    if(!($r = Db::query(
         [
             'SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."group" WHERE "user" = :id',
             $ida
@@ -253,7 +253,7 @@ if($enter)
     $found = false;
     if($vals['singlepost_b'])
     {
-        if(!($post = $core->query(
+        if(!($post = Db::query(
             [
                 'SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',
                 array_merge(

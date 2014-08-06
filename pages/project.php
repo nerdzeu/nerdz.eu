@@ -109,7 +109,7 @@ else
         $found = false;
         if($vals['singlepost_b'])
         {
-            if(!($post = $core->query(array('SELECT "hpid" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),Db::FETCH_OBJ)))
+            if(!($post = Db::query(array('SELECT "hpid" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),Db::FETCH_OBJ)))
             {
                 $core->getTPL()->assign('banners_a',$vals['banners_a']);
                 $core->getTPL()->draw('project/postnotfound');

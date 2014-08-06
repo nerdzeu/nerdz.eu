@@ -3,6 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Browser;
 use NERDZ\Core\Config;
 use NERDZ\Core\Db;
+use NERDZ\Core\Utils;
 // Displays the stuff contained in the <head> tag.
 $logged = $core->isLogged();
 $uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
@@ -86,7 +87,7 @@ echo unserialize(apc_fetch('tracking_js'));
 if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true) {
     unset($headers['js']['staticData']['outputVersion']);
 ?>
-    var Nversion = '<?=$core->getVersion()?>';
+    var Nversion = '<?=Utils::getVersion()?>';
 <?php
 } /* END NERDZ_VERSION */
 /* BEGIN NERDZ_STATIC_DATA */
@@ -112,6 +113,6 @@ if ($logged && ($blist = $core->getBlacklist()))
 }
 else { ?> </script> <?php }
 /* END BLACKLIST_STUFF */
-if ($logged && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ))) && !empty($o->userscript))
+if ($logged && (($o = Db::query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ))) && !empty($o->userscript))
     echo '<script type="application/javascript" src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
 ?>

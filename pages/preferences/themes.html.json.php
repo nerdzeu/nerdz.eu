@@ -1,8 +1,11 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Core;
+use NERDZ\Core\Config;
+use NERDZ\Core\Db;
 
-$core = new NERDZ\Core\Core();
+$core = new Core();
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
     
@@ -22,9 +25,9 @@ foreach($templates as $val) {
 if(!in_array($theme,$shorts))
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
-$column = (MOBILE_HOST == $_SERVER['HTTP_HOST'] ? 'mobile_' : '').'template';
+$column = (Config\MOBILE_HOST == $_SERVER['HTTP_HOST'] ? 'mobile_' : '').'template';
 
-if(Db::NO_ERRNO != $core->query(array('UPDATE "profiles" SET "'.$column.'" = :theme WHERE "counter" = :id',array(':theme' => $theme, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO))
+if(Db::NO_ERRNO != Db::query(array('UPDATE "profiles" SET "'.$column.'" = :theme WHERE "counter" = :id',array(':theme' => $theme, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO))
     die($core->jsonResponse('error','Update: ' . $core->lang('ERROR')));
 
 $_SESSION['template'] = $theme;

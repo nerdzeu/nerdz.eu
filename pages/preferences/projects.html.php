@@ -1,8 +1,11 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$core = new NERDZ\Core\Core();
-ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+use NERDZ\Core\Core;
+use NERDZ\Core\Db;
+
+$core = new Core();
+ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     
 if(!$core->refererControl())
     die($core->lang('ERROR'));
@@ -13,7 +16,7 @@ if(!$core->isLogged())
 $vals = [];
 $vals['tok_n'] = $core->getCsrfToken('edit');
 
-if(!($r = $core->query(array('SELECT "name","counter" FROM "groups" WHERE "owner" = ?',array($_SESSION['id'])),Db::FETCH_STMT)))
+if(!($r = Db::query(array('SELECT "name","counter" FROM "groups" WHERE "owner" = ?',array($_SESSION['id'])),Db::FETCH_STMT)))
     $vals['myprojects_a'] = [];
 else
 {

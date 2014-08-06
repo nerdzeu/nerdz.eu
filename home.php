@@ -6,7 +6,7 @@ use NERDZ\Core\Core;
 
 $core = new NERDZ\Core\Core();
 $tplcfg = $core->getTemplateCfg();
-ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 ?>
 <!DOCTYPE html>
 <html lang="en">

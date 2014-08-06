@@ -17,7 +17,7 @@ if(!$cptcka->check($captcha))
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php';
 
-$ret = $core->query(
+$ret = Db::query(
     [
         'INSERT INTO users ("username","password","name","surname","email","gender","birth_date","lang","board_lang","timezone","remote_addr", "http_user_agent")
         VALUES (:username,ENCODE(DIGEST(:password, \'SHA1\'), \'HEX\'), :name, :surname, :email, :gender, :date, :lang, :lang, :timezone, :remote_addr, :http_user_agent)',

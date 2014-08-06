@@ -20,12 +20,12 @@ $email = isset($_POST['email']) ? trim($_POST['email']) : false;
 if(!$email || !filter_var($email,FILTER_VALIDATE_EMAIL))
     die($core->jsonResponse('error',$core->lang('MAIL_NOT_VALID')));
 
-if(!($obj = $core->query(array('SELECT "username","counter" FROM "users" WHERE "email" = :email',array(':email' => $email)),Db::FETCH_OBJ)))
+if(!($obj = Db::query(array('SELECT "username","counter" FROM "users" WHERE "email" = :email',array(':email' => $email)),Db::FETCH_OBJ)))
     die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
 
 $pass = Captcha::randomString(Config\MIN_LENGTH_PASS);
 
-if(Db::NO_ERRNO != $core->query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),Db::FETCH_ERRNO))
+if(Db::NO_ERRNO != Db::query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),Db::FETCH_ERRNO))
     die($core->jsonResponse('error',$core->lang('ERROR').': retry'));
 
 $subject = 'NERDZ PASSWORD';

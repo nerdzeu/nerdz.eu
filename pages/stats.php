@@ -11,7 +11,7 @@ $cache = 'nerdz_stats'.Config\SITE_HOST;
 
 function createArray(&$core, &$ret, $query, $position) {
 
-    if(!($o = $core->query($query, Db::FETCH_OBJ)))
+    if(!($o = Db::query($query, Db::FETCH_OBJ)))
         $ret[$position] = -1;
     else
         $ret[$position] = $o->cc;

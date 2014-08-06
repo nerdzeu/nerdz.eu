@@ -25,7 +25,7 @@
             $username = $info->username;
             if($pid)
             {
-                if((!$core->isLogged() && $info->private) || !($post = $core->query(['SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',[':pid' => $pid, ':id' => $id]],Db::FETCH_OBJ)))
+                if((!$core->isLogged() && $info->private) || !($post = Db::query(['SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',[':pid' => $pid, ':id' => $id]],Db::FETCH_OBJ)))
                 {
                     $post = new stdClass();
                     $post->message = '';
@@ -42,7 +42,7 @@
     else
         die(header('Location: /index.php'));
 
-    ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+    ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
     $a = explode(' ',$core->parseNewsMessage($core->stripTags(str_replace("\n",' ',$post->message))));
 

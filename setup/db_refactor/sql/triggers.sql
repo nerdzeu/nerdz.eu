@@ -469,6 +469,7 @@ $func$ LANGUAGE plpgsql;
 CREATE FUNCTION after_delete_user() RETURNS TRIGGER AS $$
 begin
     insert into deleted_users(counter, username) values(OLD.counter, OLD.username);
+    RETURN NULL;
     -- if the user gives a motivation, the upper level might update this row
 end $$ language plpgsql;
 
@@ -633,8 +634,13 @@ END $$;
 CREATE TRIGGER before_insert_pm  BEFORE INSERT ON pms FOR EACH ROW EXECUTE PROCEDURE before_insert_pm();
 
 -- posts --
-  -- before insert/update 
-CREATE TRIGGER post_control BEFORE INSERT OR UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE post_control();
+  -- before update 
+CREATE TRIGGER before_update_post BEFORE UPDATE ON posts FOR EACH ROW
+WHEN ( NEW.message <> OLD.message )
+EXECUTE PROCEDURE post_control();
+   -- before insert
+CREATE TRIGGER before_insert_post BEFORE INSERT ON posts FOR EACH ROW EXECUTE PROCEDURE post_control();
+
   -- after insert
 create trigger after_insert_user_post after insert on posts for each row execute procedure user_post();
 
@@ -643,14 +649,13 @@ CREATE TRIGGER after_update_post_message AFTER UPDATE ON posts FOR EACH ROW
 WHEN ( NEW.message <> OLD.message )
 EXECUTE PROCEDURE save_post_revision();
 
--- user post lurker
-CREATE TRIGGER before_insert_user_post_lurker BEFORE INSERT ON lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
--- group post lurker
-CREATE TRIGGER before_insert_group_post_lurker BEFORE INSERT ON groups_lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
-
 -- groups_posts --
-  -- before insert/update
-CREATE TRIGGER before_insert_group_post BEFORE INSERT OR UPDATE ON groups_posts FOR EACH ROW EXECUTE PROCEDURE group_post_control();
+  -- before update
+CREATE TRIGGER before_update_group_post BEFORE UPDATE ON groups_posts FOR EACH ROW
+WHEN ( NEW.message <> OLD.message )
+EXECUTE PROCEDURE group_post_control();
+    -- before insert
+CREATE TRIGGER before_insert_group_post BEFORE INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE group_post_control();
   -- after insert
 CREATE TRIGGER after_insert_groups_post AFTER INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE after_insert_groups_post();
 
@@ -658,6 +663,11 @@ CREATE TRIGGER after_insert_groups_post AFTER INSERT ON groups_posts FOR EACH RO
 CREATE TRIGGER after_update_groups_post_message AFTER UPDATE ON groups_posts FOR EACH ROW
 WHEN ( NEW.message <> OLD.message )
 EXECUTE PROCEDURE save_groups_post_revision();
+
+-- user post lurker
+CREATE TRIGGER before_insert_user_post_lurker BEFORE INSERT ON lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
+-- group post lurker
+CREATE TRIGGER before_insert_group_post_lurker BEFORE INSERT ON groups_lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
 
 -- before follow user
 CREATE TRIGGER before_insert_follow BEFORE INSERT ON follow FOR EACH ROW EXECUTE PROCEDURE before_insert_follow();

@@ -2,7 +2,7 @@
 ob_start('ob_gzhandler');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 use NERDZ\Core\Project;
 use NERDZ\Core\Messages;

@@ -1,7 +1,7 @@
 <?php
 namespace NERDZ\Core;
 
-require_once 'autoload.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 class Feed extends Messages
 {
@@ -47,7 +47,7 @@ class Feed extends Messages
         $from = $this->xmlentity(parent::getUsername($post['from']));
         $to = $this->xmlentity(parent::getUsername($post['to']));
 
-        $url = $this->baseurl.parent::userLink($to).$post['pid'];
+        $url = $this->baseurl.Utils::userLink($to).$post['pid'];
 
         return "<item>
                     <title>{$from} =&gt; {$to} - {$post['pid']}</title>
@@ -63,7 +63,7 @@ class Feed extends Messages
         $from = $this->xmlentity(parent::getUsername($post['from']));
         $to = $this->xmlentity(parent::getProjectName($post['to']));
 
-        $url = $this->baseurl.parent::projectLink($to).$post['pid'];
+        $url = $this->baseurl.Utils::projectLink($to).$post['pid'];
 
         return "<item>
                     <title>{$from} =&gt; {$to} - {$post['pid']}</title>
@@ -126,7 +126,7 @@ class Feed extends Messages
         $urluser = NERDZ\Core\NERDZ\Core\Utils::userLink($us);
         $us = $this->xmlentity($us);
     
-        if(!parent::isLogged() && (!($p = parent::query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)) || $p->private))
+        if(!parent::isLogged() && (!($p = Db::query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)) || $p->private))
                 return $this->error('Private profile OR undefined error');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -154,7 +154,7 @@ class Feed extends Messages
         $urlprj = NERDZ\Core\NERDZ\Core\Utils::projectLink($us);
         $us = $this->xmlentity($us);
     
-        if(!($p = parent::query(array('SELECT "private","owner" FROM "groups" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))
+        if(!($p = Db::query(array('SELECT "private","owner" FROM "groups" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))
             return $this->error('Undefined error');
 
         if($p->private && (!parent::isLogged() || (!in_array($_SESSION['id'], parent::getMembers($id)) && $_SESSION['id'] != $p->owner)))

@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
-use NERDZ\Core\Config
+use NERDZ\Core\Config;
 use NERDZ\Core\Utils;
 use NERDZ\Core\Project;
 
@@ -28,7 +28,7 @@ if(isset($create))
 
     $group['name'] = $_POST['name'];
 
-    if(is_numeric($core->getGid($group['name'])))
+    if($core->getId($group['name']) !== 0)
         die($core->jsonResponse('error',$core->lang('USERNAME_EXISTS')));
 
     if(is_numeric($group['name']))

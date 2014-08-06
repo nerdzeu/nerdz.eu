@@ -12,7 +12,7 @@ class project extends Core
 
     public function getMembersAndOwnerFromHpid($hpid)
     {
-        if(!($info = parent::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),Db::FETCH_OBJ)))
+        if(!($info = Db::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),Db::FETCH_OBJ)))
             return false;
 
         $members = $this->getMembers($info->to);
@@ -23,7 +23,7 @@ class project extends Core
 
     public function getObject($gid)
     {
-        return parent::query(
+        return Db::query(
             [
                 'SELECT * FROM "groups" WHERE "counter" = :gid',
                 [
@@ -34,7 +34,7 @@ class project extends Core
 
     public function getId($name)
     {
-        if(!($o = parent::query(
+        if(!($o = Db::query(
             [
                 'SELECT "counter" FROM "groups" WHERE LOWER("name") = LOWER(:name)',
                     [
@@ -47,7 +47,7 @@ class project extends Core
 
     public function getOwner($gid)
     {
-        if(!($o = parent::query(
+        if(!($o = Db::query(
             [
                 'SELECT "owner" FROM "groups" WHERE "counter" = :gid',
                 [
@@ -60,7 +60,7 @@ class project extends Core
 
     public function isOpen($gid)
     {
-        if(!($o = parent::query(
+        if(!($o = Db::query(
             [
                 'SELECT "open" FROM "groups" WHERE "counter" = :gid',
                 [
@@ -74,7 +74,7 @@ class project extends Core
    
     public function getMembers($gid)
     {
-        if(!($stmt = parent::query(
+        if(!($stmt = Db::query(
             [
                 'SELECT "user" FROM "groups_members" WHERE "group" = :gid',
                 [
@@ -88,7 +88,7 @@ class project extends Core
 
     public function getFollowers($gid)
     {
-        if(!($stmt = parent::query(array('SELECT "user" FROM "groups_followers" WHERE "group" = :gid',array(':gid' => $gid)),Db::FETCH_STMT)))
+        if(!($stmt = Db::query(array('SELECT "user" FROM "groups_followers" WHERE "group" = :gid',array(':gid' => $gid)),Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);

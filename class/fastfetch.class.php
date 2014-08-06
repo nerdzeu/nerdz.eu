@@ -82,7 +82,7 @@ final class FastFetch {
         
         $me = $this->mPm->getUserId();
         
-        $list = $this->mPm->query (
+        $list = Db::query (
             [
                 'SELECT ("from" = :me) AS SENT, EXTRACT(EPOCH FROM time) AS timestamp, message, read FROM PMS WHERE ("from" = :from1 AND "to" = :to1) OR ("to" = :to2 AND "from" = :from2) ORDER BY TIME DESC LIMIT '.$limit.' OFFSET '.$start, 
                 [
@@ -107,7 +107,7 @@ final class FastFetch {
         }
         
         if(Db::NO_ERRNO != 
-            $this->mPm->query(
+            Db::query(
                 [
                     'UPDATE "pms" SET "read" = FALSE WHERE "from" = :from AND "to" = :id',
                     [
@@ -130,7 +130,7 @@ final class FastFetch {
         
         $userName = htmlspecialchars($userName,ENT_QUOTES,'UTF-8');
         
-        $idObj = $this->mPm->query(
+        $idObj = Db::query(
             [
                 'SELECT counter FROM users WHERE LOWER(username) = LOWER(:user)',
                 [ ':user' => $userName ]

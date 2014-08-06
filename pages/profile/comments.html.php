@@ -5,7 +5,7 @@ use NERDZ\Core\Config;
 
 $core = new NERDZ\Core\Comments();
 
-ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));

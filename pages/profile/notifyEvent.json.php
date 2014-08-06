@@ -59,7 +59,7 @@ if(!$core->isLogged()) {
             $push('pm', 'ok', $pm);
         }
 
-        $core->query(
+        Db::query(
             [
                 'UPDATE "users" SET "last" = NOW(), "viewonline" = :on WHERE "counter" = :id',
                     [
@@ -68,7 +68,7 @@ if(!$core->isLogged()) {
                     ]
             ], Db::NO_RETURN);
 
-        if(($o = $core->query(
+        if(($o = Db::query(
             [
                 'SELECT "remote_addr","http_user_agent" FROM "users" WHERE "counter" = :id',
                 [
@@ -78,7 +78,7 @@ if(!$core->isLogged()) {
         {
             if(empty($o->remote_addr) || empty($_SESSION['remote_addr']) || 
                 $o->remote_addr != $_SERVER['REMOTE_ADDR']) {
-                $core->query(
+                Db::query(
                      [
                          'UPDATE "users" SET "remote_addr" = :addr WHERE "counter" = :id',
                          [
@@ -94,7 +94,7 @@ if(!$core->isLogged()) {
        
             if(empty($o->http_user_agent) || empty($_SESSION['http_user_agent']) || 
                 $o->http_user_agent != $_SERVER['HTTP_USER_AGENT']) {
-                $core->query(
+                Db::query(
                     [
                         'UPDATE "users" SET "http_user_agent" = :uag WHERE "counter" = :id',
                         [

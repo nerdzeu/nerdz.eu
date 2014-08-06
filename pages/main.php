@@ -37,7 +37,7 @@ if($tot>0)
         $c = 0;
         for($i=0;$i<$tot;++$i)
         {
-            if(!($o = $core->query(array('SELECT "birth_date" FROM "users" WHERE "counter" = :id',array(':id' => $l[$i])),Db::FETCH_OBJ)))
+            if(!($o = Db::query(array('SELECT "birth_date" FROM "users" WHERE "counter" = :id',array(':id' => $l[$i])),Db::FETCH_OBJ)))
             {
                 echo $core->lang('ERROR');
                 break;
@@ -79,7 +79,7 @@ else
 $vals['followedtot_n'] = $tot;
 $vals['followedonlinetot_n'] = $c;
 
-if(!($r = $core->query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
+if(!($r = Db::query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
 $vals['ownerof_a'] = [];
@@ -91,7 +91,7 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
     ++$i;
 }
 
-if(!($r = $core->query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
+if(!($r = Db::query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
 $vals['memberof_a'] = [];

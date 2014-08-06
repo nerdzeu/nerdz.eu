@@ -1,7 +1,10 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
-$core = new NERDZ\Core\Core();
+use NERDZ\Core\Config;
+use NERDZ\Core\Core;
+
+$core = new Core();
 
 $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 
@@ -14,7 +17,7 @@ if($core->isLogged())
     $updatedPassword = false;
     if(empty($_POST['password']))
     {
-        if(!($obj = $core->query(
+        if(!($obj = Db::query(
             [
                 'SELECT "password" FROM "users" WHERE counter = :id',
                 [
@@ -105,8 +108,8 @@ if(!$user_flag||!$birth_flag)
 
 if(!$core->isLogged()) //username field
 {
-    if(mb_strlen($user['username'],'UTF-8') < MIN_LENGTH_USER)
-        die($core->jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.MIN_LENGTH_USER));
+    if(mb_strlen($user['username'],'UTF-8') < Config\MIN_LENGTH_USER)
+        die($core->jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_USER));
     
     if(is_numeric($user['username']))
         die($core->jsonResponse('error',$core->lang('USERNAME_NUMBER')));
@@ -127,14 +130,14 @@ if(!$core->isLogged()) //username field
         die($core->jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': %'));
 }
 
-if(mb_strlen($user['password'],'UTF-8') < MIN_LENGTH_PASS)
-    die($core->jsonResponse('error',$core->lang('PASSWORD_SHORT')."\n".$core->lang('MIN_LENGTH').': '.MIN_LENGTH_PASS));
+if(mb_strlen($user['password'],'UTF-8') < Config\MIN_LENGTH_PASS)
+    die($core->jsonResponse('error',$core->lang('PASSWORD_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_PASS));
 
-if(mb_strlen($user['name'],'UTF-8') < MIN_LENGTH_NAME)
-    die($core->jsonResponse('error',$core->lang('NAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.MIN_LENGTH_NAME));
+if(mb_strlen($user['name'],'UTF-8') < Config\MIN_LENGTH_NAME)
+    die($core->jsonResponse('error',$core->lang('NAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_NAME));
 
-if(mb_strlen($user['surname'],'UTF-8') < MIN_LENGTH_SURNAME)
-    die($core->jsonResponse('error',$core->lang('SURNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.MIN_LENGTH_SURNAME));
+if(mb_strlen($user['surname'],'UTF-8') < Config\MIN_LENGTH_SURNAME)
+    die($core->jsonResponse('error',$core->lang('SURNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_SURNAME));
 
 
 if(false === filter_var($user['email'],FILTER_VALIDATE_EMAIL))

@@ -1,8 +1,10 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Core;
+use NERDZ\Core\Db;
 
-$core = new NERDZ\Core\Core();
+$core = new Core();
 
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
@@ -28,7 +30,7 @@ if($updatedPassword) {
     $params[':password'] = $user['password'];
 }
 
-$ret = $core->query(
+$ret = Db::query(
     [
         'UPDATE users SET "timezone" = :timezone, "name" = :name,
         "surname" = :surname,"email" = :email,"gender" = :gender, "birth_date" = :date

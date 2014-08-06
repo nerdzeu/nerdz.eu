@@ -1,8 +1,11 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$core = new NERDZ\Core\Core();
-ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+use NERDZ\Core\Core;
+use NERDZ\Core\Config;
+
+$core = new Core();
+ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
@@ -21,7 +24,7 @@ foreach($templates as $val)
     ++$i;
 }
 $vals['mytplno_n'] = $core->getTemplate($_SESSION['id']);
-$vals['mobile_b'] = $_SERVER['HTTP_HOST'] == MOBILE_HOST;
+$vals['mobile_b'] = $_SERVER['HTTP_HOST'] == Config\MOBILE_HOST;
 
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw('preferences/themes');

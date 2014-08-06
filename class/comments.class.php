@@ -68,7 +68,7 @@ class comments extends Messages
         }
 
         if(parent::isLogged() && $i > 1)
-            parent::query(array('DELETE FROM "'.$glue.'comments_notify" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['id'],$hpid)),Db::NO_RETURN);
+            Db::query(array('DELETE FROM "'.$glue.'comments_notify" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['id'],$hpid)),Db::NO_RETURN);
 
         return $ret;
     }
@@ -108,13 +108,13 @@ class comments extends Messages
                  ]
               );
 
-        if(!($res = parent::query($queryArr, Db::FETCH_STMT)))
+        if(!($res = Db::query($queryArr, Db::FETCH_STMT)))
             return false;
 
         if(
-            !($f = parent::query(array('SELECT DISTINCT "from" FROM "'.$glue.'comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),Db::FETCH_STMT)) ||
-            !($ll = parent::query(array('SELECT "from" FROM "'.$glue.'comments_no_notify" WHERE "hpid" = :hpid AND "to" = :id',array(':hpid' => $hpid,':id' => $_SESSION['id'])),Db::FETCH_STMT)) || //quelli da non notificare
-            !($r = ($useLimitedQuery ? true : parent::query(array('SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['id'])),Db::FETCH_STMT)))
+            !($f = Db::query(array('SELECT DISTINCT "from" FROM "'.$glue.'comments" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),Db::FETCH_STMT)) ||
+            !($ll = Db::query(array('SELECT "from" FROM "'.$glue.'comments_no_notify" WHERE "hpid" = :hpid AND "to" = :id',array(':hpid' => $hpid,':id' => $_SESSION['id'])),Db::FETCH_STMT)) || //quelli da non notificare
+            !($r = ($useLimitedQuery ? true : Db::query(array('SELECT "to" AS a FROM "blacklist" WHERE "from" = ?',array($_SESSION['id'])),Db::FETCH_STMT)))
           )
             return false;
         
@@ -148,7 +148,7 @@ class comments extends Messages
            allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty */
         if($olderThanMe && empty($ret))
         {
-            if(!($res = parent::query(array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe)),Db::FETCH_STMT)))
+            if(!($res = Db::query(array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe)),Db::FETCH_STMT)))
                 return false;
             $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         }
@@ -194,7 +194,7 @@ class comments extends Messages
         $comments = ($prj ? 'groups_' : '').'comments';
 
         if(
-                !($obj = parent::query(
+                !($obj = Db::query(
                     [
                         'SELECT "to" FROM "'.$posts.'" WHERE "hpid" = :hpid',
                         [
@@ -202,7 +202,7 @@ class comments extends Messages
                         ]
                     ],Db::FETCH_OBJ))
                 ||
-                !($stmt = parent::query(
+                !($stmt = Db::query(
                     [
                         'SELECT "hpid","from","hcid","message" FROM "'.$comments.'" WHERE "hpid" = :hpid AND "hcid" = (SELECT MAX("hcid") FROM "'.$comments.'" WHERE "hpid" = :hpid)',
                         [
@@ -226,7 +226,7 @@ class comments extends Messages
                 return $this->appendComment($user,$message, $prj);
         }
         
-        return parent::query(
+        return Db::query(
             [
                 'INSERT INTO "'.$comments.'" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',
                 [
@@ -242,7 +242,7 @@ class comments extends Messages
     {
         $table = ($prj ? 'groups_' : '').'comments';
 
-        if(!($o = parent::query(
+        if(!($o = Db::query(
                         [
                             'SELECT "message" FROM "'.$table.'" WHERE "hcid" = :hcid',
                             [
@@ -257,7 +257,7 @@ class comments extends Messages
     private function getUsernameFromCid($hcid, $prj = false)
     {
         $table = ($prj ? 'groups_' : '').'comments';
-        if(!($o = parent::query(array('SELECT "from" FROM "'.$table.'" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(array('SELECT "from" FROM "'.$table.'" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)))
             return '';
         return parent::getUsername($o->from);
     }
@@ -265,7 +265,7 @@ class comments extends Messages
     public function getCommentsAfterHcid($hpid,$hcid, $prj = false)
     {
         $table = ($prj ? 'groups_' : '').'posts';
-        if(!($o = parent::query(
+        if(!($o = Db::query(
                         [
                             'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
                             [
@@ -282,7 +282,7 @@ class comments extends Messages
     {
         $table = ($prj ? 'groups_' : '').'posts';
         if($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 ||
-                !($o = parent::query(
+                !($o = Db::query(
                         [
                             'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
                             [
@@ -300,7 +300,7 @@ class comments extends Messages
     {
         if($prj) {
             if(
-                !($o = parent::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)) ||
+                !($o = Db::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)) ||
                 !($owner = parent::getOwner($o->to))
               )
                 return false;
@@ -310,19 +310,19 @@ class comments extends Messages
             if(in_array($_SESSION['id'],$canremovecomment))
             {
                 if(
-                    Db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),Db::FETCH_ERRNO) ||
-                    Db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)
+                    Db::NO_ERRNO != Db::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),Db::FETCH_ERRNO) ||
+                    Db::NO_ERRNO != Db::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)
                   )
                     return false;
             }
             else
                 return false;
 
-            if(!($c = parent::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+            if(!($c = Db::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
                 return false;
         
             if($c->cc == 0)
-                if(Db::NO_ERRNO != parent::query(array('DELETE FROM "groups_comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
+                if(Db::NO_ERRNO != Db::query(array('DELETE FROM "groups_comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
                     return false;
 
             return true;
@@ -330,23 +330,23 @@ class comments extends Messages
 
         //profile
         $ok =  (
-            ($o = parent::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)) //cid, from, to, time servono
+            ($o = Db::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)) //cid, from, to, time servono
             &&
-            ($owner = parent::query(array('SELECT "to" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ))
+            ($owner = Db::query(array('SELECT "to" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ))
             &&
             in_array($_SESSION['id'],array($o->from,$owner->to)) // == canDelete
             &&
-            parent::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_ERRNO) == Db::NO_ERRNO
+            Db::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_ERRNO) == Db::NO_ERRNO
             &&
-            parent::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)  == Db::NO_ERRNO
+            Db::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)  == Db::NO_ERRNO
         );
         if($ok)
         {
-            if(!($c = parent::query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+            if(!($c = Db::query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
                 return false;
 
             if($c->cc == 0)
-                if(Db::NO_ERRNO != parent::query(array('DELETE FROM "comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
+                if(Db::NO_ERRNO != Db::query(array('DELETE FROM "comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
                     return false;
             return true;
         }
@@ -359,7 +359,7 @@ class comments extends Messages
 
         if(parent::isLogged())
         {
-            if(!($o = parent::query(
+            if(!($o = Db::query(
                             [
                                 'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
                                     SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
@@ -376,7 +376,7 @@ class comments extends Messages
                 return 0;
         }
         else {
-            if(!($o = parent::query(
+            if(!($o = Db::query(
                             [
                                 'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
                                 [
@@ -392,7 +392,7 @@ class comments extends Messages
 
     private function appendComment($oldMsgObj,$parsedMessage, $prj = false)
     {
-        return parent::query(
+        return Db::query(
                 [
                     'UPDATE "'.($prj ? 'groups_' : '').'comments" SET message = :message WHERE "hcid" = :hcid',
                     [
@@ -405,7 +405,7 @@ class comments extends Messages
     public function getRevisionsNumber($hcid, $prj = false) {
         $table = ($prj ? 'groups_' : ''). 'comments_revisions';
 
-        $ret = parent::query(
+        $ret = Db::query(
             [
                 'SELECT COALESCE( MAX("rev_no"), 0 )  AS "rev_no" FROM "'.$table.'" WHERE "hcid" = :hcid',
                 [
@@ -421,7 +421,7 @@ class comments extends Messages
     public function getRevision($hcid, $number,  $prj = false) {
         $table = ($prj ? 'groups_' : ''). 'comments_revisions';
 
-        return parent::query(
+        return Db::query(
             [
                 'SELECT message, EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hcid" = :hcid AND "rev_no" = :number',
                 [
@@ -437,7 +437,7 @@ class comments extends Messages
     public function getThumbs($hcid, $prj = false) {
         $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
 
-        $ret = parent::query(
+        $ret = Db::query(
             [
                 'SELECT SUM("vote") AS "sum" FROM "'.$table.'" WHERE "hcid" = :hcid GROUP BY hcid',
                 [
@@ -462,7 +462,7 @@ class comments extends Messages
 
         $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
 
-        $ret = parent::query(
+        $ret = Db::query(
             [
                 'SELECT "vote" FROM "'.$table.'" WHERE "hcid" = :hcid AND "from" = :from',
                 [
@@ -488,7 +488,7 @@ class comments extends Messages
 
         $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
 
-        $ret = parent::query(
+        $ret = Db::query(
             [
               'INSERT INTO '.$table.' (hcid, "from", vote) VALUES(:hcid, :from, :vote)',
               [

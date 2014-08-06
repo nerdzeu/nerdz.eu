@@ -85,22 +85,22 @@ $par = [
 ];
     
 if(
-    Db::NO_ERRNO != $core->query(
+    Db::NO_ERRNO != Db::query(
         [
             'UPDATE profiles SET 
-            "interests"  = :interests,
-            "biography"  = :biography,
-            "quotes"     = :quotes,
-            "website"    = :website,
-            "dateformat" = :dateformat,
-            "github"     = :github,
-            "jabber"     = :jabber,
-            "yahoo"      = :yahoo,
-            userscript"  = :userscript,
-            "facebook"   = :facebook,
-            "twitter"    = :twitter,
-            "steam"      = :steam,
-            "skype"      = :skype
+            "interests"   = :interests,
+            "biography"   = :biography,
+            "quotes"      = :quotes,
+            "website"     = :website,
+            "dateformat"  = :dateformat,
+            "github"      = :github,
+            "jabber"      = :jabber,
+            "yahoo"       = :yahoo,
+            "userscript"  = :userscript,
+            "facebook"    = :facebook,
+            "twitter"     = :twitter,
+            "steam"       = :steam,
+            "skype"       = :skype
             WHERE "counter" = :counter',
            $par
         ],Db::FETCH_ERRNO)
@@ -110,11 +110,11 @@ if(
 if($closed)
 {
     if(!$core->closedProfile($_SESSION['id']))
-        if(Db::NO_ERRNO != $core->query(
+        if(Db::NO_ERRNO != Db::query(
                     [
-                        'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',
+                        'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter',
                         [
-                            ':closed'  => true,
+                            ':closed'  => 'true',
                             ':counter' => $_SESSION['id']
                         ]
                     ],Db::FETCH_ERRNO)
@@ -122,11 +122,11 @@ if($closed)
             die($core->jsonResponse('error',$core->lang('ERROR')));
 }
 else {
-    if(Db::NO_ERRNO != $core->query(
+    if(Db::NO_ERRNO != Db::query(
                 [
-                    'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter ',
+                    'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter',
                     [
-                        ':closed'  => false,
+                        ':closed'  => 'false',
                         ':counter' => $_SESSION['id']
                     ]
                 ],Db::FETCH_ERRNO))
@@ -146,7 +146,7 @@ if(isset($_POST['whitelist']))
         $uid = $core->getUserId(trim($v));
         if(is_numeric($uid))
         {
-            if(!in_array($core->query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['id'], ':uid' => $uid)),Db::FETCH_ERRNO),array(Db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
+            if(!in_array(Db::query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['id'], ':uid' => $uid)),Db::FETCH_ERRNO),array(Db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
                 die($core->jsonResponse('error',$core->lang('ERROR').'1'));
             $newlist[] = $uid;
         }
@@ -159,7 +159,7 @@ if(isset($_POST['whitelist']))
             $toremove[] = $val;
 
     foreach($toremove as $val)
-        if(Db::NO_ERRNO != $core->query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['id'], ':val' => $val)),Db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != Db::query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['id'], ':val' => $val)),Db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR').'4'));
 }
         

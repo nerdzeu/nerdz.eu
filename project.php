@@ -30,7 +30,7 @@
             $found = true;
             $name = $info->name;
             if($pid && !$info->private && $info->visible)
-                if(!($post = $core->query(array('SELECT "message" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),Db::FETCH_OBJ)))
+                if(!($post = Db::query(array('SELECT "message" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),Db::FETCH_OBJ)))
                 {
                     $post = new stdClass();
                     $post->message = '';
@@ -40,7 +40,7 @@
     }
     else
         $name = 'Create';
-    ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+    ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
     $a = explode(' ',$Messages->parseNewsMessage($Messages->stripTags(str_replace("\n",' ',$post->message))));
 

@@ -30,7 +30,7 @@ if((isset($id) || isset($gid)) && isset($_GET['pid']) && is_numeric($_GET['pid']
 if((isset($id) || isset($gid)) && isset($pid))
 {
     $new = isset($id) ? $id : $gid;
-    if(!($o = $core->query(
+    if(!($o = Db::query(
                     [
                         'SELECT "message" FROM "'.(isset($id) ? '' : 'groups_').'posts" WHERE "pid" = :pid AND "to" = :new',
                         [
@@ -43,7 +43,7 @@ if((isset($id) || isset($gid)) && isset($pid))
 elseif(isset($pcid) || isset($gcid))
 {
     $new = isset($pcid) ? $pcid : $gcid;
-    if(!($o = $core->query(
+    if(!($o = Db::query(
                     [
                         'SELECT "message" FROM "'.(isset($pcid) ? '' : 'groups_').'comments" WHERE "hcid" = :hcid',
                         [

@@ -19,7 +19,7 @@ $capt = new Captcha();
 if(!$capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : ''))
     die($core->jsonResponse('error',$core->lang('WRONG_CAPTCHA')));
 
-if(Db::NO_ERRNO != $core->query(array('DELETE FROM "users" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_ERRNO)) // il trigger fa il resto
+if(Db::NO_ERRNO != Db::query(array('DELETE FROM "users" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_ERRNO))
     die($core->jsonResponse('error',$core->lang('ERROR')));
 
 $core->logout();

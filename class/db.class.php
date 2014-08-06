@@ -6,8 +6,8 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 class Db
 {
-    public $dbh;
     private static $instance;
+    public $dbh;
 
     const NO_ERRSTR      = '';
     const NO_ERRNO       = -1;
@@ -40,11 +40,12 @@ class Db
             $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         }
         catch(PDOException $e) {
+            static::dumpException($e);
             die($e->getTraceAsString());
         }
 
-        Config::add('USERS_NEWS', $specialIds['GLOBAL_NEWS']);
-        Config::add('DELETED_USERS',$specialIds['DELETED']);
+        Config::add('USERS_NEWS',    $specialIds['GLOBAL_NEWS']);
+        Config::add('DELETED_USERS', $specialIds['DELETED']);
 
         try
         {
@@ -52,11 +53,12 @@ class Db
             $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         }
         catch(PDOException $e) {
+            static::dumpException($e);
             die($e->getTraceAsString());
         }
 
-        Config::add('ISSUE_BOARD',$specialIds['ISSUE']);
-        Config::add('PROJECTS_NEWS',$specialIds['GLOBAL_NEWS']);
+        Config::add('ISSUE_BOARD',   $specialIds['ISSUE']);
+        Config::add('PROJECTS_NEWS', $specialIds['GLOBAL_NEWS']);
     }
 
     private static function getInstance()
@@ -67,9 +69,82 @@ class Db
         return static::$instance;
     }
 
-    public static function getDB()
+    public static function getDb()
     {
         return static::getInstance()->dbh;
+    }
+
+    private static function dumpException($e, $moredata = false)
+    {
+        static::dumpErrorString((($moredata != false) ? "{$moredata}: " : '').$e->getMessage());
+    }
+
+    private static function dumpErrorString($string)
+    {
+        $path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
+        file_put_contents($path,$string."\n", FILE_APPEND);
+        chmod($path,0775);
+    }
+
+    /**
+     * Executes a query.
+     * Its return value varies according to the $action parameter, which should
+     * be a constant member of Db.
+     *
+     * @param string $query
+     * @param int $action
+     * @return null|boolean|object
+     *
+     */
+    public static function query($query,$action = Db::NO_RETURN, $all = false)
+    {
+        $stmt = null; //PDO statement
+
+        try
+        {
+            if(is_string($query))
+                $stmt = static::getDb()->query($query);
+            else
+            {
+                $stmt = static::getDb()->prepare($query[0]);
+                $stmt->execute($query[1]);
+            }
+        }
+        catch(PDOException $e)
+        {
+            static::dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
+
+            if($action == static::FETCH_ERRNO) {
+                return $stmt->errorInfo()[1];
+            }
+            if($action == static::FETCH_ERRSTR) {
+                return $stmt->errorInfo()[2];
+            }
+
+            static::dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
+
+            return null;
+        }
+
+        switch($action)
+        {
+            case static::FETCH_ERRNO:
+                return static::NO_ERRNO;
+
+            case static::FETCH_STMT:
+                return $stmt;
+
+            case static::FETCH_OBJ:
+                return ($all === false) ? $stmt->fetch(PDO::FETCH_OBJ) : $stmt->fetchAll(PDO::FETCH_OBJ);
+            
+            case static::ROW_COUNT:
+                return $stmt->rowCount();
+
+            case static::NO_RETURN:
+                return true;
+        }
+
+        return false;
     }
 }
 

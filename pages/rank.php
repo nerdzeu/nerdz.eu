@@ -3,6 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Config;
 use NERDZ\Core\Utils;
 use NERDZ\Core\Stuff;
+use NERDZ\Core\Db;
 use \PDO;
 
 $mo = empty($_GET['top']);
@@ -11,12 +12,12 @@ $path = Config\SITE_HOST. ($mo ? 'r_month.json' : 'rank.json');
 
 if(!apc_exists($path))
 {
-    $res = $core->query('SELECT COUNT("hcid") AS cc,"from" FROM "comments" WHERE "from" <> '.Config\DELETED_USERS.(!$mo ? $un_ti : '').' GROUP BY "from" ORDER BY cc DESC LIMIT 100',Db::FETCH_STMT);
+    $res = Db::query('SELECT COUNT("hcid") AS cc,"from" FROM "comments" WHERE "from" <> '.Config\DELETED_USERS.(!$mo ? $un_ti : '').' GROUP BY "from" ORDER BY cc DESC LIMIT 100',Db::FETCH_STMT);
     $rank = [];
 
     while(($o = $res->fetch(PDO::FETCH_OBJ)))
     {
-        $gc = $core->query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :from '.(!$mo ? $un_ti : ''),array(':from' => $o->from)),Db::FETCH_OBJ);
+        $gc = Db::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :from '.(!$mo ? $un_ti : ''),array(':from' => $o->from)),Db::FETCH_OBJ);
         $us = $core->getUsername($o->from);
         $n = $o->cc + $gc->cc;
         $rank[$us] = $n;

@@ -3,12 +3,12 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 $core = new NERDZ\Core\Core();
-ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
 
-if(!($obj = $core->query(array('SELECT * FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ)))
+if(!($obj = Db::query(array('SELECT * FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ)))
     die($core->lang('ERROR'));
 
 $vals = [];

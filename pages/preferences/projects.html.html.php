@@ -2,7 +2,7 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 $project = new NERDZ\Core\Project();
-ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 $id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
 

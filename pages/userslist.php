@@ -1,4 +1,6 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Db;
 
 $limit = isset($_GET['lim']) ? $core->limitControl($_GET['lim'], 20) : 20;
 
@@ -36,15 +38,13 @@ $vals = [];
 
 $q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
 
-$Db = $core->getDB();
-
 $query = empty($q) ?
         "SELECT name,surname,username, counter, birth_date, EXTRACT(EPOCH FROM last) AS last FROM users ORDER BY {$orderby} {$order} LIMIT {$limit}" :
         array("SELECT name,surname,username, counter,birth_date,EXTRACT(EPOCH FROM last) AS last FROM users WHERE CAST({$orderby} AS TEXT) LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
 
 $vals['list_a'] = [];
 
-if(($r = $core->query($query,Db::FETCH_STMT)))
+if(($r = Db::query($query,Db::FETCH_STMT)))
 {
     $i = 0;
     while($o = $r->fetch(PDO::FETCH_OBJ))

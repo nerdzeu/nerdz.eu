@@ -21,7 +21,7 @@ if(!$cptcka->check($captcha))
 $create = true; //required by validateproject.php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateproject.php';
 
-if(Db::NO_ERRNO != $core->query(
+if(Db::NO_ERRNO != Db::query(
     [
         'INSERT INTO groups ("description","owner","name") VALUES (:description,:owner,:name)',
          [
