@@ -6,7 +6,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Messages;
 use NERDZ\Core\Comments;
 
-ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
 
 $core = new Messages();
 $comments = new Comments();
@@ -24,8 +24,8 @@ $singlepostvals['revisions_n'] = $core->getRevisionsNumber($hpid);
 $singlepostvals['thumbs_n'] = $core->getThumbs($hpid);
 $singlepostvals['uthumb_n'] = $core->getUserThumb($hpid);
 $singlepostvals['pid_n'] = $o->pid;
-$singlepostvals['from4link_n'] = \NERDZ\Core\Core::userLink($from);
-$singlepostvals['to4link_n'] = \NERDZ\Core\Core::userLink($to);
+$singlepostvals['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
+$singlepostvals['to4link_n'] = \NERDZ\Core\Utils::userLink($to);
 $singlepostvals['fromid_n'] = $o->from;
 $singlepostvals['toid_n'] = $o->to;
 $singlepostvals['from_n'] = $from;

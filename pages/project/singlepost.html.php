@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
 
 use NERDZ\Core\Project;
 use NERDZ\Core\Comments;
@@ -30,8 +30,8 @@ $singlepostvals['thumbs_n'] = $messages->getThumbs($hpid, true);
 $singlepostvals['revisions_n'] = $messages->getRevisionsNumber($hpid, true);
 $singlepostvals['uthumb_n'] = $messages->getUserThumb($hpid, true); 
 $singlepostvals['pid_n'] = $o->pid;
-$singlepostvals['from4link_n'] = \NERDZ\Core\Core::userLink($from);
-$singlepostvals['to4link_n'] = \NERDZ\Core\Core::projectLink($to);
+$singlepostvals['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
+$singlepostvals['to4link_n'] = \NERDZ\Core\Utils::projectLink($to);
 $singlepostvals['fromid_n'] = $o->from;
 $singlepostvals['toid_n'] = $o->to;
 $singlepostvals['from_n'] = $from;

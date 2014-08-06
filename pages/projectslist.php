@@ -43,7 +43,7 @@ if(($r = $core->query($query,Db::FETCH_STMT)))
         $vals['list_a'][$i]['id_n'] = $o->counter;
         $vals['list_a'][$i]['name_n'] = $o->name;
         $vals['list_a'][$i]['description_n'] = $o->description;
-        $vals['list_a'][$i]['name4link_n'] = \NERDZ\Core\Core::projectLink($o->name);
+        $vals['list_a'][$i]['name4link_n'] = \NERDZ\Core\Utils::projectLink($o->name);
         ++$i;
     }
 }

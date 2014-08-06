@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
 
 use NERDZ\Core\Comments;
 use NERDZ\Core\Project;

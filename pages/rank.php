@@ -33,7 +33,7 @@ if(!apc_exists($path))
     foreach($rank as $username => $val)
     {
         $ret[$i]['position_n'] = $i+1;
-        $ret[$i]['username4link_n'] =  \NERDZ\Core\Core::userLink($username);
+        $ret[$i]['username4link_n'] =  \NERDZ\Core\Utils::userLink($username);
         $ret[$i]['username_n'] = $username;
         $ret[$i]['comments_n'] = $val;
         $ret[$i]['stupidstuff_n'] = $ss[$username];

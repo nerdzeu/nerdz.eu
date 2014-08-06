@@ -5,7 +5,7 @@ use NERDZ\Core\Config;
 
 $core = new NERDZ\Core\Comments();
 
-ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
 
 if(!$core->isLogged())
     die($core->lang('REGISTER'));
@@ -29,7 +29,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             die();
         $vals = [];
         
-        $vals['currentuserprofile_n'] = \NERDZ\Core\Core::userLink($core->getUsername());
+        $vals['currentuserprofile_n'] = \NERDZ\Core\Utils::userLink($core->getUsername());
         $vals['currentusergravatar_n'] = (new NERDZ\Core\Gravatar())->getURL($core->getUserId());
         $vals['currentusername_n'] = $core->getUsername();
         $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/red_x.png';

@@ -59,7 +59,7 @@ final class Pms extends Messages
         {
             if(!in_array($o->from, $froms)) {
                 $from = $this->getUsername($o->from);
-                $res[$c]['from4link_n'] = \NERDZ\Core\Core::userLink($from);
+                $res[$c]['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
                 $res[$c]['from_n'] = $from;
                 $res[$c]['datetime_n'] = parent::getDateTime($o->lasttime);
                 $res[$c]['timestamp_n'] = $o->lasttime;
@@ -88,7 +88,7 @@ final class Pms extends Messages
         if(($o = $res->fetch(PDO::FETCH_OBJ)))
         {
             $from = $this->getUsername($fromid);
-            $ret['from4link_n'] = \NERDZ\Core\Core::userLink($from);
+            $ret['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
             $ret['from_n'] = $from;
             $ret['datetime_n'] = parent::getDateTime($time);
             $ret['fromid_n'] = $fromid;

@@ -40,7 +40,7 @@
     }
     else
         $name = 'Create';
-    ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
+    ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
 
     $a = explode(' ',$Messages->parseNewsMessage($Messages->stripTags(str_replace("\n",' ',$post->message))));
 

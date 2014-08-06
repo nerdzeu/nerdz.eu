@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
+ob_start(array('NERDZ\\Core\\Core','minifyHTML'));
 
 use NERDZ\Core\Comments;
 use NERDZ\Core\Gravatar;
@@ -31,7 +31,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             die();
         $vals = [];
         
-        $vals['currentuserprofile_n'] = \NERDZ\Core\Core::userLink($_SESSION['id']);
+        $vals['currentuserprofile_n'] = \NERDZ\Core\Utils::userLink($_SESSION['id']);
         $vals['currentusergravatar_n'] = (new Gravatar())->getURL($_SESSION['id']);
         $vals['currentusername_n'] = $core->getUsername();
         $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/red_x.png';

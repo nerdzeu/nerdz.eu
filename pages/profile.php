@@ -70,7 +70,7 @@ if($enter)
 
     $vals['registrationtime_n'] = $core->getDateTime($o->registration_time);
     $vals['username_n'] = $info->username;
-    $vals['username4link_n'] = \NERDZ\Core\Core::userLink($info->username);
+    $vals['username4link_n'] = \NERDZ\Core\Utils::userLink($info->username);
     $vals['lang_n'] = $core->getUserLanguage($info->counter);
     $vals['online_b'] = $core->isOnline($info->counter);
 
@@ -150,7 +150,7 @@ if($enter)
             if(($name = $core->getUserName($val)))
             {
                 $amigos[$c]['username_n'] = $name;
-                $amigos[$c]['username4link_n'] = \NERDZ\Core\Core::userLink($name);
+                $amigos[$c]['username4link_n'] = \NERDZ\Core\Utils::userLink($name);
                 ++$c;
             }
 
@@ -197,7 +197,7 @@ if($enter)
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['ownerof_a'][$i]['name_n'] = $o->name;
-        $vals['ownerof_a'][$i]['name4link_n'] = \NERDZ\Core\Core::projectLink($o->name);
+        $vals['ownerof_a'][$i]['name4link_n'] = \NERDZ\Core\Utils::projectLink($o->name);
         ++$i;
     }
 
@@ -214,7 +214,7 @@ if($enter)
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['memberof_a'][$i]['name_n'] = $o->name;
-        $vals['memberof_a'][$i]['name4link_n'] = \NERDZ\Core\Core::projectLink($o->name);
+        $vals['memberof_a'][$i]['name4link_n'] = \NERDZ\Core\Utils::projectLink($o->name);
         ++$i;
     }
 
@@ -231,7 +231,7 @@ if($enter)
     while(($o =$r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['userof_a'][$i]['name_n'] = $o->name;
-        $vals['userof_a'][$i]['name4link_n'] = \NERDZ\Core\Core::projectLink($o->name);
+        $vals['userof_a'][$i]['name4link_n'] = \NERDZ\Core\Utils::projectLink($o->name);
         ++$i;
     }
 

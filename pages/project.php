@@ -47,7 +47,7 @@ else
         $vals['id_n'] = $info->counter;
 
         $vals['name_n'] = $info->name;
-        $vals['name4link_n'] =  \NERDZ\Core\Core::projectLink($info->name);
+        $vals['name4link_n'] =  \NERDZ\Core\Utils::projectLink($info->name);
 
         $vals['members_n'] = count($mem);
         $vals['members_a'] = [];
@@ -57,7 +57,7 @@ else
             if(!($uname = $core->getUsername($uid)))
                 continue;
             $vals['members_a'][$i]['username_n'] = $uname;
-            $vals['members_a'][$i]['username4link_n'] = \NERDZ\Core\Core::userLink($uname);
+            $vals['members_a'][$i]['username4link_n'] = \NERDZ\Core\Utils::userLink($uname);
             ++$i;
         }
 
@@ -73,13 +73,13 @@ else
             if(!($uname = $core->getUsername($uid)))
                 continue;
             $vals['users_a'][$i]['username_n'] = $uname;
-            $vals['users_a'][$i]['username4link_n'] = \NERDZ\Core\Core::userLink($uname);
+            $vals['users_a'][$i]['username4link_n'] = \NERDZ\Core\Utils::userLink($uname);
             ++$i;
         }
         usort($vals['users_a'],'sortbyusername');
 
         $vals['owner_n'] = $core->getUsername($info->owner);
-        $vals['owner4link_n'] =  \NERDZ\Core\Core::userLink($vals['owner_n']);
+        $vals['owner4link_n'] =  \NERDZ\Core\Utils::userLink($vals['owner_n']);
 
         $vals['description_n'] = $Messages->bbcode($info->description);
 

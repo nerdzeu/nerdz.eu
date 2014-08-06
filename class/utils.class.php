@@ -61,7 +61,7 @@ class Utils
         return str_replace(' ','+',urlencode(html_entity_decode($name,ENT_QUOTES,'UTF-8'))).':';
     }
 
-    public static function minifyHtml($str)
+    public static function minifyHTML($str)
     {
         $str = explode("\n",$str);
         foreach($str as &$val)
