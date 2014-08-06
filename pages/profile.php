@@ -38,9 +38,10 @@ if($vals['logged_b'])
 
     $vals['caniblacklist_b'] = 0 == $core->query(
         [
-            'SELECT "to" FROM "blacklist" WHERE "from" = :me',
+            'SELECT "to" FROM "blacklist" WHERE "from" = :me AND "to" = :id',
             [
-                ':me' => $_SESSION['id']
+                ':me' => $_SESSION['id'],
+                ':id' => $info->counter
             ]
         ], db::ROW_COUNT);
 }
