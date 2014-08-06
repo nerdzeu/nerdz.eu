@@ -1,11 +1,9 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Config;
-se NERDZ\Core\Utils;
-se NERDZ\Core\Stuff;
+use NERDZ\Core\Utils;
+use NERDZ\Core\Stuff;
 use \PDO;
-
-$utils = new Utils();
 
 $mo = empty($_GET['top']);
 $un_ti = ' AND ("time" + INTERVAL \'28 days\') > NOW()';
@@ -49,7 +47,7 @@ else
 
 $vals['list_a'] = $ret;
 $vals['monthly_b'] = !$mo;
-$vals['lastupdate_n'] = $core->getDateTime($utils->apc_getLastModified($path));
+$vals['lastupdate_n'] = $core->getDateTime(Utils::apc_getLastModified($path));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 $core->getTPL()->assign($vals);

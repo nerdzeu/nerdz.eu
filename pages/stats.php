@@ -4,7 +4,6 @@ use NERDZ\Core\Utils;
 use NERDZ\Core\Config;
 use NERDZ\Core\Db;
 
-$utils = new Utils();
 $ret = [];
 $vals = [];
 
@@ -49,7 +48,7 @@ $vals['totpostsprojects_n']     = $ret[4];
 $vals['totcommentsprojects_n']  = $ret[5];
 $vals['totonlineusers_n']       = $ret[6];
 $vals['tothiddenusers_n']       = $ret[7];
-$vals['lastupdate_n']           = $core->getDateTime($utils->apc_getLastModified($cache));
+$vals['lastupdate_n']           = $core->getDateTime(Utils::apc_getLastModified($cache));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 

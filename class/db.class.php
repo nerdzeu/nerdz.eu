@@ -61,15 +61,15 @@ class Db
 
     private static function getInstance()
     {
-        if(empty(self::$instance))
-            self::$instance = new Db();
+        if(empty(static::$instance))
+            static::$instance = new Db();
         
-        return self::$instance;
+        return static::$instance;
     }
 
     public static function getDB()
     {
-        return self::getInstance()->dbh;
+        return static::getInstance()->dbh;
     }
 }
 

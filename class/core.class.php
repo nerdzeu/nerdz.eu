@@ -795,44 +795,5 @@ class Core
         $res = $this->parseDbMessage($msg, $otherInfo);
         return $this->jsonResponse($res[0], $res[1]);
     }
-
-    public static function isValidURL($url)
-    {
-        return filter_var($url, FILTER_VALIDATE_URL);
-    }
-
-    public static function userLink($user)
-    {
-        return str_replace(' ','+',urlencode(html_entity_decode($user,ENT_QUOTES,'UTF-8'))).'.';
-    }
-
-    public static function projectLink($name)
-    {
-        return str_replace(' ','+',urlencode(html_entity_decode($name,ENT_QUOTES,'UTF-8'))).':';
-    }
-
-    public static function minifyHtml($str)
-    {
-        $str = explode("\n",$str);
-        foreach($str as &$val)
-           $val = trim(str_replace("\t",'',$val));
-
-        return implode('',$str);
-    }
-
-    public static function getVersion()
-    {
-        $cache = 'NERDZVersion' . Config\SITE_HOST;
-        if (apc_exists ($cache))
-            return apc_fetch ($cache);
-        if (!is_dir ($_SERVER['DOCUMENT_ROOT'] . '/.git') ||
-            !file_exists ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'))
-            return 'null';
-        $revision = substr (file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'), 0, 7);
-        if (strlen ($revision) != 7)
-            return 'null';
-        @apc_store ($cache, $revision, 5400); // store the version for 1.5 hours
-        return $revision;
-    }
 }
 ?>

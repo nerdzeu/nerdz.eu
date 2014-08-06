@@ -2,7 +2,9 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
-$core = new NERDZ\Core\Core();
+use NERDZ\Core\Utils;
+use NERDZ\Core\Core;
+$core = new Core();
 
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
@@ -29,10 +31,10 @@ $user['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])  
 $closed             = isset($_POST['closed']);
 $flag = true;
 
-if(!empty($user['website']) && !Core::isValidURL($user['website']))
+if(!empty($user['website']) && !Utils::isValidURL($user['website']))
     die($core->jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
     
-if(!empty($user['userscript']) && !Core::isValidURL($user['userscript']))
+if(!empty($user['userscript']) && !Utils::isValidURL($user['userscript']))
     die($core->jsonResponse('error','Userscript: '.$core->lang('INVALID_URL')));
 
 if(!empty($user['github']) && !preg_match('#^https?://(www\.)?github\.com/[a-z0-9]+$#i',$user['github']))

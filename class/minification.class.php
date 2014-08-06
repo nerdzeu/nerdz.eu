@@ -13,7 +13,7 @@ final class Minification
 
     public static function minifyJs ($path)
     {
-        return shell_exec (str_ireplace (self::PATH_VAR, $path, Config\MINIFICATION_JS_CMD));
+        return shell_exec (str_ireplace (static::PATH_VAR, $path, Config\MINIFICATION_JS_CMD));
     }
 
     public static function minifyCss ($path)
@@ -34,7 +34,7 @@ final class Minification
 
     public static function minifyTemplateFile ($mTimeFile, $fileToMinify, $targetMinifiedFile, $ext)
     {
-        file_put_contents ($targetMinifiedFile, ( $ext == 'js' ? self::minifyJs ($fileToMinify) : self::minifyCss ($fileToMinify)) );
+        file_put_contents ($targetMinifiedFile, ( $ext == 'js' ? static::minifyJs ($fileToMinify) : static::minifyCss ($fileToMinify)) );
         chmod ($targetMinifiedFile, 0775);
         file_put_contents ($mTimeFile, filemtime ($fileToMinify));
         chmod ($mTimeFile, 0775);

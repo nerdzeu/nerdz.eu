@@ -69,7 +69,7 @@ final class RainTPL
      *
      * @var unknown_type
      */
-    static $black_list = array( '\$this', 'raintpl::', 'self::', '_SESSION', '_SERVER', '_ENV',  'unlink', 'rmdir', 'system' ,'apache_child_terminate', 'apache_setenv', 'putenv', 'getenv', 'define_syslog_variables', 'escapeshellarg', 'escapeshellcmd', 'eval', 'exec', 'fp', 'fput', 'ftp_connect', 'ftp_exec', 'ftp_get', 'ftp_login', 'ftp_nb_fput', 'ftp_put', 'ftp_raw', 'ftp_rawlist', 'highlight_file', 'ini_alter', 'ini_get_all', 'ini_restore', 'inject_code', 'mysql_pconnect', 'mysql_connect', 'openlog', 'passthru', 'php_uname', 'phpAds_remoteInfo', 'phpAds_XmlRpc', 'phpAds_xmlrpcDecode', 'phpAds_xmlrpcEncode', 'popen', 'posix_getpwuid', 'posix_kill', 'posix_mkfifo', 'posix_setpgid', 'posix_setsid', 'posix_setuid', 'posix_setuid', 'posix_uname', 'proc_close', 'proc_get_status', 'proc_nice', 'proc_open', 'proc_terminate', 'shell_exec', 'syslog', 'system', 'xmlrpc_entity_decode');
+    static $black_list = array( '\$this', 'raintpl::', 'static::', '_SESSION', '_SERVER', '_ENV',  'unlink', 'rmdir', 'system' ,'apache_child_terminate', 'apache_setenv', 'putenv', 'getenv', 'define_syslog_variables', 'escapeshellarg', 'escapeshellcmd', 'eval', 'exec', 'fp', 'fput', 'ftp_connect', 'ftp_exec', 'ftp_get', 'ftp_login', 'ftp_nb_fput', 'ftp_put', 'ftp_raw', 'ftp_rawlist', 'highlight_file', 'ini_alter', 'ini_get_all', 'ini_restore', 'inject_code', 'mysql_pconnect', 'mysql_connect', 'openlog', 'passthru', 'php_uname', 'phpAds_remoteInfo', 'phpAds_XmlRpc', 'phpAds_xmlrpcDecode', 'phpAds_xmlrpcEncode', 'popen', 'posix_getpwuid', 'posix_kill', 'posix_mkfifo', 'posix_setpgid', 'posix_setsid', 'posix_setuid', 'posix_setuid', 'posix_uname', 'proc_close', 'proc_get_status', 'proc_nice', 'proc_open', 'proc_terminate', 'shell_exec', 'syslog', 'system', 'xmlrpc_entity_decode');
 
     /**
      * Check template.
@@ -121,7 +121,7 @@ final class RainTPL
 
     public function getActualTemplateNumber()
     {
-        $str = '/' == self::$tpl_dir[strlen(self::$tpl_dir) -1] ? substr(self::$tpl_dir, 0 , -1) : self::$tpl_dir;
+        $str = '/' == static::$tpl_dir[strlen(static::$tpl_dir) -1] ? substr(static::$tpl_dir, 0 , -1) : static::$tpl_dir;
         $e = explode('/', $str);
         return is_array($e) ? $e[count($e) - 1] : '0';
     }
@@ -191,12 +191,12 @@ final class RainTPL
     {
         if( is_array( $setting ) )
             foreach( $setting as $key => $value )
-                self::configure( $key, $value );
+                static::configure( $key, $value );
         else
             if( property_exists( __CLASS__, $setting ) )
             {
-                self::$$setting = $value;
-                self::$config_name_sum .= $value; // take trace of all config
+                static::$$setting = $value;
+                static::$config_name_sum .= $value; // take trace of all config
             }
     }
 
@@ -208,20 +208,20 @@ final class RainTPL
         {
             $tpl_basename                       = basename( $tpl_name );                                                        // template basename
             $tpl_basedir                        = strpos($tpl_name,'/') ? dirname($tpl_name) . '/' : null;                        // template basedirectory
-            $tpl_dir                            = self::$tpl_dir . $tpl_basedir;                                // template directory
-            $this->tpl['tpl_filename']          = $tpl_dir . $tpl_basename . '.' . self::$tpl_ext;    // template filename
-            $temp_compiled_filename             = $this->cache_dir . $tpl_basename . '.' . md5( $tpl_dir . self::$config_name_sum );
+            $tpl_dir                            = static::$tpl_dir . $tpl_basedir;                                // template directory
+            $this->tpl['tpl_filename']          = $tpl_dir . $tpl_basename . '.' . static::$tpl_ext;    // template filename
+            $temp_compiled_filename             = $this->cache_dir . $tpl_basename . '.' . md5( $tpl_dir . static::$config_name_sum );
             $this->tpl['compiled_filename']     = $temp_compiled_filename . '.php';    // cache filename
 
             // if the template doesn't exsist throw an error
-            if( self::$check_template_update && !file_exists( $this->tpl['tpl_filename'] ) )
+            if( static::$check_template_update && !file_exists( $this->tpl['tpl_filename'] ) )
             {
                 $e = new RainTpl_NotFoundException( 'Template '. $tpl_basename .' not found!' );
                 throw $e->setTemplateFile($this->tpl['tpl_filename']);
             }
 
             // file doesn't exsist, or the template was updated, Rain will compile the template
-            if( !file_exists( $this->tpl['compiled_filename'] ) || ( self::$check_template_update && @filemtime($this->tpl['compiled_filename']) < filemtime( $this->tpl['tpl_filename'] ) ) )
+            if( !file_exists( $this->tpl['compiled_filename'] ) || ( static::$check_template_update && @filemtime($this->tpl['compiled_filename']) < filemtime( $this->tpl['tpl_filename'] ) ) )
             {
                 $this->compileFile( $tpl_basename, $tpl_basedir, $this->tpl['tpl_filename'], $this->cache_dir, $this->tpl['compiled_filename'] );
                 return true;
@@ -358,7 +358,7 @@ final class RainTPL
                                  'if( $cache = $tpl->cache( $template = basename("'.$include_var.'") ) )' .
                                  '    echo $cache;' .
                                  'else{ ' .
-                                 '$tpl_dir_temp = self::$tpl_dir;' .
+                                 '$tpl_dir_temp = static::$tpl_dir;' .
                                  '$tpl->assign( $this->var );' .
                                  ( !$loop_level ? null : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
                                  '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,Db::FETCH_OBJ) != "/" ? "/" : "" ) . $template );'.
@@ -367,7 +367,7 @@ final class RainTPL
                 else
                     //dynamic include
                     $compiled_code .= '<?php $tpl = new RainTPL;' .
-                                 '$tpl_dir_temp = self::$tpl_dir;' .
+                                 '$tpl_dir_temp = static::$tpl_dir;' .
                                  '$tpl->assign( $this->var );' .
                                  ( !$loop_level ? '' : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
                                  '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,Db::FETCH_OBJ) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
@@ -509,42 +509,42 @@ final class RainTPL
      */
     private function path_replace( $html, $tpl_basedir )
     {
-        if( self::$path_replace )
+        if( static::$path_replace )
         {
              // reduce the path
-            $path = preg_replace('/\w+\/\.\.\//', '', $this->base_url . self::$tpl_dir . $tpl_basedir );
+            $path = preg_replace('/\w+\/\.\.\//', '', $this->base_url . static::$tpl_dir . $tpl_basedir );
 
             $exp = $sub = [];
-            $tpld = str_replace($_SERVER['DOCUMENT_ROOT'],'',self::$tpl_dir);
+            $tpld = str_replace($_SERVER['DOCUMENT_ROOT'],'',static::$tpl_dir);
 
-            if( in_array( 'img', self::$path_replace_list ) )
+            if( in_array( 'img', static::$path_replace_list ) )
             {
                 $exp = array( '/<img(.*?)src=(?:")(http|https)\:\/\/([^"]+?)(?:")/i', '/<img(.*?)src=(?:")([^"]+?)#(?:")/i', '/<img(.*?)src="(.*?)"/', '/<img(.*?)src=(?:\@)([^"]+?)(?:\@)/i' );
                 $sub = array( '<img$1src=@$2://$3@', '<img$1src=@$2@', '<img$1src="' . $this->base_url . $tpld . $tpl_basedir . '$2"', '<img$1src="$2"' );
             }
 
-            if( in_array( 'script', self::$path_replace_list ) )
+            if( in_array( 'script', static::$path_replace_list ) )
             {
                 $exp = array_merge( $exp , array( '/<script(.*?)src=(?:")(http|https)\:\/\/([^"]+?)(?:")/i', '/<script(.*?)src=(?:")([^"]+?)#(?:")/i', '/<script(.*?)src="(.*?)"/', '/<script(.*?)src=(?:\@)([^"]+?)(?:\@)/i' ) );
-                $sub = array_merge( $sub , array( '<script$1src=@$2://$3@', '<script$1src=@$2@', '<script$1src="' . $this->base_url . self::$tpl_dir . $tpl_basedir . '$2"', '<script$1src="$2"' ) );
+                $sub = array_merge( $sub , array( '<script$1src=@$2://$3@', '<script$1src=@$2@', '<script$1src="' . $this->base_url . static::$tpl_dir . $tpl_basedir . '$2"', '<script$1src="$2"' ) );
             }
 
-            if( in_array( 'link', self::$path_replace_list ) )
+            if( in_array( 'link', static::$path_replace_list ) )
             {
                 $exp = array_merge( $exp , array( '/<link(.*?)href=(?:")(http|https)\:\/\/([^"]+?)(?:")/i', '/<link(.*?)href=(?:")([^"]+?)#(?:")/i', '/<link(.*?)href="(.*?)"/', '/<link(.*?)href=(?:\@)([^"]+?)(?:\@)/i' ) );
-                $sub = array_merge( $sub , array( '<link$1href=@$2://$3@', '<link$1href=@$2@' , '<link$1href="' . $this->base_url . self::$tpl_dir . $tpl_basedir . '$2"', '<link$1href="$2"' ) );
+                $sub = array_merge( $sub , array( '<link$1href=@$2://$3@', '<link$1href=@$2@' , '<link$1href="' . $this->base_url . static::$tpl_dir . $tpl_basedir . '$2"', '<link$1href="$2"' ) );
             }
 
-            if( in_array( 'a', self::$path_replace_list ) )
+            if( in_array( 'a', static::$path_replace_list ) )
             {
                 $exp = array_merge( $exp , array( '/<a(.*?)href=(?:")(http|https)\:\/\/([^"]+?)(?:")/i', '/<a(.*?)href="(.*?)"/', '/<a(.*?)href=(?:\@)([^"]+?)(?:\@)/i'  ) );
                 $sub = array_merge( $sub , array( '<a$1href=@$2://$3@', '<a$1href="' . $this->base_url . '$2"', '<a$1href="$2"' ) );
             }
 
-            if( in_array( 'input', self::$path_replace_list ) )
+            if( in_array( 'input', static::$path_replace_list ) )
             {
                 $exp = array_merge( $exp , array( '/<input(.*?)src=(?:")(http|https)\:\/\/([^"]+?)(?:")/i', '/<input(.*?)src=(?:")([^"]+?)#(?:")/i', '/<input(.*?)src="(.*?)"/', '/<input(.*?)src=(?:\@)([^"]+?)(?:\@)/i' ) );
-                $sub = array_merge( $sub , array( '<input$1src=@$2://$3@', '<input$1src=@$2@', '<input$1src="' . $this->base_url . self::$tpl_dir . $tpl_basedir . '$2"', '<input$1src="$2"' ) );
+                $sub = array_merge( $sub , array( '<input$1src=@$2://$3@', '<input$1src=@$2@', '<input$1src="' . $this->base_url . static::$tpl_dir . $tpl_basedir . '$2"', '<input$1src="$2"' ) );
             }
 
             return preg_replace( $exp, $sub, $html );
@@ -779,10 +779,10 @@ final class RainTPL
      */
     private function function_check( $code )
     {
-        $preg = '#(\W|\s)' . implode( '(\W|\s)|(\W|\s)', self::$black_list ) . '(\W|\s)#';
+        $preg = '#(\W|\s)' . implode( '(\W|\s)|(\W|\s)', static::$black_list ) . '(\W|\s)#';
 
         // check if the function is in the black list (or not in white list)
-        if( count(self::$black_list) && preg_match( $preg, $code, $match ) )
+        if( count(static::$black_list) && preg_match( $preg, $code, $match ) )
         {
             // find the line of the error
             $line = 0;
@@ -804,7 +804,7 @@ final class RainTPL
      */
     private function printDebug(RainTpl_Exception $e)
     {
-        if (!self::$debug)
+        if (!static::$debug)
             throw $e;
         
         $output = sprintf('<h2>Exception: %s</h2><h3>%s</h3><p>template: %s</p>',

@@ -3,6 +3,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Banners;
 use NERDZ\Core\Db;
 use NERDZ\Core\Project;
+use NERDZ\Core\Utils;
+use NERDZ\Core\Config;
 $core = new Project();
 
 $vals = [];
@@ -39,8 +41,8 @@ else
         }
 
         $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-        $domain = $ssl ? '' : STATIC_DOMAIN;
-        $vals['photo_n'] = NERDZ\Core\Coer::imgValidUrl($info->photo, $domain, $ssl);
+        $domain = $ssl ? '' : Config\STATIC_DOMAIN;
+        $vals['photo_n'] = Utils::getValidImageURL($info->photo, $domain, $ssl);
         $vals['onerrorimgurl_n'] = $domain.'/static/images/onErrorImg.php';
         $vals['id_n'] = $info->counter;
 

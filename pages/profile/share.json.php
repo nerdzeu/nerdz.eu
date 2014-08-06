@@ -1,7 +1,10 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$core = new NERDZ\Core\Messages();
+use NERDZ\Core\Messages;
+use NERDZ\Core\Utils;
+
+$core = new Messages();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
@@ -13,7 +16,7 @@ $url     = empty($_POST['url'])     ? false : trim($_POST['url']);
 $comment = empty($_POST['comment']) ? false : trim($_POST['comment']);
 $to      = empty($_POST['to'])      ? false : trim($_POST['to']);
 
-if(!$url || !NERDZ\Core\Core::isValidURL($url))
+if(!$url || !Utils::isValidURL($url))
     die($core->jsonResponse('error',$core->lang('INVALID_URL')));
 
 if($to)

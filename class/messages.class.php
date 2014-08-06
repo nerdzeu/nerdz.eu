@@ -63,32 +63,6 @@ class Messages extends Core
         return $ret;
     }
 
-    public static function imgValidUrl($url, $domain, $sslEnabled)
-    {
-        $url = strip_tags(trim($url));
-        if (!Core::isValidURL($url))
-            return $domain.'/static/images/invalidImgUrl.php';
-
-        if($sslEnabled) {
-            // valid ssl url
-            if(preg_match('#^https://#i',$url))
-                return strip_tags($url);
-
-            // imgur without ssl
-            if(preg_match("#^http://(www\.)?(i\.)?imgur\.com/[a-z0-9]+\..{3}$#i",$url)) {
-                return preg_replace_callback("#^http://(?:www\.)?(?:i\.)?imgur\.com/([a-z0-9]+\..{3})$#i", function($matches) {
-                    return 'https://i.imgur.com/'.$matches[1];
-                },$url);
-            }
-
-            // url hosted on a non ssl host - use camo or our trusted proxy
-            return Config\CAMO_KEY == '' ?
-                'https://i0.wp.com/' . preg_replace ('#^http://|^ftp://#i', '', strip_tags($url)) :
-                $domain.'/secure/image/'.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
-        }
-        return strip_tags($url);
-    }
-
     public function bbcode($str,$truncate = null, $type = NULL,$pid = NULL,$id = NULL)
     {
         $str = str_replace("\n",'<br />',$str);
@@ -108,10 +82,10 @@ class Messages extends Core
 
         $validURL = function($m) {
             $m[1] = trim($m[1]);
-            if(!Core::isValidURL($m[1]))
+            if(!Utils::isValidURL($m[1]))
             {
                 $m[1] = 'www.'.$m[1];
-                if(!Core::isValidURL($m[1]))
+                if(!Utils::isValidURL($m[1]))
                     return '<b>'.parent::lang('INVALID_URL').'</b>';
             }
             $url = preg_match('#^(http(s)?:\/\/)|(ftp:\/\/)#im',$m[1]) ? $m[1] : 'http://'.$m[1];
@@ -308,13 +282,13 @@ class Messages extends Core
             $videoCallback = function($m) use($ssl) {
                 $v_url  = html_entity_decode ($m[1],ENT_QUOTES,'UTF-8');
                 $output = [];
-                if      (preg_match (self::YOUTUBE_REGEXP,  $v_url, $match))
+                if      (preg_match (static::YOUTUBE_REGEXP,  $v_url, $match))
                     $output = [ 'youtube', $match[1], '//i1.ytimg.com/vi/' . $match[1] . '/hqdefault.jpg', 130 ];
-                else if (preg_match (self::VIMEO_REGEXP,    $v_url, $match))
+                else if (preg_match (static::VIMEO_REGEXP,    $v_url, $match))
                     $output = [ 'vimeo', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 130, 'N.vimeoThumbnail(this)' ];
-                else if (preg_match (self::DMOTION_REGEXP,  $v_url, $match))
+                else if (preg_match (static::DMOTION_REGEXP,  $v_url, $match))
                     $output = [ 'dailymotion', $match[1], 'https://www.dailymotion.com/thumbnail/video/' . $match[1], 100 ];
-                else if (preg_match (self::FACEBOOK_REGEXP, $v_url, $match))
+                else if (preg_match (static::FACEBOOK_REGEXP, $v_url, $match))
                     $output = [ 'facebook', $match[1], 'https://graph.facebook.com/' . $match[1] . '/picture', 100 ];
                 else
                     return $m[0];
@@ -329,7 +303,7 @@ class Messages extends Core
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
-                    $url = Messages::imgValidUrl($m[1], $domain, $ssl);
+                    $url = Utils::getValidImageURL($m[1], $domain, $ssl);
                     return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
                                     <span>
                                         '.parent::lang('IMAGES').'
@@ -343,13 +317,13 @@ class Messages extends Core
             $videoCallback = function($m) use($ssl) {
                 $v_url       = html_entity_decode ($m[1], ENT_QUOTES, 'UTF-8');
                 $iframe_code = '';
-                if      (preg_match (self::YOUTUBE_REGEXP,  $v_url, $match))
+                if      (preg_match (static::YOUTUBE_REGEXP,  $v_url, $match))
                     $iframe_code = '<iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="//www.youtube.com/embed/'.$match[1].'?wmode=opaque"></iframe>';
-                else if (preg_match (self::VIMEO_REGEXP,    $v_url, $match))
+                else if (preg_match (static::VIMEO_REGEXP,    $v_url, $match))
                     $iframe_code = '<iframe src="//player.vimeo.com/video/'.$match[1].'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-                else if (preg_match (self::DMOTION_REGEXP,  $v_url, $match))
+                else if (preg_match (static::DMOTION_REGEXP,  $v_url, $match))
                     $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
-                else if (preg_match (self::FACEBOOK_REGEXP, $v_url, $match))
+                else if (preg_match (static::FACEBOOK_REGEXP, $v_url, $match))
                     $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" width="540" height="420" frameborder="0"></iframe>';
                 else
                     return $m[0];
@@ -361,7 +335,7 @@ class Messages extends Core
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
-                    return '<img src="'.Messages::imgValidUrl($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
+                    return '<img src="'.Utils::getValidImageURL($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
             },$str);
         }
 

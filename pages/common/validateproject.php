@@ -1,8 +1,11 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
+use NERDZ\Core\Config
+use NERDZ\Core\Utils;
+use NERDZ\Core\Project;
 
-$core = new NERDZ\Core\Project();
+$core = new Project();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
@@ -46,8 +49,8 @@ if(isset($create))
     if(is_numeric(strpos($group['name'],'%')))
         die($core->jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': %'));
 
-    if(mb_strlen($group['name'],'UTF-8') < MIN_LENGTH_USER)
-        die($core->jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.MIN_LENGTH_USER));
+    if(mb_strlen($group['name'],'UTF-8') < Config\MIN_LENGTH_USER)
+        die($core->jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_USER));
 }
 
 foreach($group as &$value)
@@ -68,12 +71,12 @@ if(!isset($_POST['goal']))
 if(!isset($_POST['website']))
     $_POST['website'] = '';
        
-if(!empty($_POST['website']) && !NERDZ\Core\Core::isValidURL($_POST['website']))
+if(!empty($_POST['website']) && !Utils::isValidURL($_POST['website']))
     die($core->jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
     
 if(!empty($_POST['photo']))
 {
-    if(!NERDZ\Core\Core::isValidURL($_POST['photo']))
+    if(!Utils::isValidURL($_POST['photo']))
         die($core->jsonResponse('error',$core->lang('PHOTO').': '.$core->lang('INVALID_URL')));
         
     if(!($head = get_headers($_POST['photo'],Db::FETCH_OBJ)) || !isset($head['Content-Type']))

@@ -144,7 +144,7 @@ final class TemplateConfig
 
     private function validatePath(&$path,$id)
     {
-        if(!Core::isValidURL($path))
+        if(!Utils::isValidURL($path))
         {
             $userfile = "{$_SERVER['DOCUMENT_ROOT']}/tpl/{$this->tpl_no}/{$path}";
             if(!file_exists($userfile))
