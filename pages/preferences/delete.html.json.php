@@ -1,9 +1,12 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
 
-$core = new NERDZ\Core\Core();
+use NERDZ\Core\Captcha;
+use NERDZ\Core\Db;
+use NERDZ\Core\Core;
+
+$core = new Core();
 
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));

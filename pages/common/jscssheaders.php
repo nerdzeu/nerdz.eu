@@ -1,11 +1,11 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-use NERDZ\Core;
+use NERDZ\Core\Browser;
 use NERDZ\Core\Config;
+use NERDZ\Core\Db;
 // Displays the stuff contained in the <head> tag.
 $logged = $core->isLogged();
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';
-$uagdata = (new Core\Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
+$uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
 $tno = $core->getTemplate();
 /* BEGIN MOBILE_META_TAGS */
 if ($core->isMobile()) { ?>
@@ -91,7 +91,7 @@ if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['sta
 } /* END NERDZ_VERSION */
 /* BEGIN NERDZ_STATIC_DATA */
 ?>
-        var Nstatic = <?=json_encode(isset($headers['js']['staticData'])?$headers['js']['staticData']:array(),JSON_HEX_TAG)?>;
+        var Nstatic = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js']['staticData'] : [], JSON_HEX_TAG)?>;
 <?php
 /* END NERDZ_STATIC_DATA */
 /* BEGIN BLACKLIST_STUFF */
@@ -112,6 +112,6 @@ if ($logged && ($blist = $core->getBlacklist()))
 }
 else { ?> </script> <?php }
 /* END BLACKLIST_STUFF */
-if ($logged && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Core\Db::FETCH_OBJ))) && !empty($o->userscript))
+if ($logged && (($o = $core->query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ))) && !empty($o->userscript))
     echo '<script type="application/javascript" src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
 ?>

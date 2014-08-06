@@ -1,10 +1,13 @@
 <?php
     ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-     
-    $core = new NERDZ\Core\Core();
+    use NERDZ\Core\Core;
+    use NERDZ\Core\Messages;
+    use NERDZ\Core\Project;
+    use NERDZ\Core\Db;
+    use NERDZ\Core\Config;
+
+    $core = new Core();
     $project = new Project();
     $Messages = new Messages();
     $tplcfg = $core->getTemplateCfg();
@@ -77,7 +80,7 @@
             echo ' #', $pid;
         echo ' @ '.$core->getSiteName();
     ?></title>
-        <link rel="alternate" type="application/atom+xml" title="<?php echo $name; ?>" href="http://<?php echo SITE_HOST; ?>/feed.php?id=<?php echo $gid; ?>&amp;project=1" />
+        <link rel="alternate" type="application/atom+xml" title="<?php echo $name; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $gid; ?>&amp;project=1" />
 <?php
     $headers = $tplcfg->getTemplateVars('project');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

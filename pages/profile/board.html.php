@@ -1,8 +1,10 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 ob_start(array('NERDZ\\Core\\Core','minifyHtml'));
+
+use NERDZ\Core\Comments;
+use NERDZ\Core\Project;
 
 $core = new Project();
 $comments = new Comments();

@@ -1,9 +1,13 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
 
-$core = new NERDZ\Core\Core();
+use NERDZ\Core\Core;
+use NERDZ\Core\Config;
+use NERDZ\Core\Captcha;
+use NERDZ\Core\Db;
+
+$core = new Core();
 $cptcka = new Captcha();
 
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
@@ -19,13 +23,13 @@ if(!$email || !filter_var($email,FILTER_VALIDATE_EMAIL))
 if(!($obj = $core->query(array('SELECT "username","counter" FROM "users" WHERE "email" = :email',array(':email' => $email)),Db::FETCH_OBJ)))
     die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
 
-$pass = Captcha::randomString(MIN_LENGTH_PASS);
+$pass = Captcha::randomString(Config\MIN_LENGTH_PASS);
 
 if(Db::NO_ERRNO != $core->query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),Db::FETCH_ERRNO))
     die($core->jsonResponse('error',$core->lang('ERROR').': retry'));
 
 $subject = 'NERDZ PASSWORD';
-$msg = '<a href="http://'.SITE_HOST.'">NERDZ</a><br /><br />';
+$msg = '<a href="http://'.Config\SITE_HOST.'">NERDZ</a><br /><br />';
 $msg.= $core->lang('USERNAME').': '.$obj->username.'<br />';
 $msg.= $core->lang('PASSWORD').': '.$pass.'<br />';
 $msg.= "IP: {$_SERVER['REMOTE_ADDR']}";

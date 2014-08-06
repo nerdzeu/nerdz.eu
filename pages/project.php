@@ -1,5 +1,8 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';//ok qui
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Banners;
+use NERDZ\Core\Db;
+use NERDZ\Core\Project;
 $core = new Project();
 
 $vals = [];
@@ -37,7 +40,7 @@ else
 
         $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
         $domain = $ssl ? '' : STATIC_DOMAIN;
-        $vals['photo_n'] = Messages::imgValidUrl($info->photo, $domain, $ssl);
+        $vals['photo_n'] = NERDZ\Core\Coer::imgValidUrl($info->photo, $domain, $ssl);
         $vals['onerrorimgurl_n'] = $domain.'/static/images/onErrorImg.php';
         $vals['id_n'] = $info->counter;
 
@@ -84,11 +87,10 @@ else
 
         $vals['openproject_b'] = $core->isOpen($info->counter);
         
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/Banners.class.php';
-        $Banners = (new Banners())->getBanners();
+        $banners = (new Banners())->getBanners();
         $vals['banners_a'] = [];
-        shuffle($Banners);
-        foreach($Banners as $ban)
+        shuffle($banners);
+        foreach($banners as $ban)
             $vals['banners_a'][$ban[1]] = $ban[2];
 
         $vals['canifollow_b'] = $vals['logged_b'] && !in_array($_SESSION['id'],array_merge($mem,$fol));

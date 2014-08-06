@@ -1,26 +1,25 @@
 <?php
-
 ob_start('ob_gzhandler');
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/fastfetch.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\FastFetch;
+use NERDZ\Core\FFException;
+use NERDZ\Core\FFErrCode;
 
 function jsonResponse($object) {
     header('Content-Type: application/json; charset=utf-8');
     exit(json_encode($object, JSON_UNESCAPED_UNICODE));
 }
 
-function bakeError(FFException $exception) {
-    
+function bakeError(FFException $exception) {   
     $code = $exception->code;
-        
     return ['error' => $code];
 }
 
 $response = NULL;
 
 $ff = new FastFetch();
-try {
-    
+try {   
     if(!$ff->isLogged()) {
         throw new FFException(FFErrCode::NOT_LOGGED);
     }
@@ -29,13 +28,13 @@ try {
         throw new FFException(FFErrCode::NO_ACTION);
     }
 
-    switch($_GET['action']) {    
+    switch($_GET['action']) {
 
         case 'conversations': 
             $response = $ff->fetchConversations();
             break;
 
-        case 'Messages': {
+        case 'messages': {
 
             if (!isset($_GET['otherid']) || !is_numeric($_GET['otherid'])) {
                 throw new FFException(FFErrCode::NO_OTHER_ID);
@@ -57,7 +56,6 @@ try {
             }
 
             $response = $ff->fetchMessages($_GET['otherid'], $start, $limit);
-
             break;
         }
         
@@ -65,15 +63,13 @@ try {
             if(!isset($_GET['username'])) {
                 throw new FFException(FFErrCode::WRONG_REQUEST);
             }
-            
-            $response = $ff->getIdFromUsername($_GET['username']);
-            
+
+            $response = $ff->getIdFromUsername($_GET['username']);           
             break;
         }
         
         default:
             throw new FFException(FFErrCode::INVALID_ACTION);
-
     }
 } catch (FFException $e) {
     $response = bakeError($e);

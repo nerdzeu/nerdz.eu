@@ -166,7 +166,6 @@ final class TemplateConfig
             if(!file_exists ($userfiletime) || // intval won't get called if the file doesn't exist
                intval(file_get_contents($userfiletime)) < ($updateTime = filemtime($userfile)))
             {
-                require_once $_SERVER['DOCUMENT_ROOT'].'/class/minification.class.php';
                 Minification::minifyTemplateFile ($userfiletime, $userfile, $userfile . $ext, $id);
                 $updateTime = time();
             }

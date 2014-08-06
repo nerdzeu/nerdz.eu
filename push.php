@@ -3,14 +3,15 @@
 ob_start('ob_gzhandler');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/pushed-php-client/pushed.class.php';
+use NERDZ\Core\Core;
+use NERDZ\Core\Client\Pushed;
 
 function jsonResponse($object) {
     header('Content-Type: application/json; charset=utf-8');
     exit(json_encode($object, JSON_UNESCAPED_UNICODE));
 }
 
-$core = new NERDZ\Core\Core();
+$core = new Core();
 try {
     
     if(!$core->isLogged()) {

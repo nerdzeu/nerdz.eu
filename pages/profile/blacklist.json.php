@@ -1,6 +1,10 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+
+use NERDZ\Core\Messages;
+use NERDZ\Core\Db;
+
 $core = new Messages();
 
 if(

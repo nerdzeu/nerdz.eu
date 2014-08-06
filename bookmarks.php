@@ -1,8 +1,8 @@
 <?php
     ob_start('ob_gzhandler');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
+    require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
     
-    $core = new Messages();
+    $core = new NERDZ\Core\Messages();
     if(!$core->isLogged())
         die(header('Location: /'));
 

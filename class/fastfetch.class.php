@@ -1,20 +1,18 @@
 <?php
 namespace NERDZ\Core;
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/pm.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/fastfetcherror.class.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
-/**
-    FastFetch is a class for fast pm fetching - and maybe more, someday.
+/*
+ * FastFetch is a class for fast pm fetching - and maybe more, someday.
 */
+
 final class FastFetch {
 
     private $mPm;
 
     public function __construct() {
-
         $this->mPm = new Pms();
-
     }
 
     /**
@@ -50,18 +48,15 @@ final class FastFetch {
                 }
                 
                 $element = [
-                            'name' => html_entity_decode($conversation['from_n'], ENT_QUOTES),
+                            'name' => html_entity_decode($conversation['from_n'], ENT_QUOTES, 'UTF-8'),
                             'last_timestamp' => intval($conversation['timestamp_n']),
                             'id' => $conversation['fromid_n'],
                             'last_message' => $result->message,
                             'last_sender' => $result->last_sender,
                             'new_Messages' => ($result->read) && ((int)$result->last_sender !== (int)$_SESSION['id'])
                            ];
-
                 $ret[] = $element;
-
             }
-
         } else {
             throw new FFException(FFErrCode::SERVER_FAILURE);
         }
@@ -153,10 +148,9 @@ final class FastFetch {
 }
 
 /**
-    Error codes to be returned by FastFetch API.
-*/
-final class FFErrCode {
-    
+ * Error codes to be returned by FastFetch API.
+ */
+final class FFErrCode {    
     /**
      * Unknown error code.
      */
@@ -206,12 +200,11 @@ final class FFErrCode {
      * The given username has not been found.
      */
     const USER_NOT_FOUND = 0x8;
-
 }
 
 /**
  * Exception returned from FastFetch.
- */
+*/
 final class FFException extends Exception {
     
     /**

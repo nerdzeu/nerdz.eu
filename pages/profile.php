@@ -14,10 +14,10 @@ $vals['id_n'] = $info->counter;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-$Banners = (new Banners())->getBanners();
+$banners = (new Banners())->getBanners();
 $vals['banners_a'] = [];
-shuffle($Banners);
-foreach($Banners as $ban)
+shuffle($banners);
+foreach($banners as $ban)
     $vals['banners_a'][$ban[1]] = $ban[2];
 
 $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $info->counter);
@@ -103,7 +103,6 @@ if($enter)
             die($core->lang('ERROR'));
 
         $n += $o->cc;
-        require_once $_SERVER['DOCUMENT_ROOT'].'/class/stuff.class.php';
         $a = Stuff::stupid($n);
         $a['n'] = $n;
 
@@ -133,7 +132,6 @@ if($enter)
     else
         $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['id'] || in_array($_SESSION['id'],$core->getWhitelist($info->counter)));
 
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/browser.class.php';//ok qui
     $vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
 
     $f = $core->getFriends($info->counter);
@@ -237,14 +235,14 @@ if($enter)
     }
 
 
-    $vals['github_n'] = $info->github;
-    $vals['yahoo_n'] = $vals['logged_b'] ? $info->yahoo : '';
-    $vals['jabber_n'] = $vals['logged_b'] ? $info->jabber: '';
-    $vals['skype_n'] = $vals['logged_b'] ? $info->skype: '';
-    $vals['steam_n'] = $vals['logged_b'] ? $info->steam: '';
-    $vals['facebook_n'] = $vals['logged_b'] ? $info->facebook: '';
-    $vals['twitter_n'] = $vals['logged_b'] ? $info->twitter: '';
-    $vals['id_n'] = $id;
+    $vals['github_n']   = $info->github;
+    $vals['yahoo_n']    = $vals['logged_b'] ? $info->yahoo    : '';
+    $vals['jabber_n']   = $vals['logged_b'] ? $info->jabber   : '';
+    $vals['skype_n']    = $vals['logged_b'] ? $info->skype    : '';
+    $vals['steam_n']    = $vals['logged_b'] ? $info->steam    : '';
+    $vals['facebook_n'] = $vals['logged_b'] ? $info->facebook : '';
+    $vals['twitter_n']  = $vals['logged_b'] ? $info->twitter  : '';
+    $vals['id_n']       = $id;
 
     $vals['totalfriends_n'] = isset($c) ? $c : 0;
     $vals['friends_a'] = $amigos;

@@ -1,10 +1,14 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/utils.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Utils;
+use NERDZ\Core\Config;
+use NERDZ\Core\Db;
+
 $utils = new Utils();
 $ret = [];
 $vals = [];
 
-$cache = 'nerdz_stats'.SITE_HOST;
+$cache = 'nerdz_stats'.Config\SITE_HOST;
 
 function createArray(&$core, &$ret, $query, $position) {
 

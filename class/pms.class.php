@@ -17,13 +17,9 @@ final class Pms extends Messages
 
         $wentWell = $retVal == Db::NO_ERRSTR;
 
-        if($wentWell && parent::wantsPush($to) && PUSHED_ENABLED) {
-        
-            require_once $_SERVER['DOCUMENT_ROOT'].'/class/pushed-php-client/pushed.class.php';
-
+        if($wentWell && parent::wantsPush($to) && Config\PUSHED_ENABLED) {
             try {
-            
-                $pushed = Pushed::connectIp(PUSHED_PORT,PUSHED_IP6);
+                $pushed = Client\Pushed\Pushed::connectIp(Config\PUSHED_PORT,Config\PUSHED_IP6);
 
                 $msg = json_encode(
                                    [ 
@@ -35,7 +31,7 @@ final class Pms extends Messages
 
                 $pushed->push($to, $msg);
 
-            } catch (PushedException $e) {}
+            } catch (Client\PushedException $e) {}
         }
 
         return $retVal;
@@ -187,9 +183,7 @@ final class Pms extends Messages
             
             if (isset($res->message))
                 $ret = $res;
-
         }
-
         return $ret;
     }
 }

@@ -1,6 +1,9 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/captcha.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+
+use NERDZ\Core\Project;
+use NERDZ\Core\Captcha;
+use NERDZ\Core\Db;
 
 $core = new Project();
 if(!$core->isLogged())

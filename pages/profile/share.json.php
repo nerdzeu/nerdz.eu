@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
-$core = new Messages();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+$core = new NERDZ\Core\Messages();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
@@ -9,11 +9,11 @@ if(!$core->isLogged())
 if(!$core->refererControl())
     die($core->jsonResponse('error','No SPAM/BOT'));
 
-$url      = empty($_POST['url'])     ? false : trim($_POST['url']);
+$url     = empty($_POST['url'])     ? false : trim($_POST['url']);
 $comment = empty($_POST['comment']) ? false : trim($_POST['comment']);
-$to      = empty($_POST['to'])         ? false : trim($_POST['to']);
+$to      = empty($_POST['to'])      ? false : trim($_POST['to']);
 
-if(!$url || !Core::isValidURL($url))
+if(!$url || !NERDZ\Core\Core::isValidURL($url))
     die($core->jsonResponse('error',$core->lang('INVALID_URL')));
 
 if($to)
@@ -30,10 +30,8 @@ if($_SESSION['id'] != $to)
         die($core->jsonResponse('error',$core->lang('CLOSED_PROFILE_DESCR')));
 }
     
-function share($to,$url,$message = NULL)
+$share = function($to,$url,$message = NULL) use($core)
 {
-    $core = new Messages();
-
     if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$url))
         $url = "http://{$url}";
         
@@ -82,9 +80,9 @@ function share($to,$url,$message = NULL)
             return $core->addMessage($to,$message);
         }
     }
-}
+};
 
-if(share($to,$url,$comment))
+if($share($to,$url,$comment))
     die($core->jsonResponse('ok','OK'));
 
 die($core->jsonResponse('error',$core->lang('ERROR')));

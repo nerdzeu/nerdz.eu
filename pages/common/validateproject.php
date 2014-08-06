@@ -1,6 +1,8 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/project.class.php';
-$core = new Project();
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Db;
+
+$core = new NERDZ\Core\Project();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));
@@ -66,12 +68,12 @@ if(!isset($_POST['goal']))
 if(!isset($_POST['website']))
     $_POST['website'] = '';
        
-if(!empty($_POST['website']) && !Core::isValidURL($_POST['website']))
+if(!empty($_POST['website']) && !NERDZ\Core\Core::isValidURL($_POST['website']))
     die($core->jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
     
 if(!empty($_POST['photo']))
 {
-    if(!Core::isValidURL($_POST['photo']))
+    if(!NERDZ\Core\Core::isValidURL($_POST['photo']))
         die($core->jsonResponse('error',$core->lang('PHOTO').': '.$core->lang('INVALID_URL')));
         
     if(!($head = get_headers($_POST['photo'],Db::FETCH_OBJ)) || !isset($head['Content-Type']))

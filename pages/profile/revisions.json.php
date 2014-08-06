@@ -1,16 +1,15 @@
 <?php
 ob_start('ob_gzhandler');
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 if(isset($_POST['comment'])) {
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/comments.class.php';
-    $core = new Comments();
+    $core = new NERDZ\Core\Comments();
     if(!isset($_POST['hcid']) || !is_numeric($_POST['hcid'])) 
         die($core->jsonResponse('error',$core->lang('ERROR').': no hcid'));
     $id = $_POST['hcid'];
 }
 else {
-    require_once $_SERVER['DOCUMENT_ROOT'].'/class/Messages.class.php';
-    $core = new Messages();
+    $core = new NERDZ\Core\Messages();
     if(!isset($_POST['hpid']) || !is_numeric($_POST['hpid'])) 
         die($core->jsonResponse('error',$core->lang('ERROR').': no hpid'));
     $id = $_POST['hpid'];
