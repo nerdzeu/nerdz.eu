@@ -26,7 +26,7 @@ if($vals['logged_b'])
         [
             'SELECT "to" FROM "blacklist" WHERE "from" = :me AND "to" = :id',
             [
-                ':me' => $_SESSION['id'],
+                ':me' => $_SESSION['nerdz_id'],
                 ':id' => $info->counter
             ]
         ], db::ROW_COUNT);
