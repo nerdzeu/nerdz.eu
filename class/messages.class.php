@@ -632,7 +632,7 @@ class Messages extends Core
                 parent::isLogged() &&
                 Db::query(
                     [
-                        'SELECT "hpid" FROM "bookmarks" WHERE "hpid" = :hpid AND "from" = :id',
+                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
                         [
                             ':hpid' => $post['hpid'],
                             ':id'   => $_SESSION['id']

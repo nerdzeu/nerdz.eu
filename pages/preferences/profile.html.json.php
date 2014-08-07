@@ -146,7 +146,16 @@ if(isset($_POST['whitelist']))
         $uid = $core->getUserId(trim($v));
         if(is_numeric($uid))
         {
-            if(!in_array(Db::query(array('INSERT INTO "whitelist"("from","to") VALUES(:id,:uid)',array(':id' => $_SESSION['id'], ':uid' => $uid)),Db::FETCH_ERRNO),array(Db::NO_ERRNO,POSTGRESQL_DUP_KEY)))
+            if(Db::NO_ERRNO != Db::query(
+                    [
+                        'INSERT INTO "whitelist"("from","to")
+                        SELECT :id, :uid
+                        WHERE NOT EXISTS (SELECT 1 FROM "whitelist" WHERE "from" = :id AND "to" = :uid)',
+                        [
+                            ':id'  => $_SESSION['id'],
+                            ':uid' => $uid
+                        ]
+                    ],Db::FETCH_ERRNO))
                 die($core->jsonResponse('error',$core->lang('ERROR').'1'));
             $newlist[] = $uid;
         }
@@ -159,7 +168,14 @@ if(isset($_POST['whitelist']))
             $toremove[] = $val;
 
     foreach($toremove as $val)
-        if(Db::NO_ERRNO != Db::query(array('DELETE FROM whitelist WHERE "from" = :id AND "to" = :val',array(':id' => $_SESSION['id'], ':val' => $val)),Db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != Db::query(
+                [
+                    'DELETE FROM "whitelist" WHERE "from" = :id AND "to" = :val',
+                    [
+                        ':id'  => $_SESSION['id'],
+                        ':val' => $val
+                    ]
+                ],Db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR').'4'));
 }
         
