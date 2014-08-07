@@ -354,23 +354,23 @@ final class RainTPL
                 // if the cache is active
                 if( isset($code[ 2 ]) )
                     //dynamic include
-                    $compiled_code .= '<?php require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\'; $tpl = new NERDZ\Core\RainTPL();' .
+                    $compiled_code .= '<?php require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\'; $tpl = new '.__NAMESPACE__.'\\RainTPL();' .
                                  'if( $cache = $tpl->cache( $template = basename("'.$include_var.'") ) )' .
                                  '    echo $cache;' .
                                  'else{ ' .
                                  '$tpl_dir_temp = static::$tpl_dir;' .
                                  '$tpl->assign( $this->var );' .
                                  ( !$loop_level ? null : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
-                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,Db::FETCH_OBJ) != "/" ? "/" : "" ) . $template );'.
+                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1, 1) != "/" ? "/" : "" ) . $template );'.
                                  '}' .
                                  '?>';
                 else
                     //dynamic include
-                    $compiled_code .= '<?php $tpl = new RainTPL;' .
+                    $compiled_code .= '<?php require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\'; $tpl = new '.__NAMESPACE__.'\\RainTPL();' .
                                  '$tpl_dir_temp = static::$tpl_dir;' .
                                  '$tpl->assign( $this->var );' .
                                  ( !$loop_level ? '' : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
-                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,Db::FETCH_OBJ) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
+                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,1) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
                                  '?>';
 
             }

@@ -333,21 +333,21 @@ BEGIN
     -- if I commented the post, I stop lurking
     DELETE FROM "lurkers" WHERE "hpid" = NEW."hpid" AND "from" = NEW."from";
 
-    WITH no_notify AS (
+    WITH no_notify("user") AS (
         -- blacklist
         (
-            SELECT "from" AS "user" FROM "blacklist" WHERE "to" = NEW."from"
+            SELECT "from" FROM "blacklist" WHERE "to" = NEW."from"
                 UNION
-            SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
+            SELECT "to" FROM "blacklist" WHERE "from" = NEW."from"
         )
         UNION -- users that locked the notifications for all the thread
             SELECT "user" FROM "posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
-            SELECT "to" AS "user" FROM "comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
+            SELECT "to" FROM "comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
         UNION
             SELECT NEW."from"
     ),
-    to_notify AS (
+    to_notify("user") AS (
             SELECT DISTINCT "from" FROM "comments" WHERE "hpid" = NEW."hpid"
         UNION
             SELECT "from" FROM "lurkers" WHERE "hpid" = NEW."hpid"
@@ -356,7 +356,7 @@ BEGIN
         UNION
             SELECT "to" FROM "posts" WHERE "hpid" = NEW."hpid"
     ),
-    real_notify AS (
+    real_notify("user") AS (
         -- avoid to add rows with the same primary key
         SELECT "user" FROM (
             SELECT "user" FROM to_notify
@@ -397,28 +397,28 @@ BEGIN
     -- if I commented the post, I stop lurking
     DELETE FROM "groups_lurkers" WHERE "hpid" = NEW."hpid" AND "from" = NEW."from";
 
-    WITH no_notify AS (
+    WITH no_notify("user") AS (
         -- blacklist
         (
-            SELECT "from" AS "user" FROM "blacklist" WHERE "to" = NEW."from"
+            SELECT "from" FROM "blacklist" WHERE "to" = NEW."from"
                 UNION
-            SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
+            SELECT "to" FROM "blacklist" WHERE "from" = NEW."from"
         )
         UNION -- users that locked the notifications for all the thread
             SELECT "user" FROM "groups_posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
-            SELECT "to" AS "user" FROM "groups_comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
+            SELECT "to" FROM "groups_comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
         UNION
             SELECT NEW."from"
     ),
-    to_notify AS (
+    to_notify("user") AS (
             SELECT DISTINCT "from" FROM "groups_comments" WHERE "hpid" = NEW."hpid"
         UNION
             SELECT "from" FROM "groups_lurkers" WHERE "hpid" = NEW."hpid"
         UNION
             SELECT "from" FROM "groups_posts" WHERE "hpid" = NEW."hpid"
     ),
-    real_notify AS (
+    real_notify("user") AS (
         -- avoid to add rows with the same primary key
         SELECT "user" FROM (
             SELECT "user" FROM to_notify
@@ -426,7 +426,7 @@ BEGIN
             (
                 SELECT "user" FROM no_notify
              UNION
-                SELECT "to" AS "user" FROM "groups_comments_notify" WHERE "hpid" = NEW."hpid"
+                SELECT "to" FROM "groups_comments_notify" WHERE "hpid" = NEW."hpid"
             )
         ) AS T1
     )

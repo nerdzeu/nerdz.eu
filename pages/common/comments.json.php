@@ -9,7 +9,7 @@ if(!$core->isLogged())
 if(!$core->refererControl())
     die($core->jsonResponse('error','CSRF'));
 
-$prj = !empty($prj);
+$prj = isset($prj);
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
@@ -19,7 +19,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!$hpid)
             die($core->jsonResponse('error',$core->lang('ERROR')));
 
-        die($core->jsonDbResponse($core->addComment($hpid,$_POST['message']), $prj));
+        die($core->jsonDbResponse($core->addComment($hpid,$_POST['message'], $prj)));
     break;
     
     case 'del':
