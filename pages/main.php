@@ -91,7 +91,7 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
     ++$i;
 }
 
-if(!($r = Db::query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
+if(!($r = Db::query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."to" WHERE "from" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
     die($core->lang('ERROR'));
     
 $vals['memberof_a'] = [];

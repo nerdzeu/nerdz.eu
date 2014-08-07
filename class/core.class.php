@@ -25,7 +25,7 @@ class Core
         catch(PDOException $e)
         {
             require_once $_SERVER['DOCUMENT_ROOT'].'/data/databaseError.html';
-            $this->dumpException($e);
+            Db::dumpException($e);
             die();
         }
 

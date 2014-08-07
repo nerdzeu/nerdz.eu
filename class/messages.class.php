@@ -444,7 +444,7 @@ class Messages extends Core
 
             if(parent::isLogged())
                 $glue .= ' OR (\''.$_SESSION['id'].'\' IN (
-                            SELECT "user" FROM groups_members WHERE "group" = p."to"
+                            SELECT "from" FROM groups_members WHERE "to" = p."to"
                            )) OR \''.$_SESSION['id'].'\' = g.owner';
             $glue .= ') ';
         }
@@ -616,7 +616,7 @@ class Messages extends Core
                 parent::isLogged() &&
                 Db::query(
                     [
-                        'SELECT "post" FROM "'.$table.'" WHERE "post" = :hpid AND "user" = :id',
+                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
                         [
                             ':hpid' => $post['hpid'],
                             ':id'   => $_SESSION['id']

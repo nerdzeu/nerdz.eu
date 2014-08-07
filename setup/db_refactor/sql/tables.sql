@@ -460,6 +460,19 @@ ALTER TABLE "groups_lurkers"
 ALTER TABLE "pms" RENAME COLUMN "read" TO "to_read";
 ALTER TABLE ONLY "pms" ALTER COLUMN "to_read" SET DEFAULT TRUE;
 
+-- fix columns name not respecting the standard
+ALTER TABLE "lurkers" RENAME COLUMN "user" TO "from";
+ALTER TABLE "groups_lurkers" RENAME COLUMN "user" TO "from";
+
+ALTER TABLE "lurkers" RENAME COLUMN "post" TO "hpid";
+ALTER TABLE "groups_lurkers" RENAME COLUMN "post" TO "hpid";
+
+ALTER TABLE "groups_followers" RENAME COLUMN "user" TO "from";
+ALTER TABLE "groups_followers" RENAME COLUMN "group" TO "to";
+
+ALTER TABLE "groups_members" RENAME COLUMN "user" TO "from";
+ALTER TABLE "groups_members" RENAME COLUMN "group" TO "to";
+
 -- fix thumbs
 
 ALTER TABLE "groups_thumbs" ADD COLUMN "to" int8;
@@ -482,6 +495,11 @@ ALTER TABLE "groups_thumbs" ADD CONSTRAINT "toGThumbFk" FOREIGN KEY("to") REFERE
 ALTER TABLE "thumbs" ADD CONSTRAINT "toThumbFk" FOREIGN KEY("to") REFERENCES users(counter) ON DELETE CASCADE;
 ALTER TABLE "groups_comment_thumbs" ADD CONSTRAINT "toGCommentThumbFk" FOREIGN KEY("to") REFERENCES groups(counter) ON DELETE CASCADE;
 ALTER TABLE "comment_thumbs" ADD CONSTRAINT "toCommentThumbFk" FOREIGN KEY("to") REFERENCES users(counter) ON DELETE CASCADE;
+
+ALTER TABLE ONLY "groups_thumbs" ALTER COLUMN "to" SET NOT NULL;
+ALTER TABLE ONLY "thumbs" ALTER COLUMN "to" SET NOT NULL;
+ALTER TABLE ONLY "groups_comment_thumbs" ALTER COLUMN "to" SET NOT NULL;
+ALTER TABLE ONLY "comment_thumbs" ALTER COLUMN "to" SET NOT NULL;
 
 -- clear 0 votes
 DELETE FROM thumbs WHERE vote = 0;

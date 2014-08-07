@@ -74,7 +74,7 @@ class Db
         return static::getInstance()->dbh;
     }
 
-    private static function dumpException($e, $moredata = false)
+    public static function dumpException($e, $moredata = false)
     {
         static::dumpErrorString((($moredata != false) ? "{$moredata}: " : '').$e->getMessage());
     }

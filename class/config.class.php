@@ -67,8 +67,6 @@ class Config
 
             Config::add($rkey, $rval);
         }
-
-        define ('POSTGRESQL_DUP_KEY', 7);        
     }
 
     public static function init()

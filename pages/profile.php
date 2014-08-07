@@ -203,7 +203,7 @@ if($enter)
 
     if(!($r = Db::query(
         [
-            'SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."group" WHERE "user" = :id',
+            'SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."to" WHERE "from" = :id',
             $ida
         ],Db::FETCH_STMT)
     ))
@@ -220,7 +220,7 @@ if($enter)
 
     if(!($r = Db::query(
         [
-            'SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."group" WHERE "user" = :id',
+            'SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."to" WHERE "from" = :id',
             $ida
         ],Db::FETCH_STMT)
     ))

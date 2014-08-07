@@ -76,7 +76,7 @@ class project extends Core
     {
         if(!($stmt = Db::query(
             [
-                'SELECT "user" FROM "groups_members" WHERE "group" = :gid',
+                'SELECT "from" FROM "groups_members" WHERE "to" = :gid',
                 [
                     ':gid' => $gid
                 ]
@@ -88,7 +88,7 @@ class project extends Core
 
     public function getFollowers($gid)
     {
-        if(!($stmt = Db::query(array('SELECT "user" FROM "groups_followers" WHERE "group" = :gid',array(':gid' => $gid)),Db::FETCH_STMT)))
+        if(!($stmt = Db::query(array('SELECT "from" FROM "groups_followers" WHERE "to" = :gid',array(':gid' => $gid)),Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);

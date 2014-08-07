@@ -7,4 +7,4 @@ Improve search support (search onlyfollowed, lang, ecc.)
 Create search page
 Create backend search engine with optimizations (searching with like sucks)
 Remove POSTGRESQL constant from php code
-Re-enable SSE in jclass.js, undertand why and fix the sse freeze other ajax requests
+Re-enable SSE in jclass.js, undertand why and fix the sse freeze other ajax requests => Will be re-enabled when the Go-API will be ready, since php locks everyting

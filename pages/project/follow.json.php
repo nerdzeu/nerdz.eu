@@ -16,11 +16,11 @@ if(empty($_POST['id'])||!is_numeric($_POST['id']))
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
     case 'del':
-        if(Db::NO_ERRNO != Db::query(array('DELETE FROM "groups_followers" WHERE "group" = :id AND "user" = :me',array(':id' => $_POST['id'],':me' => $_SESSION['id'])),Db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != Db::query(array('DELETE FROM "groups_followers" WHERE "to" = :id AND "from" = :me',array(':id' => $_POST['id'],':me' => $_SESSION['id'])),Db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     case 'add':
-        if(Db::NO_ERRNO != Db::query(array('INSERT INTO "groups_followers"("group","user") VALUES (:id,:me)',array(':id' => $_POST['id'],':me' => $_SESSION['id'])),Db::FETCH_ERRNO))
+        if(Db::NO_ERRNO != Db::query(array('INSERT INTO "groups_followers"("to","from") VALUES (:id,:me)',array(':id' => $_POST['id'],':me' => $_SESSION['id'])),Db::FETCH_ERRNO))
             die($core->jsonResponse('error',$core->lang('ERROR')));
     break;
     default:

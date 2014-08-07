@@ -331,7 +331,7 @@ BEGIN
     END IF;
 
     -- if I commented the post, I stop lurking
-    DELETE FROM "lurkers" WHERE "post" = NEW."hpid" AND "user" = NEW."from";
+    DELETE FROM "lurkers" WHERE "hpid" = NEW."hpid" AND "from" = NEW."from";
 
     WITH no_notify AS (
         -- blacklist
@@ -348,9 +348,9 @@ BEGIN
             SELECT NEW."from"
     ),
     to_notify AS (
-            SELECT DISTINCT "from" AS "user" FROM "comments" WHERE "hpid" = NEW."hpid"
+            SELECT DISTINCT "from" FROM "comments" WHERE "hpid" = NEW."hpid"
         UNION
-            SELECT "user" FROM "lurkers" WHERE "post" = NEW."hpid"
+            SELECT "from" FROM "lurkers" WHERE "hpid" = NEW."hpid"
         UNION
             SELECT "from" FROM "posts" WHERE "hpid" = NEW."hpid"
         UNION
@@ -395,7 +395,7 @@ BEGIN
 
 
     -- if I commented the post, I stop lurking
-    DELETE FROM "groups_lurkers" WHERE "post" = NEW."hpid" AND "user" = NEW."from";
+    DELETE FROM "groups_lurkers" WHERE "hpid" = NEW."hpid" AND "from" = NEW."from";
 
     WITH no_notify AS (
         -- blacklist
@@ -412,9 +412,9 @@ BEGIN
             SELECT NEW."from"
     ),
     to_notify AS (
-            SELECT DISTINCT "from" AS "user" FROM "groups_comments" WHERE "hpid" = NEW."hpid"
+            SELECT DISTINCT "from" FROM "groups_comments" WHERE "hpid" = NEW."hpid"
         UNION
-            SELECT "user" FROM "groups_lurkers" WHERE "post" = NEW."hpid"
+            SELECT "from" FROM "groups_lurkers" WHERE "hpid" = NEW."hpid"
         UNION
             SELECT "from" FROM "groups_posts" WHERE "hpid" = NEW."hpid"
     ),
@@ -665,7 +665,7 @@ WHEN ( NEW.message <> OLD.message )
 EXECUTE PROCEDURE save_groups_post_revision();
 
 -- user post lurker
-CREATE TRIGGER before_insert_user_post_lurker BEFORE INSERT ON lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
+CREATE TRIGGER before_insert_user_post_lurker BEFORE INSERT ON lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_user_post_lurker();
 -- group post lurker
 CREATE TRIGGER before_insert_group_post_lurker BEFORE INSERT ON groups_lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
 

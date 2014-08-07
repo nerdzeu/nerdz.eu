@@ -37,7 +37,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         // Members
         $_POST['members'] = isset($_POST['members']) ? $_POST['members'] : '';
 
-        if(!($res = Db::query(array('SELECT "user" FROM groups_members where "group" = ?',array($id)),Db::FETCH_STMT)))
+        if(!($res = Db::query(array('SELECT "from" FROM groups_members where "to" = ?',array($id)),Db::FETCH_STMT)))
             die($core->jsonResponse('error',$core->lang('ERROR').'2'));
 
         $oldmem = $res->fetchAll(PDO::FETCH_COLUMN);
@@ -60,7 +60,13 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         //members to add
         $toadd = array_diff($newmem, $oldmem);
         foreach($toadd as $uid) {
-            $ret = Db::query(array('INSERT INTO "groups_members"("group","user") VALUES(:id,:uid)',array(':id' => $id,':uid' => $uid)),Db::FETCH_ERRSTR);
+            $ret = Db::query(
+                    [
+                        'INSERT INTO "groups_members"("to","from") VALUES(:project,:user)',
+                        [
+                            ':project' => $id,
+                            ':user'    => $uid
+                        ],Db::FETCH_ERRSTR);
 
             if($ret != Db::NO_ERRSTR)
                 die($core->jsonDbResponse($ret, $userMap[$uid]));
@@ -69,7 +75,15 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         // members to remove
         $toremove = array_diff($oldmem, $newmem);
         foreach($toremove as $val)
-            if(Db::NO_ERRNO != Db::query(array('DELETE FROM groups_members WHERE "group" = :id AND "user" = :val',array(':id' => $id,':val' => $val)),Db::FETCH_ERRNO))
+            if(Db::NO_ERRNO != Db::query(
+                    [
+                        'DELETE FROM groups_members WHERE "to" = :project AND "from" = :user',
+                        [
+                            ':project' => $id,
+                            ':user'    => $val
+                        ]
+                    ],Db::FETCH_ERRNO))
+
                 die($core->jsonResponse('error',$core->lang('ERROR').'4'));
       
         if(Db::NO_ERRNO != Db::query(
