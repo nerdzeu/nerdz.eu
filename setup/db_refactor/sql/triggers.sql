@@ -287,9 +287,9 @@ BEGIN
     FOR r IN (SELECT "counter" FROM "groups" WHERE "owner" = NEW."from")
     LOOP
         -- remove from my groups members
-        DELETE FROM "groups_members" WHERE "user" = NEW."to" AND "group" = r."counter";
+        DELETE FROM "groups_members" WHERE "from" = NEW."to" AND "to" = r."counter";
         -- remove from my group follwors
-        DELETE FROM "groups_followers" WHERE "user" = NEW."to" AND "group" = r."counter";
+        DELETE FROM "groups_followers" WHERE "from" = NEW."to" AND "to" = r."counter";
     END LOOP;
     
     -- remove from followers
@@ -512,7 +512,7 @@ BEGIN
 
     IF group_owner <> NEW."from" AND
         (
-            open_group IS FALSE AND NEW."from" NOT IN ( SELECT "user" FROM "groups_members" WHERE "group" = NEW."to")
+            open_group IS FALSE AND NEW."from" NOT IN ( SELECT "from" FROM "groups_members" WHERE "to" = NEW."to")
         )
     THEN
         RAISE EXCEPTION 'CLOSED_PROJECT';
@@ -602,15 +602,15 @@ CREATE FUNCTION after_insert_groups_post() RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    WITH to_notify AS (
+    WITH to_notify("user") AS (
         (
             -- members
-            SELECT "user" FROM "groups_members" WHERE "group" = NEW."to"
+            SELECT "from" FROM "groups_members" WHERE "to" = NEW."to"
                 UNION DISTINCT
             --followers
-            SELECT "user" FROM "groups_followers" WHERE "group" = NEW."to"
+            SELECT "from" FROM "groups_followers" WHERE "to" = NEW."to"
                 UNION DISTINCT
-            SELECT "owner" AS "user" FROM "groups" WHERE "counter" = NEW."to"
+            SELECT "owner" FROM "groups" WHERE "counter" = NEW."to"
         )
         EXCEPT
         (
@@ -619,7 +619,7 @@ BEGIN
                 UNION DISTINCT
             SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
                 UNION DISTINCT
-            SELECT NEW."from" AS "user" -- I shouldn't be notified about my new post
+            SELECT NEW."from" -- I shouldn't be notified about my new post
         )
     )
 

@@ -384,7 +384,7 @@ class Messages extends Core
                     ]
             ],Db::FETCH_OBJ))
         )
-            return new StdClass();
+            return new \StdClass();
 
         return $o;
     }
@@ -490,16 +490,16 @@ class Messages extends Core
         if($retStr != Db::NO_ERRSTR)
             return $retStr;
 
-        if($project && $to == ISSUE_BOARD) {
-            require_once 'vendor/autoload.php';
+        if($project && $to == Config\ISSUE_BOARD) {
+            require_once __DIR__ . '/vendor/autoload.php';
             $client = new \Github\Client();
             $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
             $message = $this->stripTags($message);
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
-                     'body'  => parent::getUsername().': '.$message
-                 ]
+                    'body'  => parent::getUsername().': '.$message
+                ]
              );
         }
     }
@@ -507,7 +507,7 @@ class Messages extends Core
     public function deleteMessage($hpid, $project = true)
     {
         $table = ($project ? 'groups_' : '').'posts';
-        $obj = new StdClass();
+        $obj = new \StdClass();
 
         if(!($obj = Db::query(
             [
@@ -528,11 +528,11 @@ class Messages extends Core
                 ],Db::FETCH_ERRNO);
     }
 
-    public function editMessage($hpid,$message, $project = false)
+    public function editMessage($hpid, $message, $project = false)
     {
         $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8');
         $table = ($project ? 'groups_' : '').'posts';
-        $obj = new StdClass();
+        $obj = new \StdClass();
 
         if(!($obj = Db::query(
             [
