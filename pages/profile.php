@@ -29,7 +29,7 @@ if($vals['logged_b'])
 {
     $vals['canifollow_b'] = 0 == Db::query(
         [
-            'SELECT "to" FROM "follow" WHERE "from" = :me AND "to" = :id',
+            'SELECT "to" FROM "followers" WHERE "from" = :me AND "to" = :id',
             [
                 ':me' => $_SESSION['id'],
                 ':id' => $info->counter

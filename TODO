@@ -15,3 +15,4 @@
 
 [!] Re-enable SSE in jclass.js, undertand why and fix the sse freeze other ajax requests
     => Will be re-enabled when the Go-API will be ready, since php locks everyting
+Fix: PHP Notice:  Trying to get property of non-object in /home/nessuno/nerdz_env/nerdz/pages/common/comments.json.php on line 35

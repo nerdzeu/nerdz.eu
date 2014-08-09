@@ -776,16 +776,16 @@ class Messages extends Core
           return false;
         }
 
-        $table = $project ? "groups_thumbs" : "thumbs";
+        $table = ($project ? 'groups_' : '') .'thumbs';
 
         $ret = Db::query(
             [
                 'INSERT INTO '.$table.'(hpid, "from", vote) VALUES(:hpid, :from, :vote)',
-              [
-                ':hpid' => (int) $hpid,
-                ':from' => (int) $_SESSION['id'],
-                ':vote' => (int) $vote
-              ]
+                [
+                    ':hpid' => (int) $hpid,
+                    ':from' => (int) $_SESSION['id'],
+                    ':vote' => (int) $vote
+                ]
             ],
             Db::FETCH_ERRNO
         );

@@ -1,7 +1,10 @@
 <?php
 namespace NERDZ\Core;
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor/autoload.php';
 use PDO;
+use MCilloni\Pushed\Pushed;
+use MCilloni\Pushed\PushedException;
 
 final class Pms extends Messages
 {
@@ -19,10 +22,6 @@ final class Pms extends Messages
 
         if($wentWell && parent::wantsPush($to) && Config\PUSHED_ENABLED) {
             try {
-                require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor/autoload.php';
-                use MCilloni\Pushed\Pushed;
-                use MCilloni\Pushed\PushedException;
-
                 $pushed = Pushed::connectIp(Config\PUSHED_PORT,Config\PUSHED_IP6);
 
                 $msg = json_encode(

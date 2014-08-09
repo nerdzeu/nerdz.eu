@@ -43,39 +43,6 @@ create table deleted_users(
     motivation text,
     primary key(counter, username, time)
 );
-
--- flood limits
-
-CREATE TABLE flood_limits(
-    table_name regclass not null primary key,
-    time interval minute to second not null
-);
-
-
-insert into flood_limits(table_name, time) values
-('blacklist', '05:00'), --blacklist
-('pms', '00:01'), --pm
---posts
-('posts','00:20'),
-('bookmarks', '00:05'),
-('thumbs', '00:02'),
-    ('lurkers', '00:10'),
---groups_posts
-('groups_posts','00:20'),
-('groups_bookmarks', '00:05'),
-('groups_thumbs', '00:02'),
-('groups_lurkers', '00:10'),
---comments
-('comments','00:05'),
-('comment_thumbs', '00:01'),
---groups_comments
-('groups_comments','00:05'),
-('groups_comment_thumbs', '00:01'),
---profiles
-('follow', '00:30'),
---groups
-('groups_followers', '0:30');
-
 -- comments revisions
 
 CREATE TABLE comments_revisions(
@@ -506,3 +473,40 @@ DELETE FROM thumbs WHERE vote = 0;
 DELETE FROM groups_thumbs WHERE vote = 0;
 DELETE FROM comment_thumbs WHERE vote = 0;
 DELETE FROM groups_comment_thumbs WHERE vote = 0;
+
+-- flood limits
+
+CREATE TABLE flood_limits(
+    table_name regclass not null primary key,
+    time interval minute to second not null
+);
+
+-- rename table follow to followers
+
+ALTER TABLE "follow" RENAME TO "followers";
+
+
+insert into flood_limits(table_name, time) values
+('blacklist', '05:00'), --blacklist
+('pms', '00:01'), --pm
+--posts
+('posts','00:20'),
+('bookmarks', '00:05'),
+('thumbs', '00:02'),
+('lurkers', '00:10'),
+--groups_posts
+('groups_posts','00:20'),
+('groups_bookmarks', '00:05'),
+('groups_thumbs', '00:02'),
+('groups_lurkers', '00:10'),
+--comments
+('comments','00:05'),
+('comment_thumbs', '00:01'),
+--groups_comments
+('groups_comments','00:05'),
+('groups_comment_thumbs', '00:01'),
+--profiles
+('followers', '00:30'),
+--groups
+('groups_followers', '0:30');
+

@@ -50,7 +50,7 @@ BEGIN
     RETURN NEW;
 END $func$ LANGUAGE plpgsql;
 
-CREATE FUNCTION before_insert_follow() RETURNS TRIGGER AS $$
+CREATE FUNCTION before_insert_follower() RETURNS TRIGGER AS $$
 BEGIN
     PERFORM blacklist_control(NEW."from", NEW."to");
     RETURN NEW;
@@ -217,7 +217,10 @@ DECLARE tmp record;
 BEGIN
     PERFORM flood_control('"groups_comment_thumbs"', NEW."from");
 
-    SELECT T."hpid", T."from" INTO tmp FROM (SELECT "hpid", "from" FROM "groups_comments" WHERE "hcid" = NEW.hcid) AS T;
+    SELECT T."hpid", T."from", T."to" INTO tmp FROM (SELECT "hpid", "from","to" FROM "groups_comments" WHERE "hcid" = NEW.hcid) AS T;
+
+    -- insert "to" project
+    SELECT tmp."to" INTO NEW."to";
 
     PERFORM blacklist_control(NEW."from", tmp."from"); --blacklisted commenter
 
@@ -252,6 +255,7 @@ BEGIN
     IF NEW."vote" IS NULL THEN -- updated previous vote
         RETURN NULL; --no need to insert new value
     END IF;
+
     
     RETURN NEW;
 END $func$ LANGUAGE plpgsql;
@@ -293,7 +297,7 @@ BEGIN
     END LOOP;
     
     -- remove from followers
-    DELETE FROM "follow" WHERE ("from" = NEW."from" AND "to" = NEW."to") OR ("to" = NEW."from" AND "from" = NEW."to");
+    DELETE FROM "followers" WHERE ("from" = NEW."from" AND "to" = NEW."to") OR ("to" = NEW."from" AND "from" = NEW."to");
 
     -- remove pms
     DELETE FROM "pms" WHERE ("from" = NEW."from" AND "to" = NEW."to") OR ("to" = NEW."from" AND "from" = NEW."to");
@@ -670,7 +674,7 @@ CREATE TRIGGER before_insert_user_post_lurker BEFORE INSERT ON lurkers FOR EACH 
 CREATE TRIGGER before_insert_group_post_lurker BEFORE INSERT ON groups_lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_group_post_lurker();
 
 -- before follow user
-CREATE TRIGGER before_insert_follow BEFORE INSERT ON follow FOR EACH ROW EXECUTE PROCEDURE before_insert_follow();
+CREATE TRIGGER before_insert_follower BEFORE INSERT ON followers FOR EACH ROW EXECUTE PROCEDURE before_insert_follower();
 
 -- before insert member
 CREATE TRIGGER before_insert_groups_member BEFORE INSERT ON groups_members FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_member();

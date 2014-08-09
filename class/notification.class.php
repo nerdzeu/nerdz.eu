@@ -100,7 +100,7 @@ class Notification extends Core
 
     private function countFollow()
     {
-        if(!($o = Db::query(array('SELECT COUNT("to") AS cc FROM "follow" WHERE "to" = :id AND "notified" = TRUE',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+        if(!($o = Db::query(array('SELECT COUNT("to") AS cc FROM "followers" WHERE "to" = :id AND "notified" = TRUE',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
             return -1;
     
         return $o->cc;
@@ -268,7 +268,7 @@ class Notification extends Core
     {
         $ret = [];
         $i = 0;
-        $result = Db::query(array('SELECT "from",EXTRACT(EPOCH FROM "time") AS time FROM "follow" WHERE "to" = :id AND "notified" = TRUE',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = Db::query(array('SELECT "from",EXTRACT(EPOCH FROM "time") AS time FROM "followers" WHERE "to" = :id AND "notified" = TRUE',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
         {
             $ret[$i]['follow'] = true;
@@ -282,7 +282,7 @@ class Notification extends Core
         if($del) {
             Db::query(
                 [
-                    'UPDATE "follow" SET "notified" = FALSE WHERE "to" = :id',
+                    'UPDATE "followers" SET "notified" = FALSE WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]

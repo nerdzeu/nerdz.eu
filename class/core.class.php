@@ -340,14 +340,14 @@ class Core
 
     public function getFollow($id)
     {
-        if(!($stmt = Db::query(array('SELECT "to" FROM "follow" WHERE "from" = :id',array(':id' => $id)),Db::FETCH_STMT)))
+        if(!($stmt = Db::query(array('SELECT "to" FROM "followers" WHERE "from" = :id',array(':id' => $id)),Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function getFriends($id) {
-        if(!($stmt = Db::query(array('select "to" from (select "to" from follow where "from" = :id) as f inner join (select "from" from follow where "to" = :id) as e on f.to = e.from', array(':id' => $id)), Db::FETCH_STMT)))
+        if(!($stmt = Db::query(array('select "to" from (select "to" from followers where "from" = :id) as f inner join (select "from" from followers where "to" = :id) as e on f.to = e.from', array(':id' => $id)), Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
