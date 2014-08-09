@@ -5,14 +5,14 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 $core = new NERDZ\Core\User();
 
 if(!$core->isLogged())
-    die($core->jsonResponse('error',$core->lang('REGISTER')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
     
 if(!$core->refererControl())
-    die($core->jsonResponse('error',$core->lang('ERROR')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
 
 if(!$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
-    die($core->jsonResponse('error',$core->lang('ERROR').': token'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': token'));
 
 $core->logout();
-die($core->jsonResponse('ok',$core->lang('LOGOUT_OK')));
+die(NERDZ\Core\Utils::jsonResponse('ok',$core->lang('LOGOUT_OK')));
 ?>

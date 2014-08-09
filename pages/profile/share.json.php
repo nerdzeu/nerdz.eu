@@ -8,22 +8,22 @@ use NERDZ\Core\User;
 $core = new Messages();
 
 if(!$core->isLogged())
-    die($core->jsonResponse('error',$core->lang('REGISTER')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
     
 if(!$core->refererControl())
-    die($core->jsonResponse('error','No SPAM/BOT'));
+    die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
 
 $url     = empty($_POST['url'])     ? false : trim($_POST['url']);
 $comment = empty($_POST['comment']) ? false : trim($_POST['comment']);
 $to      = empty($_POST['to'])      ? false : trim($_POST['to']);
 
 if(!$url || !Utils::isValidURL($url))
-    die($core->jsonResponse('error',$core->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('INVALID_URL')));
 
 if($to)
 {
     if(!User::getUsername($to))
-        die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USER_NOT_FOUND')));
 }
 else
     $to = $_SESSION['id'];
@@ -31,7 +31,7 @@ else
 if($_SESSION['id'] != $to)
 {
     if($core->closedProfile($to))
-        die($core->jsonResponse('error',$core->lang('CLOSED_PROFILE_DESCR')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('CLOSED_PROFILE_DESCR')));
 }
     
 $share = function($to,$url,$message = NULL) use($core)
@@ -87,7 +87,7 @@ $share = function($to,$url,$message = NULL) use($core)
 };
 
 if($share($to,$url,$comment))
-    die($core->jsonResponse('ok','OK'));
+    die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 
-die($core->jsonResponse('error',$core->lang('ERROR')));
+die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
 ?>

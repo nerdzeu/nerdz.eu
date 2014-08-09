@@ -3,19 +3,21 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
     use NERDZ\Core\Messages;
     use NERDZ\Core\Db;
+    use NERDZ\Core\User;
     use NERDZ\Core\Config;
     
     $core = new Messages();
-    $tplcfg = $core->getTemplateCfg();
+    $user = new User();
+    $tplcfg = $user->getTemplateCfg();
     
     $id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : false;
     $pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? $_GET['pid'] : false;
     $found = true;
     if($id)
     {
-        if(false === ($info = $core->getUserObject($id))) /* false se l'id richiesto non esiste*/
+        if(false === ($info = $user->getUserObject($id))) /* false se l'id richiesto non esiste*/
         {
-            $username = $core->lang('USER_NOT_FOUND');
+            $username = $user->lang('USER_NOT_FOUND');
             $found = false;
             $post = new stdClass();
             $post->message = '';
@@ -25,7 +27,7 @@
             $username = $info->username;
             if($pid)
             {
-                if((!$core->isLogged() && $info->private) || !($post = Db::query(['SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',[':pid' => $pid, ':id' => $id]],Db::FETCH_OBJ)))
+                if((!$user->isLogged() && $info->private) || !($post = Db::query(['SELECT "message" FROM "posts" WHERE "pid" = :pid AND "to" = :id',[':pid' => $pid, ':id' => $id]],Db::FETCH_OBJ)))
                 {
                     $post = new stdClass();
                     $post->message = '';

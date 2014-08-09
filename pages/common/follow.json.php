@@ -8,10 +8,10 @@ use NERDZ\Core\Db;
 $core = new Project();
 
 if(!$core->isLogged())
-    die($core->jsonResponse('error',$core->lang('REGISTER')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
 
 if(empty($_POST['id'])||!is_numeric($_POST['id']))
-    die($core->jsonResponse('error',$core->lang('ERROR')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
 
 $prj = isset($prj);
 
@@ -29,7 +29,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                 ],Db::FETCH_ERRNO
             ])
         )
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
     break;
     case 'add':
         if(Db::NO_ERRNO != Db::query(
@@ -43,12 +43,12 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                  ]
              ],Db::FETCH_ERRNO)
          )
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
     break;
     default:
-        die($core->jsonResponse('error',$core->lang('ERROR')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
     break;
 }
 
-die($core->jsonResponse('ok','OK'));
+die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

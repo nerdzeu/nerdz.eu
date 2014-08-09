@@ -10,10 +10,10 @@ $cptcka = new Captcha();
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 
 if(!$captcha)
-    die($core->jsonResponse('error',$core->lang('MISSING').': '.$core->lang('CAPTCHA')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MISSING').': '.$core->lang('CAPTCHA')));
 
 if(!$cptcka->check($captcha))
-    die($core->jsonResponse('error',$core->lang('WRONG_CAPTCHA')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_CAPTCHA')));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php';
 
@@ -37,11 +37,11 @@ $ret = Db::query(
      ], Db::FETCH_ERRSTR);
 
 if($ret != Db::NO_ERRSTR)
-    die($core->jsonDbResponse($ret));
+    die(NERDZ\Core\Utils::jsonDbResponse($ret));
 
 if(!$core->login($user['username'], $user['password']))
-    die($core->jsonResponse('error',$core->lang('ERROR').': Login'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Login'));
 
-die($core->jsonResponse('ok',$core->lang('LOGIN_OK')));
+die(NERDZ\Core\Utils::jsonResponse('ok',$core->lang('LOGIN_OK')));
 
 ?>

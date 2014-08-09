@@ -7,13 +7,13 @@ use NERDZ\Core\Db;
 $core = new User();
 
 if(!$core->refererControl())
-    die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': referer'));
     
 if(!$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
-    die($core->jsonResponse('error',$core->lang('ERROR').': token'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': token'));
     
 if(!$core->isLogged())
-    die($core->jsonResponse('error',$core->lang('REGISTER')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php'; //include $updatedPassword
 $params = [
@@ -38,10 +38,10 @@ $ret = Db::query(
     ],Db::FETCH_ERRSTR);
 
 if($ret != Db::NO_ERRSTR)
-    die($core->jsonDbResponse($ret));
+    die(NERDZ\Core\Utils::jsonDbResponse($ret));
 
 if(!$core->login(User::getUsername(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['mark_offline'], !$updatedPassword))
-    die($core->jsonResponse('error',$core->lang('ERROR').': Login'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Login'));
 
-die($core->jsonResponse('error','OK'));
+die(NERDZ\Core\Utils::jsonResponse('error','OK'));
 ?>

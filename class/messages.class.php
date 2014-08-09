@@ -353,7 +353,7 @@ class Messages
 
     public function parseNewsMessage($message)
     {
-        return str_replace('%%12now is34%%',$this->lang('NOW_IS'),$message);
+        return str_replace('%%12now is34%%',$this->user->lang('NOW_IS'),$message);
     }
 
     public function countMessages($id, $project = false)

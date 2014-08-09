@@ -7,10 +7,10 @@ $core = new Messages();
 $prj = isset($prj);
 
 if(!$core->isLogged())
-    die($core->jsonResponse('error',$core->lang('REGISTER')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
 
 if(!$core->refererControl())
-    die($core->jsonResponse('error','CSRF'));
+    die(NERDZ\Core\Utils::jsonResponse('error','CSRF'));
     
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
@@ -19,12 +19,12 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(empty($_POST['to']))
         {
             if($prj)
-                die($core->jsonResponse('error',$core->lang('ERROR').'a'));
+                die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').'a'));
             else
                 $_POST['to'] = $_SESSION['id'];
         }
 
-        die($core->jsonDbResponse(
+        die(NERDZ\Core\Utils::jsonDbResponse(
             $core->addMessage(
                 $_POST['to'],
                 isset($_POST['message']) ? $_POST['message'] : '',
@@ -38,14 +38,14 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
     case 'del':
 
         if(!isset($_SESSION['delpost']) || empty($_POST['hpid']) || ($_SESSION['delpost'] != $_POST['hpid']) || !$core->deleteMessage($_POST['hpid'], $prj))
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
         unset($_SESSION['delpost']);
     break;
 
     case 'delconfirm':
 
         $_SESSION['delpost'] = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
-        die($core->jsonResponse('ok',$core->lang('ARE_YOU_SURE')));
+        die(NERDZ\Core\Utils::jsonResponse('ok',$core->lang('ARE_YOU_SURE')));
     break;
     
     case 'get':
@@ -54,16 +54,16 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
             empty($_POST['hpid']) ||
             !($o = $core->getMessage($_POST['hpid'], $prj))
           )
-            die($core->jsonResponse('error',$core->lang('ERROR').'2'));
-        die($core->jsonResponse('ok', $o->message));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').'2'));
+        die(NERDZ\Core\Utils::jsonResponse('ok', $o->message));
     break;
     
     case 'edit':
 
         if(empty($_POST['hpid']) || empty($_POST['message']))
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
 
-        die($core->jsonDbResponse(
+        die(NERDZ\Core\Utils::jsonDbResponse(
                 $core->editMessage($_POST['hpid'],$_POST['message'], $prj)
                 )
            );
@@ -71,9 +71,9 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 
     default:
 
-        die($core->jsonResponse('error',$core->lang('ERROR').' Wrong request'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').' Wrong request'));
     break;
 }
 
-die($core->jsonResponse('ok', 'OK'));
+die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
 ?>

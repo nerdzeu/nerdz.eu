@@ -11,13 +11,13 @@ if(
     !$core->isLogged() ||
     empty($_POST['id']) || !is_numeric($_POST['id'])
   )
-    die($core->jsonResponse('error',$core->lang('LOGIN')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('LOGIN')));
         
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
     case 'del':
         if(Db::NO_ERRNO != Db::query(array('DELETE FROM "blacklist" WHERE "from" = :me AND "to" = :to',array(':me' => $_SESSION['id'],':to' => $_POST['id'])),Db::FETCH_ERRNO))
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
     break;
     
     case 'add':
@@ -25,15 +25,15 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!($core->isInBlacklist($_POST['id'],$_SESSION['id'])))
         {
             if(Db::NO_ERRNO != Db::query(array('INSERT INTO "blacklist"("from","to","motivation") VALUES (:me,:to,:motivation)',array(':me' => $_SESSION['id'],':to' => $_POST['id'],':motivation' => $motivation)),Db::FETCH_ERRNO))
-                die($core->jsonResponse('error',$core->lang('ERROR')));
+                die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
         }
         else
-            die($core->jsonResponse('error',$core->lang('ERROR').'1'));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').'1'));
     break;
     
     default:
-        die($core->jsonResponse('error',$core->lang('ERROR').'2'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').'2'));
     break;
 }
-die($core->jsonResponse('ok','OK'));
+die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

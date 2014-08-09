@@ -7,15 +7,15 @@ use NERDZ\Core\User;
 $core = new User();
 
 if(!$core->isLogged())
-    die($core->jsonResponse('error',$core->lang('REGISTER')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
 
 if(!$core->refererControl())
-    die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': referer'));
 
 $hpid  = isset($_POST['hpid'])  && is_numeric($_POST['hpid'])  ? $_POST['hpid']  : false;
 
 if(!$hpid)
-    die($core->jsonResponse('error',$core->lang('ERROR')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
 
 $from = $_SESSION['id'];
 $table = (isset($prj) ? 'groups_' : '').'bookmarks';
@@ -33,7 +33,7 @@ switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
                         ':hpid' => $hpid
                     ]
                 ],Db::FETCH_ERRNO))
-            die($core->jsonResponse('error',$core->lang('ERROR')));    
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));    
     break;
     case 'del':
         if(Db::NO_ERRNO != Db::query(
@@ -44,11 +44,11 @@ switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
                         ':hpid' => $hpid
                     ]
                 ],Db::FETCH_ERRNO))
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
     break;
     default:
-        die($core->jsonResponse('error',$core->lang('ERROR')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
     break;
 }
-die($core->jsonResponse('ok','OK'));
+die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

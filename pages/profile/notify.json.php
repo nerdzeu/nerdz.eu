@@ -8,7 +8,7 @@ $core = new Notification();
 $user = new User();
 
 if($user->isLogged())
-    die($core->jsonResponse('ok',$core->count(false,true)));
+    die(NERDZ\Core\Utils::jsonResponse('ok',$core->count(false,true)));
 
-die($core->jsonResponse('error',$core->lang('REGISTER')));
+die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 ?>

@@ -25,7 +25,7 @@ if($core->isLogged())
                 ]
             ], Db::FETCH_OBJ)
         ))
-            die($core->jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
 
         $user['password'] = $obj->password; //saved hashed password
     }
@@ -103,73 +103,73 @@ if(!$user_flag||!$birth_flag)
                 }
             }
 
-    die($core->jsonResponse('error',$msg));
+    die(NERDZ\Core\Utils::jsonResponse('error',$msg));
 }
 
 if(!$core->isLogged()) //username field
 {
     if(mb_strlen($user['username'],'UTF-8') < Config\MIN_LENGTH_USER)
-        die($core->jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_USER));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_USER));
     
     if(is_numeric($user['username']))
-        die($core->jsonResponse('error',$core->lang('USERNAME_NUMBER')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USERNAME_NUMBER')));
 
     if(preg_match('#^~#',$user['username']))
-        die($core->jsonResponse('error',$core->lang('WRONG_USERNAME')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')));
 
     if(is_numeric(strpos(html_entity_decode($user['username'],ENT_QUOTES,'UTF-8'),'#')))
-        die($core->jsonResponse('error',$core->lang('WRONG_USERNAME').": {$user['username']}\n".$core->lang('CHAR_NOT_ALLOWED').': #'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME').": {$user['username']}\n".$core->lang('CHAR_NOT_ALLOWED').': #'));
 
     if(is_numeric(strpos($user['username'],'+')))
-        die($core->jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': +'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': +'));
 
     if(is_numeric(strpos($user['username'],'&amp;')))
-        die($core->jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': &'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': &'));
 
     if(is_numeric(strpos($user['username'],'%')))
-        die($core->jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': %'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': %'));
 }
 
 if(mb_strlen($user['password'],'UTF-8') < Config\MIN_LENGTH_PASS)
-    die($core->jsonResponse('error',$core->lang('PASSWORD_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_PASS));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('PASSWORD_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_PASS));
 
 if(mb_strlen($user['name'],'UTF-8') < Config\MIN_LENGTH_NAME)
-    die($core->jsonResponse('error',$core->lang('NAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_NAME));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('NAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_NAME));
 
 if(mb_strlen($user['surname'],'UTF-8') < Config\MIN_LENGTH_SURNAME)
-    die($core->jsonResponse('error',$core->lang('SURNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_SURNAME));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('SURNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_SURNAME));
 
 
 if(false === filter_var($user['email'],FILTER_VALIDATE_EMAIL))
-    die($core->jsonResponse('error',$core->lang('MAIL_NOT_VALID')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MAIL_NOT_VALID')));
 
 foreach($user as $id => $value)
     $user[$id] = $id == 'password' ? $value : htmlspecialchars($value,ENT_QUOTES,'UTF-8');
 
 //htmlspecialchars empty return values FIX
 if(count(array_filter($user)) != count($user))
-    die($core->jsonResponse('error',$core->lang('ERROR').': INVALID UTF-8'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': INVALID UTF-8'));
 
 if(!$core->isLogged() && mb_strlen($user['username'],'UTF-8') >= 90) //Username with convertited entities is too long for Db field
-    die($core->jsonResponse('error',$core->lang('USERNAME_LONG')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USERNAME_LONG')));
 
 if(isset($user['email'][350]))
-    die($core->jsonResponse('error',$core->lang('MAIL_NOT_VALID')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MAIL_NOT_VALID')));
 
 if(isset($user['name'][60]))
-    die($core->jsonResponse('error',$core->lang('NAME_LONG')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('NAME_LONG')));
 
 if(isset($user['surname'][60]))
-    die($core->jsonResponse('error',$core->lang('SURNAME_LONG')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('SURNAME_LONG')));
     
 if((!$core->isLogged() || $updatedPassword) && isset($user['password'][40]))
-    die($core->jsonResponse('error',$core->lang('PASSWORD_LONG')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('PASSWORD_LONG')));
 
 if(!in_array($user['timezone'],DateTimeZone::listIdentifiers()))
-    die($core->jsonResponse('error',$core->lang('ERROR').': Time zone'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Time zone'));
 
 if(!checkdate($birth['birth_month'],$birth['birth_day'],$birth['birth_year']))
-    die($core->jsonResponse('error',$core->lang('DATE_NOT_VALID')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('DATE_NOT_VALID')));
 
 $birth['date'] = $birth['birth_year'].'/'.$birth['birth_month'].'/'.$birth['birth_day'];
 

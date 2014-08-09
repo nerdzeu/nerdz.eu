@@ -19,17 +19,16 @@ class User
     {
         $this->browser = new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
-        if($this->browser->isMobile() && isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== Config\MOBILE_HOST)
+        if($this->isFromMobileDevice() && !$this->isOnMobileHost())
             die(header('Location: http://'.Config\MOBILE_HOST.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')));
 
-        $this->autoLogin(); //set nerdz_template value on autologin (according to mobile or destktop version)
+        $this->autoLogin(); //set template value on autologin (according to mobile or destktop version)
         $this->lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['id']) : $this->getBrowserLanguage();
 
         $this->tpl = new RainTPL();
         $this->tpl->configure('tpl_dir',"{$_SERVER['DOCUMENT_ROOT']}/tpl/{$_SESSION['template']}/");
 
         $this->tpl_no = $this->tpl->getActualTemplateNumber();
-
         $this->templateConfig = new TemplateConfig($this);
 
         if($this->isLogged() && (($motivation = $this->isInBanList($_SESSION['id']))))
@@ -77,7 +76,12 @@ class User
     }
 
 
-    public function isMobile()
+    public function isFromMobileDevice()
+    {
+        return $this->browser->isMobile();
+    }
+
+    public function isOnMobileHost()
     {
         return isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == Config\MOBILE_HOST;
     }
@@ -452,7 +456,7 @@ class User
 
     public function getTemplate($id = null)
     {
-        if($this->isMobile()) {
+        if($this->isOnMobileHost()) {
             return $this->getMobileTemplate($id);
         }
 

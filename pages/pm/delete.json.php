@@ -5,16 +5,16 @@ ob_start('ob_gzhandler');
 $core = new Pms();
 
 if(!$core->isLogged())
-    die($core->jsonResponse('error',$core->lang('REGISTER')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
     
 if(empty($_POST['from']) || !is_numeric($_POST['from']) || empty($_POST['to']) || !is_numeric($_POST['to']))
-    die($core->jsonResponse('error',$core->lang('SOMETHING_MISS')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('SOMETHING_MISS')));
     
 if(!$core->refererControl())
-    die($core->jsonResponse('error','No spam or spam-bot here'));
+    die(NERDZ\Core\Utils::jsonResponse('error','No spam or spam-bot here'));
 
 if($core->deleteConversation($_POST['from'],$_POST['to']))
-    die($core->jsonResponse('ok','OK'));
+    die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
     
-die($core->jsonResponse('error',$core->lang('ERROR')));
+die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
 ?>

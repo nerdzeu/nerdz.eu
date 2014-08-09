@@ -7,8 +7,8 @@ use NERDZ\Core\User;
 $core = new Notification();
 $user = new User();
 
-if($user>isLogged())
-    die($core->jsonResponse('ok',$core->countPms()));
+if($user->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('ok',$core->countPms()));
 
-die($core->jsonResponse('error',$core->lang('ERROR')));
+die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
 ?>

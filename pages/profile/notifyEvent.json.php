@@ -4,6 +4,7 @@ use NERDZ\Core\Notification;
 use NERDZ\Core\Db;
 use NERDZ\Core\Config;
 use NERDZ\Core\RedisSessionHandler;
+use NERDZ\Core\Utils;
 
 $core = new Notification();
 
@@ -11,7 +12,7 @@ header("Content-Type: text/event-stream\n\n");
 
 $push = function($event, $status, $message) use ($core) {
     echo 'event: ', $event, "\n",
-         'data: ',  $core->toJsonResponse($status,$message), "\n\n";
+         'data: ',  Utils::toJsonResponse($status,$message), "\n\n";
     ob_flush();
     flush();
 };
