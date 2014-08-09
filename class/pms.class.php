@@ -19,7 +19,11 @@ final class Pms extends Messages
 
         if($wentWell && parent::wantsPush($to) && Config\PUSHED_ENABLED) {
             try {
-                $pushed = Client\Pushed\Pushed::connectIp(Config\PUSHED_PORT,Config\PUSHED_IP6);
+                require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor/autoload.php';
+                use MCilloni\Pushed\Pushed;
+                use MCilloni\Pushed\PushedException;
+
+                $pushed = Pushed::connectIp(Config\PUSHED_PORT,Config\PUSHED_IP6);
 
                 $msg = json_encode(
                                    [ 
@@ -31,7 +35,7 @@ final class Pms extends Messages
 
                 $pushed->push($to, $msg);
 
-            } catch (Client\PushedException $e) {}
+            } catch (PushedException $e) {}
         }
 
         return $retVal;
