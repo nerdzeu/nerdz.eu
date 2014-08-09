@@ -8,7 +8,8 @@
         "knplabs/github-api": "1.3.*@dev",
         "predis/predis": "dev-master",
         "phpmailer/phpmailer": "dev-master",
-        "cerdic/css-tidy": "dev-master"
+        "cerdic/css-tidy": "dev-master",
+        "mcilloni/pushed": "dev-master"
     },
     "license": "AGPL-3.0",
     "authors": [

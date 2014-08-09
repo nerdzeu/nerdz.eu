@@ -13,6 +13,3 @@
 [submodule "tpl/4"]
 	path = tpl/4
 	url = https://github.com/Robertof/nerdz-template-pro-theme
-[submodule "class/pushed-php-client"]
-	path = class/client/pushed
-	url = https://github.com/mcilloni/pushed-php-client
