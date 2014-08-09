@@ -3,6 +3,7 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Messages;
 use NERDZ\Core\Utils;
+use NERDZ\Core\User;
 
 $core = new Messages();
 
@@ -21,7 +22,7 @@ if(!$url || !Utils::isValidURL($url))
 
 if($to)
 {
-    if(!$core->getUsername($to))
+    if(!User::getUsername($to))
         die($core->jsonResponse('error',$core->lang('USER_NOT_FOUND')));
 }
 else

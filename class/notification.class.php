@@ -4,14 +4,14 @@ use PDO;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
-class Notification extends Core
+class Notification
 {
-    private $rag, $cachekey;
+    private $rag, $cachekey, $project, $user;
     
     public function __construct()
     {
-        parent::__construct();
-        $this->cachekey = parent::isLogged() ? "{$_SESSION['id']}notifystory".Config\SITE_HOST : '';
+        $this->user = new User();
+        $this->cachekey = $this->user->isLogged() ? "{$_SESSION['id']}notifystory".Config\SITE_HOST : '';
     }
 
     public function countPms()
@@ -145,13 +145,13 @@ class Notification extends Core
         while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ)))
         {
             $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = parent::getUsername($o->from);
+            $ret[$i]['from_user'] = User::getUsername($o->from);
             $ret[$i]['to'] = $p->to;
-            $ret[$i]['to_user'] = parent::getUsername($p->to);
-            $ret[$i]['post_from_user'] = parent::getUsername($p->from);
+            $ret[$i]['to_user'] = User::getUsername($p->to);
+            $ret[$i]['post_from_user'] = User::getUsername($p->from);
             $ret[$i]['post_from'] = $p->from;
             $ret[$i]['pid'] = $p->pid;
-            $ret[$i]['datetime'] = parent::getDateTime($o->time);
+            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
             $ret[$i]['cmp'] = $o->time;
             $ret[$i]['board'] = false;
             $ret[$i]['project'] = false;
@@ -175,16 +175,16 @@ class Notification extends Core
         $ret = [];
         $i = 0;
         $result = Db::query(array('SELECT p."pid",n."hpid", n."from", EXTRACT(EPOCH FROM n."time") AS time FROM "posts_notify" n JOIN "posts" p ON p.hpid = n.hpid WHERE n."to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
-        $to = parent::getUsername($_SESSION['id']);
+        $to = User::getUsername($_SESSION['id']);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
         {
             $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = parent::getUsername($o->from);
+            $ret[$i]['from_user'] = User::getUsername($o->from);
             $ret[$i]['to'] = $_SESSION['id'];
             $ret[$i]['to_user'] = $to;
             $ret[$i]['pid'] = $o->pid;
-            $ret[$i]['datetime'] = parent::getDateTime($o->time);
+            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
             $ret[$i]['cmp'] = $o->time;
             $ret[$i]['board'] = true;
             $ret[$i]['project'] = false;
@@ -212,13 +212,13 @@ class Notification extends Core
         while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ)))
         {
             $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = parent::getUsername($o->from);
+            $ret[$i]['from_user'] = User::getUsername($o->from);
             $ret[$i]['to'] = $p->to;
-            $ret[$i]['to_project'] = parent::getProjectName($p->to);
-            $ret[$i]['post_from_user'] = parent::getUsername($p->from);
+            $ret[$i]['to_project'] = Project::getProjectName($p->to);
+            $ret[$i]['post_from_user'] = User::getUsername($p->from);
             $ret[$i]['post_from'] = $p->from;
             $ret[$i]['pid'] = $p->pid;
-            $ret[$i]['datetime'] = parent::getDateTime($o->time);
+            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
             $ret[$i]['cmp'] = $o->time;
             $ret[$i]['board'] = false;
             $ret[$i]['project'] = true;
@@ -246,8 +246,8 @@ class Notification extends Core
         {
             $ret[$i]['project'] = true;
             $ret[$i]['to'] = $o->group;
-            $ret[$i]['to_project'] = parent::getProjectName($o->group);
-            $ret[$i]['datetime'] = parent::getDateTime($o->time);
+            $ret[$i]['to_project'] = Project::getProjectName($o->group);
+            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
             $ret[$i]['cmp'] = $o->time;
             $ret[$i]['news'] = true;
             ++$i;
@@ -273,8 +273,8 @@ class Notification extends Core
         {
             $ret[$i]['follow'] = true;
             $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = parent::getUsername($o->from);
-            $ret[$i]['datetime'] = parent::getDateTime($o->time);
+            $ret[$i]['from_user'] = User::getUsername($o->from);
+            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
             $ret[$i]['cmp'] = $o->time;
             ++$i;
         }

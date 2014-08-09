@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$core = new NERDZ\Core\Core();
+$core = new NERDZ\Core\User();
 
 if(!($logged = $core->isLogged()))
     die($core->lang('REGISTER'));

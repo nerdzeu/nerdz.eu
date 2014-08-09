@@ -5,13 +5,8 @@ namespace NERDZ\Core;
  */
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
-class Gravatar extends Core
+class Gravatar extends User
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function getURL($id)
     {
         if(!($o = Db::query(array('SELECT "email" FROM "users","profiles" WHERE "users"."counter" = ? AND "profiles"."counter" = ?',array($id, $id)),Db::FETCH_OBJ)))

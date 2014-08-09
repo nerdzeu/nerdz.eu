@@ -9,7 +9,6 @@ class comments extends Messages
     private $project;
     public function __construct()
     {
-        parent::__construct();
         $this->project = new Project();
     }
 
@@ -127,7 +126,7 @@ class comments extends Messages
 
         while(($o = $f->fetch(PDO::FETCH_OBJ)))
         {
-            $users[$o->from] = parent::getUsername($o->from);
+            $users[$o->from] = User::getUsername($o->from);
             $gravurl[$o->from] = $grav->getURL($o->from);
             $nonot[] = $o->from;
         }
@@ -138,7 +137,7 @@ class comments extends Messages
         $luck = in_array($_SESSION['id'],$nonot);
 
         while(($o = $ll->fetch(PDO::FETCH_OBJ)))
-            $lkd[$o->from] = parent::getUsername($o->from);
+            $lkd[$o->from] = User::getUsername($o->from);
 
         $cg = $prj ? 'gc' : 'pc'; //per txt version code in commenti
 
@@ -259,7 +258,7 @@ class comments extends Messages
         $table = ($prj ? 'groups_' : '').'comments';
         if(!($o = Db::query(array('SELECT "from" FROM "'.$table.'" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)))
             return '';
-        return parent::getUsername($o->from);
+        return User::getUsername($o->from);
     }
 
     public function getCommentsAfterHcid($hpid,$hcid, $prj = false)
@@ -301,7 +300,7 @@ class comments extends Messages
         if($prj) {
             if(
                 !($o = Db::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)) ||
-                !($owner = parent::getOwner($o->to))
+                !($owner = $this->project->getOwner($o->to))
               )
                 return false;
 
@@ -351,43 +350,6 @@ class comments extends Messages
             return true;
         }
         return false;
-    }
-
-    public function countComments($hpid, $prj = false)
-    {
-        $table = ($prj ? 'groups_' : '').'comments';
-
-        if(parent::isLogged())
-        {
-            if(!($o = Db::query(
-                            [
-                                'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
-                                    SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
-                                    (
-                                        $prj ? ''
-                                        : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'
-                                    ),
-                                [
-                                    ':hpid' => $hpid,
-                                    ':id'   => $_SESSION['id']
-                                ]
-                            ],Db::FETCH_OBJ))
-              )
-                return 0;
-        }
-        else {
-            if(!($o = Db::query(
-                            [
-                                'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
-                                [
-                                    ':hpid' => $hpid
-                                ]
-                            ],Db::FETCH_OBJ))
-              )
-                return 0;
-        }
-
-        return $o->cc;
     }
 
     private function appendComment($oldMsgObj,$parsedMessage, $prj = false)

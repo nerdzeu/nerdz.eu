@@ -4,9 +4,9 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 use NERDZ\Core\Captcha;
 use NERDZ\Core\Db;
-use NERDZ\Core\Core;
+use NERDZ\Core\User;
 
-$core = new Core();
+$core = new User();
 
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));

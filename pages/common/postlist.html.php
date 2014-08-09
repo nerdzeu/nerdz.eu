@@ -10,7 +10,7 @@ use NERDZ\Core;
 
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-$core     = new NERDZ\Core\Core();
+$core     = new NERDZ\Core\User();
 $messages = new NERDZ\Core\Messages();
 $comments = new NERDZ\Core\Comments();
 
@@ -43,7 +43,9 @@ if($specific) {
     $prj = $action == 'project';
 }
 
-$mess = $messages->getMessages($id,
+$vals = [];
+
+$vals['list_a'] = $messages->getMessages($id,
     array_merge(
         [ 'project' => $prj ],
         $limit          ? [ 'limit'        => $limit ]         : [],
@@ -53,12 +55,11 @@ $mess = $messages->getMessages($id,
         $search         ? [ 'search'       => $search ]        : []
     ));
 
-if(!$mess || (!$logged && $beforeHpid))
+if(empty($vals['list_a']) || (!$logged && $beforeHpid))
     die(''); //empty so javascript client code stop making requsts
 
-$vals = [];
-$vals['count_n'] = count($mess);
-$vals['list_a'] = $messages->getPostList($mess, $prj, $truncate);
+$vals['count_n'] = count($vals['list_a']);
+
 $core->getTPL()->assign($vals);
 $core->getTPL()->draw($path.'/postlist');
 ?>

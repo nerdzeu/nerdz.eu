@@ -3,9 +3,9 @@ namespace NERDZ\Core\Error;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
-use NERDZ\Core\Core;
+use NERDZ\Core\User;
 
-final class Image extends Core
+final class Image extends User
 {
     public function __construct($langindex)
     {

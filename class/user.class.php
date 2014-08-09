@@ -5,11 +5,10 @@ use PDO, PDOException;
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 if(isset($_GET['id']) && !is_numeric($_GET['id']) && !is_array($_GET['id']))
-    $_GET['id'] = (new Core())->getUserId(trim($_GET['id']));
+    $_GET['id'] = (new User())->getUserId(trim($_GET['id']));
 
-class Core
+class User
 {
-    private $db;
     private $tpl;
     private $lang;
     private $tpl_no;
@@ -18,17 +17,6 @@ class Core
 
     public function __construct()
     {
-        try
-        {
-            $this->db = Db::getDB();
-        }
-        catch(PDOException $e)
-        {
-            require_once $_SERVER['DOCUMENT_ROOT'].'/data/databaseError.html';
-            Db::dumpException($e);
-            die();
-        }
-
         $this->browser = new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
         if($this->browser->isMobile() && isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== Config\MOBILE_HOST)
@@ -124,18 +112,6 @@ class Core
     public function getTPL()
     {
         return $this->tpl;
-    }
-
-    public function toJsonResponse($status, $message)
-    {
-        $ret = is_array($status) ? $status : ['status' => $status, 'message' => $message];
-        return json_encode($ret,JSON_FORCE_OBJECT);
-    }
-   
-    public function jsonResponse($status, $message = '')
-    {
-        header('Content-type: application/json; charset=utf-8');
-        return $this->toJsonResponse($status, $message);
     }
 
     public function logout()
@@ -415,28 +391,11 @@ class Core
         return Db::query(array('SELECT * FROM "users" u JOIN "profiles" p ON u.counter = p.counter WHERE p.counter = :id',array(':id' => $id)),Db::FETCH_OBJ);
     }
 
-    public function getProjectName($gid)
-    {
-        if(!($o = Db::query(array('SELECT "name" FROM "groups" WHERE "counter" = :gid',array(':gid' => $gid)),Db::FETCH_OBJ)))
-            return false;
-        return $o->name;
-    }
-
     public function getEmail($id)
     {
         if(!($o = Db::query(array('SELECT "email" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
             return false;
         return $o->email;
-    }
-
-    public function getUsername($id=null)
-    {
-        if($this->isLogged() && (($id===null) || $id == $_SESSION['id']))
-            return $_SESSION['username'];
-
-        if(!($o = Db::query(array('SELECT "username" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
-            return false;
-        return $o->username;
     }
 
     public function getUserId($username = null)
@@ -673,12 +632,6 @@ class Core
         return ['error', htmlspecialchars($this->lang( $match ? $matches[1] : 'ERROR'), ENT_QUOTES, 'UTF-8').$otherInfo ];
     }
 
-    public function jsonDbResponse($msg, $otherInfo = '')
-    {
-        $res = $this->parseDbMessage($msg, $otherInfo);
-        return $this->jsonResponse($res[0], $res[1]);
-    }
-
     public function setPush($id,$value) {
 
         if(!is_bool($value) || !is_numeric($id)) {
@@ -708,7 +661,18 @@ class Core
         }
 
         return $o->valid;
-
     }
+
+    public static function getUsername($id=null)
+    {
+        if(isset($_SESSION['logged']) && $_SESSION['logged'] && (($id===null) || $id == $_SESSION['id']))
+            return $_SESSION['username'];
+
+        if(!($o = Db::query(array('SELECT "username" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+            return false;
+
+        return $o->username;
+    }
+
 }
 ?>

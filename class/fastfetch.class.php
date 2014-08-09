@@ -84,13 +84,10 @@ final class FastFetch {
         
         $list = Db::query (
             [
-                'SELECT ("from" = :me) AS SENT, EXTRACT(EPOCH FROM time) AS timestamp, message, read FROM PMS WHERE ("from" = :from1 AND "to" = :to1) OR ("to" = :to2 AND "from" = :from2) ORDER BY TIME DESC LIMIT '.$limit.' OFFSET '.$start, 
+                'SELECT ("from" = :me) AS SENT, EXTRACT(EPOCH FROM time) AS timestamp, message, to_read FROM "pms" WHERE ("from" = :other AND "to" = :me) OR ("to" = :other AND "from" = :me) ORDER BY TIME DESC LIMIT '.$limit.' OFFSET '.$start, 
                 [
                     ':me' => $me,
-                    ':from1' => $otherId,
-                    ':to1' => $me,
-                    ':from2' => $me,
-                    ':to2' => $otherId
+                    ':other' => $otherId
                 ]
             ],
             Db::FETCH_OBJ,

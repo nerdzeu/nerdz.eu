@@ -269,12 +269,9 @@ if($enter)
         }
         else
         {
-            // The require_once below needs this 3 variables
+            // required for singlepost
             $hpid = $post->hpid;
-            $draw = false;
-            $included = true; // avoid to call gzhandler
-            require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/singlepost.html.php'; // here $vals has another name
-            $vals['post_n'] = $singlepost;
+            $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/singlepost.html.php';
             $found = true;
         }
     }

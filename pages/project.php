@@ -4,6 +4,7 @@ use NERDZ\Core\Banners;
 use NERDZ\Core\Db;
 use NERDZ\Core\Project;
 use NERDZ\Core\Utils;
+use NERDZ\Core\User;
 use NERDZ\Core\Config;
 $core = new Project();
 
@@ -54,7 +55,7 @@ else
         $i = 0;
         foreach($mem as $uid)
         {
-            if(!($uname = $core->getUsername($uid)))
+            if(!($uname = User::getUsername($uid)))
                 continue;
             $vals['members_a'][$i]['username_n'] = $uname;
             $vals['members_a'][$i]['username4link_n'] = \NERDZ\Core\Utils::userLink($uname);
@@ -70,7 +71,7 @@ else
         $i = 0;
         foreach($fol as $uid)
         {
-            if(!($uname = $core->getUsername($uid)))
+            if(!($uname = User::getUsername($uid)))
                 continue;
             $vals['users_a'][$i]['username_n'] = $uname;
             $vals['users_a'][$i]['username4link_n'] = \NERDZ\Core\Utils::userLink($uname);
@@ -78,7 +79,7 @@ else
         }
         usort($vals['users_a'],'sortbyusername');
 
-        $vals['owner_n'] = $core->getUsername($info->owner);
+        $vals['owner_n'] = User::getUsername($info->owner);
         $vals['owner4link_n'] =  \NERDZ\Core\Utils::userLink($vals['owner_n']);
 
         $vals['description_n'] = $Messages->bbcode($info->description);
@@ -104,23 +105,27 @@ else
         $vals['canwrite_b'] = $vals['logged_b'] && ($core->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
         $vals['canwritenews_b'] = $vals['logged_b'] && (in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
 
-        // solo qui ci sarà la pagina statica, per i posts singoli
-        // per il profilo intero, è inutile anche perché si aggiorna sempr
+        // single post handling
         $found = false;
         if($vals['singlepost_b'])
         {
-            if(!($post = Db::query(array('SELECT "hpid" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',array(':pid' => $pid, ':gid' => $gid)),Db::FETCH_OBJ)))
+            if(!($post = Db::query(
+                        [
+                            'SELECT "hpid" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',
+                            [
+                                ':pid' => $pid,
+                                ':gid' => $gid
+                            ]
+                        ],Db::FETCH_OBJ)))
             {
                 $core->getTPL()->assign('banners_a',$vals['banners_a']);
                 $core->getTPL()->draw('project/postnotfound');
             }
             else
             {
-                $hpid = $post->hpid; //IL REQUIRE QUI SOTTO NECESSITA DA QUESTO
-                $draw = false; // e di questo
-                $included = true; //che evita che venga ciamato gzhandler di nuovo
-                require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';//qui vals ha un altro nome
-                $vals['post_n'] = $singlepost;
+                // requiired by singlepost
+                $hpid = $post->hpid;
+                $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';
                 $found = true;
             }
         }

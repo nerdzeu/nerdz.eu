@@ -22,7 +22,7 @@ if(apc_exists('nerdz_stats'))
 else
 {
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-    $core = new NERDZ\Core\Core();
+    $core = new NERDZ\Core\User();
 
     $queries = [
         0 => 'SELECT COUNT(counter) AS cc FROM users',

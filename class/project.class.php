@@ -3,13 +3,8 @@ namespace NERDZ\Core;
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use PDO;
 
-class project extends Core
+class project extends User
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function getMembersAndOwnerFromHpid($hpid)
     {
         if(!($info = Db::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),Db::FETCH_OBJ)))
@@ -88,10 +83,30 @@ class project extends Core
 
     public function getFollowers($gid)
     {
-        if(!($stmt = Db::query(array('SELECT "from" FROM "groups_followers" WHERE "to" = :gid',array(':gid' => $gid)),Db::FETCH_STMT)))
+        if(!($stmt = Db::query(
+            [
+                'SELECT "from" FROM "groups_followers" WHERE "to" = :gid',
+                [
+                    ':gid' => $gid
+                ]
+            ],Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public static function getName($gid)
+    {
+        if(!($o = Db::query(
+            [
+                'SELECT "name" FROM "groups" WHERE "counter" = :gid',
+                [
+                    ':gid' => $gid
+                ]
+            ],Db::FETCH_OBJ)))
+            return '';
+
+        return $o->name;
     }
 }
 

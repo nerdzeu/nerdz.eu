@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 ob_start('ob_gzhandler');
-ob_start(array('\\NERDZ\\Core\\Core','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 header('Content-type: application/rss+xml');
 
 $feed = new NERDZ\Core\Feed();

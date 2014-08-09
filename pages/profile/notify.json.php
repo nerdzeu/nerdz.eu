@@ -1,13 +1,14 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-
 use NERDZ\Core\Notification;
-$core = new Notification();
+use NERDZ\Core\User;
 
-if($core->isLogged())
+$core = new Notification();
+$user = new User();
+
+if($user->isLogged())
     die($core->jsonResponse('ok',$core->count(false,true)));
 
 die($core->jsonResponse('error',$core->lang('REGISTER')));
-
 ?>

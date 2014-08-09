@@ -2,8 +2,8 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
-use NERDZ\Core\Core;
-$core = new Core();
+use NERDZ\Core\User;
+$core = new User();
 
 if(!$core->isLogged())
     die($core->jsonResponse('error',$core->lang('REGISTER')));

@@ -2,9 +2,9 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 use NERDZ\Core\Config;
-use NERDZ\Core\Core;
+use NERDZ\Core\User;
 
-$core = new Core();
+$core = new User();
 
 $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 

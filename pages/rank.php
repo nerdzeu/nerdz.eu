@@ -4,6 +4,7 @@ use NERDZ\Core\Config;
 use NERDZ\Core\Utils;
 use NERDZ\Core\Stuff;
 use NERDZ\Core\Db;
+use NERDZ\Core\User;
 use \PDO;
 
 $mo = empty($_GET['top']);
@@ -18,7 +19,7 @@ if(!apc_exists($path))
     while(($o = $res->fetch(PDO::FETCH_OBJ)))
     {
         $gc = Db::query(array('SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :from '.(!$mo ? $un_ti : ''),array(':from' => $o->from)),Db::FETCH_OBJ);
-        $us = $core->getUsername($o->from);
+        $us = User::getUsername($o->from);
         $n = $o->cc + $gc->cc;
         $rank[$us] = $n;
         $stupid = Stuff::stupid($n);

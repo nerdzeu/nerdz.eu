@@ -2,7 +2,9 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
-$core = new NERDZ\Core\Core();
+use NERDZ\Core\User;
+
+$core = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 if(!$core->isLogged())
@@ -36,7 +38,7 @@ $vals['canshowwhitelist_b'] = $vals['closedprofile_b'];
 $wl = $core->getWhitelist($_SESSION['id']);
 $i = 0;
 foreach($wl as &$val)
-    $vals['whitelist_a'][$i++] = $core->getUsername($val);
+    $vals['whitelist_a'][$i++] = User::getUsername($val);
 
 $vals['tok_n'] = $core->getCsrfToken('edit');
 $vals['dateformat_n'] = $obj->dateformat;

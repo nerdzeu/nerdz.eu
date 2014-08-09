@@ -88,5 +88,24 @@ class Utils
         @apc_store ($cache, $revision, 5400); // store the version for 1.5 hours
         return $revision;
     }
+
+    public static function toJsonResponse($status, $message)
+    {
+        $ret = is_array($status) ? $status : ['status' => $status, 'message' => $message];
+        return json_encode($ret,JSON_FORCE_OBJECT);
+    }
+   
+    public static function jsonResponse($status, $message = '')
+    {
+        header('Content-type: application/json; charset=utf-8');
+        return static::toJsonResponse($status, $message);
+    }
+
+    public static function jsonDbResponse($msg, $otherInfo = '')
+    {
+        $user = new User();
+        $res = $user->parseDbMessage($msg, $otherInfo);
+        return static::jsonResponse($res[0], $res[1]);
+    }
 }
 ?>

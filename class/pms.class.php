@@ -7,13 +7,7 @@ use MCilloni\Pushed\Pushed;
 use MCilloni\Pushed\PushedException;
 
 final class Pms extends Messages
-{
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
+{   
     public function send($to,$message)
     {
         $retVal = Db::query(array('INSERT INTO "pms" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['id'],':to' => $to,':message' => $message)),Db::FETCH_ERRSTR);
@@ -26,8 +20,8 @@ final class Pms extends Messages
 
                 $msg = json_encode(
                                    [ 
-                                     'messageFrom' => html_entity_decode($this->getUsername(), ENT_QUOTES, 'UTF-8'), 
-                                     'messageFromId' => $this->getUserId(),
+                                     'messageFrom' => html_entity_decode(User::getUsername(), ENT_QUOTES, 'UTF-8'), 
+                                     'messageFromId' => $this->user->getUserId(),
                                      'messageBody' => substr(html_entity_decode($message, ENT_QUOTES, 'UTF-8'), 0, 2000)
                                    ]
                 ); //truncate to 2000 chars because of possibile service limitations
@@ -61,7 +55,7 @@ final class Pms extends Messages
         while(($o = $rs->fetch(PDO::FETCH_OBJ)))
         {
             if(!in_array($o->from, $froms)) {
-                $from = $this->getUsername($o->from);
+                $from = User::getUsername($o->from);
                 $res[$c]['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
                 $res[$c]['from_n'] = $from;
                 $res[$c]['datetime_n'] = parent::getDateTime($o->lasttime);
@@ -90,7 +84,7 @@ final class Pms extends Messages
 
         if(($o = $res->fetch(PDO::FETCH_OBJ)))
         {
-            $from = $this->getUsername($fromid);
+            $from = User::getUsername($fromid);
             $ret['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
             $ret['from_n'] = $from;
             $ret['datetime_n'] = parent::getDateTime($time);

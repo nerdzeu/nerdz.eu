@@ -4,7 +4,7 @@ namespace NERDZ\Core;
 use PDO;
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
-class Messages extends Core
+class Messages
 {
     // regular expressions used to parse the [video] bbcode
     const YOUTUBE_REGEXP  = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
@@ -13,11 +13,11 @@ class Messages extends Core
     const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/photo\.php(?:\?v=|\?.+?&v=)(\d+)#i';
 
     private $project;
+    private $user;
 
     public function __construct()
     {
-        parent::__construct();
-        $this->project = new Project();
+        $this->user = new User();
     }
 
     public function getCodes($str)
@@ -86,7 +86,7 @@ class Messages extends Core
             {
                 $m[1] = 'www.'.$m[1];
                 if(!Utils::isValidURL($m[1]))
-                    return '<b>'.parent::lang('INVALID_URL').'</b>';
+                    return '<b>'.$this->user->lang('INVALID_URL').'</b>';
             }
             $url = preg_match('#^(http(s)?:\/\/)|(ftp:\/\/)#im',$m[1]) ? $m[1] : 'http://'.$m[1];
             return isset($m[2]) ? '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
@@ -104,7 +104,7 @@ class Messages extends Core
 
         $str = preg_replace('#\[i\](.+?)\[/i\]#i','<span style="font-style:italic">$1</span>',$str);
         $str = preg_replace('#\[cur\](.+?)\[/cur\]#i','<span style="font-style:italic">$1</span>',$str);
-        $str = preg_replace('#\[gist\]([0-9a-z]+)\[/gist\]#i','<div class="gistLoad" data-id="$1" id="gist-$1">'.parent::lang('LOADING').'...</div>',$str);
+        $str = preg_replace('#\[gist\]([0-9a-z]+)\[/gist\]#i','<div class="gistLoad" data-id="$1" id="gist-$1">'.$this->user->lang('LOADING').'...</div>',$str);
         $str = preg_replace('#\[b\](.+?)\[/b\]#i','<span style="font-weight:bold">$1</span>',$str);
         $str = preg_replace('#\[del\](.+?)\[/del\]#i','<del>$1</del>',$str);
         $str = preg_replace('#\[u\](.+?)\[/u\]#i','<u>$1</u>',$str);
@@ -293,7 +293,7 @@ class Messages extends Core
                 else
                     return $m[0];
                 return '<a class="yt_frame" data-vid="' . $output[1] . '" data-host="' . $output[0] . '">' .
-                       '<span>' . parent::lang ('VIDEO') . '</span>' .
+                       '<span>' . $this->user->lang ('VIDEO') . '</span>' .
                        '<img src="' . $output[2] . '" alt="" width="130" height="' . $output[3] . '" style="float:left;margin-right:4px"' . (isset ($output[4]) ? 'onload="' . $output[4] . '"' : '') . ' />' .
                        '</a>';
             };
@@ -306,7 +306,7 @@ class Messages extends Core
                     $url = Utils::getValidImageURL($m[1], $domain, $ssl);
                     return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
                                     <span>
-                                        '.parent::lang('IMAGES').'
+                                        '.$this->user->lang('IMAGES').'
                                     </span>
                                     <img src="'.$url.'" alt="" onload="N.imgLoad(this)" onerror="N.imgErr(this)" />
                                 </a>';
@@ -409,12 +409,12 @@ class Messages extends Core
         var_dump($options);
 
         if($onlyfollowed) {
-            $followed = array_merge(parent::getFollow($_SESSION['id']), (array)$_SESSION['id']);
+            $followed = array_merge($this->user->getFollow($_SESSION['id']), (array)$_SESSION['id']);
             $glue    .= ' AND p."from" IN ('.implode(',',$followed).') ';
         } elseif($lang && !$anyone) {
-            $languages = array_merge(parent::availableLanguages(), (array)'*');
+            $languages = array_merge($this->user->availableLanguages(), (array)'*');
             if(!in_array($lang,$languages))
-                $lang = parent::isLogged() ? parent::getUserLanguage($_SESSION['id']) : 'en';
+                $lang = $this->user->isLogged() ? $this->user->getUserLanguage($_SESSION['id']) : 'en';
 
             $glue .= ' AND p.lang = :lang ';
             $search4Lang = true;
@@ -423,7 +423,7 @@ class Messages extends Core
         if($limit > 20 || $limit <= 0) // at most 20 posts
             $limit = 20;
 
-        $blist = parent::getRealBlacklist();
+        $blist = $this->user->getRealBlacklist();
 
         if(!empty($blist))
         {
@@ -442,7 +442,7 @@ class Messages extends Core
             $join  = ' INNER JOIN "groups" g ON p.to = g.counter INNER JOIN "users"  u ON p."from" = u.counter ';
             $glue .= ' AND (g."visible" IS TRUE ';
 
-            if(parent::isLogged())
+            if($this->user->isLogged())
                 $glue .= ' OR (\''.$_SESSION['id'].'\' IN (
                             SELECT "from" FROM groups_members WHERE "to" = p."to"
                            )) OR \''.$_SESSION['id'].'\' = g.owner';
@@ -465,7 +465,17 @@ class Messages extends Core
           )
           return [];
 
-        return $this->getPostsArray($result, $project, $inHome);
+        $c = 0;
+        $ret = [];
+        while(($row = $result->fetch(PDO::FETCH_OBJ)))
+        {
+            $ret[$c] = $this->getPost($row);
+            if($inHome)
+                $ret[$c]['news_b'] = $project ? $row->to == PROJECTS_NEWS : $row->to == USERS_NEWS;
+            ++$c;
+        }
+
+        return $ret;
     }
 
     public function addMessage($to, $message, $options = [])
@@ -498,7 +508,7 @@ class Messages extends Core
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
-                    'body'  => parent::getUsername().': '.$message
+                    'body'  => $this->user->getUsername().': '.$message
                 ]
              );
         }
@@ -557,7 +567,7 @@ class Messages extends Core
  
     public function canEditPost($post, $project = false)
     {
-        return parent::isLogged() && (
+        return $this->user->isLogged() && (
             $project ? 
             in_array($_SESSION['id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
             : $_SESSION['id'] == $post['from']
@@ -566,7 +576,7 @@ class Messages extends Core
 
     public function canRemovePost($post, $project = false)
     {
-        return parent::isLogged() && (
+        return $this->user->isLogged() && (
             $project ?
                 in_array($_SESSION['id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
             : in_array($_SESSION['id'], [ $post['to'], $post['from'] ] )
@@ -576,7 +586,7 @@ class Messages extends Core
     public function canShowLockForPost($post, $project = false)
     {
         $table =  ($project ? 'groups_' : '').'comments';
-        return parent::isLogged() && (
+        return $this->user->isLogged() && (
             (
                 $project
                 ? $_SESSION['id'] == $post['from']
@@ -597,7 +607,7 @@ class Messages extends Core
     {
         $table = ($project ? 'groups_' : '').'posts_no_notify';
         return (
-                parent::isLogged() &&
+                $this->user->isLogged() &&
                 Db::query(
                     [
                         'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :id',
@@ -613,7 +623,7 @@ class Messages extends Core
     {
         $table = ($project ? 'groups_' : '').'lurkers';
         return (
-                parent::isLogged() &&
+                $this->user->isLogged() &&
                 Db::query(
                     [
                         'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
@@ -629,7 +639,7 @@ class Messages extends Core
     {
         $table = ($project ? 'groups_' : '').'bookmarks';
         return (
-                parent::isLogged() &&
+                $this->user->isLogged() &&
                 Db::query(
                     [
                         'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
@@ -747,7 +757,7 @@ class Messages extends Core
     }
 
     public function getUserThumb($hpid, $project = false) {
-        if (!parent::isLogged()) {
+        if (!$this->user->isLogged()) {
           return 0;
         }
         $table = $project ? "groups_thumbs" : "thumbs";
@@ -772,7 +782,7 @@ class Messages extends Core
     }
 
     public function setThumbs($hpid, $vote, $project = false) {
-        if (!parent::isLogged()) {
+        if (!$this->user->isLogged()) {
           return false;
         }
 
@@ -791,58 +801,6 @@ class Messages extends Core
         );
 
         return $ret == Db::NO_ERRNO;
-    }
-
-    public function getPostList($mess, $prj, $truncate = false) {
-        require_once 'comments.class.php';
-        $comments = new Comments();
-
-        $count = count($mess);
-        $ret = [];
-        $logged = parent::isLogged();
-        $toFunc = [ $this, 'get'.($prj ? 'ProjectName' : 'Username') ];
-        $toFuncLink = [ __NAMESPACE__.'\\Utils', ($prj ? 'project' : 'user').'Link' ];
-
-        for($i=0;$i<$count;++$i)
-        {
-            if(!($from = parent::getUsername($mess[$i]['from'])))
-                $from = '';
-
-            if(!($to = $toFunc($mess[$i]['to'])))
-                $to =  '';
-
-            $ret[$i]['thumbs_n'] = $this->getThumbs($mess[$i]['hpid'], $prj);
-            $ret[$i]['revisions_n'] = $this->getRevisionsNumber($mess[$i]['hpid'], $prj);
-            $ret[$i]['uthumb_n'] = $this->getUserThumb($mess[$i]['hpid'], $prj);
-            $ret[$i]['pid_n'] = $mess[$i]['pid'];
-            $ret[$i]['news_b'] = $mess[$i]['news'];
-            $ret[$i]['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
-            $ret[$i]['to4link_n'] = $toFuncLink($to);
-            $ret[$i]['fromid_n'] = $mess[$i]['from'];
-            $ret[$i]['toid_n'] = $mess[$i]['to'];
-            $ret[$i]['from_n'] = $from;
-            $ret[$i]['to_n'] = $to;
-            $ret[$i]['datetime_n'] = $mess[$i]['datetime'];
-            $ret[$i]['cmp_n'] = $mess[$i]['cmp'];
-
-            $ret[$i]['canremovepost_b'] = $this->canRemovePost($mess[$i], $prj);
-
-            $ret[$i]['caneditpost_b'] = $this->canEditPost($mess[$i], $prj);
-            $ret[$i]['canshowlock_b'] = $this->canShowLockForPost($mess[$i], $prj);
-            $ret[$i]['lock_b'] = $this->hasLockedPost($mess[$i], $prj);
-
-            $ret[$i]['canshowlurk_b'] = $logged ? !$ret[$i]['canshowlock_b'] : false;
-            $ret[$i]['lurk_b'] = $this->hasLurkedPost($mess[$i], $prj);
-            
-            $ret[$i]['canshowbookmark_b'] = $logged;
-            $ret[$i]['bookmark_b'] = $this->hasBookmarkedPost($mess[$i], $prj);
-
-            $ret[$i]['message_n'] = $this->bbcode($mess[$i]['message'],$truncate, $prj ? 'g' : 'u' ,$ret[$i]['pid_n'],$ret[$i]['toid_n']);
-            $ret[$i]['postcomments_n'] = $comments->countComments($mess[$i]['hpid'], $prj);
-            $ret[$i]['hpid_n'] = $mess[$i]['hpid'];
-        }
-
-        return $ret;
     }
 
     private function parseCode($str,$type = NULL,$pid = NULL,$id = NULL)
@@ -879,7 +837,7 @@ class Messages extends Core
                                     <div class="nerdz-code-title">'.$lang.':</div><pre class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
                                         (
                                          empty($codeurl) ? '' :
-                                         '<a href="'.$codeurl.'" onclick="window.open(this.href); return false">'.parent::lang('TEXT_VERSION').'</a>'
+                                         '<a href="'.$codeurl.'" onclick="window.open(this.href); return false">'.$this->user->lang('TEXT_VERSION').'</a>'
                                         ).'</div>',
                                 $str);
             ++$i;
@@ -887,25 +845,98 @@ class Messages extends Core
         return $str;
     }
 
-    private function getPostsArray($result,$project, $inHome = false)
+    public function getPost($dbPost, $options = [])
     {
-        $c = 0;
+        extract($options);
+        $project  = !empty($project);
+        $truncate = !empty($truncate);
+
+        if(is_object($dbPost))
+            $dbPost = (array) $dbPost;
+
+        $logged = $this->user->isLogged();
+
+        if(!($from = $this->user->getUsername($dbPost['from'])))
+            $from = '';
+
+        $toFunc = $project
+                ? [__NAMESPACE__.'\\Project', 'getName']
+                : [__NAMESPACE__.'\\User', 'getUsername'];
+
+        $toFuncLink = [ __NAMESPACE__.'\\Utils', ($project ? 'project' : 'user').'Link' ];
+
+        if(!($to = $toFunc($dbPost['to'])))
+            $to =  '';
+
         $ret = [];
-        while(($row = $result->fetch(PDO::FETCH_OBJ)))
-        {
-            $ret[$c]['news'] = $inHome
-                ? ($project ? $row->to == PROJECTS_NEWS : $row->to == USERS_NEWS)
-                : $row->news;
-            $ret[$c]['hpid']     = $row->hpid;
-            $ret[$c]['from']     = $row->from;
-            $ret[$c]['to']       = $row->to;
-            $ret[$c]['pid']      = $row->pid;
-            $ret[$c]['message']  = $ret[$c]['news'] ? $this->parseNewsMessage($row->message) : $row->message;
-            $ret[$c]['datetime'] = parent::getDateTime($row->time);
-            $ret[$c]['cmp']      = $row->time;
-            ++$c;
-        }
+        $ret['thumbs_n']          = $this->getThumbs($dbPost['hpid'], $project);
+        $ret['revisions_n']       = $this->getRevisionsNumber($dbPost['hpid'], $project);
+        $ret['uthumb_n']          = $this->getUserThumb($dbPost['hpid'], $project);
+        $ret['pid_n']             = $dbPost['pid'];
+        $ret['news_b']            = $dbPost['news'];
+        $ret['from4link_n']       = \NERDZ\Core\Utils::userLink($from);
+        $ret['to4link_n']         = $toFuncLink($to);
+        $ret['fromid_n']          = $dbPost['from'];
+        $ret['toid_n']            = $dbPost['to'];
+        $ret['from_n']            = $from;
+        $ret['to_n']              = $to;
+        $ret['datetime_n']        = $this->user->getDateTime($dbPost['time']);
+        $ret['timestamp_n']       = $dbPost['time'];
+
+        $ret['canremovepost_b']   = $this->canRemovePost($dbPost, $project);
+        $ret['caneditpost_b']     = $this->canEditPost($dbPost, $project);
+        $ret['canshowlock_b']     = $this->canShowLockForPost($dbPost, $project);
+        $ret['lock_b']            = $this->hasLockedPost($dbPost, $project);
+
+        $ret['canshowlurk_b']     = $logged ? !$ret['canshowlock_b'] : false;
+        $ret['lurk_b']            = $this->hasLurkedPost($dbPost, $project);
+        
+        $ret['canshowbookmark_b'] = $logged;
+        $ret['bookmark_b']        = $this->hasBookmarkedPost($dbPost, $project);
+
+        $ret['message_n']         = $this->bbcode($dbPost['message'], $truncate, $project ? 'g' : 'u' ,$ret['pid_n'],$ret['toid_n']);
+        $ret['postcomments_n']    = $this->countComments($dbPost['hpid'], $project);
+        $ret['hpid_n']            = $dbPost['hpid'];
+
         return $ret;
     }
+
+     public function countComments($hpid, $prj = false)
+     {
+         $table = ($prj ? 'groups_' : '').'comments';
+         if($this->user->isLogged())
+         {
+             if(!($o = Db::query(
+                         [
+                             'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
+                                 SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
+                             (
+                                 $prj
+                                 ? ''
+                                 : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'
+                             ),
+                             [
+                                ':hpid' => $hpid,
+                                ':id' => $_SESSION['id']
+                             ]
+                         ],Db::FETCH_OBJ))
+               )
+                 return 0;
+         }
+         else
+         {
+             if(!($o = Db::query(
+                         [
+                             'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
+                             [
+                                 ':hpid' => $hpid
+                             ]
+                         ],Db::FETCH_OBJ))
+               )
+                 return 0;
+         }
+         return $o->cc;
+     }
+
 }
 ?>

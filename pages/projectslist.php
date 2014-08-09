@@ -1,4 +1,6 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\Db;
 
 $limit = isset($_GET['lim']) ? $core->limitControl($_GET['lim'],20) : 20;
 
@@ -29,7 +31,7 @@ if(empty($q))
 else
 {
     $orderbycounter = $orderby == 'counter';
-    $query = array("SELECT name,description, counter FROM groups WHERE CAST({$orderby} AS TEXT) ".($orderbycounter ? '=' : 'LIKE')." ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+    $query = array("SELECT name,description, counter FROM groups WHERE CAST({$orderby} AS TEXT) ".($orderbycounter ? '=' : 'ILIKE')." ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
             $orderbycounter ? array($q) : array("%{$q}%"));
 }
 

@@ -2,15 +2,15 @@
 if(!$core->isLogged())
     die(header('Location: /'));
 
-use NERDZ\Core;
+use NERDZ\Core\Banners;
 use NERDZ\Core\Db;
-
+use NERDZ\Core\User;
 $vals = [];
 
-$Banners = (new Core\Banners())->getBanners();
+$banners = (new Banners())->getBanners();
 $vals['banners_a'] = [];
-shuffle($Banners);
-foreach($Banners as $ban)
+shuffle($banners);
+foreach($banners as $ban)
     $vals['banners_a'][$ban[1]] = $ban[2];
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
@@ -43,7 +43,7 @@ if($tot>0)
                 break;
             }
             $myarray[$i]['id_n'] = $l[$i];
-            $myarray[$i]['username_n'] = $core->getUsername($l[$i]);
+            $myarray[$i]['username_n'] = User::getUsername($l[$i]);
             $myarray[$i]['username4link_n'] = \NERDZ\Core\Utils::userLink($myarray[$i]['username_n']);
             $myarray[$i]['online_b'] = $core->isOnline($l[$i]);
             if($myarray[$i]['online_b'])

@@ -1,13 +1,13 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-    use NERDZ\Core\Core;
+    use NERDZ\Core\User;
     use NERDZ\Core\Messages;
     use NERDZ\Core\Project;
     use NERDZ\Core\Db;
     use NERDZ\Core\Config;
 
-    $core = new Core();
+    $core = new User();
     $project = new Project();
     $Messages = new Messages();
     $tplcfg = $core->getTemplateCfg();
@@ -73,7 +73,7 @@
         <title>
     <?php
         if(!empty($title))
-            echo $title, '... =&gt; ',$name;
+            echo $title, '... ⇒ ',$name;
         else
             echo $name;
         if($pid)

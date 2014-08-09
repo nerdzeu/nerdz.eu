@@ -1,7 +1,8 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$core = new NERDZ\Core\Core();
+use NERDZ\Core\User;
+$core = new User();
     
 if($core->isLogged())
     die($core->jsonResponse('error',$core->lang('ALREADY_LOGGED')));
@@ -12,7 +13,7 @@ $pass = isset($_POST['password']) ? $_POST['password'] : false;
 if(!$user || !$pass)
     die($core->jsonResponse('error',$core->lang('INSERT_USER_PASS')));
 
-$user = is_numeric($user) ? $core->getUsername($user) : $user;
+$user = is_numeric($user) ? User::getUsername($user) : $user;
 if(!$user)
     die($core->jsonResponse('error',$core->lang('WRONG_USER_OR_PASSWORD')));
 

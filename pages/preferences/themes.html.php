@@ -1,10 +1,10 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-use NERDZ\Core\Core;
+use NERDZ\Core\User;
 use NERDZ\Core\Config;
 
-$core = new Core();
+$core = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 if(!$core->isLogged())

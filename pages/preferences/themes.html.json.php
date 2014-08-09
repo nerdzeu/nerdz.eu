@@ -1,11 +1,11 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-use NERDZ\Core\Core;
+use NERDZ\Core\User;
 use NERDZ\Core\Config;
 use NERDZ\Core\Db;
 
-$core = new Core();
+$core = new User();
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
     

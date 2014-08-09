@@ -76,7 +76,7 @@
     <title>
 <?php
     if(!empty($title))
-        echo $title, '... =&gt; ',$username;
+        echo $title, '... ⇒ ',$username;
     else
         echo $username;
     if($pid)

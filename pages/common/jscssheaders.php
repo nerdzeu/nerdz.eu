@@ -4,6 +4,7 @@ use NERDZ\Core\Browser;
 use NERDZ\Core\Config;
 use NERDZ\Core\Db;
 use NERDZ\Core\Utils;
+use NERDZ\Core\User;
 // Displays the stuff contained in the <head> tag.
 $logged = $core->isLogged();
 $uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
@@ -103,7 +104,7 @@ if ($logged && ($blist = $core->getBlacklist()))
     $blistcss = '<style type="text/css">';
     foreach ($blist as $b_id) {
         $blistcss .= ".bluser{$b_id},";
-        $jsonObj[] = $core->getUsername($b_id);
+        $jsonObj[] = User::getUsername($b_id);
     }
 ?>
         var idiots = <?=json_encode($jsonObj)?>;

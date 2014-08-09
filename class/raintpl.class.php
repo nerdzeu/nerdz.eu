@@ -164,7 +164,7 @@ final class RainTPL
 
 
         // Cache is off and return_string is false, Rain just echo the template
-        $core = new Core();
+        $core = new User();
         if(!$return_string)
         {
             extract( $this->var, EXTR_OVERWRITE );
@@ -185,7 +185,6 @@ final class RainTPL
     
     /**
      * Configure the settings of RainTPL
-     *
      */
     public static function configure( $setting, $value = null )
     {

@@ -1,10 +1,10 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-use NERDZ\Core\Core;
+use NERDZ\Core\User;
 use NERDZ\Core\Db;
 
-$core = new Core();
+$core = new User();
 
 if(!$core->refererControl())
     die($core->jsonResponse('error',$core->lang('ERROR').': referer'));
@@ -40,7 +40,7 @@ $ret = Db::query(
 if($ret != Db::NO_ERRSTR)
     die($core->jsonDbResponse($ret));
 
-if(!$core->login($core->getUsername(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['mark_offline'], !$updatedPassword))
+if(!$core->login(User::getUsername(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['mark_offline'], !$updatedPassword))
     die($core->jsonResponse('error',$core->lang('ERROR').': Login'));
 
 die($core->jsonResponse('error','OK'));

@@ -6,11 +6,10 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 class Feed extends Messages
 {
     private $ssl, $baseurl;
+    private $user, $project;
  
     public function __construct()
     {
-        parent::__construct();
-
         $this->baseurl = 'http'.(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 's' : '').'://'.Config\SITE_HOST.'/';
     }
 
@@ -44,32 +43,32 @@ class Feed extends Messages
 
     private function getProfileItem($post)
     {
-        $from = $this->xmlentity(parent::getUsername($post['from']));
-        $to = $this->xmlentity(parent::getUsername($post['to']));
+        $from = $this->xmlentity($post['from_n']);
+        $to = $this->xmlentity($post['to_n']);
 
-        $url = $this->baseurl.Utils::userLink($to).$post['pid'];
+        $url = $this->baseurl.$post['to4link_n'].$post['pid_n'];
 
         return "<item>
-                    <title>{$from} =&gt; {$to} - {$post['pid']}</title>
-                    <description><![CDATA[".parent::bbcode($this->getValidFeedMessage($post['message']))."]]></description>
+                    <title>{$from} =&gt; {$to} - {$post['pid_n']}</title>
+                    <description><![CDATA[".$this->getValidFeedMessage($post['message_n'])."]]></description>
                     <link>{$url}</link>
-                    <pubDate>".date('r',$post['cmp'])."</pubDate>
+                    <pubDate>".date('r',$post['timestamp_n'])."</pubDate>
                     <guid>{$url}</guid>
                 </item>";
     }
 
     private function getProjectItem($post)
     {
-        $from = $this->xmlentity(parent::getUsername($post['from']));
-        $to = $this->xmlentity(parent::getProjectName($post['to']));
+        $from = $this->xmlentity($post['from_n']);
+        $to = $this->xmlentity($post['to_n']);
 
-        $url = $this->baseurl.Utils::projectLink($to).$post['pid'];
+        $url = $this->baseurl.$post['to4link_n'].$post['pid_n'];
 
         return "<item>
-                    <title>{$from} =&gt; {$to} - {$post['pid']}</title>
-                    <description><![CDATA[".parent::bbcode($this->getValidFeedMessage($post['message']))."]]></description>
+                    <title>{$from} =&gt; {$to} - {$post['pid_n']}</title>
+                    <description><![CDATA[".$this->getValidFeedMessage($post['message_n'])."]]></description>
                     <link>{$url}</link>
-                    <pubDate>".date('r',$post['cmp'])."</pubDate>
+                    <pubDate>".date('r',$post['timestamp_n'])."</pubDate>
                     <guid>{$url}</guid>
                 </item>";    
     }
@@ -120,10 +119,10 @@ class Feed extends Messages
 
     public function getProfileFeed($id)
     {
-        if(!($us = parent::getUsername($id)))
+        if(!($us = User::getUsername($id)))
             return $this->error('Invalid user ID');
 
-        $urluser = NERDZ\Core\NERDZ\Core\Utils::userLink($us);
+        $urluser = NERDZ\Core\Utils::userLink($us);
         $us = $this->xmlentity($us);
     
         if(!parent::isLogged() && (!($p = Db::query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)) || $p->private))
@@ -148,10 +147,10 @@ class Feed extends Messages
 
     public function getProjectFeed($id)
     {
-        if(!($us = parent::getProjectName($id)))
+        if(!($us = Project::getProjectName($id)))
             return $this->error('Invalid project ID');
 
-        $urlprj = NERDZ\Core\NERDZ\Core\Utils::projectLink($us);
+        $urlprj = NERDZ\Core\Utils::projectLink($us);
         $us = $this->xmlentity($us);
     
         if(!($p = Db::query(array('SELECT "private","owner" FROM "groups" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))
