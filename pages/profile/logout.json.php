@@ -2,17 +2,17 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
-$core = new NERDZ\Core\User();
+$user = new NERDZ\Core\User();
 
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+if(!$user->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
     
-if(!$core->refererControl())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+if(!$user->refererControl())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
-if(!$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': token'));
+if(!$user->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
 
-$core->logout();
-die(NERDZ\Core\Utils::jsonResponse('ok',$core->lang('LOGOUT_OK')));
+$user->logout();
+die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('LOGOUT_OK')));
 ?>

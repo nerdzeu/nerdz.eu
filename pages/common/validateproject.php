@@ -5,17 +5,17 @@ use NERDZ\Core\Config;
 use NERDZ\Core\Utils;
 use NERDZ\Core\Project;
 
-$core = new Project();
+$project = new Project();
 
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+if(!$project->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('REGISTER')));
 
 foreach($_POST as &$val)
     $val = trim($val);
 
 
 if(empty($_POST['description']) || ! is_string($_POST['description'])) //always required
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MUST_COMPLETE_FORM')."\n\n".$core->lang('MISSING').":\n".$core->lang('DESCRIPTION')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('MUST_COMPLETE_FORM')."\n\n".$project->lang('MISSING').":\n".$project->lang('DESCRIPTION')));
 
 $group['description'] = $_POST['description'];
 $group['owner']       = $_SESSION['id'];
@@ -24,33 +24,33 @@ $group['owner']       = $_SESSION['id'];
 if(isset($create))
 {
     if(empty($_POST['name']) || !is_string($_POST['name']))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MUST_COMPLETE_FORM')."\n\n".$core->lang('MISSING').":\n".$core->lang('NAME')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('MUST_COMPLETE_FORM')."\n\n".$project->lang('MISSING').":\n".$project->lang('NAME')));
 
     $group['name'] = $_POST['name'];
 
-    if($core->getId($group['name']) !== 0)
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USERNAME_EXISTS')));
+    if($project->getId($group['name']) !== 0)
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('USERNAME_EXISTS')));
 
     if(is_numeric($group['name']))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USERNAME_NUMBER')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('USERNAME_NUMBER')));
 
     if(preg_match('#^~#',$group['name']))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('WRONG_USERNAME')));
 
     if(is_numeric(strpos($group['name'],'#')))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': #'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('WRONG_USERNAME')."\n".$project->lang('CHAR_NOT_ALLOWED').': #'));
 
     if(is_numeric(strpos($group['name'],'+')))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': +'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('WRONG_USERNAME')."\n".$project->lang('CHAR_NOT_ALLOWED').': +'));
 
     if(is_numeric(strpos($group['name'],'&')))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': &'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('WRONG_USERNAME')."\n".$project->lang('CHAR_NOT_ALLOWED').': &'));
 
     if(is_numeric(strpos($group['name'],'%')))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_USERNAME')."\n".$core->lang('CHAR_NOT_ALLOWED').': %'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('WRONG_USERNAME')."\n".$project->lang('CHAR_NOT_ALLOWED').': %'));
 
     if(mb_strlen($group['name'],'UTF-8') < Config\MIN_LENGTH_USER)
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USERNAME_SHORT')."\n".$core->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_USER));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('USERNAME_SHORT')."\n".$project->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_USER));
 }
 
 foreach($group as &$value)
@@ -58,11 +58,11 @@ foreach($group as &$value)
 
 //htmlspecialchars empty return values FIX
 if(count(array_filter($group)) != count($group))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': INVALID UTF-8'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR').': INVALID UTF-8'));
 
 if(isset($create)) {
     if(mb_strlen($group['name'],'UTF-8') >= 30)
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USERNAME_LONG')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('USERNAME_LONG')));
 }
 
 if(!isset($_POST['goal']))
@@ -72,12 +72,12 @@ if(!isset($_POST['website']))
     $_POST['website'] = '';
        
 if(!empty($_POST['website']) && !Utils::isValidURL($_POST['website']))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('WEBSITE').': '.$project->lang('INVALID_URL')));
     
 if(!empty($_POST['photo']))
 {
     if(!Utils::isValidURL($_POST['photo']))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('PHOTO').': '.$core->lang('INVALID_URL')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('PHOTO').': '.$project->lang('INVALID_URL')));
         
     if(!($head = get_headers($_POST['photo'],Db::FETCH_OBJ)) || !isset($head['Content-Type']))
         die(NERDZ\Core\Utils::jsonResponse('error','Something wrong with your project image'));

@@ -9,7 +9,7 @@ $vals = [];
 
 $cache = 'nerdz_stats'.Config\SITE_HOST;
 
-function createArray(&$core, &$ret, $query, $position) {
+function createArray(&$user, &$ret, $query, $position) {
 
     if(!($o = Db::query($query, Db::FETCH_OBJ)))
         $ret[$position] = -1;
@@ -22,7 +22,7 @@ if(apc_exists('nerdz_stats'))
 else
 {
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-    $core = new NERDZ\Core\User();
+    $user = new NERDZ\Core\User();
 
     $queries = [
         0 => 'SELECT COUNT(counter) AS cc FROM users',
@@ -35,7 +35,7 @@ else
         7 => 'SELECT COUNT(counter) AS cc FROM users WHERE last > (NOW() - INTERVAL \'4 MINUTES\') AND viewonline IS FALSE',
     ];
     foreach($queries as $position => $query) {
-        createArray($core, $ret, $query, $position);
+        createArray($user, $ret, $query, $position);
     }
     @apc_store($cache,serialize($ret),900); //15 min
 }
@@ -48,10 +48,10 @@ $vals['totpostsprojects_n']     = $ret[4];
 $vals['totcommentsprojects_n']  = $ret[5];
 $vals['totonlineusers_n']       = $ret[6];
 $vals['tothiddenusers_n']       = $ret[7];
-$vals['lastupdate_n']           = $core->getDateTime(Utils::apc_getLastModified($cache));
+$vals['lastupdate_n']           = $user->getDateTime(Utils::apc_getLastModified($cache));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('base/stats');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('base/stats');
 ?>

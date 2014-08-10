@@ -7,9 +7,11 @@ use PDO;
 class comments extends Messages
 {
     private $project;
+    private $user;
     public function __construct()
     {
         $this->project = new Project();
+        $this->user = new User();
     }
 
     private function getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
@@ -31,14 +33,14 @@ class comments extends Messages
             $ret[$i]['uid_n'] = "c{$o->hcid}";
             $ret[$i]['from4link_n'] = \NERDZ\Core\Utils::userLink($users[$o->from]);
             $ret[$i]['message_n'] = parent::bbcode($o->message,1,$cg,1,$o->hcid);
-            $ret[$i]['datetime_n'] = parent::getDateTime($o->time);
+            $ret[$i]['datetime_n'] = $this->user->getDateTime($o->time);
             $ret[$i]['timestamp_n'] = $o->time;
             $ret[$i]['hcid_n'] = $o->hcid;
             $ret[$i]['hpid_n'] = $hpid;
             $ret[$i]['thumbs_n'] = $this->getThumbs($o->hcid, $prj);
             $ret[$i]['uthumb_n'] = $this->getUserThumb($o->hcid, $prj);
             $ret[$i]['revisions_n'] = $this->getRevisionsNumber($o->hcid, $prj);
-            $ret[$i]['caneditcomment_b'] = $o->editable && parent::isLogged() && $o->from == $_SESSION['id'];
+            $ret[$i]['caneditcomment_b'] = $o->editable && $this->user->isLogged() && $o->from == $_SESSION['id'];
             
             if($luck)
             {
@@ -66,7 +68,7 @@ class comments extends Messages
             ++$i;
         }
 
-        if(parent::isLogged() && $i > 1)
+        if($this->user->isLogged() && $i > 1)
             Db::query(array('DELETE FROM "'.$glue.'comments_notify" WHERE "to" = ? AND "hpid" = ?',array($_SESSION['id'],$hpid)),Db::NO_RETURN);
 
         return $ret;
@@ -74,7 +76,7 @@ class comments extends Messages
 
     private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
-        if(!$prj && in_array($to,parent::getRealBlacklist())) // $to is in my blacklist -> don't show comments
+        if(!$prj && in_array($to,$this->user->getRealBlacklist())) // $to is in my blacklist -> don't show comments
             return [];
 
         $glue = $prj ? 'groups_' : '';
@@ -418,7 +420,7 @@ class comments extends Messages
     }
 
     public function getUserThumb($hcid, $prj = false) {
-        if (!parent::isLogged()) {
+        if (!$this->user->isLogged()) {
           return 0;
         }
 
@@ -444,7 +446,7 @@ class comments extends Messages
     }
 
     public function setThumbs($hcid, $vote, $prj = false) {
-        if (!parent::isLogged()) {
+        if (!$this->user->isLogged()) {
           return false;
         }
 

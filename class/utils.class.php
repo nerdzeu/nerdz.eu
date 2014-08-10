@@ -107,5 +107,10 @@ class Utils
         $res = $user->parseDbMessage($msg, $otherInfo);
         return static::jsonResponse($res[0], $res[1]);
     }
+
+    public static function getSiteName()
+    {
+        return Config\SITE_NAME.( User::isOnMobileHost() ? 'Mobile' : '' );
+    }
 }
 ?>

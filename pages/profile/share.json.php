@@ -5,12 +5,12 @@ use NERDZ\Core\Messages;
 use NERDZ\Core\Utils;
 use NERDZ\Core\User;
 
-$core = new Messages();
+$user = new Messages();
 
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+if(!$user->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
     
-if(!$core->refererControl())
+if(!$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
 
 $url     = empty($_POST['url'])     ? false : trim($_POST['url']);
@@ -18,23 +18,23 @@ $comment = empty($_POST['comment']) ? false : trim($_POST['comment']);
 $to      = empty($_POST['to'])      ? false : trim($_POST['to']);
 
 if(!$url || !Utils::isValidURL($url))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('INVALID_URL')));
 
 if($to)
 {
     if(!User::getUsername($to))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USER_NOT_FOUND')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('USER_NOT_FOUND')));
 }
 else
     $to = $_SESSION['id'];
 
 if($_SESSION['id'] != $to)
 {
-    if($core->closedProfile($to))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('CLOSED_PROFILE_DESCR')));
+    if($user->hasClosedProfile($to))
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('CLOSED_PROFILE_DESCR')));
 }
     
-$share = function($to,$url,$message = NULL) use($core)
+$share = function($to,$url,$message = NULL) use($user)
 {
     if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$url))
         $url = "http://{$url}";
@@ -42,14 +42,14 @@ $share = function($to,$url,$message = NULL) use($core)
     if(preg_match('#(.*)youtube.com\/watch\?v=(.{11})#Usim',$url)|| preg_match('#http:\/\/youtu.be\/(.{11})#Usim',$url))
     {
         $message = "[youtube]{$url}[/youtube] ".$message;
-        return $core->addMessage($to,$message);
+        return $user->addMessage($to,$message);
     }
     
     if(preg_match('#http://sprunge.us/([a-z0-9\.]+)\?(.+?)#i',$url,$res))
     {
         $file = file_get_contents('http://sprunge.us/'.$res[1]);
         $message = "[code={$res[2]}]{$file}[/code]".$message;
-        return $core->addMessage($to,$message);
+        return $user->addMessage($to,$message);
     }
 
     $h = @get_headers($url,Db::FETCH_OBJ);
@@ -61,7 +61,7 @@ $share = function($to,$url,$message = NULL) use($core)
         if(preg_match('#(image)#i',$ct))
         {
             $message = "[img]{$url}[/img]".$message;
-            return $core->addMessage($to,$message);
+            return $user->addMessage($to,$message);
         }
         
         if(preg_match('#(htm)#i',$ct))
@@ -81,7 +81,7 @@ $share = function($to,$url,$message = NULL) use($core)
                     }
                 }
             $message = $flag ? "[url={$url}][img]{$img}[/img][/url]".$message : "[url]{$url}[/url] ".$message;
-            return $core->addMessage($to,$message);
+            return $user->addMessage($to,$message);
         }
     }
 };
@@ -89,5 +89,5 @@ $share = function($to,$url,$message = NULL) use($core)
 if($share($to,$url,$comment))
     die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 
-die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 ?>

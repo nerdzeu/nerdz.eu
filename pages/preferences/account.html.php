@@ -2,14 +2,14 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
-$core = new NERDZ\Core\User();
+$user = new NERDZ\Core\User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-if(!$core->isLogged())
-    die($core->lang('REGISTER'));
+if(!$user->isLogged())
+    die($user->lang('REGISTER'));
 
 if(!($obj = Db::query(array('SELECT * FROM "users" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ)))
-    die($core->lang('ERROR'));
+    die($user->lang('ERROR'));
     
 $vals = [];
 $vals['username_n'] = $obj->username;
@@ -27,9 +27,9 @@ $vals['year_n'] = $date[0];
 $vals['month_n'] = $date[1];
 $vals['day_n'] = $date[2];
 $vals['timezones_a'] = DateTimeZone::listIdentifiers();
-$vals['tok_n'] = $core->getCsrfToken('edit');
+$vals['tok_n'] = $user->getCsrfToken('edit');
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('preferences/account');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('preferences/account');
 
 ?>

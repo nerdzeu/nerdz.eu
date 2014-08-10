@@ -127,10 +127,10 @@ class Notification
                 $ret = $this->getProjectsNews($del);
             break;
             case 'follows':
-                $ret = $this->getFollows($del);
+                $ret = $this->getFollowings($del);
             break;
             case 'all':
-                $ret = array_merge($this->getUsers($del),$this->getPosts($del),$this->getProjects($del),$this->getProjectsNews($del),$this->getFollows($del));
+                $ret = array_merge($this->getUsers($del),$this->getPosts($del),$this->getProjects($del),$this->getProjectsNews($del),$this->getFollowings($del));
             break;
         }
         return $ret;
@@ -264,7 +264,7 @@ class Notification
         return $ret;
     }
 
-    private function getFollows($del)
+    private function getFollowings($del)
     {
         $ret = [];
         $i = 0;

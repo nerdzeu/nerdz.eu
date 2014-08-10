@@ -7,14 +7,14 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 use NERDZ\Core\Project;
 use NERDZ\Core\Messages;
 
-$core = new Project();
+$project = new Project();
 $comments = new Comments();
 
-if(!$core->isLogged())
-    die($core->lang('REGISTER'));
+if(!$project->isLogged())
+    die($project->lang('REGISTER'));
  
-if(!$core->refererControl())
-    die($core->lang('ERROR'));
+if(!$project->refererControl())
+    die($project->lang('ERROR'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
@@ -26,7 +26,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
     break;
     
     default:
-        die($core->lang('ERROR'));
+        die($project->lang('ERROR'));
     break;
 }
 ?>

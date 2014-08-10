@@ -81,7 +81,7 @@ class project extends User
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getFollowers($gid)
+    public function getFollowingers($gid)
     {
         if(!($stmt = Db::query(
             [

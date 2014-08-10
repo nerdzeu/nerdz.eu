@@ -11,12 +11,12 @@ $prj = isset($prj);
 $messages = new Messages();
 
 if( empty($hpid) || !($o = $messages->getMessage($hpid, $prj)) )
-    die($core->lang('ERROR'));
+    die($user->lang('ERROR'));
 
-$core->getTPL()->assign($messages->getPost($o, ['project' => $prj ]));
+$user->getTPL()->assign($messages->getPost($o, ['project' => $prj ]));
     
 if(isset($draw))
-    $core->getTPL()->draw(($prj ? 'project' : 'profile').'/post');
+    $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post');
 else
-    return $core->getTPL()->draw(($prj ? 'project' : 'profile').'/post', true);
+    return $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post', true);
 ?>

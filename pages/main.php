@@ -1,5 +1,5 @@
 <?php
-if(!$core->isLogged())
+if(!$user->isLogged())
     die(header('Location: /'));
 
 use NERDZ\Core\Banners;
@@ -15,7 +15,7 @@ foreach($banners as $ban)
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-$longlangs  = $core->availableLanguages(1);
+$longlangs  = $user->getAvailableLanguages(1);
 
 $vals['langs_a'] = [];
 $i = 0;
@@ -26,7 +26,7 @@ foreach($longlangs as $id => $val)
     ++$i;
 }
 
-$l = $core->getFollow($_SESSION['id']);
+$l = $user->getFollowing($_SESSION['id']);
 $tot = count($l);
 
 if($tot>0)
@@ -39,13 +39,13 @@ if($tot>0)
         {
             if(!($o = Db::query(array('SELECT "birth_date" FROM "users" WHERE "counter" = :id',array(':id' => $l[$i])),Db::FETCH_OBJ)))
             {
-                echo $core->lang('ERROR');
+                echo $user->lang('ERROR');
                 break;
             }
             $myarray[$i]['id_n'] = $l[$i];
             $myarray[$i]['username_n'] = User::getUsername($l[$i]);
             $myarray[$i]['username4link_n'] = \NERDZ\Core\Utils::userLink($myarray[$i]['username_n']);
-            $myarray[$i]['online_b'] = $core->isOnline($l[$i]);
+            $myarray[$i]['online_b'] = $user->isOnline($l[$i]);
             if($myarray[$i]['online_b'])
                 ++$c;
             $myarray[$i]['birthday_b'] = date('d-m',strtotime($o->birth_date)) == date('d-m',time());
@@ -80,7 +80,7 @@ $vals['followedtot_n'] = $tot;
 $vals['followedonlinetot_n'] = $c;
 
 if(!($r = Db::query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
-    die($core->lang('ERROR'));
+    die($user->lang('ERROR'));
     
 $vals['ownerof_a'] = [];
 $i = 0;
@@ -92,7 +92,7 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
 }
 
 if(!($r = Db::query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."to" WHERE "from" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
-    die($core->lang('ERROR'));
+    die($user->lang('ERROR'));
     
 $vals['memberof_a'] = [];
 $i = 0;
@@ -103,6 +103,6 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
     ++$i;
 }
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('home/layout');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('home/layout');
 ?>

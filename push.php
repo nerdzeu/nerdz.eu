@@ -11,10 +11,10 @@ function jsonResponse($object) {
     exit(json_encode($object, JSON_UNESCAPED_UNICODE));
 }
 
-$core = new User();
+$user = new User();
 try {
     
-    if(!$core->isLogged()) {
+    if(!$user->isLogged()) {
         jsonResponse(['ERROR' => 'Not logged']);
     }
 
@@ -22,9 +22,9 @@ try {
         jsonResponse(['ERROR' => 'Action not set']);
     }
 
-    $thisUser = $core->getUserId();
+    $thisUser = $user->getId();
 
-    if(!$core->floodPushRegControl($thisUser)) {
+    if(!$user->floodPushRegControl($thisUser)) {
         die('NO SPAM');
     }
 
@@ -39,7 +39,7 @@ try {
                 jsonResponse(['ERROR' => 'Field not set']);
             }
 
-            $core->setPush($thisUser, true);
+            $user->setPush($thisUser, true);
                  
             if(!$pushed->exists($thisUser)){
                 if($pushed->addUser($thisUser)[0] !== Pushed::$ACCEPTED) {
@@ -61,7 +61,7 @@ try {
                 jsonResponse(['ERROR' => 'Field not set']);
             }
 
-            $core->setPush($thisUser, true);
+            $user->setPush($thisUser, true);
                  
             if(!$pushed->exists($thisUser)){
                 jsonResponse(['ERROR' => 'No push for this user']);

@@ -1,11 +1,11 @@
 <?php
-if(!$core->isLogged())
+if(!$user->isLogged())
     die(header('Location: /'));
 $vals = [];
-$vals['description_n'] = $core->lang('PREFERENCES_DESCR');
+$vals['description_n'] = $user->lang('PREFERENCES_DESCR');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('preferences/layout');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('preferences/layout');
 ?>

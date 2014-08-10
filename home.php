@@ -4,8 +4,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 use NERDZ\Core\User;
 
-$core = new NERDZ\Core\User();
-$tplcfg = $core->getTemplateCfg();
+$user = new NERDZ\Core\User();
+$tplcfg = $user->getTemplateCfg();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 ?>
 <!DOCTYPE html>
@@ -13,7 +13,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     <head>
         <meta name="author" content="Paolo Galeone" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title><?=$core->getSiteName(); ?> - Homepage</title>
+        <title><?=NERDZ\Core\Utils::getSiteName(); ?> - Homepage</title>
 <?php
     $headers = $tplcfg->getTemplateVars('home');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

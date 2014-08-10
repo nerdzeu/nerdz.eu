@@ -41,6 +41,7 @@ class Config
             'POSTGRESQL_PASS'      => -1,
             'POSTGRESQL_PORT'      => -1,
             'SITE_HOST'            => -1,
+            'SITE_NAME'            => -1,
             'MOBILE_HOST'          => -1,
             'STATIC_DOMAIN'        => -1,
             'ISSUE_GIT_KEY'        => -1,

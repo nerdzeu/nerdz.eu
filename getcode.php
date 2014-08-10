@@ -4,7 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Messages;
 use NERDZ\Core\Db;
 
-$core = new Messages();
+$user = new Messages();
 
 $ncode = isset($_GET['ncode']) && is_numeric($_GET['ncode']) && intval($_GET['ncode']) > 0 ? $_GET['ncode'] : 1;
 --$ncode;
@@ -54,7 +54,7 @@ elseif(isset($pcid) || isset($gcid))
 }
 else
     die();
-$codes = $core->getCodes($o->message);
+$codes = $user->getCodes($o->message);
 if ( isset($codes[$ncode]['code']) && isset($codes[$ncode]['lang']) ) {
     switch(strtolower(trim($codes[$ncode]['lang']))) {
         case 'js':

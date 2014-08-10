@@ -4,18 +4,18 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Notification;
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-$core = new Notification();
+$user = new Notification();
 
-if($core->isLogged())
+if($user->isLogged())
 {
     $e = $vals = [];
-    $a = $core->show(null, !isset ($_POST['doNotDelete']));
+    $a = $user->show(null, !isset ($_POST['doNotDelete']));
     $y = count($a);
     $f = true;
     if(!$y)
     {
         $f = false;
-        $a = $core->story();
+        $a = $user->story();
         $y = count($a);
     }
     for($i=0;$i<$y;++$i)
@@ -56,8 +56,8 @@ if($core->isLogged())
         $e[$i][9] = isset($a[$i]['from']) ? $a[$i]['from'] : 0;
     }
     
-    if($f && !$core->updateStory($a))
-        die($core->lang('ERROR ASD'));
+    if($f && !$user->updateStory($a))
+        die($user->lang('ERROR ASD'));
         
     usort($e,array('NERDZ\\Core\\Notification','echoSort'));
     $raggr = 1; //set variable via POST to decide if we have to raggrupate Notifications or not
@@ -73,7 +73,7 @@ if($core->isLogged())
             {
                 //user ti sta seguendo
                 $str[$c]['type_n'] = 'new_follower';
-                $str[$c]['datetime_n'] = $core->getDateTime($e[$i][1]);
+                $str[$c]['datetime_n'] = $user->getDateTime($e[$i][1]);
                 $str[$c]['from_n'] = $e[$i][8];
                 $str[$c]['from4link_n'] = \NERDZ\Core\Utils::userLink($e[$i][8]);
                 ++$c;
@@ -82,7 +82,7 @@ if($core->isLogged())
                 if(!in_array($ss,$x))
                 {
                     $x[] = $ss;
-                    $str[$c]['datetime_n'] = $core->getDateTime($e[$i][1]);
+                    $str[$c]['datetime_n'] = $user->getDateTime($e[$i][1]);
                     
                     if($e[$i][4] == 'c')
                     {
@@ -124,13 +124,13 @@ if($core->isLogged())
         
         $vals['list_a'] = $str;
         
-        $core->getTPL()->assign($vals);
-        $core->getTPL()->draw('profile/notify');
+        $user->getTPL()->assign($vals);
+        $user->getTPL()->draw('profile/notify');
     }
     else
         for($i=0;$i<$y;++$i)
             echo $e[$i][0];
 }
 else
-    echo $core->lang('REGISTER');
+    echo $user->lang('REGISTER');
 ?>

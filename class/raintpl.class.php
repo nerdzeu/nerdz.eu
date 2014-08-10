@@ -164,7 +164,7 @@ final class RainTPL
 
 
         // Cache is off and return_string is false, Rain just echo the template
-        $core = new User();
+        $user = new User();
         if(!$return_string)
         {
             extract( $this->var, EXTR_OVERWRITE );
@@ -180,7 +180,7 @@ final class RainTPL
             unset( $this->tpl );
             return $raintpl_contents;
         }
-        unset($core);
+        unset($user);
     }
     
     /**
@@ -257,7 +257,7 @@ final class RainTPL
         $template_code = preg_replace_callback ( "/##XML(.*?)XML##/s", array($this, 'xml_reSubstitution'), $template_code ); 
 
         //compile template
-        $template_compiled = "<?php if(!class_exists('".__NAMESPACE__."\\RainTPL')) die('".__NAMESPACE__."\\RainTPL does not exists'); if(!isset(\$core)) die('core not set');?>" . $this->compileTemplate( $template_code, $tpl_basedir );
+        $template_compiled = "<?php if(!class_exists('".__NAMESPACE__."\\RainTPL')) die('".__NAMESPACE__."\\RainTPL does not exists'); if(!isset(\$user)) die('core not set');?>" . $this->compileTemplate( $template_code, $tpl_basedir );
         
 
         // fix the php-eating-newline-after-closing-tag-problem
@@ -758,7 +758,7 @@ final class RainTPL
                                          "isset($php_var$extra_var) ? $php_var$extra_var : ''"  :
                                          "$php_var$extra_var"
                                     ) :
-                                    "\$core->lang('".strtoupper(ltrim("$php_var$extra_var",'$'))."')"
+                                    "\$user->lang('".strtoupper(ltrim("$php_var$extra_var",'$'))."')"
                                 ) 
                                 : $php_var.$extra_var
                             ) .$php_right_delimiter;

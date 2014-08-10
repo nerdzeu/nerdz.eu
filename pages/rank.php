@@ -49,9 +49,9 @@ else
 
 $vals['list_a'] = $ret;
 $vals['monthly_b'] = !$mo;
-$vals['lastupdate_n'] = $core->getDateTime(Utils::apc_getLastModified($path));
+$vals['lastupdate_n'] = $user->getDateTime(Utils::apc_getLastModified($path));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('base/rank');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('base/rank');
 ?>

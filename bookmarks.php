@@ -2,11 +2,11 @@
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
     
-    $core = new NERDZ\Core\Messages();
-    if(!$core->isLogged())
+    $user = new NERDZ\Core\Messages();
+    if(!$user->isLogged())
         die(header('Location: /'));
 
-    $tplcfg = $core->getTemplateCfg();
+    $tplcfg = $user->getTemplateCfg();
     
     ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 ?>
@@ -17,7 +17,7 @@
     <meta name="author" content="Paolo Galeone" />
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
     <meta name="robots" content="index,follow" />
-    <title><?= $core->getSiteName(); ?> - Bookmarks </title>
+    <title><?= NERDZ\Core\Utils::getSiteName(); ?> - Bookmarks </title>
 <?php
     $headers = $tplcfg->getTemplateVars('bookmarks');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

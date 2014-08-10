@@ -6,11 +6,11 @@ use NERDZ\Core\Config;
 use NERDZ\Core\RedisSessionHandler;
 use NERDZ\Core\Utils;
 
-$core = new Notification();
+$user = new Notification();
 
 header("Content-Type: text/event-stream\n\n");
 
-$push = function($event, $status, $message) use ($core) {
+$push = function($event, $status, $message) use ($user) {
     echo 'event: ', $event, "\n",
          'data: ',  Utils::toJsonResponse($status,$message), "\n\n";
     ob_flush();
@@ -31,15 +31,15 @@ $dontSendCacheLimiter = function() {
 };
 
 
-if(!$core->isLogged()) {
-    $push('notification', 'error', $core->lang('REGISTER'));
-    $push('pm', 'error', $core->lang('REGISTER'));
+if(!$user->isLogged()) {
+    $push('notification', 'error', $user->lang('REGISTER'));
+    $push('pm', 'error', $user->lang('REGISTER'));
 } else {
     //outside of the loop, to send first events as fast as possible
-    $notification = $core->count(false,true);
+    $notification = $user->count(false,true);
     $push('notification', 'ok', $notification);
 
-    $pm = $core->countPms();
+    $pm = $user->countPms();
     $push('pm', 'ok', $pm);
 
     session_write_close(); //unlock $_SESSION (other scripts can now run)
@@ -48,13 +48,13 @@ if(!$core->isLogged()) {
     $viewonline = empty($_SESSION['mark_offline']) ? '1' : '0';
 
     while(1) {
-        $newNotifications = $core->count(false,true);
+        $newNotifications = $user->count(false,true);
         if($newNotifications != $notification) {
             $notification = $newNotifications;
             $push('notification', 'ok', $notification);
         }
 
-        $newPm = $core->countPms();
+        $newPm = $user->countPms();
         if($newPm != $pm) {
             $pm = $newPm;
             $push('pm', 'ok', $pm);

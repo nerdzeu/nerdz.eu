@@ -80,7 +80,7 @@ final class FastFetch {
             throw new FFException(FFErrCode::LIMIT_EXCEEDED);
         }
         
-        $me = $this->mPm->getUserId();
+        $me = $this->mPm->getId();
         
         $list = Db::query (
             [

@@ -6,11 +6,11 @@ use NERDZ\Core\Db;
 use NERDZ\Core\Utils;
 use NERDZ\Core\User;
 // Displays the stuff contained in the <head> tag.
-$logged = $core->isLogged();
+$logged = $user->isLogged();
 $uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
-$tno = $core->getTemplate();
+$tno = $user->getTemplate();
 /* BEGIN MOBILE_META_TAGS */
-if ($core->isMobile()) { ?>
+if (User::isOnMobileHost()) { ?>
     <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="mobile-web-app-capable" content="yes">
 <?php
@@ -26,7 +26,7 @@ if ($uagdata['platform'] == 'Windows' && (float)$uagdata['version'] >= 10) {
 <?php
 } /* END WINDOWS_META_TAGS */
 /* BEGIN FAVICON */
-if ($core->isMobile()) { ?>
+if (User::isOnMobileHost()) { ?>
     <link rel="shortcut icon" sizes="196x196" href="<?php echo $static_domain;?>/static/images/droidico.png">
 <?php } else { ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $static_domain;?>/static/images/favicon.ico" />
@@ -98,7 +98,7 @@ if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['sta
 /* END NERDZ_STATIC_DATA */
 /* BEGIN BLACKLIST_STUFF */
 // this also closes the main <script> tag opened before.
-if ($logged && ($blist = $core->getBlacklist()))
+if ($logged && ($blist = $user->getBlacklist()))
 {
     $jsonObj = [];
     $blistcss = '<style type="text/css">';

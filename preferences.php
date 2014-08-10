@@ -2,8 +2,8 @@
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
     
-    $core = new NERDZ\Core\User();
-    $tplcfg = $core->getTemplateCfg();
+    $user = new NERDZ\Core\User();
+    $tplcfg = $user->getTemplateCfg();
     
     ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 ?>
@@ -12,7 +12,7 @@
     <head>
         <meta name="author" content="Paolo Galeone" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title><?= $core->getSiteName(), ' - ', $core->lang('PREFERENCES') ?></title>
+        <title><?= NERDZ\Core\Utils::getSiteName(), ' - ', $user->lang('PREFERENCES') ?></title>
 <?php
     $headers = $tplcfg->getTemplateVars('preferences');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

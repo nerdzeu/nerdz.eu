@@ -5,18 +5,18 @@ use NERDZ\Core\Project;
 use NERDZ\Core\Captcha;
 use NERDZ\Core\Db;
 
-$core = new Project();
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+$project = new Project();
+if(!$project->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('REGISTER')));
 
 $cptcka = new Captcha();
 
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 
 if(!$captcha)
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MISSING')."\n".$core->lang('CAPTCHA')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('MISSING')."\n".$project->lang('CAPTCHA')));
 if(!$cptcka->check($captcha))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_CAPTCHA')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('WRONG_CAPTCHA')));
 
 $create = true; //required by validateproject.php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateproject.php';
@@ -31,7 +31,7 @@ if(Db::NO_ERRNO != Db::query(
          ]
      ],Db::FETCH_ERRNO)
  )
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
         
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

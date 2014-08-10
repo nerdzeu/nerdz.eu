@@ -7,10 +7,10 @@
     use NERDZ\Core\Db;
     use NERDZ\Core\Config;
 
-    $core = new User();
+    $user = new User();
     $project = new Project();
-    $Messages = new Messages();
-    $tplcfg = $core->getTemplateCfg();
+    $messages = new Messages();
+    $tplcfg = $user->getTemplateCfg();
     
     $gid = isset($_GET['gid']) && is_numeric($_GET['gid']) ? $_GET['gid'] : false;
     $pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? $_GET['pid'] : false;
@@ -24,7 +24,7 @@
     if($gid)
     {
         if(false === ($info = $project->getObject($gid)))
-            $name = $core->lang('PROJECT_NOT_FOUND');
+            $name = $user->lang('PROJECT_NOT_FOUND');
         else
         {
             $found = true;
@@ -42,7 +42,7 @@
         $name = 'Create';
     ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-    $a = explode(' ',$Messages->parseNewsMessage($Messages->stripTags(str_replace("\n",' ',$post->message))));
+    $a = explode(' ',$messages->parseNews($messages->stripTags(str_replace("\n",' ',$post->message))));
 
     $i = 25;
     while((isset($a[$i])))
@@ -78,7 +78,7 @@
             echo $name;
         if($pid)
             echo ' #', $pid;
-        echo ' @ '.$core->getSiteName();
+        echo ' @ '.NERDZ\Core\Utils::getSiteName();
     ?></title>
         <link rel="alternate" type="application/atom+xml" title="<?php echo $name; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $gid; ?>&amp;project=1" />
 <?php
@@ -93,12 +93,12 @@
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
     if($create)
     {
-        if($core->isLogged())
+        if($user->isLogged())
             require($_SERVER['DOCUMENT_ROOT'].'/pages/project/create.php');
         else die(header('Location: /'));
     }
     elseif(!$found)
-        echo $core->lang('PROJECT_NOT_FOUND');
+        echo $user->lang('PROJECT_NOT_FOUND');
     else
         require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project.php';
     

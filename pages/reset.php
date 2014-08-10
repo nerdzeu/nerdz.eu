@@ -1,6 +1,6 @@
 <?php
-if($core->isLogged())
+if($user->isLogged())
     die(header('Location: /home.php'));
 
-$core->getTPL()->draw('base/reset');
+$user->getTPL()->draw('base/reset');
 ?>

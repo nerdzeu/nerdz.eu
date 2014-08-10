@@ -10,15 +10,14 @@ use NERDZ\Core;
 
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-$core     = new NERDZ\Core\User();
+$user     = new NERDZ\Core\User();
 $messages = new NERDZ\Core\Messages();
-$comments = new NERDZ\Core\Comments();
 
-$logged   = $core->isLogged();
-$id       = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
+$logged   = $user->isLogged();
 
 // boards
-$limit      = isset($_POST['limit']) ? $core->limitControl($_POST['limit'],10)     : 10;
+$id       = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
+$limit      = isset($_POST['limit']) ? $user->limitControl($_POST['limit'],10)     : 10;
 $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
 // homepage
@@ -52,7 +51,8 @@ $vals['list_a'] = $messages->getMessages($id,
         $beforeHpid     ? [ 'hpid'         => $beforeHpid ]    : [],
         $onlyfollowed   ? [ 'onlyfollowed' => $onlyfollowed ]  : [],
         $lang           ? [ 'lang'         => $lang ]          : [],
-        $search         ? [ 'search'       => $search ]        : []
+        $search         ? [ 'search'       => $search ]        : [],
+        [ 'truncate' => !$id ] // in home, truncate post
     ));
 
 if(empty($vals['list_a']) || (!$logged && $beforeHpid))
@@ -60,6 +60,6 @@ if(empty($vals['list_a']) || (!$logged && $beforeHpid))
 
 $vals['count_n'] = count($vals['list_a']);
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw($path.'/postlist');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw($path.'/postlist');
 ?>

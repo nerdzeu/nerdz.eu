@@ -43,6 +43,10 @@ class Variables
         // SMTP server password
         'SMTP_PASS'              => 'KFC',
 
+        // General configuration
+        // Your website name
+        'SITE_NAME'              => 'NERDZ',
+
         // Domain configuration. The protocol should not be included.
         // Your NERDZ hostname. If you are running NERDZ on your
         // PC, use 'localhost'.

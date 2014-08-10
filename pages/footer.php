@@ -1,9 +1,9 @@
 <?php
 $vals = [];
-$vals['logged_b'] = $core->isLogged();
+$vals['logged_b'] = $user->isLogged();
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('base/footer');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('base/footer');
 
 $fl = in_array($_SERVER['SCRIPT_NAME'], array('/profile.php','/project.php'));
 $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';

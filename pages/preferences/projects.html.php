@@ -4,17 +4,17 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\User;
 use NERDZ\Core\Db;
 
-$core = new User();
+$user = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     
-if(!$core->refererControl())
-    die($core->lang('ERROR'));
+if(!$user->refererControl())
+    die($user->lang('ERROR'));
     
-if(!$core->isLogged())
-    die($core->lang('REGISTER'));
+if(!$user->isLogged())
+    die($user->lang('REGISTER'));
     
 $vals = [];
-$vals['tok_n'] = $core->getCsrfToken('edit');
+$vals['tok_n'] = $user->getCsrfToken('edit');
 
 if(!($r = Db::query(array('SELECT "name","counter" FROM "groups" WHERE "owner" = ?',array($_SESSION['id'])),Db::FETCH_STMT)))
     $vals['myprojects_a'] = [];
@@ -29,6 +29,6 @@ else
         ++$i;
     }
 }
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('preferences/projects');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('preferences/projects');
 ?>

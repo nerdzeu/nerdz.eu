@@ -2,19 +2,19 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Pms;
 ob_start('ob_gzhandler');
-$core = new Pms();
+$user = new Pms();
 
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+if(!$user->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
     
 if(empty($_POST['from']) || !is_numeric($_POST['from']) || empty($_POST['to']) || !is_numeric($_POST['to']))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('SOMETHING_MISS')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('SOMETHING_MISS')));
     
-if(!$core->refererControl())
+if(!$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error','No spam or spam-bot here'));
 
-if($core->deleteConversation($_POST['from'],$_POST['to']))
+if($user->deleteConversation($_POST['from'],$_POST['to']))
     die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
     
-die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 ?>

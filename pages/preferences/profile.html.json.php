@@ -4,16 +4,16 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 use NERDZ\Core\Utils;
 use NERDZ\Core\User;
-$core = new User();
+$user = new User();
 
-if(!$core->refererControl())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': referer'));
+if(!$user->refererControl())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
     
-if(!$core->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': token'));
+if(!$user->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
     
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+if(!$user->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
     
 $user['interests']  = isset($_POST['interests'])  ? trim($_POST['interests'])               : '';
 $user['biography']  = isset($_POST['biography'])  ? trim($_POST['biography'])               : '';
@@ -32,19 +32,19 @@ $closed             = isset($_POST['closed']);
 $flag = true;
 
 if(!empty($user['website']) && !Utils::isValidURL($user['website']))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WEBSITE').': '.$core->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WEBSITE').': '.$user->lang('INVALID_URL')));
     
 if(!empty($user['userscript']) && !Utils::isValidURL($user['userscript']))
-    die(NERDZ\Core\Utils::jsonResponse('error','Userscript: '.$core->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::jsonResponse('error','Userscript: '.$user->lang('INVALID_URL')));
 
 if(!empty($user['github']) && !preg_match('#^https?://(www\.)?github\.com/[a-z0-9]+$#i',$user['github']))
-    die(NERDZ\Core\Utils::jsonResponse('error','GitHub: '.$core->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::jsonResponse('error','GitHub: '.$user->lang('INVALID_URL')));
 
-if(false == ($obj = $core->getUserObject($_SESSION['id'])))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+if(false == ($obj = $user->getObject($_SESSION['id'])))
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
     
 if(!empty($user['jabber']) && (false == filter_var($user['jabber'],FILTER_VALIDATE_EMAIL)))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('JABBER').': '.$core->lang('MAIL_NOT_VALID')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('JABBER').': '.$user->lang('MAIL_NOT_VALID')));
     
 if(empty($user['dateformat']))
     $user['dateformat'] = 'd/m/Y, H:i';
@@ -55,14 +55,14 @@ if(!empty($user['facebook']) &&
           !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/([a-z0-9_\-\.]+)#i',$user['facebook'])
         )
   )
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Facebook URL'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Facebook URL'));
 
 
 if(!empty($user['twitter']) && !preg_match('#^https?://twitter.com/([a-z0-9_]+)#i',$user['twitter']))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Twitter URL'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Twitter URL'));
 
 if(!empty($user['steam']) && strlen($user['steam']) > 35)
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Steam'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Steam'));
     
 foreach($user as &$value)
     $value = htmlspecialchars($value,ENT_QUOTES,'UTF-8');
@@ -105,11 +105,11 @@ if(
            $par
         ],Db::FETCH_ERRNO)
  )
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
 if($closed)
 {
-    if(!$core->closedProfile($_SESSION['id']))
+    if(!$user->hasClosedProfile($_SESSION['id']))
         if(Db::NO_ERRNO != Db::query(
                     [
                         'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter',
@@ -119,7 +119,7 @@ if($closed)
                         ]
                     ],Db::FETCH_ERRNO)
           )
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 }
 else {
     if(Db::NO_ERRNO != Db::query(
@@ -130,20 +130,20 @@ else {
                         ':counter' => $_SESSION['id']
                     ]
                 ],Db::FETCH_ERRNO))
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 }
 
 $_SESSION['dateformat'] = $user['dateformat'];
 
 if(isset($_POST['whitelist']))
 {
-    $oldlist = $core->getWhitelist($_SESSION['id']);
+    $oldlist = $user->getWhitelist($_SESSION['id']);
 
     $m = array_filter(array_unique(explode("\n",$_POST['whitelist'])));
     $newlist = [];
     foreach($m as $v)
     {
-        $uid = $core->getUserId(trim($v));
+        $uid = $user->getId(trim($v));
         if(is_numeric($uid))
         {
             if(Db::NO_ERRNO != Db::query(
@@ -156,11 +156,11 @@ if(isset($_POST['whitelist']))
                             ':uid' => $uid
                         ]
                     ],Db::FETCH_ERRNO))
-                die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').'1'));
+                die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'1'));
             $newlist[] = $uid;
         }
         else
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Invalid user - '.$v));
+            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Invalid user - '.$v));
     }
     $toremove = [];
     foreach($oldlist as $val)
@@ -176,7 +176,7 @@ if(isset($_POST['whitelist']))
                         ':val' => $val
                     ]
                 ],Db::FETCH_ERRNO))
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').'4'));
+            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'4'));
 }
         
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));

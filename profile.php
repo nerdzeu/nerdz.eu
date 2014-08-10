@@ -6,7 +6,7 @@
     use NERDZ\Core\User;
     use NERDZ\Core\Config;
     
-    $core = new Messages();
+    $messages = new Messages();
     $user = new User();
     $tplcfg = $user->getTemplateCfg();
     
@@ -15,7 +15,7 @@
     $found = true;
     if($id)
     {
-        if(false === ($info = $user->getUserObject($id))) /* false se l'id richiesto non esiste*/
+        if(false === ($info = $user->getObject($id))) /* false se l'id richiesto non esiste*/
         {
             $username = $user->lang('USER_NOT_FOUND');
             $found = false;
@@ -46,7 +46,7 @@
 
     ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-    $a = explode(' ',$core->parseNewsMessage($core->stripTags(str_replace("\n",' ',$post->message))));
+    $a = explode(' ',$messages->parseNews($messages->stripTags(str_replace("\n",' ',$post->message))));
 
     $i = 25;
     while((isset($a[$i])))
@@ -83,7 +83,7 @@
         echo $username;
     if($pid)
         echo ' #', $pid;
-    echo ' @ '.$core->getSiteName();
+    echo ' @ '.NERDZ\Core\Utils::getSiteName();
 ?></title>
         <link rel="alternate" type="application/atom+xml" title="<?php echo $username; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $id; ?>" />
 <?php
@@ -100,7 +100,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
 if($found)
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile.php';
 else
-    echo $core->lang('USER_NOT_FOUND');
+    echo $user->lang('USER_NOT_FOUND');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
 ?>

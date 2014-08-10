@@ -5,15 +5,15 @@ use NERDZ\Core\Db;
 use NERDZ\Core\User;
 use NERDZ\Core\Captcha;
 
-$core = new User();
+$user = new User();
 $cptcka = new Captcha();
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 
 if(!$captcha)
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MISSING').': '.$core->lang('CAPTCHA')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('MISSING').': '.$user->lang('CAPTCHA')));
 
 if(!$cptcka->check($captcha))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_CAPTCHA')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_CAPTCHA')));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php';
 
@@ -30,7 +30,7 @@ $ret = Db::query(
               ':gender'          => $user['gender'],
               ':timezone'        => $user['timezone'],
               ':date'            => $birth['date'],
-              ':lang'            => $core->getBrowserLanguage(),
+              ':lang'            => $user->getBrowserLanguage(),
               ':remote_addr'     => $_SERVER['REMOTE_ADDR'],
               ':http_user_agent' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
          ]
@@ -39,9 +39,9 @@ $ret = Db::query(
 if($ret != Db::NO_ERRSTR)
     die(NERDZ\Core\Utils::jsonDbResponse($ret));
 
-if(!$core->login($user['username'], $user['password']))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Login'));
+if(!$user->login($user['username'], $user['password']))
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Login'));
 
-die(NERDZ\Core\Utils::jsonResponse('ok',$core->lang('LOGIN_OK')));
+die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('LOGIN_OK')));
 
 ?>

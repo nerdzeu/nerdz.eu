@@ -1,9 +1,9 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$core = new NERDZ\Core\User();
+$user = new NERDZ\Core\User();
 
-if(!($logged = $core->isLogged()))
-    die($core->lang('REGISTER'));
+if(!($logged = $user->isLogged()))
+    die($user->lang('REGISTER'));
 
 $prj      = isset($_GET['action']) && $_GET['action'] == 'project';
 $truncate = true;

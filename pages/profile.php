@@ -9,7 +9,7 @@ use NERDZ\Core\Messages;
 use NERDZ\Core\Stuff;
 
 $vals = [];
-$vals['logged_b'] = $core->isLogged();
+$vals['logged_b'] = $user->isLogged();
 $vals['id_n'] = $info->counter;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
@@ -66,13 +66,13 @@ if($enter)
             'SELECT EXTRACT(EPOCH FROM "registration_time") AS registration_time from "users" WHERE "counter" = :id',
             $ida
         ],Db::FETCH_OBJ)))
-            die($core->lang('ERROR'));
+            die($user->lang('ERROR'));
 
-    $vals['registrationtime_n'] = $core->getDateTime($o->registration_time);
+    $vals['registrationtime_n'] = $user->getDateTime($o->registration_time);
     $vals['username_n'] = $info->username;
     $vals['username4link_n'] = \NERDZ\Core\Utils::userLink($info->username);
-    $vals['lang_n'] = $core->getUserLanguage($info->counter);
-    $vals['online_b'] = $core->isOnline($info->counter);
+    $vals['lang_n'] = $user->getLanguage($info->counter);
+    $vals['online_b'] = $user->isOnline($info->counter);
 
     $vals['name_n'] = ucfirst($info->name);
     $vals['surname_n'] = ucfirst($info->surname);
@@ -91,7 +91,7 @@ if($enter)
                 $ida
             ],Db::FETCH_OBJ)
         ))
-            die($core->lang('ERROR'));
+            die($user->lang('ERROR'));
 
         $n = $o->cc;
 
@@ -101,7 +101,7 @@ if($enter)
                 $ida
             ],Db::FETCH_OBJ)
         ))
-            die($core->lang('ERROR'));
+            die($user->lang('ERROR'));
 
         $n += $o->cc;
         $a = Stuff::stupid($n);
@@ -124,18 +124,18 @@ if($enter)
             $ida
         ],Db::FETCH_OBJ)
     ))
-        die($core->lang('ERROR'));
+        die($user->lang('ERROR'));
 
-    $vals['lastvisit_n'] = $core->getDateTime($o->last);
+    $vals['lastvisit_n'] = $user->getDateTime($o->last);
 
-    if(!$core->closedProfile($info->counter))
+    if(!$user->hasClosedProfile($info->counter))
         $vals['canwrite_b'] = true;
     else
-        $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['id'] || in_array($_SESSION['id'],$core->getWhitelist($info->counter)));
+        $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['id'] || in_array($_SESSION['id'],$user->getWhitelist($info->counter)));
 
     $vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
 
-    $f = $core->getFriends($info->counter);
+    $f = $user->getFriends($info->counter);
 
     if(!empty($f))
     {
@@ -147,7 +147,7 @@ if($enter)
         $amigos = [];
         $c = 0;
         foreach($f as $val)
-            if(($name = $core->getUserName($val)))
+            if(($name = $user->getUserName($val)))
             {
                 $amigos[$c]['username_n'] = $name;
                 $amigos[$c]['username4link_n'] = \NERDZ\Core\Utils::userLink($name);
@@ -159,7 +159,7 @@ if($enter)
     else
         $amigos = [];
 
-    $vals['gender_n'] = $core->lang($info->gender == 1 ? 'MALE' : 'FEMALE');
+    $vals['gender_n'] = $user->lang($info->gender == 1 ? 'MALE' : 'FEMALE');
 
     $vals['biography_n'] = (new Messages())->bbcode($info->biography,1);
     $vals['quotes_a'] = explode("\n",trim($info->quotes));
@@ -190,7 +190,7 @@ if($enter)
             $ida
         ],Db::FETCH_STMT)
     ))
-        die($core->lang('ERROR'));
+        die($user->lang('ERROR'));
 
     $vals['ownerof_a'] = [];
     $i = 0;
@@ -207,7 +207,7 @@ if($enter)
             $ida
         ],Db::FETCH_STMT)
     ))
-        die($core->lang('ERROR'));
+        die($user->lang('ERROR'));
 
     $vals['memberof_a'] = [];
     $i = 0;
@@ -224,7 +224,7 @@ if($enter)
             $ida
         ],Db::FETCH_STMT)
     ))
-        die($core->lang('ERROR'));
+        die($user->lang('ERROR'));
 
     $vals['userof_a'] = [];
     $i = 0;
@@ -264,8 +264,8 @@ if($enter)
                ,Db::FETCH_OBJ)
            ))
         {
-            $core->getTPL()->assign('banners_a',$vals['banners_a']);
-            $core->getTPL()->draw('profile/postnotfound');
+            $user->getTPL()->assign('banners_a',$vals['banners_a']);
+            $user->getTPL()->draw('profile/postnotfound');
         }
         else
         {
@@ -277,8 +277,8 @@ if($enter)
     }
     if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
     {
-        $core->getTPL()->assign($vals);
-        $core->getTPL()->draw('profile/layout');
+        $user->getTPL()->assign($vals);
+        $user->getTPL()->draw('profile/layout');
     }
 }
 else
@@ -286,7 +286,7 @@ else
     $included = true;
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
     $vals['presentation_n'] = ''; //cancello la presentazione
-    $core->getTPL()->assign($vals);
-    $core->getTPL()->draw('profile/closed');
+    $user->getTPL()->assign($vals);
+    $user->getTPL()->draw('profile/closed');
 }
 ?>

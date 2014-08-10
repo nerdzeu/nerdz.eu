@@ -7,31 +7,31 @@ use NERDZ\Core\Config;
 use NERDZ\Core\Captcha;
 use NERDZ\Core\Db;
 
-$core = new User();
+$user = new User();
 $cptcka = new Captcha();
 
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 if(!$captcha)
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MISSING').': '.$core->lang('CAPTCHA')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('MISSING').': '.$user->lang('CAPTCHA')));
 if(!$cptcka->check($captcha))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('WRONG_CAPTCHA')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_CAPTCHA')));
 
 $email = isset($_POST['email']) ? trim($_POST['email']) : false;
 if(!$email || !filter_var($email,FILTER_VALIDATE_EMAIL))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('MAIL_NOT_VALID')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('MAIL_NOT_VALID')));
 
 if(!($obj = Db::query(array('SELECT "username","counter" FROM "users" WHERE "email" = :email',array(':email' => $email)),Db::FETCH_OBJ)))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('USER_NOT_FOUND')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('USER_NOT_FOUND')));
 
 $pass = Captcha::randomString(Config\MIN_LENGTH_PASS);
 
 if(Db::NO_ERRNO != Db::query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),Db::FETCH_ERRNO))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': retry'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': retry'));
 
 $subject = 'NERDZ PASSWORD';
 $msg = '<a href="http://'.Config\SITE_HOST.'">NERDZ</a><br /><br />';
-$msg.= $core->lang('USERNAME').': '.$obj->username.'<br />';
-$msg.= $core->lang('PASSWORD').': '.$pass.'<br />';
+$msg.= $user->lang('USERNAME').': '.$obj->username.'<br />';
+$msg.= $user->lang('PASSWORD').': '.$pass.'<br />';
 $msg.= "IP: {$_SERVER['REMOTE_ADDR']}";
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
@@ -52,5 +52,5 @@ $mail->AddAddress($email);
 if($mail->Send())
     die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 
-die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': contact support@nerdz.eu or retry'));
+die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': contact support@nerdz.eu or retry'));
 ?>

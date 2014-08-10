@@ -5,13 +5,13 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Project;
 use NERDZ\Core\Db;
 
-$core = new Project();
+$project = new Project();
 
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+if(!$project->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('REGISTER')));
 
 if(empty($_POST['id'])||!is_numeric($_POST['id']))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
 
 $prj = isset($prj);
 
@@ -29,7 +29,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                 ],Db::FETCH_ERRNO
             ])
         )
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
     break;
     case 'add':
         if(Db::NO_ERRNO != Db::query(
@@ -43,10 +43,10 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                  ]
              ],Db::FETCH_ERRNO)
          )
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
     break;
     default:
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
     break;
 }
 

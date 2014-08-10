@@ -3,10 +3,10 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 
-$core  = new NERDZ\Core\User();
+$user  = new NERDZ\Core\User();
 
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+if(!$user->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 
 $viewonline = empty($_SESSION['mark_offline']) ? '1' : '0';
 
@@ -14,7 +14,7 @@ if(Db::NO_ERRNO != Db::query(array('UPDATE "users" SET "last" = NOW(), "viewonli
     die(NERDZ\Core\Utils::jsonResponse('error','Time'));
 
 if(!($o = Db::query(array('SELECT "remote_addr","http_user_agent" FROM "users" WHERE "counter" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
 if(empty($o->remote_addr) || empty($_SESSION['remote_addr']) || ($o->remote_addr != $_SERVER['REMOTE_ADDR']))
 {

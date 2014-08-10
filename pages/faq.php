@@ -1,10 +1,10 @@
 <?php
-$lang = $core->isLogged() ? $core->getUserLanguage($_SESSION['id']) : $core->getBrowserLanguage();
+$lang = $user->isLogged() ? $user->getLanguage($_SESSION['id']) : $user->getBrowserLanguage();
 
 $vals = [];
-$vals['faq_n'] = file_get_contents("{$_SERVER['DOCUMENT_ROOT']}/tpl/{$core->getTemplate()}/langs/{$lang}/faq.html");
+$vals['faq_n'] = file_get_contents("{$_SERVER['DOCUMENT_ROOT']}/tpl/{$user->getTemplate()}/langs/{$lang}/faq.html");
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('base/faq');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('base/faq');
 ?>

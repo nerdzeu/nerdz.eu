@@ -10,23 +10,24 @@ use NERDZ\Core\Config;
 use NERDZ\Core\User;
 
 $prj = isset($prj);
-$core = new Comments();
+$user = new User();
+$comments = new Comments();
 
-if(!$core->isLogged())
-    die($core->lang('REGISTER'));
+if(!$user->isLogged())
+    die($user->lang('REGISTER'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
     case 'show':
         $hpid  = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid']  : false;
         if(!$hpid )
-            die($core->lang('ERROR'));
+            die($comments->lang('ERROR'));
         $_list = null;
         if (isset ($_POST['start']) && isset ($_POST['num']) &&
             is_numeric ($_POST['start']) && is_numeric ($_POST['num']))
-            $_list = $core->getLastComments ($hpid, $_POST['num'], $_POST['start'], $prj);
+            $_list = $comments->getLastComments ($hpid, $_POST['num'], $_POST['start'], $prj);
         else if (isset ($_POST['hcid']) && is_numeric ($_POST['hcid']))
-            $_list = $core->getCommentsAfterHcid ($hpid, $_POST['hcid'], $prj);
+            $_list = $comments->getCommentsAfterHcid ($hpid, $_POST['hcid'], $prj);
         else
             die();
 
@@ -45,10 +46,11 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $vals['commentcount_n'] = (new Messages())->countComments($hpid, $prj);
         $vals['needmorebtn_b'] = $doShowForm && $vals['commentcount_n'] > 10;
         $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20; 
-        $core->getTPL()->assign($vals);
-        $core->getTPL()->draw('project/comments');
+
+        $user->getTPL()->assign($vals);
+        $user->getTPL()->draw('project/comments');
     break;
 default:
-    die($core->lang('ERROR'));
+    die($user->lang('ERROR'));
 break;
 }

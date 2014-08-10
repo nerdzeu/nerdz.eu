@@ -4,14 +4,14 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 use NERDZ\Core\User;
 
-$core = new User();
+$user = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-if(!$core->isLogged())
-    die($core->lang('REGISTER'));
+if(!$user->isLogged())
+    die($user->lang('REGISTER'));
 
 if(!($obj = Db::query(array('SELECT * FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ)))
-    die($core->lang('ERROR'));
+    die($user->lang('ERROR'));
 
 $vals = [];
 $vals['interests_a'] = explode("\n",$obj->interests);
@@ -33,16 +33,16 @@ $vals['steam_n'] = $obj->steam;
 $vals['skype_n'] = $obj->skype;
 $vals['github_n'] = $obj->github;
 $vals['userscript_n'] = $obj->userscript;
-$vals['closedprofile_b'] = $core->closedProfile($_SESSION['id']);
+$vals['closedprofile_b'] = $user->hasClosedProfile($_SESSION['id']);
 $vals['canshowwhitelist_b'] = $vals['closedprofile_b'];
-$wl = $core->getWhitelist($_SESSION['id']);
+$wl = $user->getWhitelist($_SESSION['id']);
 $i = 0;
 foreach($wl as &$val)
     $vals['whitelist_a'][$i++] = User::getUsername($val);
 
-$vals['tok_n'] = $core->getCsrfToken('edit');
+$vals['tok_n'] = $user->getCsrfToken('edit');
 $vals['dateformat_n'] = $obj->dateformat;
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('preferences/profile');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('preferences/profile');
 ?>

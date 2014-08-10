@@ -4,11 +4,11 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\User;
 use NERDZ\Core\Db;
 
-$core = new User();
+$user = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-if(!$core->isLogged())
-    die($core->lang('REGISTER'));
+if(!$user->isLogged())
+    die($user->lang('REGISTER'));
 
 if(!($o = Db::query(
                 [
@@ -17,11 +17,11 @@ if(!($o = Db::query(
                         ':id' => $_SESSION['id']
                     ]
                 ],Db::FETCH_OBJ)))
-    die($core->lang('ERROR'));
+    die($user->lang('ERROR'));
 
 $vals['private_b'] = $o->private;
-$vals['tok_n']     = $core->getCsrfToken('edit');
+$vals['tok_n']     = $user->getCsrfToken('edit');
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('preferences/guests');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('preferences/guests');
 ?>

@@ -4,9 +4,9 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Pms;
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-$core = new Pms();
-if(!$core->isLogged())
-    die($core->lang('REGISTER'));
+$user = new Pms();
+if(!$user->isLogged())
+    die($user->lang('REGISTER'));
 
 switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
 {
@@ -15,31 +15,31 @@ switch(isset($_GET['action']) ? trim(strtolower($_GET['action'])) : '')
         $to   = isset($_POST['to']) && is_numeric($_POST['to']) ? $_POST['to'] : false;
 
         if (!$from || !$to || !in_array ($_SESSION['id'], array ($from, $to)))
-            die($core->lang('ERROR'));
+            die($user->lang('ERROR'));
 
         $conv = null;
         if (isset ($_POST['start']) && isset ($_POST['num']) && is_numeric ($_POST['start']) && is_numeric ($_POST['num']))
-            $conv = $core->readConversation ($from, $to, false, $_POST['num'], $_POST['start']);
+            $conv = $user->readConversation ($from, $to, false, $_POST['num'], $_POST['start']);
         else if (isset ($_POST['pmid']) && is_numeric ($_POST['pmid']))
-            $conv = $core->readConversation ($from, $to, $_POST['pmid']);
+            $conv = $user->readConversation ($from, $to, $_POST['pmid']);
         else
-            $conv = $core->readConversation ($from, $to);
+            $conv = $user->readConversation ($from, $to);
         $doShowForm = !isset ($_POST['pmid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']);
         if (!$doShowForm && empty ($conv))
             die();
         $vals['toid_n'] = ( $_SESSION['id'] != $to ? $to : $from );
-        $vals['to_n'] = $core->getUsername ($vals['toid_n']);
-        if (!$vals['to_n']) die ($core->lang ('ERROR'));
+        $vals['to_n'] = $user->getUsername ($vals['toid_n']);
+        if (!$vals['to_n']) die ($user->lang ('ERROR'));
         $vals['list_a'] = $conv;
-        $vals['pmcount_n'] = $core->countPms ($from, $to);
+        $vals['pmcount_n'] = $user->countPms ($from, $to);
         $vals['needmorebtn_b'] = $doShowForm && $vals['pmcount_n'] > 10;
         $vals['needeverymsgbtn_b'] = $doShowForm && $vals['pmcount_n'] > 20;
         $vals['showform_b'] = $doShowForm;
-        $core->getTPL()->assign($vals);
-        $core->getTPL()->draw('pm/conversation');
+        $user->getTPL()->assign($vals);
+        $user->getTPL()->draw('pm/conversation');
     break;
     default:
-        die($core->lang('ERROR'));
+        die($user->lang('ERROR'));
     break;
 }
 ?>

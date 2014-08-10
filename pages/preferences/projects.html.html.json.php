@@ -7,15 +7,15 @@ use NERDZ\Core\Captcha;
 use NERDZ\Core\Db;
 use \PDO;
 
-$core = new Project();
+$project = new Project();
 
-if(!$core->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('REGISTER')));
+if(!$project->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('REGISTER')));
 
 $id = $_POST['id'] = isset($_POST['id']) && is_numeric($_POST['id']) ? trim($_POST['id']) : false;
 
-if($_SESSION['id'] != $core->getOwner($id) || !$core->refererControl())
-    die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+if($_SESSION['id'] != $project->getOwner($id) || !$project->refererControl())
+    die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
     
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
@@ -24,10 +24,10 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         var_dump($_SESSION);
         
         if(!($capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : '')))
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': '.$core->lang('CAPTCHA')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR').': '.$project->lang('CAPTCHA')));
 
         if(Db::NO_ERRNO != Db::query(array('DELETE FROM "groups" WHERE "counter" = ?',array($id)),Db::FETCH_ERRNO))
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
     break;
     
     case 'update':
@@ -38,7 +38,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $_POST['members'] = isset($_POST['members']) ? $_POST['members'] : '';
 
         if(!($res = Db::query(array('SELECT "from" FROM groups_members where "to" = ?',array($id)),Db::FETCH_STMT)))
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').'2'));
+            die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR').'2'));
 
         $oldmem = $res->fetchAll(PDO::FETCH_COLUMN);
 
@@ -48,13 +48,13 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         foreach($m as $v)
         {
             $username = trim($v);
-            $uid = $core->getUserId($username);
+            $uid = $project->getId($username);
             if(is_numeric($uid)) {
                 $newmem[] = $uid;
                 $userMap[$uid] = $username;
             }
             else
-                die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').': Invalid member - '.$v));
+                die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR').': Invalid member - '.$v));
         }
 
         //members to add
@@ -84,7 +84,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                         ]
                     ],Db::FETCH_ERRNO))
 
-                die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR').'4'));
+                die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR').'4'));
       
         if(Db::NO_ERRNO != Db::query(
             [
@@ -102,10 +102,10 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                 ]
             ],Db::FETCH_ERRNO)
         )
-            die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+            die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
     break;
     default:
-        die(NERDZ\Core\Utils::jsonResponse('error',$core->lang('ERROR')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$project->lang('ERROR')));
     break;
 }
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));

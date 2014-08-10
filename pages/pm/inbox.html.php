@@ -3,15 +3,15 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Pms;
 
-$core = new Pms();
+$user = new Pms();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-if(!$core->isLogged())
-    die($core->lang('REGISTER'));
+if(!$user->isLogged())
+    die($user->lang('REGISTER'));
 
 $vals = [];
-$vals['list_a'] = $core->getList();
+$vals['list_a'] = $user->getList();
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('pm/inbox');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('pm/inbox');
 ?>

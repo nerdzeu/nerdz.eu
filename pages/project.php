@@ -6,12 +6,15 @@ use NERDZ\Core\Project;
 use NERDZ\Core\Utils;
 use NERDZ\Core\User;
 use NERDZ\Core\Config;
-$core = new Project();
+use NERDZ\Core\Messages;
+
+$project = new Project();
+$messages = new Messages();
 
 $vals = [];
 $enter = true;
 
-$vals['logged_b'] = $core->isLogged();
+$vals['logged_b'] = $project->isLogged();
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
@@ -19,20 +22,20 @@ if(($info->private && !$vals['logged_b']) || (!$info->visible && !$vals['logged_
 {
     $included = true;
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
-    $core->getTPL()->assign($vals);
-    $core->getTPL()->draw('project/private');
+    $project->getTPL()->assign($vals);
+    $project->getTPL()->draw('project/private');
 }
 else
 {
-    $mem = $core->getMembers($info->counter);
+    $mem = $project->getMembers($info->counter);
     $icansee = true;
     if($vals['logged_b'] && !$info->visible)
         $icansee = $_SESSION['id'] == $info->owner || in_array($_SESSION['id'],$mem);
 
     if(!$icansee)
     {
-        $core->getTPL()->assign($vals);
-        $core->getTPL()->draw('project/invisible');
+        $project->getTPL()->assign($vals);
+        $project->getTPL()->draw('project/invisible');
     }
     else
     {
@@ -65,7 +68,7 @@ else
         usort($vals['members_a'],'sortbyusername');
 
 
-        $fol = $core->getFollowers($info->counter);
+        $fol = $project->getFollowingers($info->counter);
         $vals['users_n'] = count($fol);
         $vals['users_a'] = [];
         $i = 0;
@@ -82,13 +85,13 @@ else
         $vals['owner_n'] = User::getUsername($info->owner);
         $vals['owner4link_n'] =  \NERDZ\Core\Utils::userLink($vals['owner_n']);
 
-        $vals['description_n'] = $Messages->bbcode($info->description);
+        $vals['description_n'] = $messages->bbcode($info->description);
 
-        $vals['goal_n'] = $Messages->bbcode($info->goal);
+        $vals['goal_n'] = $messages->bbcode($info->goal);
 
         $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://www.nerdz.eu/' : $info->website;
 
-        $vals['openproject_b'] = $core->isOpen($info->counter);
+        $vals['openproject_b'] = $project->isOpen($info->counter);
         
         $banners = (new Banners())->getBanners();
         $vals['banners_a'] = [];
@@ -102,7 +105,7 @@ else
 
         $vals['singlepost_b'] = isset($pid) && isset($gid) && is_numeric($pid);
 
-        $vals['canwrite_b'] = $vals['logged_b'] && ($core->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
+        $vals['canwrite_b'] = $vals['logged_b'] && ($project->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
         $vals['canwritenews_b'] = $vals['logged_b'] && (in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
 
         // single post handling
@@ -118,8 +121,8 @@ else
                             ]
                         ],Db::FETCH_OBJ)))
             {
-                $core->getTPL()->assign('banners_a',$vals['banners_a']);
-                $core->getTPL()->draw('project/postnotfound');
+                $project->getTPL()->assign('banners_a',$vals['banners_a']);
+                $project->getTPL()->draw('project/postnotfound');
             }
             else
             {
@@ -131,8 +134,8 @@ else
         }
         if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
         {
-            $core->getTPL()->assign($vals);
-            $core->getTPL()->draw('project/layout');
+            $project->getTPL()->assign($vals);
+            $project->getTPL()->draw('project/layout');
         }
     }
 }

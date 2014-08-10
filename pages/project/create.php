@@ -1,3 +1,3 @@
 <?php
-$core->getTPL()->draw('project/create');
+$user->getTPL()->draw('project/create');
 ?>

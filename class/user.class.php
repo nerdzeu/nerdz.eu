@@ -5,7 +5,7 @@ use PDO, PDOException;
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 
 if(isset($_GET['id']) && !is_numeric($_GET['id']) && !is_array($_GET['id']))
-    $_GET['id'] = (new User())->getUserId(trim($_GET['id']));
+    $_GET['id'] = (new User())->getId(trim($_GET['id']));
 
 class User
 {
@@ -19,7 +19,7 @@ class User
     {
         $this->browser = new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
-        if($this->isFromMobileDevice() && !$this->isOnMobileHost())
+        if($this->isFromMobileDevice() && !static::isOnMobileHost())
             die(header('Location: http://'.Config\MOBILE_HOST.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')));
 
         $this->autoLogin(); //set template value on autologin (according to mobile or destktop version)
@@ -81,14 +81,9 @@ class User
         return $this->browser->isMobile();
     }
 
-    public function isOnMobileHost()
+    public static function isOnMobileHost()
     {
         return isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == Config\MOBILE_HOST;
-    }
-
-    public function getSiteName()
-    {
-        return 'NERDZ'.( $this->isMobile() ? 'Mobile' : '' );
     }
 
     public function getSafeCookieDomainName()
@@ -156,7 +151,7 @@ class User
         $_SESSION['logged'] = true;
         $_SESSION['id'] = $o->counter;
         $_SESSION['username'] = $o->username;
-        $_SESSION['lang'] = $this->getUserLanguage($o->counter);
+        $_SESSION['lang'] = $this->getLanguage($o->counter);
         $_SESSION['board_lang'] = $this->getBoardLanguage($o->counter);
         $_SESSION['template'] = $this->getTemplate($o->counter);
         $_SESSION['mark_offline'] = $setOffline;
@@ -171,7 +166,7 @@ class User
         return $o->motivation;
     }
 
-    public function availableLanguages($long = null)
+    public function getAvailableLanguages($long = null)
     {
         //qui non ci imteressiamo se il file delle lingue è stato modificato, in tal caso si attende che scada la cache affinché si aggiorni, non si forza
         $cache = 'AvailableLanguages'.Config\SITE_HOST;
@@ -239,7 +234,7 @@ class User
     public function getBrowserLanguage()
     {
         $langpref = $this->getAcceptLanguagePreference();
-        $avail = $this->availableLanguages();
+        $avail = $this->getAvailableLanguages();
 
         foreach($langpref as $lang => $val)
             foreach($avail as $av)
@@ -248,7 +243,7 @@ class User
         return 'en'; //non dovremmo mai arrivare qui
     }
 
-    public function updateBoardLanguage($lang)
+    public function setBoardLanguage($lang)
     {
         if(!$this->isLogged())
             return false;
@@ -256,7 +251,7 @@ class User
         return Db::query(array('UPDATE "users" SET "board_lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO) == Db::NO_ERRNO;
     }
 
-    public function updateUserLanguage($lang)
+    public function setLanguage($lang)
     {
         if(!$this->isLogged())
             return false;
@@ -276,7 +271,7 @@ class User
                 if(empty($o->board_lang))
                 {
                     $_SESSION['board_lang'] = $this->getBrowserLanguage();
-                    if(!$this->updateBoardLanguage($_SESSION['board_lang']))
+                    if(!$this->setBoardLanguage($_SESSION['board_lang']))
                         return false;
                 }
                 else
@@ -291,7 +286,7 @@ class User
         return empty($o->board_lang) ? $this->getBrowserLanguage() : $o->board_lang;
     }
 
-    public function getUserLanguage($id)
+    public function getLanguage($id)
     {
         if($this->isLogged() && $id == $_SESSION['id'])
         {
@@ -303,7 +298,7 @@ class User
                 if(empty($o->lang))
                 {
                     $_SESSION['lang'] = $this->getBrowserLanguage();
-                    if(!$this->updateUserLanguage($_SESSION['lang']))
+                    if(!$this->setLanguage($_SESSION['lang']))
                         return false;
                 }
                 else
@@ -318,7 +313,7 @@ class User
         return empty($o->lang) ? $this->getBrowserLanguage() : $o->lang;
     }
 
-    public function getFollow($id)
+    public function getFollowing($id)
     {
         if(!($stmt = Db::query(array('SELECT "to" FROM "followers" WHERE "from" = :id',array(':id' => $id)),Db::FETCH_STMT)))
             return [];
@@ -340,7 +335,7 @@ class User
         return $o->viewonline && $o->online;
     }
 
-    public function closedProfile($id)
+    public function hasClosedProfile($id)
     {
         if(! ( $o = Db::query(array('SELECT "closed" FROM "profiles" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))
             return false;
@@ -369,12 +364,19 @@ class User
         return array_merge($blist, $r->fetchAll(PDO::FETCH_COLUMN));
     }
 
-    public function isInBlacklist($cattivo,$buono)
+    public function hasInBlacklist($other)
     {
-        if(!($stmt = Db::query(array('SELECT "to" FROM "blacklist" WHERE "from" = :from',array(':from' => $buono)),Db::FETCH_STMT)))
+        if(!$this->isLogged())
             return false;
 
-        return in_array($cattivo,$stmt->fetchAll(PDO::FETCH_COLUMN));
+        return $stmt = Db::query(
+                    [
+                        'SELECT 1 FROM "blacklist" WHERE "from" = :from AND "to" = :other',
+                        [
+                            ':from'  => $_SESSION['id'],
+                            ':other' => $other
+                        ]
+                    ],Db::ROW_COUNT);
     }
 
     public function getWhitelist($id)
@@ -390,7 +392,7 @@ class User
         return (isset($_SESSION['logged']) && $_SESSION['logged']);
     }
 
-    public function getUserObject($id)
+    public function getObject($id)
     {
         return Db::query(array('SELECT * FROM "users" u JOIN "profiles" p ON u.counter = p.counter WHERE p.counter = :id',array(':id' => $id)),Db::FETCH_OBJ);
     }
@@ -402,7 +404,7 @@ class User
         return $o->email;
     }
 
-    public function getUserId($username = null)
+    public function getId($username = null)
     {
         if($this->isLogged() && ($username === null))
             return $_SESSION['id'];
@@ -456,7 +458,7 @@ class User
 
     public function getTemplate($id = null)
     {
-        if($this->isOnMobileHost()) {
+        if(static::isOnMobileHost()) {
             return $this->getMobileTemplate($id);
         }
 
@@ -485,7 +487,7 @@ class User
         return $o->template;
     }
 
-    private function getUserTimezone($id = null)
+    private function getTimezone($id = null)
     {
         if(!$this->isLogged())
             return  'UTC';
@@ -505,7 +507,7 @@ class User
         return $o->timezone;
     }
 
-    private function getUserDateFormat($id = null)
+    private function getDateFormat($id = null)
     {
         if(!$this->isLogged())
             return  'Y/m/d, H:i';
@@ -529,7 +531,7 @@ class User
 
     public function getDateTime($timestamp)
     {
-        $timezone = $this->getUserTimezone($this->isLogged() ? $_SESSION['id'] : 0);
+        $timezone = $this->getTimezone($this->isLogged() ? $_SESSION['id'] : 0);
 
         $date = new \DateTime();
         $date->setTimestamp($timestamp);
@@ -550,7 +552,7 @@ class User
         if($tmp == $yesterday->format($format4compare))
             return $this->lang('YESTERDAY').' - '.$date->format('H:i');
 
-        return $date->format( $this->getUserDateformat($this->isLogged() ? $_SESSION['id'] : 0) );
+        return $date->format( $this->getDateFormat($this->isLogged() ? $_SESSION['id'] : 0) );
     }
 
     private function autoLogin()
@@ -564,7 +566,15 @@ class User
         //If there are no cookie, no autologin
         if(!isset($_COOKIE['nerdz_u']) || !isset($_COOKIE['nerdz_id']) || !is_numeric($_COOKIE['nerdz_id']))
             return false;
-        if(($obj = Db::query(array('SELECT "username","password" FROM "users" WHERE "counter" = :id',array(':id' => $_COOKIE['nerdz_id'])),Db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u'])
+        
+        if(($obj = Db::query(
+                    [
+                        'SELECT "username","password" FROM "users" WHERE "counter" = :id',
+                        [
+                            ':id' => $_COOKIE['nerdz_id']
+                        ]
+                    ],Db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u']
+          )
             return $this->login($obj->username, $obj->password, true, false, true);
 
         return false;
@@ -572,7 +582,6 @@ class User
 
     public function refererControl()
     {
-        //no needs to check if referrer is nerdz.eu since nerdz.eu is redirect by the server to Config\SITE_HOST
         return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],array(Config\SITE_HOST,Config\MOBILE_HOST));
     }
 

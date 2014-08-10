@@ -17,7 +17,8 @@ class Messages
 
     public function __construct()
     {
-        $this->user = new User();
+        $this->user    = new User();
+        $this->project = new Project();
     }
 
     public function getCodes($str)
@@ -351,7 +352,7 @@ class Messages
         return $str;
     }
 
-    public function parseNewsMessage($message)
+    public function parseNews($message)
     {
         return str_replace('%%12now is34%%',$this->user->lang('NOW_IS'),$message);
     }
@@ -399,6 +400,7 @@ class Messages
         $project      = !empty($project);
         $inHome       = !empty($inHome);
         $onlyfollowed = !empty($onlyfollowed);
+        $truncate     = !empty($truncate);
 
         $anyone       = $lang === '*';
         $search4Lang  = false;
@@ -409,12 +411,12 @@ class Messages
         var_dump($options);
 
         if($onlyfollowed) {
-            $followed = array_merge($this->user->getFollow($_SESSION['id']), (array)$_SESSION['id']);
+            $followed = array_merge($this->user->getFollowing($_SESSION['id']), (array)$_SESSION['id']);
             $glue    .= ' AND p."from" IN ('.implode(',',$followed).') ';
         } elseif($lang && !$anyone) {
-            $languages = array_merge($this->user->availableLanguages(), (array)'*');
+            $languages = array_merge($this->user->getAvailableLanguages(), (array)'*');
             if(!in_array($lang,$languages))
-                $lang = $this->user->isLogged() ? $this->user->getUserLanguage($_SESSION['id']) : 'en';
+                $lang = $this->user->isLogged() ? $this->user->getLanguage($_SESSION['id']) : 'en';
 
             $glue .= ' AND p.lang = :lang ';
             $search4Lang = true;
@@ -469,7 +471,12 @@ class Messages
         $ret = [];
         while(($row = $result->fetch(PDO::FETCH_OBJ)))
         {
-            $ret[$c] = $this->getPost($row);
+            $ret[$c] = $this->getPost($row,
+                    [
+                        'project' => $project,
+                        'truncate' => $truncate
+                    ]);
+
             if($inHome)
                 $ret[$c]['news_b'] = $project ? $row->to == PROJECTS_NEWS : $row->to == USERS_NEWS;
             ++$c;

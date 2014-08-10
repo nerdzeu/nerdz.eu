@@ -2,8 +2,8 @@
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
         
-    $core = new NERDZ\Core\User();
-    $tplcfg = $core->getTemplateCfg();
+    $user = new NERDZ\Core\User();
+    $tplcfg = $user->getTemplateCfg();
         
     ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 ?>
@@ -15,7 +15,7 @@
         <meta name="description" content="nerdz share system, tha share web pages from other sites" />
         <meta name="robots" content="index,follow" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title><?= $core->getSiteName(), ' - ', $core->lang('SHARE');?></title>
+        <title><?= NERDZ\Core\Utils::getSiteName(), ' - ', $user->lang('SHARE');?></title>
 <?php
     $headers = $tplcfg->getTemplateVars('share');
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

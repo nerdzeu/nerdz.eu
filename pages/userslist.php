@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 
-$limit = isset($_GET['lim']) ? $core->limitControl($_GET['lim'], 20) : 20;
+$limit = isset($_GET['lim']) ? $user->limitControl($_GET['lim'], 20) : 20;
 
 switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 {
@@ -50,7 +50,7 @@ if(($r = Db::query($query,Db::FETCH_STMT)))
     while($o = $r->fetch(PDO::FETCH_OBJ))
     {
         $vals['list_a'][$i]['id_n'] = $o->counter;
-        $vals['list_a'][$i]['birthdate_n'] = preg_replace('#(00.00)#','',$core->getDateTime(strtotime($o->birth_date)));
+        $vals['list_a'][$i]['birthdate_n'] = preg_replace('#(00.00)#','',$user->getDateTime(strtotime($o->birth_date)));
         $vals['list_a'][$i]['name_n'] = $o->name;
         $vals['list_a'][$i]['surname_n'] = $o->surname;
         $vals['list_a'][$i]['username_n'] = $o->username;
@@ -82,6 +82,6 @@ else
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-$core->getTPL()->assign($vals);
-$core->getTPL()->draw('base/userslist');
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('base/userslist');
 ?>
