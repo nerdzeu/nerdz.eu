@@ -2,11 +2,16 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Pms;
+use NERDZ\Core\User;
 
-$user = new Pms();
+$pms = new Pms();
+$user = new User();
 
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
+
+if(!$user->refererControl())
+    die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
     
 if(empty($_POST['to']) || empty($_POST['message']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('SOMETHING_MISS')));
@@ -16,9 +21,6 @@ if(!($toid = $user->getId($_POST['to']))) //getId DON'T what htmlspecialchars in
 
 foreach($_POST as &$val)
     $val = htmlspecialchars(trim($val),ENT_QUOTES,'UTF-8');
-
-if(!$user->refererControl())
-    die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
     
-die(NERDZ\Core\Utils::jsonDbResponse($user->send($toid,$_POST['message'])));
+die(NERDZ\Core\Utils::jsonDbResponse($pms->send($toid,$_POST['message'])));
 ?>

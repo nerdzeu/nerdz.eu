@@ -17,17 +17,17 @@ if(!$user->isLogged())
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php'; //include $updatedPassword
 $params = [
-     ':timezone' => $user['timezone'],
-     ':name'     => $user['name'],
-     ':surname'  => $user['surname'],
-     ':email'    => $user['email'],
-     ':gender'   => $user['gender'],
+     ':timezone' => $userData['timezone'],
+     ':name'     => $userData['name'],
+     ':surname'  => $userData['surname'],
+     ':email'    => $userData['email'],
+     ':gender'   => $userData['gender'],
      ':date'     => $birth['date'],
      ':id'       => $_SESSION['id']
 ];
 
 if($updatedPassword) {
-    $params[':password'] = $user['password'];
+    $params[':password'] = $userData['password'];
 }
 
 $ret = Db::query(
@@ -40,7 +40,7 @@ $ret = Db::query(
 if($ret != Db::NO_ERRSTR)
     die(NERDZ\Core\Utils::jsonDbResponse($ret));
 
-if(!$user->login(User::getUsername(), $user['password'], isset($_COOKIE['nerdz_u']), $_SESSION['mark_offline'], !$updatedPassword))
+if(!$user->login(User::getUsername(), $userData['password'], isset($_COOKIE['nerdz_u']), $_SESSION['mark_offline'], !$updatedPassword))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Login'));
 
 die(NERDZ\Core\Utils::jsonResponse('error','OK'));

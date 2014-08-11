@@ -4,14 +4,11 @@ namespace NERDZ\Core;
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 use PDO;
 
-class comments extends Messages
+class Comments extends Messages
 {
-    private $project;
-    private $user;
     public function __construct()
     {
-        $this->project = new Project();
-        $this->user = new User();
+        parent::__construct();
     }
 
     private function getArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)

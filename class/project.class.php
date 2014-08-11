@@ -3,22 +3,26 @@ namespace NERDZ\Core;
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use PDO;
 
-class project
+class Project
 {
     private $id;
 
     public function __construct($id = null)
     {
-        if($id = null) {
-            $this->id = $id;
+        if($id !== null) {
+            if(!is_numeric($id)) {
+                $this->id = $this->getId($id);
+            } else {
+                $this->id = $id;
+            }
         }
     }
 
-    private static function checkId(&$id)
+    private function checkId(&$id)
     {
         if(empty($id)) {
             if(empty($this->id)) {
-                die(__NAMESPACE__.__CLASS__.' invalid project ID');
+                die(__CLASS__.' invalid project ID');
             }
             else $id = $this->id;
         }
@@ -26,7 +30,7 @@ class project
 
     public function getObject($id = null)
     {
-        static::checkId($id);
+        $this->checkId($id);
         return Db::query(
             [
                 'SELECT * FROM "groups" WHERE "counter" = :id',
@@ -49,7 +53,9 @@ class project
 
     public function getId($name = null)
     {
-        static::checkId($id);
+        if($name === null)
+            return $this->id;
+
         if(!($o = Db::query(
             [
                 'SELECT "counter" FROM "groups" WHERE LOWER("name") = LOWER(:name)',
@@ -63,7 +69,7 @@ class project
 
     public function getOwner($id = null)
     {
-        static::checkId($id);
+        $this->checkId($id);
         if(!($o = Db::query(
             [
                 'SELECT "owner" FROM "groups" WHERE "counter" = :id',
@@ -77,7 +83,7 @@ class project
 
     public function isOpen($id = null)
     {
-        static::checkId($id);
+        $this->checkId($id);
         if(!($o = Db::query(
             [
                 'SELECT "open" FROM "groups" WHERE "counter" = :id',
@@ -92,7 +98,7 @@ class project
    
     public function getMembers($id = null)
     {
-        static::checkId($id);
+        $this->checkId($id);
         if(!($stmt = Db::query(
             [
                 'SELECT "from" FROM "groups_members" WHERE "to" = :id',
@@ -107,7 +113,7 @@ class project
 
     public function getFollowers($id = null)
     {
-        static::checkId($id);
+        $this->checkId($id);
         if(!($stmt = Db::query(
             [
                 'SELECT "from" FROM "groups_followers" WHERE "to" = :id',
@@ -122,7 +128,6 @@ class project
 
     public static function getName($id = null)
     {
-        static::checkId($id);
         if(!($o = Db::query(
             [
                 'SELECT "name" FROM "groups" WHERE "counter" = :id',

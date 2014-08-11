@@ -22,13 +22,13 @@ $ret = Db::query(
         'INSERT INTO users ("username","password","name","surname","email","gender","birth_date","lang","board_lang","timezone","remote_addr", "http_user_agent")
         VALUES (:username,ENCODE(DIGEST(:password, \'SHA1\'), \'HEX\'), :name, :surname, :email, :gender, :date, :lang, :lang, :timezone, :remote_addr, :http_user_agent)',
         [
-              ':username'        => $user['username'],
-              ':password'        => $user['password'],
-              ':name'            => $user['name'],
-              ':surname'         => $user['surname'],
-              ':email'           => $user['email'],
-              ':gender'          => $user['gender'],
-              ':timezone'        => $user['timezone'],
+              ':username'        => $userData['username'],
+              ':password'        => $userData['password'],
+              ':name'            => $userData['name'],
+              ':surname'         => $userData['surname'],
+              ':email'           => $userData['email'],
+              ':gender'          => $userData['gender'],
+              ':timezone'        => $userData['timezone'],
               ':date'            => $birth['date'],
               ':lang'            => $user->getBrowserLanguage(),
               ':remote_addr'     => $_SERVER['REMOTE_ADDR'],
@@ -39,7 +39,7 @@ $ret = Db::query(
 if($ret != Db::NO_ERRSTR)
     die(NERDZ\Core\Utils::jsonDbResponse($ret));
 
-if(!$user->login($user['username'], $user['password']))
+if(!$user->login($userData['username'], $userData['password']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Login'));
 
 die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('LOGIN_OK')));

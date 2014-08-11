@@ -15,73 +15,73 @@ if(!$user->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
     
-$user['interests']  = isset($_POST['interests'])  ? trim($_POST['interests'])               : '';
-$user['biography']  = isset($_POST['biography'])  ? trim($_POST['biography'])               : '';
-$user['quotes']     = isset($_POST['quotes'])     ? trim($_POST['quotes'])                  : '';
-$user['website']    = isset($_POST['website'])    ? strip_tags(trim($_POST['website']))     : '';
-$user['jabber']     = isset($_POST['jabber'])     ? trim($_POST['jabber'])                  : '';
-$user['yahoo']      = isset($_POST['yahoo'])      ? trim($_POST['yahoo'])                   : '';
-$user['facebook']   = isset($_POST['facebook'])   ? trim($_POST['facebook'])                : '';
-$user['twitter']    = isset($_POST['twitter'])    ? trim($_POST['twitter'])                 : '';
-$user['steam']      = isset($_POST['steam'])      ? trim($_POST['steam'])                   : '';
-$user['skype']      = isset($_POST['skype'])      ? trim($_POST['skype'])                   : '';
-$user['github']     = isset($_POST['github'])     ? trim($_POST['github'])                  : '';
-$user['userscript'] = isset($_POST['userscript']) ? strip_tags(trim($_POST['userscript']))  : '';
-$user['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])              : '';
-$closed             = isset($_POST['closed']);
+$userData['interests']  = isset($_POST['interests'])  ? trim($_POST['interests'])               : '';
+$userData['biography']  = isset($_POST['biography'])  ? trim($_POST['biography'])               : '';
+$userData['quotes']     = isset($_POST['quotes'])     ? trim($_POST['quotes'])                  : '';
+$userData['website']    = isset($_POST['website'])    ? strip_tags(trim($_POST['website']))     : '';
+$userData['jabber']     = isset($_POST['jabber'])     ? trim($_POST['jabber'])                  : '';
+$userData['yahoo']      = isset($_POST['yahoo'])      ? trim($_POST['yahoo'])                   : '';
+$userData['facebook']   = isset($_POST['facebook'])   ? trim($_POST['facebook'])                : '';
+$userData['twitter']    = isset($_POST['twitter'])    ? trim($_POST['twitter'])                 : '';
+$userData['steam']      = isset($_POST['steam'])      ? trim($_POST['steam'])                   : '';
+$userData['skype']      = isset($_POST['skype'])      ? trim($_POST['skype'])                   : '';
+$userData['github']     = isset($_POST['github'])     ? trim($_POST['github'])                  : '';
+$userData['userscript'] = isset($_POST['userscript']) ? strip_tags(trim($_POST['userscript']))  : '';
+$userData['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])              : '';
+$closed                 = isset($_POST['closed']);
 $flag = true;
 
-if(!empty($user['website']) && !Utils::isValidURL($user['website']))
+if(!empty($userData['website']) && !Utils::isValidURL($userData['website']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WEBSITE').': '.$user->lang('INVALID_URL')));
     
-if(!empty($user['userscript']) && !Utils::isValidURL($user['userscript']))
+if(!empty($userData['userscript']) && !Utils::isValidURL($userData['userscript']))
     die(NERDZ\Core\Utils::jsonResponse('error','Userscript: '.$user->lang('INVALID_URL')));
 
-if(!empty($user['github']) && !preg_match('#^https?://(www\.)?github\.com/[a-z0-9]+$#i',$user['github']))
+if(!empty($userData['github']) && !preg_match('#^https?://(www\.)?github\.com/[a-z0-9]+$#i',$userData['github']))
     die(NERDZ\Core\Utils::jsonResponse('error','GitHub: '.$user->lang('INVALID_URL')));
 
 if(false == ($obj = $user->getObject($_SESSION['id'])))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
     
-if(!empty($user['jabber']) && (false == filter_var($user['jabber'],FILTER_VALIDATE_EMAIL)))
+if(!empty($userData['jabber']) && (false == filter_var($userData['jabber'],FILTER_VALIDATE_EMAIL)))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('JABBER').': '.$user->lang('MAIL_NOT_VALID')));
     
-if(empty($user['dateformat']))
-    $user['dateformat'] = 'd/m/Y, H:i';
+if(empty($userData['dateformat']))
+    $userData['dateformat'] = 'd/m/Y, H:i';
 
-if(!empty($user['facebook']) &&
-        ( !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/people/[^/]+/([a-z0-9_\-]+)#i',$user['facebook']) &&
-          !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/profile\.php\?id\=([0-9]+)#i',$user['facebook']) &&
-          !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/([a-z0-9_\-\.]+)#i',$user['facebook'])
+if(!empty($userData['facebook']) &&
+        ( !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/people/[^/]+/([a-z0-9_\-]+)#i',$userData['facebook']) &&
+          !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/profile\.php\?id\=([0-9]+)#i',$userData['facebook']) &&
+          !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/([a-z0-9_\-\.]+)#i',$userData['facebook'])
         )
   )
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Facebook URL'));
 
 
-if(!empty($user['twitter']) && !preg_match('#^https?://twitter.com/([a-z0-9_]+)#i',$user['twitter']))
+if(!empty($userData['twitter']) && !preg_match('#^https?://twitter.com/([a-z0-9_]+)#i',$userData['twitter']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Twitter URL'));
 
-if(!empty($user['steam']) && strlen($user['steam']) > 35)
+if(!empty($userData['steam']) && strlen($userData['steam']) > 35)
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Steam'));
     
 foreach($user as &$value)
     $value = htmlspecialchars($value,ENT_QUOTES,'UTF-8');
 
 $par = [
-    ':interests' => $user['interests'],
-     ':biography' => $user['biography'],
-     ':quotes'  => $user['quotes'],
-     ':website' => $user['website'],
-     ':dateformat' => $user['dateformat'],
-     ':github' => $user['github'],
-     ':jabber' => $user['jabber'],
-     ':yahoo' => $user['yahoo'],
-     ':userscript' => $user['userscript'],
-     ':facebook' => $user['facebook'],
-     ':twitter' => $user['twitter'],
-     ':steam' => $user['steam'],
-     ':skype' => $user['skype'],
-     ':counter' => $obj->counter
+    ':interests'   => $userData['interests'],
+     ':biography'  => $userData['biography'],
+     ':quotes'     => $userData['quotes'],
+     ':website'    => $userData['website'],
+     ':dateformat' => $userData['dateformat'],
+     ':github'     => $userData['github'],
+     ':jabber'     => $userData['jabber'],
+     ':yahoo'      => $userData['yahoo'],
+     ':userscript' => $userData['userscript'],
+     ':facebook'   => $userData['facebook'],
+     ':twitter'    => $userData['twitter'],
+     ':steam'      => $userData['steam'],
+     ':skype'      => $userData['skype'],
+     ':counter'    => $obj->counter
 ];
     
 if(
@@ -133,7 +133,7 @@ else {
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 }
 
-$_SESSION['dateformat'] = $user['dateformat'];
+$_SESSION['dateformat'] = $userData['dateformat'];
 
 if(isset($_POST['whitelist']))
 {
@@ -144,7 +144,7 @@ if(isset($_POST['whitelist']))
     foreach($m as $v)
     {
         $uid = $user->getId(trim($v));
-        if(is_numeric($uid))
+        if(is_numeric($uid) && $uid > 0)
         {
             if(Db::NO_ERRNO != Db::query(
                     [

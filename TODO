@@ -17,3 +17,5 @@
     => Will be re-enabled when the Go-API will be ready, since php locks everyting
 - Fix: PHP Notice:  Trying to get property of non-object in /home/nessuno/nerdz_env/nerdz/pages/common/comments.json.php on line 35
 - Complete migration from shit object to real objects. Move methods from user class to new classes -> Wont work until this fix. -> HIGH PRIORITY
+- Fix 'CANT_LURK_IF_POSTED' sql exception raised without a valid motivation (fix before_insert_[user|group]_post_luker() procedure
+- Fix blacklist

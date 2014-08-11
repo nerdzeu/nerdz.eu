@@ -7,22 +7,35 @@ use MCilloni\Pushed\Pushed;
 use MCilloni\Pushed\PushedException;
 
 final class Pms extends Messages
-{   
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function send($to,$message)
     {
-        $retVal = Db::query(array('INSERT INTO "pms" ("from","to","message") VALUES (:id,:to,:message)',array(':id' => $_SESSION['id'],':to' => $to,':message' => $message)),Db::FETCH_ERRSTR);
+        $retVal = Db::query(
+            [
+                'INSERT INTO "pms" ("from","to","message") VALUES (:id,:to,:message)',
+                [
+                    ':id'      => $_SESSION['id'],
+                    ':to'      => $to,
+                    ':message' => $message
+                ]
+            ],Db::FETCH_ERRSTR);
 
         $wentWell = $retVal == Db::NO_ERRSTR;
 
-        if($wentWell && parent::wantsPush($to) && Config\PUSHED_ENABLED) {
+        if($wentWell && $this->user->wantsPush($to) && Config\PUSHED_ENABLED) {
             try {
                 $pushed = Pushed::connectIp(Config\PUSHED_PORT,Config\PUSHED_IP6);
 
                 $msg = json_encode(
                                    [ 
-                                     'messageFrom' => html_entity_decode(User::getUsername(), ENT_QUOTES, 'UTF-8'), 
+                                     'messageFrom'   => html_entity_decode(User::getUsername(), ENT_QUOTES, 'UTF-8'), 
                                      'messageFromId' => $this->user->getId(),
-                                     'messageBody' => substr(html_entity_decode($message, ENT_QUOTES, 'UTF-8'), 0, 2000)
+                                     'messageBody'   => substr(html_entity_decode($message, ENT_QUOTES, 'UTF-8'), 0, 2000)
                                    ]
                 ); //truncate to 2000 chars because of possibile service limitations
 
@@ -58,7 +71,7 @@ final class Pms extends Messages
                 $from = User::getUsername($o->from);
                 $res[$c]['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
                 $res[$c]['from_n'] = $from;
-                $res[$c]['datetime_n'] = parent::getDateTime($o->lasttime);
+                $res[$c]['datetime_n'] = $this->user->getDateTime($o->lasttime);
                 $res[$c]['timestamp_n'] = $o->lasttime;
                 $res[$c]['fromid_n'] = $o->from;
                 $res[$c]['toid_n'] = $_SESSION['id'];
@@ -87,7 +100,7 @@ final class Pms extends Messages
             $from = User::getUsername($fromid);
             $ret['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
             $ret['from_n'] = $from;
-            $ret['datetime_n'] = parent::getDateTime($time);
+            $ret['datetime_n'] = $this->user->getDateTime($time);
             $ret['fromid_n'] = $fromid;
             $ret['toid_n'] = $toid;
             $ret['message_n'] = parent::bbcode($o->message);
@@ -150,7 +163,7 @@ final class Pms extends Messages
         return $ret;
     }
 
-    public function countPms ($from, $to)
+    public function count ($from, $to)
     {
         if (!is_numeric ($from) || !is_numeric ($to) || !($res = Db::query (
                         [

@@ -2,7 +2,10 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 use NERDZ\Core\Utils;
+use NERDZ\Core\Messages;
 use \PDO;
+
+$messages = new Messages();
 
 $limit = isset($_GET['lim']) ? $user->limitControl($_GET['lim'], 20) : 20;
 
@@ -76,7 +79,7 @@ if(($r = Db::query($query,Db::FETCH_STMT)))
         $vals['list_a'][$i]['pid_n'] = $o->pid;
         $vals['list_a'][$i]['hpid_n'] = $o->hpid;
         $vals['list_a'][$i]['name_n'] = $user->$nameMethod($o->to);
-        $vals['list_a'][$i]['preview_n'] = $user->bbcode(htmlspecialchars(substr(html_entity_decode($o->message,ENT_QUOTES,'UTF-8'),0,256),ENT_QUOTES,'UTF-8').'...',true);
+        $vals['list_a'][$i]['preview_n'] = $messages->bbcode(htmlspecialchars(substr(html_entity_decode($o->message,ENT_QUOTES,'UTF-8'),0,256),ENT_QUOTES,'UTF-8').'...',true);
         $vals['list_a'][$i]['link_n'] = '/'.Utils::$linkMethod($vals['list_a'][$i]['name_n']).$o->pid;
 
         ++$i;

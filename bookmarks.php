@@ -1,8 +1,9 @@
 <?php
     ob_start('ob_gzhandler');
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+    use NERDZ\Core\User;
     
-    $user = new NERDZ\Core\Messages();
+    $user = new User();
     if(!$user->isLogged())
         die(header('Location: /'));
 

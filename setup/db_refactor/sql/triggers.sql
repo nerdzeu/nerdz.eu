@@ -555,7 +555,7 @@ BEGIN
     SELECT T."from" INTO postFrom FROM (SELECT "from" FROM "groups_posts" WHERE hpid = NEW.hpid) AS T;
     PERFORM blacklist_control(NEW."from", postFrom); --blacklisted post creator
 
-    IF NEW.user IN ( SELECT "from" FROM "groups_comments" WHERE hpid = NEW.post ) THEN
+    IF NEW.user IN ( SELECT "from" FROM "groups_comments" WHERE hpid = NEW.hpid ) THEN
         RAISE EXCEPTION 'CANT_LURK_IF_POSTED';
     END IF;
     
@@ -578,7 +578,7 @@ BEGIN
         PERFORM blacklist_control(NEW."from", tmp."from"); -- can't lurk if post was made by blacklisted user
     END IF;
 
-    IF NEW.user IN ( SELECT "from" FROM "comments" WHERE hpid = NEW.post ) THEN
+    IF NEW."to" IN ( SELECT "from" FROM "comments" WHERE hpid = NEW.hpid ) THEN
         RAISE EXCEPTION 'CANT_LURK_IF_POSTED';
     END IF;
     

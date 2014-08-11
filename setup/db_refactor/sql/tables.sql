@@ -447,7 +447,6 @@ ALTER TABLE "thumbs" ADD COLUMN "to" int8;
 ALTER TABLE "groups_comment_thumbs" ADD COLUMN "to" int8;
 ALTER TABLE "comment_thumbs" ADD COLUMN "to" int8;
 
-
 ALTER TABLE "groups_thumbs" RENAME COLUMN "user" TO "from";
 ALTER TABLE "thumbs" RENAME COLUMN "user" TO "from";
 ALTER TABLE "groups_comment_thumbs" RENAME COLUMN "user" TO "from";
@@ -467,6 +466,21 @@ ALTER TABLE ONLY "groups_thumbs" ALTER COLUMN "to" SET NOT NULL;
 ALTER TABLE ONLY "thumbs" ALTER COLUMN "to" SET NOT NULL;
 ALTER TABLE ONLY "groups_comment_thumbs" ALTER COLUMN "to" SET NOT NULL;
 ALTER TABLE ONLY "comment_thumbs" ALTER COLUMN "to" SET NOT NULL;
+
+-- fix lurkers
+
+ALTER TABLE "lurkers" ADD COLUMN "to" int8;
+ALTER TABLE "groups_lurkers" ADD COLUMN "to" int8;
+
+UPDATE "lurkers" SET "to" = p."to" FROM "posts" p WHERE p.hpid = "lurkers".hpid;
+UPDATE "groups_lurkers" SET "to" = p."to" FROM "groups_posts" p WHERE p.hpid = "groups_lurkers".hpid;
+
+ALTER TABLE "lurkers" ADD CONSTRAINT "toLurkFk"  FOREIGN KEY("to") REFERENCES users(counter) ON DELETE CASCADE;
+ALTER TABLE "groups_lurkers" ADD CONSTRAINT "toGLurkFk"  FOREIGN KEY("to") REFERENCES groups(counter) ON DELETE CASCADE;
+
+ALTER TABLE ONLY "lurkers" ALTER COLUMN "to" SET NOT NULL;
+ALTER TABLE ONLY "groups_lurkers" ALTER COLUMN "to" SET NOT NULL;
+
 
 -- clear 0 votes
 DELETE FROM thumbs WHERE vote = 0;

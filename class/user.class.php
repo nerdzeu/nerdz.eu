@@ -165,7 +165,7 @@ class User
             [
                 'SELECT "motivation" FROM "ban" WHERE "user" = :id',
                 [
-                    ':user' => $id
+                    ':id' => $id
                 ]
             ],Db::FETCH_OBJ)))
             return false;

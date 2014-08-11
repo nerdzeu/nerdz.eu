@@ -12,8 +12,8 @@ class Messages
     const DMOTION_REGEXP  = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
     const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/photo\.php(?:\?v=|\?.+?&v=)(\d+)#i';
 
-    private $project;
-    private $user;
+    protected $project;
+    protected $user;
 
     public function __construct()
     {
@@ -499,7 +499,7 @@ class Messages
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
-                    'body'  => $this->user->getUsername().': '.$message
+                    'body'  => User::getUsername().': '.$message
                 ]
              );
         }
@@ -799,7 +799,7 @@ class Messages
 
         $logged = $this->user->isLogged();
 
-        if(!($from = $this->user->getUsername($dbPost['from'])))
+        if(!($from = User::getUsername($dbPost['from'])))
             $from = '';
 
         $toFunc = $project

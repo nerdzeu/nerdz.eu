@@ -8,13 +8,14 @@ use NERDZ\Core\User;
 use NERDZ\Core\Config;
 use NERDZ\Core\Messages;
 
-$project = new Project();
+$project  = new Project();
 $messages = new Messages();
+$user     = new User();
 
 $vals = [];
 $enter = true;
 
-$vals['logged_b'] = $project->isLogged();
+$vals['logged_b'] = $user->isLogged();
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
@@ -22,8 +23,8 @@ if(($info->private && !$vals['logged_b']) || (!$info->visible && !$vals['logged_
 {
     $included = true;
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
-    $project->getTPL()->assign($vals);
-    $project->getTPL()->draw('project/private');
+    $user->getTPL()->assign($vals);
+    $user->getTPL()->draw('project/private');
 }
 else
 {
@@ -34,8 +35,8 @@ else
 
     if(!$icansee)
     {
-        $project->getTPL()->assign($vals);
-        $project->getTPL()->draw('project/invisible');
+        $user->getTPL()->assign($vals);
+        $user->getTPL()->draw('project/invisible');
     }
     else
     {
@@ -68,7 +69,7 @@ else
         usort($vals['members_a'],'sortbyusername');
 
 
-        $fol = $project->getFollowingers($info->counter);
+        $fol = $project->getFollowers($info->counter);
         $vals['users_n'] = count($fol);
         $vals['users_a'] = [];
         $i = 0;
@@ -89,7 +90,7 @@ else
 
         $vals['goal_n'] = $messages->bbcode($info->goal);
 
-        $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://www.nerdz.eu/' : $info->website;
+        $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.Config\SITE_HOST.'/' : $info->website;
 
         $vals['openproject_b'] = $project->isOpen($info->counter);
         
@@ -121,8 +122,8 @@ else
                             ]
                         ],Db::FETCH_OBJ)))
             {
-                $project->getTPL()->assign('banners_a',$vals['banners_a']);
-                $project->getTPL()->draw('project/postnotfound');
+                $user->getTPL()->assign('banners_a',$vals['banners_a']);
+                $user->getTPL()->draw('project/postnotfound');
             }
             else
             {
@@ -134,8 +135,8 @@ else
         }
         if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
         {
-            $project->getTPL()->assign($vals);
-            $project->getTPL()->draw('project/layout');
+            $user->getTPL()->assign($vals);
+            $user->getTPL()->draw('project/layout');
         }
     }
 }
