@@ -555,7 +555,7 @@ BEGIN
     SELECT T."from" INTO postFrom FROM (SELECT "from" FROM "groups_posts" WHERE hpid = NEW.hpid) AS T;
     PERFORM blacklist_control(NEW."from", postFrom); --blacklisted post creator
 
-    IF NEW.user IN ( SELECT "from" FROM "groups_comments" WHERE hpid = NEW.hpid ) THEN
+    IF NEW."from" IN ( SELECT "from" FROM "groups_comments" WHERE hpid = NEW.hpid ) THEN
         RAISE EXCEPTION 'CANT_LURK_IF_POSTED';
     END IF;
     
