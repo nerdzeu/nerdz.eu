@@ -59,8 +59,8 @@ END $$ LANGUAGE plpgsql;
 CREATE FUNCTION before_insert_groups_member() RETURNS TRIGGER AS $$
 DECLARE group_owner int8;
 BEGIN
-    SELECT "owner" INTO group_owner FROM "groups" WHERE "counter" = NEW."group";
-    PERFORM blacklist_control(group_owner, NEW."user");
+    SELECT "owner" INTO group_owner FROM "groups" WHERE "counter" = NEW."to";
+    PERFORM blacklist_control(group_owner, NEW."from");
     RETURN NEW;
 END $$ LANGUAGE plpgsql;
 

@@ -63,14 +63,14 @@ declare r RECORD;
 newOwner int8;
 begin
     FOR r IN SELECT "counter" FROM "groups" WHERE "owner" = userCounter LOOP
-        IF EXISTS (select "user" FROM groups_members where "group" = r.counter) THEN
-            SELECT gm."user" INTO newowner FROM groups_members gm
-            WHERE "group" = r.counter AND "time" = (
-                SELECT min(time) FROM groups_members WHERE "group" = r.counter
+        IF EXISTS (select "from" FROM groups_members where "to" = r.counter) THEN
+            SELECT gm."from" INTO newowner FROM groups_members gm
+            WHERE "to" = r.counter AND "time" = (
+                SELECT min(time) FROM groups_members WHERE "to" = r.counter
             );
             
             UPDATE "groups" SET owner = newOwner WHERE counter = r.counter;
-            DELETE FROM groups_members WHERE "user" = newOwner;
+            DELETE FROM groups_members WHERE "to" = newOwner;
         END IF;
         -- else, the foreing key remains and the group will be dropped
     END LOOP;
