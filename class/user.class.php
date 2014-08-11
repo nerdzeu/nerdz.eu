@@ -46,30 +46,23 @@ class User
         return $this->templateConfig;
     }
 
-    public function lang($index,$page = null)
+    public function lang($index)
     {
         // we don't worrie about language file modifications, since this ones shouldn't occur often
-        $nullPage = !$page;
-        $cache = "language-file-{$this->lang}-{$this->tpl_no}".Config\SITE_HOST.'-'.( $nullPage ? 'default' : $page );
+        $cache = "language-file-{$this->lang}-{$this->tpl_no}".Config\SITE_HOST;
         if(apc_exists($cache))
             $_LANG = unserialize(apc_fetch($cache));
         else
         {
-            $langFiles = $this->templateConfig->getTemplateVars($page)['langs'];
+            // first load default language film
+            $defaultLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/langs/{$this->lang}/default.json"), true);
 
-            $default = $langFiles['default'];
+            // then we add eventually merge template additions
+            $tplFile = $_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/langs/{$this->lang}/json/default.json";
+            if(is_readable($tplFile))
+                $defaultLang = array_merge($defaultLang, json_decode(file_get_contents($tplFile), true));
 
-            $defaultLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/{$default}"),true);
-            if($nullPage) {
-                $_LANG = $defaultLang;
-            }
-            else {
-                $page = isset($langFiles[$page]) ? $langFiles[$page] : null;
-                if($page !== null) {
-                    $pageLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/$page"),true);
-                    $_LANG = array_merge($defaultLang, $pageLang);
-                }
-            }
+            $_LANG = $defaultLang;
             @apc_store($cache,serialize($_LANG),3600);
         }
         return nl2br(htmlspecialchars($_LANG[$index],ENT_QUOTES,'UTF-8'));

@@ -1,5 +1,3 @@
-- Change language handling. Move common language to nerdz core. Search for not found string in template path. =>
-
 - Move all common snippets of code to /pages/common/
 
 - ^ implies remove redoundant code

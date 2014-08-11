@@ -1,12 +1,12 @@
 <?php
 $lang = $user->getBrowserLanguage();
-$presentation = file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/presentation/{$lang}.txt");
+$presentation = file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/langs/{$lang}/presentation.txt");
 $presentation = nl2br(htmlspecialchars($presentation,ENT_QUOTES,'UTF-8'));
 
 $vals = [];
 $vals['presentation_n'] = $presentation;
-$vals['captchaurl_n'] = '/static/images/captcha.php';
-$vals['tok_n'] = $user->getCsrfToken();
+$vals['captchaurl_n']   = '/static/images/captcha.php';
+$vals['tok_n']          = $user->getCsrfToken();
 
 $now = intval(date('o'));
 
