@@ -25,9 +25,9 @@ if(Db::NO_ERRNO != Db::query(
     [
         'INSERT INTO groups ("description","owner","name") VALUES (:description,:owner,:name)',
          [
-             ':description' => $userData['description'],
-             ':owner' => $userData['owner'],
-             ':name' => $userData['name']
+             ':description' => $projectData['description'],
+             ':owner'       => $projectData['owner'],
+             ':name'        => $projectData['name']
          ]
      ],Db::FETCH_ERRNO)
  )
