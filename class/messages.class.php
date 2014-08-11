@@ -357,22 +357,6 @@ class Messages
         return str_replace('%%12now is34%%',$this->user->lang('NOW_IS'),$message);
     }
 
-    public function countMessages($id, $project = false)
-    {
-        $table = ($project ? 'groups_' : '').'posts';
-
-        if(!($o = Db::query(
-            [
-                'SELECT COALESCE( MAX("pid"), 0 ) AS cc FROM "'.$table.'" WHERE "to" = :id',
-                [
-                    ':id' => $id
-                ]
-            ],Db::FETCH_OBJ)))
-            return 0;
-
-        return $o->cc;
-    }
-
     public function getMessage($hpid,$project = false)
     {
         $table = ($project ? 'groups_' : '').'posts';
@@ -390,7 +374,7 @@ class Messages
         return $o;
     }
 
-    public function getMessages($id, $options = [])
+    public function getPosts($id, $options = [])
     {
         extract($options);
         $limit        = !empty($limit)  ? $limit : 10;
@@ -425,7 +409,7 @@ class Messages
         if($limit > 20 || $limit <= 0) // at most 20 posts
             $limit = 20;
 
-        $blist = $this->user->getRealBlacklist();
+        $blist = $this->user->getBlacklist();
 
         if(!empty($blist))
         {
@@ -485,7 +469,7 @@ class Messages
         return $ret;
     }
 
-    public function addMessage($to, $message, $options = [])
+    public function add($to, $message, $options = [])
     {
         extract($options);
         $news = !empty($news);
@@ -521,7 +505,7 @@ class Messages
         }
     }
 
-    public function deleteMessage($hpid, $project = true)
+    public function delete($hpid, $project = true)
     {
         $table = ($project ? 'groups_' : '').'posts';
         $obj = new \StdClass();
@@ -535,7 +519,7 @@ class Messages
             ],Db::FETCH_OBJ)))
             return 'ERROR';
 
-        return $this->canRemovePost([ 'from' => $obj->from, 'to' => $obj->to ], $project) &&
+        return $this->canRemove([ 'from' => $obj->from, 'to' => $obj->to ], $project) &&
             Db::NO_ERRNO == Db::query(
                 [
                     'DELETE FROM "'.$table.'" WHERE "hpid" = :hpid',
@@ -545,7 +529,7 @@ class Messages
                 ],Db::FETCH_ERRNO);
     }
 
-    public function editMessage($hpid, $message, $project = false)
+    public function edit($hpid, $message, $project = false)
     {
         $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8');
         $table = ($project ? 'groups_' : '').'posts';
@@ -558,7 +542,7 @@ class Messages
                     ':hpid' => $hpid
                 ]
             ],Db::FETCH_OBJ)) ||
-            !$this->canEditPost(['from' => $obj->from, 'to' => $obj->to], $project)
+            !$this->canEdit(['from' => $obj->from, 'to' => $obj->to], $project)
           )
               return 'ERROR';
 
@@ -572,7 +556,7 @@ class Messages
             ],Db::FETCH_ERRSTR);
     }
  
-    public function canEditPost($post, $project = false)
+    public function canEdit($post, $project = false)
     {
         return $this->user->isLogged() && (
             $project ? 
@@ -581,7 +565,7 @@ class Messages
         );
     }
 
-    public function canRemovePost($post, $project = false)
+    public function canRemove($post, $project = false)
     {
         return $this->user->isLogged() && (
             $project ?
@@ -590,7 +574,7 @@ class Messages
         );
     }
 
-    public function canShowLockForPost($post, $project = false)
+    public function canShowLock($post, $project = false)
     {
         $table =  ($project ? 'groups_' : '').'comments';
         return $this->user->isLogged() && (
@@ -608,54 +592,6 @@ class Messages
                          ]
                      ], Db::ROW_COUNT) > 0
             );
-    }
-
-    public function hasLockedPost($post, $project = false)
-    {
-        $table = ($project ? 'groups_' : '').'posts_no_notify';
-        return (
-                $this->user->isLogged() &&
-                Db::query(
-                    [
-                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :id',
-                        [
-                            ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['id']
-                        ]
-                    ],Db::ROW_COUNT) > 0
-               );
-    }
-
-    public function hasLurkedPost($post, $project = false)
-    {
-        $table = ($project ? 'groups_' : '').'lurkers';
-        return (
-                $this->user->isLogged() &&
-                Db::query(
-                    [
-                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
-                        [
-                            ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['id']
-                        ]
-                    ],Db::ROW_COUNT) > 0
-               );
-    }
-
-    public function hasBookmarkedPost($post, $project = false)
-    {
-        $table = ($project ? 'groups_' : '').'bookmarks';
-        return (
-                $this->user->isLogged() &&
-                Db::query(
-                    [
-                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
-                        [
-                            ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['id']
-                        ]
-                    ],Db::ROW_COUNT) > 0
-               );
     }
 
     public function stripTags($message)
@@ -890,16 +826,16 @@ class Messages
         $ret['datetime_n']        = $this->user->getDateTime($dbPost['time']);
         $ret['timestamp_n']       = $dbPost['time'];
 
-        $ret['canremovepost_b']   = $this->canRemovePost($dbPost, $project);
-        $ret['caneditpost_b']     = $this->canEditPost($dbPost, $project);
-        $ret['canshowlock_b']     = $this->canShowLockForPost($dbPost, $project);
-        $ret['lock_b']            = $this->hasLockedPost($dbPost, $project);
+        $ret['canremovepost_b']   = $this->canRemove($dbPost, $project);
+        $ret['caneditpost_b']     = $this->canEdit($dbPost, $project);
+        $ret['canshowlock_b']     = $this->canShowLock($dbPost, $project);
+        $ret['lock_b']            = $this->user->hasLocked($dbPost, $project);
 
         $ret['canshowlurk_b']     = $logged ? !$ret['canshowlock_b'] : false;
-        $ret['lurk_b']            = $this->hasLurkedPost($dbPost, $project);
+        $ret['lurk_b']            = $this->user->hasLurked($dbPost, $project);
         
         $ret['canshowbookmark_b'] = $logged;
-        $ret['bookmark_b']        = $this->hasBookmarkedPost($dbPost, $project);
+        $ret['bookmark_b']        = $this->user->hasBookmarked($dbPost, $project);
 
         $ret['message_n']         = $this->bbcode($dbPost['message'], $truncate, $project ? 'g' : 'u' ,$ret['pid_n'],$ret['toid_n']);
         $ret['postcomments_n']    = $this->countComments($dbPost['hpid'], $project);

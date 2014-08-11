@@ -44,15 +44,15 @@ if($specific) {
 
 $vals = [];
 
-$vals['list_a'] = $messages->getMessages($id,
+$vals['list_a'] = $messages->getPosts($id,
     array_merge(
-        [ 'project' => $prj ],
+        [ 'project'  => $prj ],
+        [ 'truncate' => true ], // always truncate in postlist
         $limit          ? [ 'limit'        => $limit ]         : [],
         $beforeHpid     ? [ 'hpid'         => $beforeHpid ]    : [],
         $onlyfollowed   ? [ 'onlyfollowed' => $onlyfollowed ]  : [],
         $lang           ? [ 'lang'         => $lang ]          : [],
-        $search         ? [ 'search'       => $search ]        : [],
-        [ 'truncate' => !$id ] // in home, truncate post
+        $search         ? [ 'search'       => $search ]        : []
     ));
 
 if(empty($vals['list_a']) || (!$logged && $beforeHpid))

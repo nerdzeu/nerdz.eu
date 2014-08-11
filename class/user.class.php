@@ -159,9 +159,15 @@ class User
         return true;
     }
 
-    private function isInBanList($user)
+    private function isInBanList($id)
     {
-        if(!($o = Db::query(array('SELECT "motivation" FROM "ban" WHERE "user" = :user',array(':user' => $user)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "motivation" FROM "ban" WHERE "user" = :id',
+                [
+                    ':user' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return false;
         return $o->motivation;
     }
@@ -228,19 +234,21 @@ class User
             arsort($langs, SORT_NUMERIC);
             return $langs;
         }
-        return array('en' => 1); //english on error/default
+
+        return ['en' => 1]; //english on error/default
     }
 
     public function getBrowserLanguage()
     {
         $langpref = $this->getAcceptLanguagePreference();
-        $avail = $this->getAvailableLanguages();
+        $avail    = $this->getAvailableLanguages();
 
         foreach($langpref as $lang => $val)
             foreach($avail as $av)
                 if(strpos($lang,$av) !== false)
                     return $av;
-        return 'en'; //non dovremmo mai arrivare qui
+
+        return 'en'; // should never reach this line
     }
 
     public function setBoardLanguage($lang)
@@ -248,7 +256,14 @@ class User
         if(!$this->isLogged())
             return false;
 
-        return Db::query(array('UPDATE "users" SET "board_lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO) == Db::NO_ERRNO;
+        return Db::query(
+            [
+                'UPDATE "users" SET "board_lang" = :lang WHERE "counter" = :id',
+                [
+                    ':lang' => $lang,
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_ERRNO) == Db::NO_ERRNO;
     }
 
     public function setLanguage($lang)
@@ -256,7 +271,14 @@ class User
         if(!$this->isLogged())
             return false;
 
-        return Db::query(array('UPDATE "users" SET "lang" = :lang WHERE "counter" = :id',array(':lang' => $lang, ':id' => $_SESSION['id'])),Db::FETCH_ERRNO) == Db::NO_ERRNO;
+        return Db::query(
+            [
+                'UPDATE "users" SET "lang" = :lang WHERE "counter" = :id',
+                [
+                    ':lang' => $lang,
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_ERRNO) == Db::NO_ERRNO;
     }
 
     public function getBoardLanguage($id)
@@ -265,7 +287,13 @@ class User
         {
             if(empty($_SESSION['board_lang']))
             {
-                if(!($o = Db::query(array('SELECT "board_lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+                if(!($o = Db::query(
+                    [
+                        'SELECT "board_lang" FROM "users" WHERE "counter" = :id',
+                        [
+                            ':id' => $id
+                        ]
+                    ],Db::FETCH_OBJ)))
                     return false;
 
                 if(empty($o->board_lang))
@@ -280,7 +308,13 @@ class User
             return $_SESSION['board_lang'];
         }
 
-        if(!($o = Db::query(array('SELECT "board_lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "board_lang" FROM "users" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return false;
 
         return empty($o->board_lang) ? $this->getBrowserLanguage() : $o->board_lang;
@@ -292,7 +326,13 @@ class User
         {
             if(empty($_SESSION['lang']))
             {
-                if(!($o = Db::query(array('SELECT "lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+                if(!($o = Db::query(
+                    [
+                        'SELECT "lang" FROM "users" WHERE "counter" = :id',
+                        [
+                            ':id' => $id
+                        ]
+                    ],Db::FETCH_OBJ)))
                     return false;
 
                 if(empty($o->lang))
@@ -307,7 +347,13 @@ class User
             return $_SESSION['lang'];
         }
 
-        if(!($o = Db::query(array('SELECT "lang" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "lang" FROM "users" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return false;
 
         return empty($o->lang) ? $this->getBrowserLanguage() : $o->lang;
@@ -315,14 +361,30 @@ class User
 
     public function getFollowing($id)
     {
-        if(!($stmt = Db::query(array('SELECT "to" FROM "followers" WHERE "from" = :id',array(':id' => $id)),Db::FETCH_STMT)))
+        if(!($stmt = Db::query(
+            [
+                'SELECT "to" FROM "followers" WHERE "from" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function getFriends($id) {
-        if(!($stmt = Db::query(array('select "to" from (select "to" from followers where "from" = :id) as f inner join (select "from" from followers where "to" = :id) as e on f.to = e.from', array(':id' => $id)), Db::FETCH_STMT)))
+        if(!($stmt = Db::query(
+            [
+                'select "to" from (
+                 select "to" from followers where "from" = :id) as f
+                    inner join 
+                 (select "from" from followers where "to" = :id) as e
+                    on f.to = e.from',
+                [
+                    ':id' => $id
+                ]
+            ], Db::FETCH_STMT)))
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -330,38 +392,43 @@ class User
 
     public function isOnline($id)
     {
-        if(!($o = Db::query(array('SELECT ("last" + INTERVAL \'300 SECONDS\') > NOW() AS online,"viewonline" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT ("last" + INTERVAL \'300 SECONDS\') > NOW() AS online,"viewonline"
+                 FROM "users" WHERE "counter" = :id',
+                 [
+                     ':id' => $id
+                 ]
+             ],Db::FETCH_OBJ)))
             return false;
         return $o->viewonline && $o->online;
     }
 
     public function hasClosedProfile($id)
     {
-        if(! ( $o = Db::query(array('SELECT "closed" FROM "profiles" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "closed" FROM "profiles" WHERE "counter" = :id',
+                 [
+                     ':id' => $id
+                 ]
+            ],Db::FETCH_OBJ)))
             return false;
         return $o->closed;
     }
 
-    public function getRealBlacklist()
+    public function getBlacklist()
     {
-        if((!$this->isLogged())||(!($r = Db::query(array('SELECT "to" FROM "blacklist" WHERE "from" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT))))
+        if((!$this->isLogged())||(!($r = Db::query(
+            [
+                'SELECT "to" FROM "blacklist" WHERE "from" = :id',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT))))
             return [];
 
         return $r->fetchAll(PDO::FETCH_COLUMN);
-    }
-
-    public function getBlacklist()
-    {
-        $ret = $blist = [];
-        if((!$this->isLogged())||(!($r = Db::query(array('SELECT "to" FROM "blacklist" WHERE "from" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT))))
-            return $ret;
-
-        $blist = $r->fetchAll(PDO::FETCH_COLUMN);
-
-        if((!($r = Db::query(array('SELECT DISTINCT "from" FROM "blacklist" WHERE "to" = :id' ,array(':id' => $_SESSION['id'])),Db::FETCH_STMT))))
-            return $ret;
-
-        return array_merge($blist, $r->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function hasInBlacklist($other)
@@ -379,9 +446,63 @@ class User
                     ],Db::ROW_COUNT);
     }
 
+    public function hasLocked($post, $project = false)
+    {
+        $table = ($project ? 'groups_' : '').'posts_no_notify';
+        return (
+                $this->isLogged() &&
+                Db::query(
+                    [
+                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :id',
+                        [
+                            ':hpid' => $post['hpid'],
+                            ':id'   => $_SESSION['id']
+                        ]
+                    ],Db::ROW_COUNT) > 0
+               );
+    }
+
+    public function hasLurked($post, $project = false)
+    {
+        $table = ($project ? 'groups_' : '').'lurkers';
+        return (
+                $this->isLogged() &&
+                Db::query(
+                    [
+                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
+                        [
+                            ':hpid' => $post['hpid'],
+                            ':id'   => $_SESSION['id']
+                        ]
+                    ],Db::ROW_COUNT) > 0
+               );
+    }
+
+    public function hasBookmarked($post, $project = false)
+    {
+        $table = ($project ? 'groups_' : '').'bookmarks';
+        return (
+                $this->isLogged() &&
+                Db::query(
+                    [
+                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
+                        [
+                            ':hpid' => $post['hpid'],
+                            ':id'   => $_SESSION['id']
+                        ]
+                    ],Db::ROW_COUNT) > 0
+               );
+    }
+
     public function getWhitelist($id)
     {
-        if(!($stmt = Db::query(array('SELECT "to" FROM "whitelist" WHERE "from" = :id',array(':id' => $id)),Db::FETCH_STMT)))
+        if(!($stmt = Db::query(
+            [
+                'SELECT "to" FROM "whitelist" WHERE "from" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_STMT)))
             return false;
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -389,17 +510,29 @@ class User
 
     public function isLogged()
     {
-        return (isset($_SESSION['logged']) && $_SESSION['logged']);
+        return isset($_SESSION['logged']) && $_SESSION['logged'];
     }
 
     public function getObject($id)
     {
-        return Db::query(array('SELECT * FROM "users" u JOIN "profiles" p ON u.counter = p.counter WHERE p.counter = :id',array(':id' => $id)),Db::FETCH_OBJ);
+        return Db::query(
+            [
+                'SELECT * FROM "users" u JOIN "profiles" p ON u.counter = p.counter WHERE p.counter = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ);
     }
 
     public function getEmail($id)
     {
-        if(!($o = Db::query(array('SELECT "email" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "email" FROM "users" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return false;
         return $o->email;
     }
@@ -409,8 +542,14 @@ class User
         if($this->isLogged() && ($username === null))
             return $_SESSION['id'];
 
-        if(!($id = Db::query(array('SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',array(':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8'))),Db::FETCH_OBJ)))
-            return false;
+        if(!($id = Db::query(
+            [
+                'SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',
+                [
+                    ':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8')
+                ]
+            ],Db::FETCH_OBJ)))
+            return 0;
 
         return $id->counter;
     }
@@ -418,7 +557,7 @@ class User
     public function getAvailableTemplates()
     {
         $root = $_SERVER['DOCUMENT_ROOT'].'/tpl/';
-        $templates = array_diff(scandir($root), array('.','..','index.html'));
+        $templates = array_diff(scandir($root), [ '.','..','index.html' ]);
         $ret = [];
         $i = 0;
         foreach($templates as $val) {
@@ -440,7 +579,13 @@ class User
         {
             if(!isset($_SESSION['template']))
             {
-                if(!($o = Db::query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+                if(!($o = Db::query(
+                    [
+                        'SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',
+                        [
+                            ':id' => $_SESSION['id']
+                        ]
+                    ],Db::FETCH_OBJ)))
                     return false;
 
                 $_SESSION['template'] = $o->mobile_template;
@@ -450,7 +595,13 @@ class User
                 return $_SESSION['template'];
         }
 
-        if(!($o = Db::query(array('SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "mobile_template" FROM "profiles" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return '1';
 
         return $o->mobile_template;
@@ -471,7 +622,13 @@ class User
         {
             if(!isset($_SESSION['template']))
             {
-                if(!($o = Db::query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+                if(!($o = Db::query(
+                    [
+                        'SELECT "template" FROM "profiles" WHERE "counter" = :id',
+                        [
+                            ':id' => $_SESSION['id']
+                        ]
+                    ],Db::FETCH_OBJ)))
                     return false;
 
                 $_SESSION['template'] = $o->template;
@@ -481,7 +638,13 @@ class User
                 return $_SESSION['template'];
         }
 
-        if(!($o = Db::query(array('SELECT "template" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "template" FROM "profiles" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return '0';
 
         return $o->template;
@@ -498,7 +661,13 @@ class User
         if(!$id)
             $id = $_SESSION['id'];
 
-        if(!($o = Db::query(array('SELECT "timezone" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "timezone" FROM "users" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return 'UTC';
 
         if($id ==  $_SESSION['id'])
@@ -521,7 +690,13 @@ class User
         if($id ==  $_SESSION['id'] && isset($_SESSION['dateformat']))
              return $_SESSION['dateformat'];
 
-        if(!($o = Db::query(array('SELECT "dateformat" FROM "profiles" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "dateformat" FROM "profiles" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return 'Y/m/d, H:i';
 
         $_SESSION['dateformat'] = $o->dateformat;
@@ -582,7 +757,7 @@ class User
 
     public function refererControl()
     {
-        return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],array(Config\SITE_HOST,Config\MOBILE_HOST));
+        return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],[ Config\SITE_HOST,Config\MOBILE_HOST ] );
     }
 
     public function getCsrfToken($n = '')
@@ -681,7 +856,13 @@ class User
         if(isset($_SESSION['logged']) && $_SESSION['logged'] && (($id===null) || $id == $_SESSION['id']))
             return $_SESSION['username'];
 
-        if(!($o = Db::query(array('SELECT "username" FROM "users" WHERE "counter" = :id',array(':id' => $id)),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT "username" FROM "users" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return false;
 
         return $o->username;

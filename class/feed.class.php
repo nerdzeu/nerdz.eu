@@ -86,7 +86,7 @@ class Feed extends Messages
                 <description>Homepage [Users] - NERDZ RSS</description>
                 <link>'.$this->baseurl.'/home.php</link>';
 
-        if(($m = parent::getMessages(null, [ 'limit' => 15 ])))
+        if(($m = parent::getPosts(null, [ 'limit' => 15 ])))
             foreach($m as $post)
                 $xml.= $this->getProfileItem($post);
         else
@@ -108,7 +108,7 @@ class Feed extends Messages
                 <description>Homepage [Projects] - NERDZ RSS</description>
                 <link>'.$this->baseurl.'/home.php?project=1</link>';
 
-        if(($m = parent::getMessages(null, [ 'project' => true, 'limit' => 15 ] )))
+        if(($m = parent::getPosts(null, [ 'project' => true, 'limit' => 15 ] )))
             foreach($m as $post)
                 $xml.= $this->getProjectItem($post);
         else
@@ -136,7 +136,7 @@ class Feed extends Messages
                 <description>'.$us.' NERDZ RSS</description>
                 <link>'.$this->baseurl.$urluser.'</link>';
 
-        if(($m = parent::getMessages($id,[ 'limit' => 15 ])))
+        if(($m = parent::getPosts($id,[ 'limit' => 15 ])))
             foreach($m as $post)
                 $xml .= $this->getProfileItem($post);
         else
@@ -167,7 +167,7 @@ class Feed extends Messages
                 <description>'.$us.' NERDZ RSS</description>
                 <link>'.$this->baseurl.$urlprj.'</link>';
 
-        if(($m = parent::getMessages($id, ['project' => true, 'limit' => 15 ]) ))
+        if(($m = parent::getPosts($id, ['project' => true, 'limit' => 15 ]) ))
             foreach($m as $post)
                 $xml .= $this->getProjectItem($post);
         else

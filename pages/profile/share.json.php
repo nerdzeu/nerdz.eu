@@ -42,14 +42,14 @@ $share = function($to,$url,$message = NULL) use($user)
     if(preg_match('#(.*)youtube.com\/watch\?v=(.{11})#Usim',$url)|| preg_match('#http:\/\/youtu.be\/(.{11})#Usim',$url))
     {
         $message = "[youtube]{$url}[/youtube] ".$message;
-        return $user->addMessage($to,$message);
+        return $user->add($to,$message);
     }
     
     if(preg_match('#http://sprunge.us/([a-z0-9\.]+)\?(.+?)#i',$url,$res))
     {
         $file = file_get_contents('http://sprunge.us/'.$res[1]);
         $message = "[code={$res[2]}]{$file}[/code]".$message;
-        return $user->addMessage($to,$message);
+        return $user->add($to,$message);
     }
 
     $h = @get_headers($url,Db::FETCH_OBJ);
@@ -61,7 +61,7 @@ $share = function($to,$url,$message = NULL) use($user)
         if(preg_match('#(image)#i',$ct))
         {
             $message = "[img]{$url}[/img]".$message;
-            return $user->addMessage($to,$message);
+            return $user->add($to,$message);
         }
         
         if(preg_match('#(htm)#i',$ct))
@@ -81,7 +81,7 @@ $share = function($to,$url,$message = NULL) use($user)
                     }
                 }
             $message = $flag ? "[url={$url}][img]{$img}[/img][/url]".$message : "[url]{$url}[/url] ".$message;
-            return $user->addMessage($to,$message);
+            return $user->add($to,$message);
         }
     }
 };

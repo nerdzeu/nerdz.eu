@@ -20,18 +20,18 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         if(!$hpid)
             die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
-        die(NERDZ\Core\Utils::jsonDbResponse($comments->addComment($hpid,$_POST['message'], $prj)));
+        die(NERDZ\Core\Utils::jsonDbResponse($comments->add($hpid,$_POST['message'], $prj)));
     break;
     
     case 'del':
         $hcid = isset($_POST['hcid']) && is_numeric($_POST['hcid']) ? $_POST['hcid'] : false;
         
-        if(!$hcid || !$comments->delComment($hcid, $prj))
+        if(!$hcid || !$comments->delete($hcid, $prj))
             die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
     break;
 
     case 'get':
-        if(empty($_POST['hcid']) || !($o = $comments->getComment($_POST['hcid'], $prj)))
+        if(empty($_POST['hcid']) || !($o = $comments->getMessage($_POST['hcid'], $prj)))
             die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
         die($o->message);
     break;

@@ -14,7 +14,7 @@ class comments extends Messages
         $this->user = new User();
     }
 
-    private function getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
+    private function getArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
     {
         $i = 0;
         $ret = [];
@@ -76,7 +76,7 @@ class comments extends Messages
 
     private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
-        if(!$prj && in_array($to,$this->user->getRealBlacklist())) // $to is in my blacklist -> don't show comments
+        if(!$prj && in_array($to,$this->user->getBlacklist())) // $to is in my blacklist -> don't show comments
             return [];
 
         $glue = $prj ? 'groups_' : '';
@@ -143,7 +143,7 @@ class comments extends Messages
 
         $cg = $prj ? 'gc' : 'pc'; //per txt version code in commenti
 
-        $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
+        $ret = $this->getArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
 
         /* Per il beforeHcid, nel caso in cui nella fase di posting si siano uniti gli ultimi messaggi
            allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty */
@@ -151,13 +151,13 @@ class comments extends Messages
         {
             if(!($res = Db::query(array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe)),Db::FETCH_STMT)))
                 return false;
-            $ret = $this->getCommentsArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
+            $ret = $this->getArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         }
 
         return $ret;
     }
 
-    public function parseCommentQuotes($message)
+    public function parseQuote($message)
     {
         $i = 0;
         $pattern = '#\[quote=([0-9]+)\|p\]#i';
@@ -165,7 +165,7 @@ class comments extends Messages
             $message = preg_replace_callback($pattern,function($m) {
                     $username = comments::getUsernameFromCid($m[1], true);
                     return $username
-                           ? '[commentquote=[user]'.$username.'[/user]]'.comments::getComment($m[1], true).'[/commentquote]'
+                           ? '[commentquote=[user]'.$username.'[/user]]'.comments::getMessage($m[1], true).'[/commentquote]'
                            : '';
                     },$message,1);
 
@@ -178,7 +178,7 @@ class comments extends Messages
             $message = preg_replace_callback($pattern,function($m) {
                     $username = comments::getUsernameFromCid($m[1]);
                     return $username
-                            ? '[commentquote=[user]'.$username.'[/user]]'.comments::getComment($m[1]).'[/commentquote]'
+                            ? '[commentquote=[user]'.$username.'[/user]]'.comments::getMessage($m[1]).'[/commentquote]'
                             : '';
                     },$message,1);
 
@@ -188,7 +188,7 @@ class comments extends Messages
         return $message;
     }
 
-    public function addComment($hpid,$message, $prj = false)
+    public function add($hpid,$message, $prj = false)
     {
 
         $posts = ($prj ? 'groups_' : '').'posts';
@@ -213,7 +213,7 @@ class comments extends Messages
           )
           return 'ERROR';
 
-        $message = trim($this->parseCommentQuotes(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
+        $message = trim($this->parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
         if(($user = $stmt->fetch(PDO::FETCH_OBJ)))
         {
@@ -224,7 +224,7 @@ class comments extends Messages
                 return 'error: FLOOD'; //simulate Db response
 
             if($user->from == $_SESSION['id'])
-                return $this->appendComment($user,$message, $prj);
+                return $this->append($user,$message, $prj);
         }
         
         return Db::query(
@@ -239,7 +239,7 @@ class comments extends Messages
             ],Db::FETCH_ERRSTR);
     }
 
-    public function getComment($hcid, $prj = false)
+    public function getMessage($hcid, $prj = false)
     {
         $table = ($prj ? 'groups_' : '').'comments';
 
@@ -297,7 +297,7 @@ class comments extends Messages
         return $this->showControl ($o->from, $o->to, $hpid, $o->pid, $prj, false, $num, $cycle * $num);
     }
 
-    public function delComment($hcid, $prj = false)
+    public function delete($hcid, $prj = false)
     {
         if($prj) {
             if(
@@ -354,7 +354,7 @@ class comments extends Messages
         return false;
     }
 
-    private function appendComment($oldMsgObj,$parsedMessage, $prj = false)
+    private function append($oldMsgObj,$parsedMessage, $prj = false)
     {
         return Db::query(
                 [
