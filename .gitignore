@@ -2,7 +2,7 @@ tmp/*
 ssltmp/*
 *.cssmin.css
 *.jsmin.js
-data/errlog.txt
+data/error.log
 data/tracking.js
 data/banner.list
 class/config/index.php

@@ -59,7 +59,7 @@ final class TemplateConfig
         {
             if(!($txt = file_get_contents($templatepath)))
                 return [];
-            // thanks for the following regexp to 1franck (http://là.pw/pb)
+            // thanks for the following regexp to 1franck (http://it2.php.net/manual/en/function.json-decode.php#111551)
             $ret = json_decode (preg_replace ('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);
             if (!is_array ($ret))
                 $ret = array ( 'js' => [], 'css' => [] , 'langs' => []);

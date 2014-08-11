@@ -10,11 +10,10 @@ $vals['tok_n'] = $user->getCsrfToken();
 
 $now = intval(date('o'));
 
-$vals['years_a'] = range($now-100,$now-1);
-$vals['years_a'] = array_reverse($vals['years_a']);
-
+$vals['years_a']  = range($now-100,$now-1);
+$vals['years_a']  = array_reverse($vals['years_a']);
 $vals['months_a'] = range(1,12);
-$vals['days_a'] = range(1,31);
+$vals['days_a']   = range(1,31);
 
 $vals['timezones_a'] = DateTimeZone::listIdentifiers();
 

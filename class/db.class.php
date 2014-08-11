@@ -81,7 +81,7 @@ class Db
 
     private static function dumpErrorString($string)
     {
-        $path = $_SERVER['DOCUMENT_ROOT'].'/data/errlog.txt';
+        $path = $_SERVER['DOCUMENT_ROOT'].'/data/error.log';
         file_put_contents($path,$string."\n", FILE_APPEND);
         chmod($path,0775);
     }
