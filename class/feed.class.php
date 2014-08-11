@@ -147,7 +147,7 @@ class Feed extends Messages
 
     public function getProjectFeed($id)
     {
-        if(!($us = Project::getProjectName($id)))
+        if(!($us = Project::getName($id)))
             return $this->error('Invalid project ID');
 
         $urlprj = NERDZ\Core\Utils::projectLink($us);

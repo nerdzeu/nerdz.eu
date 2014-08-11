@@ -28,7 +28,7 @@ $pass = Captcha::randomString(Config\MIN_LENGTH_PASS);
 if(Db::NO_ERRNO != Db::query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),Db::FETCH_ERRNO))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': retry'));
 
-$subject = 'NERDZ PASSWORD';
+$subject = Config\SITE_NAME.' Password';
 $msg = '<a href="http://'.Config\SITE_HOST.'">NERDZ</a><br /><br />';
 $msg.= $user->lang('USERNAME').': '.$obj->username.'<br />';
 $msg.= $user->lang('PASSWORD').': '.$pass.'<br />';
@@ -41,11 +41,11 @@ $mail->IsSMTP();
 $mail->SMTPAuth = true;
 #$mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for GMail
 $mail->SMTPSecure = "tls";
-$mail->Host = SMTP_SERVER;
-$mail->Port = SMTP_PORT;
-$mail->Username = SMTP_USER;
-$mail->Password = SMTP_PASS;
-$mail->SetFrom(SMTP_USER,'NERDZ Recovery [No reply]');
+$mail->Host = Config\SMTP_SERVER;
+$mail->Port = Config\SMTP_PORT;
+$mail->Username = Config\SMTP_USER;
+$mail->Password = Config\SMTP_PASS;
+$mail->SetFrom(Config\SMTP_USER,'['. Config\SITE_NAME .'] Password recovery [No reply]');
 $mail->Subject = $subject;
 $mail->MsgHTML($msg);
 $mail->AddAddress($email);

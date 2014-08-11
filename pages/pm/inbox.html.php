@@ -9,7 +9,7 @@ $user = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 if(!$user->isLogged())
-    die($pms->lang('REGISTER'));
+    die($user->lang('REGISTER'));
 
 $pms  = new Pms();
 

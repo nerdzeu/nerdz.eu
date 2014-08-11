@@ -4,17 +4,14 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-use NERDZ\Core\Project;
-use NERDZ\Core\Messages;
+use NERDZ\Core\User;
+$user = new User();
 
-$project = new Project();
-$comments = new Comments();
-
-if(!$project->isLogged())
-    die($project->lang('REGISTER'));
+if(!$user->isLogged())
+    die($user->lang('REGISTER'));
  
-if(!$project->refererControl())
-    die($project->lang('ERROR'));
+if(!$user->refererControl())
+    die($user->lang('ERROR'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
@@ -26,7 +23,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
     break;
     
     default:
-        die($project->lang('ERROR'));
+        die($user->lang('ERROR'));
     break;
 }
 ?>

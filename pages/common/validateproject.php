@@ -19,6 +19,8 @@ foreach($_POST as &$val)
 if(empty($_POST['description']) || ! is_string($_POST['description'])) //always required
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('MUST_COMPLETE_FORM')."\n\n".$user->lang('MISSING').":\n".$user->lang('DESCRIPTION')));
 
+$projectData = [];
+
 $projectData['description'] = $_POST['description'];
 $projectData['owner']       = $_SESSION['id'];
 
@@ -81,7 +83,7 @@ if(!empty($_POST['photo']))
     if(!Utils::isValidURL($_POST['photo']))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('PHOTO').': '.$user->lang('INVALID_URL')));
         
-    if(!($head = get_headers($_POST['photo'],Db::FETCH_OBJ)) || !isset($head['Content-Type']))
+    if(!($head = get_headers($_POST['photo'],1)) || !isset($head['Content-Type']))
         die(NERDZ\Core\Utils::jsonResponse('error','Something wrong with your project image'));
         
     if(false === strpos($head['Content-Type'],'image'))

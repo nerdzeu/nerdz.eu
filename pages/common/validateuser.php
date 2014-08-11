@@ -8,7 +8,7 @@ $user = new User();
 
 $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 
-$user = [];
+$userData = [];
 $userData['name']     = isset($_POST['name'])     ? trim($_POST['name'],$l)     : false;
 $userData['surname']  = isset($_POST['surname'])  ? trim($_POST['surname'],$l)  : false;
 $userData['email']    = isset($_POST['email'])    ? trim($_POST['email'],$l)    : false;
@@ -47,7 +47,7 @@ $birth['birth_day']   = isset($_POST['birth_day'])    && is_numeric($_POST['birt
 $birth['birth_month'] = isset($_POST['birth_month'])  && is_numeric($_POST['birth_month']) && $_POST['birth_month']>0 ? $_POST['birth_month']           : false;
 $birth['birth_year']  = isset($_POST['birth_year'])   && is_numeric($_POST['birth_year'])  && $_POST['birth_year'] >0 ? $_POST['birth_year']            : false;
 
-$user_flag  = !in_array(false,$user);
+$user_flag  = !in_array(false,$userData);
 $birth_flag = !in_array(false,$birth);
 
 if(!$user_flag||!$birth_flag)
@@ -55,7 +55,7 @@ if(!$user_flag||!$birth_flag)
     $msg = $user->lang('MUST_COMPLETE_FORM')."\n\n".$user->lang('MISSING').':';
 
     if(!$user_flag)
-        foreach($user as $id => $val)
+        foreach($userData as $id => $val)
             if(!$val)
             {
                 $msg.= "\n";
@@ -144,11 +144,11 @@ if(mb_strlen($userData['surname'],'UTF-8') < Config\MIN_LENGTH_SURNAME)
 if(false === filter_var($userData['email'],FILTER_VALIDATE_EMAIL))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('MAIL_NOT_VALID')));
 
-foreach($user as $id => $value)
+foreach($userData as $id => $value)
     $userData[$id] = $id == 'password' ? $value : htmlspecialchars($value,ENT_QUOTES,'UTF-8');
 
 //htmlspecialchars empty return values FIX
-if(count(array_filter($user)) != count($user))
+if(count(array_filter($userData)) != count($userData))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': INVALID UTF-8'));
 
 if(!$user->isLogged() && mb_strlen($userData['username'],'UTF-8') >= 90) //Username with convertited entities is too long for Db field

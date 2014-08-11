@@ -21,7 +21,7 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
     case 'show':
         $hpid  = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid']  : false;
         if(!$hpid )
-            die($comments->lang('ERROR'));
+            die($user->lang('ERROR'));
         $_list = null;
         if (isset ($_POST['start']) && isset ($_POST['num']) &&
             is_numeric ($_POST['start']) && is_numeric ($_POST['num']))

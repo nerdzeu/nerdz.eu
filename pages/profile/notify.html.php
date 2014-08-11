@@ -2,20 +2,22 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Notification;
+use NERDZ\Core\User;
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-$user = new Notification();
+$user         = new User();
+$notification = new Notification();
 
 if($user->isLogged())
 {
     $e = $vals = [];
-    $a = $user->show(null, !isset ($_POST['doNotDelete']));
+    $a = $notification->show(null, !isset ($_POST['doNotDelete']));
     $y = count($a);
     $f = true;
     if(!$y)
     {
         $f = false;
-        $a = $user->story();
+        $a = $notification->story();
         $y = count($a);
     }
     for($i=0;$i<$y;++$i)
@@ -56,7 +58,7 @@ if($user->isLogged())
         $e[$i][9] = isset($a[$i]['from']) ? $a[$i]['from'] : 0;
     }
     
-    if($f && !$user->updateStory($a))
+    if($f && !$notification->updateStory($a))
         die($user->lang('ERROR ASD'));
         
     usort($e,array('NERDZ\\Core\\Notification','echoSort'));

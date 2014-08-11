@@ -8,23 +8,23 @@ $user = new User();
 if(isset($_POST['comment'])) {
     $message = new NERDZ\Core\Comments();
     if(!isset($_POST['hcid']) || !is_numeric($_POST['hcid'])) 
-        die(NERDZ\Core\Utils::jsonResponse('error',$message->lang('ERROR').': no hcid'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': no hcid'));
     $id = $_POST['hcid'];
 }
 else {
     $message = new NERDZ\Core\Messages();
     if(!isset($_POST['hpid']) || !is_numeric($_POST['hpid'])) 
-        die(NERDZ\Core\Utils::jsonResponse('error',$message->lang('ERROR').': no hpid'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': no hpid'));
     $id = $_POST['hpid'];
 }
 
 $revNo = isset($_POST['revNo']) && is_numeric($_POST['revNo']) && $_POST['revNo'] >= 1 ? $_POST['revNo'] : 0;
 
 if(!$revNo)
-    die(NERDZ\Core\Utils::jsonResponse('error',$message->lang('ERROR').': invalid revNo'));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': invalid revNo'));
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error',$message->lang('REGISTER')));
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 }
 
 $rev = $message->getRevision($id, $revNo, isset($prj));
@@ -35,5 +35,5 @@ die(is_object($rev) ?
         'datetime' => $user->getDateTime($rev->time),
         'message'  => $message->bbcode($rev->message)
     ]) :
-   NERDZ\Core\Utils::jsonResponse('error',$message->lang('ERROR')));
+   NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 ?>

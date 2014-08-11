@@ -47,7 +47,7 @@ if($prj)
              );
 
     $linkMethod = 'projectLink';
-    $nameMethod = 'getProjectName';
+    $nameMethod = 'getName';
 }
 else
 {

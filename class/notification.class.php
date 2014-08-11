@@ -214,7 +214,7 @@ class Notification
             $ret[$i]['from'] = $o->from;
             $ret[$i]['from_user'] = User::getUsername($o->from);
             $ret[$i]['to'] = $p->to;
-            $ret[$i]['to_project'] = Project::getProjectName($p->to);
+            $ret[$i]['to_project'] = Project::getName($p->to);
             $ret[$i]['post_from_user'] = User::getUsername($p->from);
             $ret[$i]['post_from'] = $p->from;
             $ret[$i]['pid'] = $p->pid;
@@ -246,7 +246,7 @@ class Notification
         {
             $ret[$i]['project'] = true;
             $ret[$i]['to'] = $o->group;
-            $ret[$i]['to_project'] = Project::getProjectName($o->group);
+            $ret[$i]['to_project'] = Project::getName($o->group);
             $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
             $ret[$i]['cmp'] = $o->time;
             $ret[$i]['news'] = true;
