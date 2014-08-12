@@ -392,7 +392,6 @@ class Messages
         $table = ($project ? 'groups_' : '').'posts';
 
         $glue = $id ? ' "to" = :id ' : 'TRUE';
-        var_dump($options);
 
         if($onlyfollowed) {
             $followed = array_merge($this->user->getFollowing($_SESSION['id']), (array)$_SESSION['id']);
@@ -434,8 +433,6 @@ class Messages
                            )) OR \''.$_SESSION['id'].'\' = g.owner';
             $glue .= ') ';
         }
-
-        var_dump($glue);
 
         if(!($result = Db::query(
             [

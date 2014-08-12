@@ -6,10 +6,10 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 class Feed extends Messages
 {
     private $ssl, $baseurl;
-    private $user, $project;
- 
+
     public function __construct()
     {
+        parent::__construct();
         $this->baseurl = 'http'.(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 's' : '').'://'.Config\SITE_HOST.'/';
     }
 
@@ -26,11 +26,6 @@ class Feed extends Messages
                     </rss>';
     }
 
-    private function xmlentity($str)
-    {
-        return htmlspecialchars(html_entity_decode($str,ENT_QUOTES,'UTF-8'),ENT_QUOTES,'UTF-8');
-    }
-
     private function getValidFeedMessage($message) //40 words
     {
         $m = explode(' ',$message);
@@ -38,13 +33,13 @@ class Feed extends Messages
         if(count($m) > $i)
             while(isset($m[$i]))
                 unset($m[$i++]);
-        return $this->xmlentity(implode(' ',$m)).'...';
+        return implode(' ',$m).'...';
     }
 
     private function getProfileItem($post)
     {
-        $from = $this->xmlentity($post['from_n']);
-        $to = $this->xmlentity($post['to_n']);
+        $from = $post['from_n'];
+        $to   = $post['to_n'];
 
         $url = $this->baseurl.$post['to4link_n'].$post['pid_n'];
 
@@ -59,8 +54,8 @@ class Feed extends Messages
 
     private function getProjectItem($post)
     {
-        $from = $this->xmlentity($post['from_n']);
-        $to = $this->xmlentity($post['to_n']);
+        $from = $post['from_n'];
+        $to   = $post['to_n'];
 
         $url = $this->baseurl.$post['to4link_n'].$post['pid_n'];
 
@@ -75,7 +70,7 @@ class Feed extends Messages
 
     public function getHomeProfileFeed()
     {
-        if(!parent::isLogged())
+        if(!$this->user->isLogged())
             return $this->error('Please login');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -97,7 +92,7 @@ class Feed extends Messages
 
     public function getHomeProjectFeed()
     {
-        if(!parent::isLogged())
+        if(!$this->user->isLogged())
             return $this->error('Please login');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -123,9 +118,14 @@ class Feed extends Messages
             return $this->error('Invalid user ID');
 
         $urluser = NERDZ\Core\Utils::userLink($us);
-        $us = $this->xmlentity($us);
     
-        if(!parent::isLogged() && (!($p = Db::query(array('SELECT "private" FROM "users" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)) || $p->private))
+        if(!$this->user->isLogged() && (!($p = Db::query(
+            [
+                'SELECT "private" FROM "users" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)) || $p->private))
                 return $this->error('Private profile OR undefined error');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -151,12 +151,17 @@ class Feed extends Messages
             return $this->error('Invalid project ID');
 
         $urlprj = NERDZ\Core\Utils::projectLink($us);
-        $us = $this->xmlentity($us);
     
-        if(!($p = Db::query(array('SELECT "private","owner" FROM "groups" WHERE "counter" = ?',array($id)),Db::FETCH_OBJ)))
+        if(!($p = Db::query(
+            [
+                'SELECT "private","owner" FROM "groups" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return $this->error('Undefined error');
 
-        if($p->private && (!parent::isLogged() || (!in_array($_SESSION['id'], parent::getMembers($id)) && $_SESSION['id'] != $p->owner)))
+        if($p->private && (!$this->user->isLogged() || (!in_array($_SESSION['id'], $this->project->getMembers($id)) && $_SESSION['id'] != $p->owner)))
             return $this->error('Closed project');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
