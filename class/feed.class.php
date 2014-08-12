@@ -77,8 +77,8 @@ class Feed extends Messages
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
                 <atom:link href="http'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
-                <title>Homepage [Users] - NERDZ RSS</title>
-                <description>Homepage [Users] - NERDZ RSS</description>
+                <title>Homepage [Users] - '.Config\SITE_NAME.' RSS</title>
+                <description>Homepage [Users] - '.Config\SITE_NAME.' RSS</description>
                 <link>'.$this->baseurl.'/home.php</link>';
 
         if(($m = parent::getPosts(null, [ 'limit' => 15 ])))
@@ -99,8 +99,8 @@ class Feed extends Messages
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
                 <atom:link href="http'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
-                <title>Homepage [Projects] - NERDZ RSS</title>
-                <description>Homepage [Projects] - NERDZ RSS</description>
+                <title>Homepage [Projects] - '.Config\SITE_NAME.' RSS</title>
+                <description>Homepage [Projects] - '.Config\SITE_NAME.' RSS</description>
                 <link>'.$this->baseurl.'/home.php?project=1</link>';
 
         if(($m = parent::getPosts(null, [ 'project' => true, 'limit' => 15 ] )))
@@ -117,7 +117,7 @@ class Feed extends Messages
         if(!($us = User::getUsername($id)))
             return $this->error('Invalid user ID');
 
-        $urluser = NERDZ\Core\Utils::userLink($us);
+        $urluser = Utils::userLink($us);
     
         if(!$this->user->isLogged() && (!($p = Db::query(
             [
@@ -133,7 +133,7 @@ class Feed extends Messages
             <channel>
                 <atom:link href="http'.$this->baseurl.'feed.php?id='.$id.'" rel="self" type="application/rss+xml" />
                 <title>'.$us.'</title>
-                <description>'.$us.' NERDZ RSS</description>
+                <description>'.$us.' '.Config\SITE_NAME.' RSS</description>
                 <link>'.$this->baseurl.$urluser.'</link>';
 
         if(($m = parent::getPosts($id,[ 'limit' => 15 ])))
@@ -150,7 +150,7 @@ class Feed extends Messages
         if(!($us = Project::getName($id)))
             return $this->error('Invalid project ID');
 
-        $urlprj = NERDZ\Core\Utils::projectLink($us);
+        $urlprj = Utils::projectLink($us);
     
         if(!($p = Db::query(
             [
@@ -169,7 +169,7 @@ class Feed extends Messages
             <channel>
                 <atom:link href="http'.$this->baseurl.'feed.php?id='.$id.'&amp;project=1" rel="self" type="application/rss+xml" />
                 <title>'.$us.'</title>
-                <description>'.$us.' NERDZ RSS</description>
+                <description>'.$us.' '.Config\SITE_NAME.' RSS</description>
                 <link>'.$this->baseurl.$urlprj.'</link>';
 
         if(($m = parent::getPosts($id, ['project' => true, 'limit' => 15 ]) ))
