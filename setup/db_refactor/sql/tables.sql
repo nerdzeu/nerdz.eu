@@ -92,7 +92,7 @@ CREATE TABLE posts_notify(
     "from" int8 not null references users(counter) on delete cascade,
     "to" int8 not null references users(counter) on delete cascade,
     "hpid" int8 not null references posts(hpid) on delete cascade,
-    time timestamp(0) WITH TIME ZONE NOT NULL,
+    time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
     primary key("from", "to", hpid)
 );
 
@@ -109,6 +109,8 @@ with firsts as (select min(hpid) as firstPost, "to" from groups_posts group by "
 -- put values
 update groups_notify set hpid = f.firstpost from firsts f where f.to = groups_notify."group";
 alter table groups_notify alter column hpid set not null;
+
+ALTER TABLE "groups_notify" RENAME COLUMN "group" TO "from";
 
 -- fix table layout and indexes
 ALTER TABLE profiles ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
@@ -378,7 +380,7 @@ ALTER TABLE "groups_comments"
 
 ALTER TABLE "groups_notify"
     DROP CONSTRAINT "grforkey",
-    ADD CONSTRAINT "grforkey" FOREIGN KEY ("group")
+    ADD CONSTRAINT "grforkey" FOREIGN KEY ("from")
     REFERENCES groups(counter) ON DELETE CASCADE;
 
 ALTER TABLE "groups_members"
@@ -498,6 +500,11 @@ CREATE TABLE flood_limits(
 -- rename table follow to followers
 
 ALTER TABLE "follow" RENAME TO "followers";
+
+ALTER TABLE "followers" RENAME COLUMN "notified" TO "to_notify";
+ALTER TABLE "followers" ALTER COLUMN "to_notify" SET NOT NULL;
+
+ALTER TABLE "groups_followers" ADD COLUMN "to_notify" BOOLEAN NOT NULL DEFAULT TRUE;
 
 
 insert into flood_limits(table_name, time) values

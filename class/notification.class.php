@@ -6,7 +6,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
 class Notification
 {
-    private $rag, $cachekey, $project, $user;
+    private $rag, $cachekey, $user;
     
     public function __construct()
     {
@@ -40,67 +40,123 @@ class Notification
         switch(trim(strtolower($what)))
         {
             case 'users':
-                $c = $this->countUsers();
+                $c = $this->countUserComments();
             break;
             case 'posts':
-                $c = $this->countPosts();
+                $c = $this->countUserPosts();
             break;
             case 'projects':
-                $c = $this->countProjects();
+                $c = $this->countProjectComments();
             break;
             case 'projects_news':
-                $c = $this->countProjectsNews();
+                $c = $this->countProjectPosts();
             break;
             case 'follow':
                 $c = $this->countFollow();
             break;
+            case 'projects_follow':
+                $c = $this->countUserComments();
+            break;
             case 'all':
-                $c = (($a = $this->countUsers())<=0 ? 0 : $a) + (($a = $this->countPosts())<=0 ? 0 : $a) + (($a = $this->countProjects())<=0 ? 0 : $a) + (($a = $this->countProjectsNews())<=0 ? 0 : $a) + (($a = $this->countFollow())<=0 ? 0 : $a);
+                $c = (($a = $this->countUserComments())    <=0 ? 0 : $a) + 
+                     (($a = $this->countUserPosts())       <=0 ? 0 : $a) + 
+                     (($a = $this->countProjectComments()) <=0 ? 0 : $a) +
+                     (($a = $this->countProjectPosts())    <=0 ? 0 : $a) +
+                     (($a = $this->countFollow())          <=0 ? 0 : $a) +
+                     (($a = $this->countProjectFollow())   <=0 ? 0 : $a);
             break;
         }
         return $c;
     }
 
-    private function countUsers()
+    private function countUserComments()
     {
-        $q = $this->rag ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM "comments_notify" WHERE "to" = :id GROUP BY "hpid") AS c' :
-                          'SELECT COUNT("to") AS cc FROM "comments_notify" WHERE "to" = :id';
+        $q = $this->rag
+            ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM "comments_notify" WHERE "to" = :id GROUP BY "hpid") AS c'
+            : 'SELECT COUNT("to") AS cc FROM "comments_notify" WHERE "to" = :id';
         
-        if(!($o = Db::query(array($q,array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                $q,
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_OBJ)))
             return -1;
         
         return $o->cc;
     }
 
-    private function countPosts()
+    private function countUserPosts()
     {
-        if(!($o = Db::query(array('SELECT COUNT("hpid") AS cc FROM "posts_notify" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("hpid") AS cc FROM "posts_notify" WHERE "to" = :id',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_OBJ)))
             return -1;
         
         return $o->cc;
     }
 
-    private function countProjects()
+    private function countProjectComments()
     {
-        $q = $this->rag ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM groups_comments_notify WHERE "to" = :id GROUP BY "hpid") AS c' :
-                          'SELECT COUNT("to") AS cc FROM "groups_comments_notify" WHERE "to" = :id';
+        $q = $this->rag
+            ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM groups_comments_notify WHERE "to" = :id GROUP BY "hpid") AS c'
+            : 'SELECT COUNT("to") AS cc FROM "groups_comments_notify" WHERE "to" = :id';
             
-        if(!($o = Db::query(array($q,array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                $q,
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_OBJ)))
             return -1;
         
         return $o->cc;
     }
 
-    private function countProjectsNews()
+    private function countProjectPosts()
     {
-        if(!($o = Db::query(array('SELECT COUNT(DISTINCT "group") AS cc FROM "groups_notify" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("from") AS cc FROM "groups_notify" WHERE "to" = :id',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_OBJ)))
             return -1;
         return $o->cc;
     }
 
     private function countFollow()
     {
-        if(!($o = Db::query(array('SELECT COUNT("to") AS cc FROM "followers" WHERE "to" = :id AND "notified" = TRUE',array(':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("to") AS cc FROM "followers" WHERE "to" = :id AND "to_notify" = TRUE',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_OBJ)))
+            return -1;
+    
+        return $o->cc;
+    }
+
+    private function countProjectFollow()
+    {
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("to") AS cc FROM "groups_followers" WHERE "to" IN (
+                    SELECT "counter" FROM "groups" WHERE "owner" = :id
+                   ) AND "to_notify" = TRUE',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_OBJ)))
             return -1;
     
         return $o->cc;
@@ -115,34 +171,56 @@ class Notification
         switch(trim(strtolower($what)))
         {
             case 'users':
-                $ret = $this->getUsers($del);
+                $ret = $this->getUserComments($del);
             break;
             case 'posts':
-                $ret = $this->getPosts($del);
+                $ret = $this->getUserPosts($del);
             break;
             case 'projects':
-                $ret = $this->getProjects($del);
+                $ret = $this->getProjectComments($del);
             break;
-            case 'projects_news':
-                $ret = $this->getProjectsNews($del);
+            case 'projects_posts':
+                $ret = $this->getProjectPosts($del);
             break;
-            case 'follows':
-                $ret = $this->getFollowings($del);
+            case 'follow':
+                $ret = $this->getUserFollowers($del);
+            break;
+            case 'projects_follow':
+                $ret = $this->getProjectFollowers($del);
             break;
             case 'all':
-                $ret = array_merge($this->getUsers($del),$this->getPosts($del),$this->getProjects($del),$this->getProjectsNews($del),$this->getFollowings($del));
+                $ret = array_merge(
+                    $this->getUserComments($del),
+                    $this->getUserPosts($del),
+                    $this->getProjectComments($del),
+                    $this->getProjectPosts($del),
+                    $this->getUserFollowers($del),
+                    $this->getProjectFollowers($del));
             break;
         }
         return $ret;
     }
 
-    private function getUsers($del)
+    private function getUserComments($del)
     {
         $ret = [];
         $i = 0;
-        $result = Db::query(array('SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "comments_notify" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = Db::query(
+            [
+                'SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "comments_notify" WHERE "to" = :id',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT);
         
-        while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(array('SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ)))
+        while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
+            [
+                'SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $o->hpid
+                ]
+            ],Db::FETCH_OBJ))
+        )
         {
             $ret[$i]['from'] = $o->from;
             $ret[$i]['from_user'] = User::getUsername($o->from);
@@ -170,11 +248,18 @@ class Notification
         return $ret;
     }
 
-    private function getPosts($del)
+    private function getUserPosts($del)
     {
         $ret = [];
         $i = 0;
-        $result = Db::query(array('SELECT p."pid",n."hpid", n."from", EXTRACT(EPOCH FROM n."time") AS time FROM "posts_notify" n JOIN "posts" p ON p.hpid = n.hpid WHERE n."to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = Db::query(
+            [
+                'SELECT p."pid",n."hpid", n."from", EXTRACT(EPOCH FROM n."time") AS time FROM "posts_notify" n JOIN "posts" p ON p.hpid = n.hpid WHERE n."to" = :id',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT);
+
         $to = User::getUsername($_SESSION['id']);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
@@ -203,13 +288,26 @@ class Notification
         return $ret;
     }
 
-    private function getProjects($del)
+    private function getProjectComments($del)
     {
         $ret = [];
         $i = 0;
-        $result = Db::query(array('SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments_notify" WHERE "to" = :id', array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = Db::query(
+            [
+                'SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments_notify" WHERE "to" = :id',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT);
 
-        while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(array('SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ)))
+        while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
+            [
+                'SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $o->hpid
+                ]
+            ],Db::FETCH_OBJ))
+        )
         {
             $ret[$i]['from'] = $o->from;
             $ret[$i]['from_user'] = User::getUsername($o->from);
@@ -237,11 +335,18 @@ class Notification
         return $ret;
     }
 
-    private function getProjectsNews($del)
+    private function getProjectPosts($del)
     {
         $ret = [];
         $i = 0;
-        $result = Db::query(array('SELECT DISTINCT "group",EXTRACT(EPOCH FROM "time") AS time FROM "groups_notify" WHERE "to" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = Db::query(
+            [
+                'SELECT "from",EXTRACT(EPOCH FROM "time") AS time FROM "groups_notify" WHERE "to" = :id',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT);
+
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
         {
             $ret[$i]['project'] = true;
@@ -252,6 +357,7 @@ class Notification
             $ret[$i]['news'] = true;
             ++$i;
         }
+        
         if($del) {
             Db::query(
                 [
@@ -261,14 +367,22 @@ class Notification
                     ]
                 ],Db::NO_RETURN);
         }
+        
         return $ret;
     }
 
-    private function getFollowings($del)
+    private function getUserFollowers($del)
     {
         $ret = [];
         $i = 0;
-        $result = Db::query(array('SELECT "from",EXTRACT(EPOCH FROM "time") AS time FROM "followers" WHERE "to" = :id AND "notified" = TRUE',array(':id' => $_SESSION['id'])),Db::FETCH_STMT);
+        $result = Db::query(
+            [
+                'SELECT "from",EXTRACT(EPOCH FROM "time") AS time FROM "followers" WHERE "to" = :id AND "to_notify" = TRUE',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT);
+
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
         {
             $ret[$i]['follow'] = true;
@@ -282,7 +396,45 @@ class Notification
         if($del) {
             Db::query(
                 [
-                    'UPDATE "followers" SET "notified" = FALSE WHERE "to" = :id',
+                    'UPDATE "followers" SET "to_notify" = FALSE WHERE "to" = :id',
+                    [
+                        ':id' => $_SESSION['id']
+                    ]
+                ],Db::NO_RETURN);
+        }
+        return $ret;
+    }
+
+    private function getProjectFollowers($del)
+    {
+        $ret = [];
+        $i = 0;
+        $result = Db::query(
+            [
+                'SELECT "from", EXTRACT(EPOCH FROM "time") AS time FROM "groups_followers" WHERE "to" IN (
+                    SELECT "counter" FROM "groups" WHERE "owner" = :id
+                 ) AND "to_notify" = TRUE',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT);
+
+        while(($o = $result->fetch(PDO::FETCH_OBJ)))
+        {
+            $ret[$i]['follow'] = true;
+            $ret[$i]['from'] = $o->from;
+            $ret[$i]['from_user'] = User::getUsername($o->from);
+            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
+            $ret[$i]['cmp'] = $o->time;
+            ++$i;
+        }
+        
+        if($del) {
+            Db::query(
+                [
+                    'UPDATE "groups_followers" SET "to_notify" = FALSE WHERE "to" IN (
+                        SELECT "counter" FROM "groups" WHERE "owner" = :id
+                     )',
                     [
                         ':id' => $_SESSION['id']
                     ]
