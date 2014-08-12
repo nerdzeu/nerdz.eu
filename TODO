@@ -1,11 +1,10 @@
 - Move all common snippets of code to /pages/common/
 
 - ^ implies remove redoundant code
-  => Move {follow, revisions, thumbs}.json to comon
   => move common pages to class methdos (?)
 
 - Fix database again and again
-- Fix edit
+- Fix edit [ show edit form in default template for comments either ]
 
 - Improve search support (search onlyfollowed, lang, ecc.)
 - Create search page
@@ -13,7 +12,4 @@
 
 [!] Re-enable SSE in jclass.js, undertand why and fix the sse freeze other ajax requests
     => Will be re-enabled when the Go-API will be ready, since php locks everyting
-- Fix: PHP Notice:  Trying to get property of non-object in /home/nessuno/nerdz_env/nerdz/pages/common/comments.json.php on line 35
-- Complete migration from shit object to real objects. Move methods from user class to new classes -> Wont work until this fix. -> HIGH PRIORITY
-- Fix 'CANT_LURK_IF_POSTED' sql exception raised without a valid motivation (fix before_insert_[user|group]_post_luker() procedure
 - Fix blacklist

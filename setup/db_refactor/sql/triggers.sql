@@ -548,12 +548,17 @@ END $$;
 CREATE FUNCTION before_insert_group_post_lurker() RETURNS trigger
 LANGUAGE plpgsql
 AS $$
-DECLARE postFrom int8;
+DECLARE tmp RECORD;
 BEGIN
     PERFORM flood_control('"groups_lurkers"', NEW."from");
 
-    SELECT T."from" INTO postFrom FROM (SELECT "from" FROM "groups_posts" WHERE hpid = NEW.hpid) AS T;
-    PERFORM blacklist_control(NEW."from", postFrom); --blacklisted post creator
+    SELECT T."to", T."from" INTO tmp FROM (SELECT "to", "from" FROM "groups_posts" WHERE "hpid" = NEW.hpid) AS T;
+
+    SELECT tmp."to" INTO NEW."to";
+
+    PERFORM blacklist_control(NEW."from", tmp."from"); --blacklisted post creator
+
+    SELECT tmp."to" INTO NEW."to";
 
     IF NEW."from" IN ( SELECT "from" FROM "groups_comments" WHERE hpid = NEW.hpid ) THEN
         RAISE EXCEPTION 'CANT_LURK_IF_POSTED';
@@ -578,7 +583,7 @@ BEGIN
         PERFORM blacklist_control(NEW."from", tmp."from"); -- can't lurk if post was made by blacklisted user
     END IF;
 
-    IF NEW."to" IN ( SELECT "from" FROM "comments" WHERE hpid = NEW.hpid ) THEN
+    IF NEW."from" IN ( SELECT "from" FROM "comments" WHERE hpid = NEW.hpid ) THEN
         RAISE EXCEPTION 'CANT_LURK_IF_POSTED';
     END IF;
     
