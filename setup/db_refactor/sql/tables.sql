@@ -507,6 +507,8 @@ ALTER TABLE "followers" ALTER COLUMN "to_notify" SET NOT NULL;
 ALTER TABLE "groups_followers" ADD COLUMN "to_notify" BOOLEAN NOT NULL DEFAULT TRUE;
 update "groups_followers" SET "to_notify" = false;
 
+-- empty notify_story
+UPDATE "users" SET "notify_story" = NULL;
 
 insert into flood_limits(table_name, time) values
 ('blacklist', '05:00'), --blacklist

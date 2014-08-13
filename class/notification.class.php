@@ -7,11 +7,20 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 class Notification
 {
     private $rag, $cachekey, $user;
+
+    const USER_COMMENT = 'profile_comments';
+    const USER_POST    = 'new_post_on_profile';
+    const USER_FOLLOW  = 'new_follower';
+
+    const PROJECT_COMMENT = 'project_comments';
+    const PROJECT_POST    = 'news_project';
+    const PROJECT_FOLLOW  = 'new_project_follower';
     
-    public function __construct()
+    public function __construct($group = true)
     {
-        $this->user = new User();
+        $this->user     = new User();
         $this->cachekey = $this->user->isLogged() ? "{$_SESSION['id']}notifystory".Config\SITE_HOST : '';
+        $this->rag      = $group;
     }
 
     public function countPms()
@@ -48,7 +57,7 @@ class Notification
             case 'projects':
                 $c = $this->countProjectComments();
             break;
-            case 'projects_news':
+            case 'projects_posts':
                 $c = $this->countProjectPosts();
             break;
             case 'follow':
@@ -58,12 +67,12 @@ class Notification
                 $c = $this->countUserComments();
             break;
             case 'all':
-                $c = (($a = $this->countUserComments())    <=0 ? 0 : $a) + 
-                     (($a = $this->countUserPosts())       <=0 ? 0 : $a) + 
-                     (($a = $this->countProjectComments()) <=0 ? 0 : $a) +
-                     (($a = $this->countProjectPosts())    <=0 ? 0 : $a) +
-                     (($a = $this->countFollow())          <=0 ? 0 : $a) +
-                     (($a = $this->countProjectFollow())   <=0 ? 0 : $a);
+                $c = $this->countUserComments()    +
+                     $this->countUserPosts()       +
+                     $this->countProjectComments() +
+                     $this->countProjectPosts()    +
+                     $this->countFollow()          +
+                     $this->countProjectFollow();
             break;
         }
         return $c;
@@ -82,7 +91,7 @@ class Notification
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_OBJ)))
-            return -1;
+            return 0;
         
         return $o->cc;
     }
@@ -96,7 +105,7 @@ class Notification
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_OBJ)))
-            return -1;
+            return 0;
         
         return $o->cc;
     }
@@ -114,7 +123,7 @@ class Notification
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_OBJ)))
-            return -1;
+            return 0;
         
         return $o->cc;
     }
@@ -128,7 +137,7 @@ class Notification
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_OBJ)))
-            return -1;
+            return 0;
         return $o->cc;
     }
 
@@ -141,7 +150,7 @@ class Notification
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_OBJ)))
-            return -1;
+            return 0;
     
         return $o->cc;
     }
@@ -157,7 +166,7 @@ class Notification
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_OBJ)))
-            return -1;
+            return 0;
     
         return $o->cc;
     }
@@ -198,6 +207,54 @@ class Notification
                     $this->getProjectFollowers($del));
             break;
         }
+        usort($ret,array(__CLASS__,'echoSort'));
+        return $ret;
+    }
+
+    private function isProject($type)
+    {
+        return strpos($type, 'project') !== false;
+    }
+
+    private function get($params, $type)
+    {
+        extract($params);
+        $post = !empty($post) ? $post : false;
+        $row  = !empty($row)  ? $row  : false;
+
+        $ret = [];
+        if(!$row)
+            return $ret;
+
+        $ret['fromid_n']    = $row->from;
+        $ret['from_n']      = User::getUsername($row->from);
+        $ret['from4link_n'] = Utils::userLink($ret['from_n']);
+        $ret['type_n']      = $type;
+
+        if($post)
+        {
+            $ret['hpid_n']  = $row->hpid;
+            $ret['pid_n']   = $post->pid;
+            $ret['to_n'] = User::getUsername($post->to);
+            $ret['to4link_n'] = (
+                $this->isProject($type)
+                    ? Utils::projectLink($ret['to_n'])
+                    : Utils::userLink($ret['to_n'])
+                ).$ret['pid_n'];
+        } else { // followers
+            $ret['toid_n'] = $row->to;
+            if($this->isProject($type)) {
+                $ret['to_n']   = Project::getName($row->to);
+                $ret['to4link_n'] = Utils::projectLink($ret['to_n']);
+            } else {
+                $ret['to_n']   = User::getUsername($row->to);
+                $ret['to4link_n'] = Utils::userLink($ret['to_n']);
+            }
+        }
+
+        $ret['datetime_n']  = $this->user->getDateTime($row->time);
+        $ret['timestamp_n'] = $row->time;
+
         return $ret;
     }
 
@@ -207,7 +264,12 @@ class Notification
         $i = 0;
         $result = Db::query(
             [
-                'SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "comments_notify" WHERE "to" = :id',
+                'SELECT "from","to", "hpid", EXTRACT(EPOCH FROM "time") AS time
+                FROM "comments_notify" n WHERE n."to" = :id'. (
+                    $this->rag
+                    ? ' AND n.time = (SELECT MAX("time") FROM "comments_notify" WHERE hpid = n.hpid AND "to" = n."to")'
+                    : ''
+                ),
                 [
                     ':id' => $_SESSION['id']
                 ]
@@ -222,18 +284,11 @@ class Notification
             ],Db::FETCH_OBJ))
         )
         {
-            $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = User::getUsername($o->from);
-            $ret[$i]['to'] = $p->to;
-            $ret[$i]['to_user'] = User::getUsername($p->to);
-            $ret[$i]['post_from_user'] = User::getUsername($p->from);
-            $ret[$i]['post_from'] = $p->from;
-            $ret[$i]['pid'] = $p->pid;
-            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
-            $ret[$i]['cmp'] = $o->time;
-            $ret[$i]['board'] = false;
-            $ret[$i]['project'] = false;
-            ++$i;
+            $ret[$i++] = $this->get(
+                [
+                    'row'  => $o,
+                    'post' => $p
+                ], static::USER_COMMENT);
         }
 
         if($del) {
@@ -254,7 +309,9 @@ class Notification
         $i = 0;
         $result = Db::query(
             [
-                'SELECT p."pid",n."hpid", n."from", EXTRACT(EPOCH FROM n."time") AS time FROM "posts_notify" n JOIN "posts" p ON p.hpid = n.hpid WHERE n."to" = :id',
+                'SELECT p."pid",n."hpid", n."from", n."to", EXTRACT(EPOCH FROM n."time") AS time
+                FROM "posts_notify" n JOIN "posts" p
+                ON p.hpid = n.hpid WHERE n."to" = :id',
                 [
                     ':id' => $_SESSION['id']
                 ]
@@ -264,17 +321,13 @@ class Notification
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
         {
-            $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = User::getUsername($o->from);
-            $ret[$i]['to'] = $_SESSION['id'];
-            $ret[$i]['to_user'] = $to;
-            $ret[$i]['pid'] = $o->pid;
-            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
-            $ret[$i]['cmp'] = $o->time;
-            $ret[$i]['board'] = true;
-            $ret[$i]['project'] = false;
-            ++$i;
+            $ret[$i++] = $this->get(
+                [
+                    'row'  => $o,
+                    'post' => $o
+                ], static::USER_POST);
         }
+
         if($del) {
             Db::query(
                 [
@@ -294,7 +347,12 @@ class Notification
         $i = 0;
         $result = Db::query(
             [
-                'SELECT "from","hpid",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments_notify" WHERE "to" = :id',
+                'SELECT "from", "to", "hpid",EXTRACT(EPOCH FROM "time") AS time
+                FROM "groups_comments_notify" n WHERE n."to" = :id'.(
+                    $this->rag
+                    ? ' AND n.time = (SELECT MAX("time") FROM "groups_comments_notify" WHERE hpid = n.hpid AND "to" = n."to")'
+                    : ''
+                ),
                 [
                     ':id' => $_SESSION['id']
                 ]
@@ -309,18 +367,11 @@ class Notification
             ],Db::FETCH_OBJ))
         )
         {
-            $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = User::getUsername($o->from);
-            $ret[$i]['to'] = $p->to;
-            $ret[$i]['to_project'] = Project::getName($p->to);
-            $ret[$i]['post_from_user'] = User::getUsername($p->from);
-            $ret[$i]['post_from'] = $p->from;
-            $ret[$i]['pid'] = $p->pid;
-            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
-            $ret[$i]['cmp'] = $o->time;
-            $ret[$i]['board'] = false;
-            $ret[$i]['project'] = true;
-            ++$i;
+            $ret[$i++] = $this->get(
+                [
+                    'row'  => $o,
+                    'post' => $p
+                ], static::PROJECT_COMMENT);
         }
 
         if($del) {
@@ -341,7 +392,9 @@ class Notification
         $i = 0;
         $result = Db::query(
             [
-                'SELECT "from",EXTRACT(EPOCH FROM "time") AS time FROM "groups_notify" WHERE "to" = :id',
+                'SELECT p."pid",n."hpid", n."from", n."to", EXTRACT(EPOCH FROM n."time") AS time
+                FROM "groups_notify" n JOIN "groups_posts" p
+                ON p.hpid = n.hpid WHERE n."to" = :id',
                 [
                     ':id' => $_SESSION['id']
                 ]
@@ -349,13 +402,11 @@ class Notification
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
         {
-            $ret[$i]['project'] = true;
-            $ret[$i]['to'] = $o->group;
-            $ret[$i]['to_project'] = Project::getName($o->group);
-            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
-            $ret[$i]['cmp'] = $o->time;
-            $ret[$i]['news'] = true;
-            ++$i;
+            $ret[$i++] = $this->get(
+                [
+                    'row'  => $o,
+                    'post' => $o
+                ], static::PROJECT_POST);
         }
         
         if($del) {
@@ -377,21 +428,17 @@ class Notification
         $i = 0;
         $result = Db::query(
             [
-                'SELECT "from",EXTRACT(EPOCH FROM "time") AS time FROM "followers" WHERE "to" = :id AND "to_notify" = TRUE',
+                'SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time FROM "followers" WHERE "to" = :id AND "to_notify" = TRUE',
                 [
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_STMT);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
-        {
-            $ret[$i]['follow'] = true;
-            $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = User::getUsername($o->from);
-            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
-            $ret[$i]['cmp'] = $o->time;
-            ++$i;
-        }
+            $ret[$i++] = $this->get(
+                [
+                    'row' => $o
+                ], static::USER_FOLLOW);
         
         if($del) {
             Db::query(
@@ -411,7 +458,7 @@ class Notification
         $i = 0;
         $result = Db::query(
             [
-                'SELECT "from", EXTRACT(EPOCH FROM "time") AS time FROM "groups_followers" WHERE "to" IN (
+                'SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time FROM "groups_followers" WHERE "to" IN (
                     SELECT "counter" FROM "groups" WHERE "owner" = :id
                  ) AND "to_notify" = TRUE',
                 [
@@ -420,14 +467,10 @@ class Notification
             ],Db::FETCH_STMT);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
-        {
-            $ret[$i]['follow'] = true;
-            $ret[$i]['from'] = $o->from;
-            $ret[$i]['from_user'] = User::getUsername($o->from);
-            $ret[$i]['datetime'] = $this->user->getDateTime($o->time);
-            $ret[$i]['cmp'] = $o->time;
-            ++$i;
-        }
+            $ret[$i++] = $this->get(
+                [
+                    'row' => $o
+                ], static::PROJECT_FOLLOW);   
         
         if($del) {
             Db::query(
@@ -510,9 +553,9 @@ class Notification
         return true;
     }
 
-    public static function echoSort($a,$b) //callback
+    private static function echoSort($a,$b) //callback
     {
-        return $a[1] == $b[1] ? 0 : $a[1] > $b[1] ? -1 : 1;
+        return $a['timestamp_n'] == $b['timestamp_n'] ? 0 : $a['timestamp_n'] > $b['timestamp_n'] ? -1 : 1;
     }
 }
 ?>

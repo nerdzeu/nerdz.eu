@@ -642,7 +642,7 @@ BEGIN
         )
     )
 
-    INSERT INTO "groups_notify"("group", "to", "time", "hpid") (
+    INSERT INTO "groups_notify"("from", "to", "time", "hpid") (
         SELECT NEW."to", "user", NEW."time", NEW."hpid" FROM to_notify
     );
 
