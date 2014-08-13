@@ -52,7 +52,17 @@ END $func$ LANGUAGE plpgsql;
 
 CREATE FUNCTION before_insert_follower() RETURNS TRIGGER AS $$
 BEGIN
+    PERFORM flood_control('"followers"', NEW."from");
     PERFORM blacklist_control(NEW."from", NEW."to");
+    RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION before_insert_groups_follower() RETURNS TRIGGER AS $$
+DECLARE group_owner int8;
+BEGIN
+    PERFORM flood_control('"groups_followers"', NEW."from");
+    SELECT "owner" INTO group_owner FROM "groups" WHERE "counter" = NEW."to";
+    PERFORM blacklist_control(group_owner, NEW."from");
     RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
@@ -680,6 +690,9 @@ CREATE TRIGGER before_insert_group_post_lurker BEFORE INSERT ON groups_lurkers F
 
 -- before follow user
 CREATE TRIGGER before_insert_follower BEFORE INSERT ON followers FOR EACH ROW EXECUTE PROCEDURE before_insert_follower();
+
+-- before follow group
+CREATE TRIGGER before_insert_groups_follower BEFORE INSERT ON groups_followers FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_follower();
 
 -- before insert member
 CREATE TRIGGER before_insert_groups_member BEFORE INSERT ON groups_members FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_member();

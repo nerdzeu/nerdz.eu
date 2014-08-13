@@ -15,6 +15,8 @@ class User
     private $templateConfig;
     private $browser;
 
+    private static $registerArray = [ 'error', 'REGISTER' ];
+
     public function __construct()
     {
         $this->browser = new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
@@ -364,6 +366,54 @@ class User
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getFollowers($id)
+    {
+        if(!($stmt = Db::query(
+            [
+                'SELECT "from" FROM "followers" WHERE "to" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_STMT)))
+            return [];
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function follow($id, $prj = false)
+    {
+        if(!$this->isLogged())
+            return User::$registerArray;
+        
+        $table = ($prj ? 'groups_' : '').'followers';
+        return Db::query(
+            [
+                'INSERT INTO "'.$table.'"("to","from")
+                 SELECT :id, :me
+                 WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "to" = :id AND "from" = :me)',
+                 [
+                     ':id' => $id,
+                     ':me' => $_SESSION['id']
+                 ]
+            ],Db::FETCH_ERRSTR);
+    }
+
+    public function defollow($id, $prj = false)
+    {
+        if(!$this->isLogged())
+            return User::$registerArray;
+        
+        $table = ($prj ? 'groups_' : '').'followers';
+        return Db::query(
+            [
+                'DELETE FROM "'.$table.'" WHERE "to" = :id AND "from" = :me',
+                [
+                    ':id' => $id,
+                    ':me' => $_SESSION['id']
+                ]
+            ],Db::FETCH_ERRSTR);
     }
 
     public function getFriends($id) {
