@@ -32,9 +32,9 @@ case 'add':
                 isset($_POST['message']) ? $_POST['message'] : '',
                 [
                     'news' => isset($_POST['news']),
-                        'project' => $prj
-                    ]))
-                );
+                    'project' => $prj
+                ]))
+            );
         break;
 
 case 'del':

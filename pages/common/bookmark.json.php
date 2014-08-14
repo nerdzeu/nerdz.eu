@@ -6,9 +6,6 @@ use NERDZ\Core\User;
 
 $user = new User();
 
-if(!$user->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
-
 if(!$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
 
@@ -17,38 +14,17 @@ $hpid  = isset($_POST['hpid'])  && is_numeric($_POST['hpid'])  ? $_POST['hpid'] 
 if(!$hpid)
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
-$from = $_SESSION['id'];
-$table = (isset($prj) ? 'groups_' : '').'bookmarks';
+$prj = isset($prj);
 
 switch(isset($_GET['action']) ? strtolower(trim($_GET['action'])) : '')
 {
 case 'add':
-    if(Db::NO_ERRNO != Db::query(
-        [
-            'INSERT INTO "'.$table.'"("from","hpid")
-            SELECT :from, :hpid
-            WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "hpid" = :hpid)',
-                [
-                    ':from' => $from,
-                    ':hpid' => $hpid
-                ]
-            ],Db::FETCH_ERRNO))
-            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));    
-    break;
+    die(NERDZ\Core\Utils::jsonDbResponse($user->bookmark($hpid, $prj)));
+
 case 'del':
-    if(Db::NO_ERRNO != Db::query(
-        [
-            'DELETE FROM "'.$table.'" WHERE "from" = :from AND "hpid" = :hpid',
-            [
-                ':from' => $from, 
-                ':hpid' => $hpid
-            ]
-        ],Db::FETCH_ERRNO))
-        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-    break;
+    die(NERDZ\Core\Utils::jsonDbResponse($user->unbookmark($hpid, $prj)));
+
 default:
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-    break;
 }
-die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

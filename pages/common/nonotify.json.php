@@ -35,23 +35,23 @@ case 'add':
                     ]
                 ],Db::FETCH_ERRNO))
                 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-        }
-        else // user
-        {
-            $table = (isset($prj) ? 'groups_' : '').'comments_no_notify';
-            if(Db::NO_ERRNO != Db::query(
-                [
-                    'INSERT INTO "'.$table.'"("from","to","hpid")
-                    SELECT :from, :to, :hpid
-                    WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid)',
-                        [
-                            ':from' => $from,
-                            ':to'   => $to,
-                            ':hpid' => $hpid
-                        ]
-                    ],Db::FETCH_ERRNO))
-                    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-        }
+    }
+    else // user
+    {
+        $table = (isset($prj) ? 'groups_' : '').'comments_no_notify';
+        if(Db::NO_ERRNO != Db::query(
+            [
+                'INSERT INTO "'.$table.'"("from","to","hpid")
+                SELECT :from, :to, :hpid
+                WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid)',
+                    [
+                        ':from' => $from,
+                        ':to'   => $to,
+                        ':hpid' => $hpid
+                    ]
+                ],Db::FETCH_ERRNO))
+                die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+    }
     break;
 case 'del':
     if(!$from) // full post
@@ -65,18 +65,18 @@ case 'del':
                     ]
                 ],Db::FETCH_ERRNO))
                 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-        }
-        else // user
-            if(Db::NO_ERRNO != Db::query(
-                [
-                    'DELETE FROM "'.(isset($prj) ? 'groups_' : '').'comments_no_notify" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid',
-                        [
-                            ':from' => $from,
-                            ':to'   => $to,
-                            ':hpid' => $hpid
-                        ]
-                    ],Db::FETCH_ERRNO))
-                    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+    }
+    else // user
+        if(Db::NO_ERRNO != Db::query(
+            [
+                'DELETE FROM "'.(isset($prj) ? 'groups_' : '').'comments_no_notify" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid',
+                    [
+                        ':from' => $from,
+                        ':to'   => $to,
+                        ':hpid' => $hpid
+                    ]
+                ],Db::FETCH_ERRNO))
+                die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
     break;
 default:
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));

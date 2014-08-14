@@ -16,6 +16,7 @@ class User
     private $browser;
 
     private static $registerArray = [ 'error', 'REGISTER' ];
+    private static $errorArray = [ 'error', 'ERRROR' ];
 
     public function __construct()
     {
@@ -416,6 +417,116 @@ class User
             ],Db::FETCH_ERRSTR);
     }
 
+    public function bookmark($hpid, $prj = false)
+    {
+        if(!$this->isLogged())
+            return User::$registerArray;
+
+        $table = ($prj ? 'groups_' : '').'bookmarks';
+        return Db::query(
+            [
+                'INSERT INTO "'.$table.'"("from","hpid")
+                SELECT :from, :hpid
+                WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "hpid" = :hpid)',
+                [
+                    ':from' => $_SESSION['id'],
+                    ':hpid' => $hpid
+                ]
+            ], Db::FETCH_ERRSTR);
+    }
+
+    public function unbookmark($hpid, $prj = false)
+    {
+        if(!$this->isLogged())
+            return User::$registerArray;
+
+        $table = ($prj ? 'groups_' : '').'bookmarks';
+        return Db::query(
+            [
+                'DELETE FROM "'.$table.'" WHERE "from" = :from AND "hpid" = :hpid',
+                [
+                    ':from' => $_SESSION['id'],
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_ERRSTR);
+    }
+
+    public function dontNotify($options = [], $prj = false)
+    {
+        if(!$this->isLogged())
+            return User::$registerArray;
+
+        extract($options);
+        $hpid = !empty($hpid) ? $hpid : 0;
+        if($hpid == 0)
+            return User::$errorArray;
+
+        $from = isset($from) ? $from : 0;
+
+        $table = ($prj ? 'groups_' : '');
+        if($from)
+        {
+            $table .= 'comments_no_notify';
+            return Db::query(
+                [
+                    'INSERT INTO "'.$table.'"("from", "to", "hpid")
+                    SELECT :from, :to, :hpid
+                    WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid)',
+                    [
+                        ':from' => $from,
+                        ':to'    => $_SESSION['id'],
+                        ':hpid' => $hpid
+                    ]
+                ], Db::FETCH_ERRSTR);
+        }
+        $table .= 'posts_no_notify';
+
+        return Db::query(
+            [
+                'INSERT INTO "'.$table.'"("user", "hpid")
+                SELECT :user, :hpid
+                WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid)',
+                [
+                    ':user' => $_SESSION['id'],
+                    ':hpid' => $hpid
+                ]
+            ], Db::FETCH_ERRSTR);
+    }
+
+    public function lurk($hpid, $prj = false)
+    {
+        if(!$this->isLogged())
+            return User::$registerArray;
+
+        $table = ($prj ? 'groups_' : '').'lurkers';
+        return Db::query(
+            [
+                'INSERT INTO "'.$table.'"("from","hpid")
+                SELECT :from, :hpid
+                WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "hpid" = :hpid)',
+                [
+                    ':from' => $_SESSION['id'],
+                    ':hpid' => $hpid
+                ]
+            ], Db::FETCH_ERRSTR);
+    }
+
+    public function unlurk($hpid, $prj = false)
+    {
+        if(!$this->isLogged())
+            return User::$registerArray;
+
+        $table = ($prj ? 'groups_' : '').'lurkers';
+        return Db::query(
+            [
+                'DELETE FROM "'.$table.'" WHERE "from" = :from AND "hpid" = :hpid',
+                [
+                    ':from' => $_SESSION['id'],
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_ERRSTR);
+    }
+
     public function getFriends($id) {
         if(!($stmt = Db::query(
             [
@@ -424,13 +535,13 @@ class User
                     inner join 
                     (select "from" from followers where "to" = :id) as e
                     on f.to = e.from',
-[
-    ':id' => $id
-]
+                [
+                    ':id' => $id
+                ]
             ], Db::FETCH_STMT)))
             return [];
 
-return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function isOnline($id)

@@ -12,4 +12,11 @@
 
 [!] Re-enable SSE in jclass.js, undertand why and fix the sse freeze other ajax requests
     => Will be re-enabled when the Go-API will be ready, since php locks everyting
-- Fix blacklist
+- Fix blacklist: project owner should see post (and receive notifications about) on hist open post even if he put that user into his blacklist.
+- Add project blacklist [!!]: certain users shouldn't post in a open project. Owner can decide.
+- Add hashtag support for posts classification -> autoclassification?
+- Fix default template to change post language (create post options menu)
+- Add "post on github" check in ISSUE_BOOARD
+- ^^^ edit javascript API to support new features
+
+- terminate to migrate pages/common/nonotify.json.php
