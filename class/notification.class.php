@@ -233,21 +233,23 @@ class Notification
 
         if($post)
         {
-            $ret['hpid_n']  = $row->hpid;
-            $ret['pid_n']   = $post->pid;
-            $ret['to_n'] = User::getUsername($post->to);
-            $ret['to4link_n'] = (
-                $this->isProject($type)
-                    ? Utils::projectLink($ret['to_n'])
-                    : Utils::userLink($ret['to_n'])
-                ).$ret['pid_n'];
+            $ret['hpid_n']    = $row->hpid;
+            $ret['pid_n']     = $post->pid;
+            if($this->isProject($type))
+            {
+                $ret['to_n']      = Project::getName($post->to);
+                $ret['to4link_n'] = Utils::projectLink($ret['to_n']).$ret['pid_n'];
+            } else {
+                $ret['to_n'] = User::getUsername($post->to);
+                $ret['to4link_n']  = Utils::userLink($ret['to_n']).$ret['pid_n'];
+            }
         } else { // followers
             $ret['toid_n'] = $row->to;
             if($this->isProject($type)) {
                 $ret['to_n']   = Project::getName($row->to);
                 $ret['to4link_n'] = Utils::projectLink($ret['to_n']);
             } else {
-                $ret['to_n']   = User::getUsername($row->to);
+                $ret['to_n']      = User::getUsername($row->to);
                 $ret['to4link_n'] = Utils::userLink($ret['to_n']);
             }
         }
@@ -319,12 +321,19 @@ class Notification
 
         $to = User::getUsername($_SESSION['id']);
 
-        while(($o = $result->fetch(PDO::FETCH_OBJ)))
+        while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
+            [
+                'SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $o->hpid
+                ]
+            ],Db::FETCH_OBJ)
+        ))
         {
             $ret[$i++] = $this->get(
                 [
                     'row'  => $o,
-                    'post' => $o
+                    'post' => $p
                 ], static::USER_POST);
         }
 
@@ -400,12 +409,19 @@ class Notification
                 ]
             ],Db::FETCH_STMT);
 
-        while(($o = $result->fetch(PDO::FETCH_OBJ)))
+        while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
+            [
+                'SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $o->hpid
+                ]
+            ],Db::FETCH_OBJ)
+        ))
         {
             $ret[$i++] = $this->get(
                 [
                     'row'  => $o,
-                    'post' => $o
+                    'post' => $p
                 ], static::PROJECT_POST);
         }
         
