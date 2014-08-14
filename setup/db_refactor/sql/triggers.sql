@@ -19,7 +19,11 @@ DROP FUNCTION before_insert_pm() CASCADE; -- become before_insert_pm
 CREATE FUNCTION post_control() RETURNS TRIGGER AS $func$
 BEGIN
     NEW.message = message_control(NEW.message);
-    PERFORM flood_control('"posts"', NEW."from", NEW.message);
+
+    IF TG_OP = 'INSERT' THEN -- no flood control on update
+        PERFORM flood_control('"posts"', NEW."from", NEW.message);
+    END IF;
+
     PERFORM blacklist_control(NEW."from", NEW."to");
 
     IF( NEW."to" <> NEW."from" AND
@@ -519,7 +523,10 @@ DECLARE group_owner int8;
         open_group boolean;
 BEGIN
     NEW.message = message_control(NEW.message);
-    PERFORM flood_control('"groups_posts"', NEW."from", NEW.message);
+
+    IF TG_OP = 'INSERT' THEN -- no flood control on update
+        PERFORM flood_control('"groups_posts"', NEW."from", NEW.message);
+    END IF;
 
     SELECT "owner" INTO group_owner FROM groups WHERE "counter" = NEW."to";
     SELECT "open" INTO open_group FROM groups WHERE "counter" = NEW."to";
