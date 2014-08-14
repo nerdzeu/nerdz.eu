@@ -115,12 +115,14 @@ else
         {
             if(!($post = Db::query(
                         [
-                            'SELECT "hpid" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',
+                            'SELECT "hpid","from" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',
                             [
                                 ':pid' => $pid,
                                 ':gid' => $gid
                             ]
-                        ],Db::FETCH_OBJ)))
+                        ],Db::FETCH_OBJ))
+                        || $user->hasInBlacklist($post->from) // fake post not found
+            )
             {
                 $user->getTPL()->assign('banners_a',$vals['banners_a']);
                 $user->getTPL()->draw('project/postnotfound');

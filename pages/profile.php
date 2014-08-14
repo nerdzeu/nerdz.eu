@@ -253,7 +253,12 @@ if($enter)
     $found = false;
     if($vals['singlepost_b'])
     {
-        if(!($post = Db::query(
+        if($user->hasInBlacklist($id)) //fake post not found [ same trick in the header ]
+        {
+            $user->getTPL()->assign('banners_a',$vals['banners_a']);
+            $user->getTPL()->draw('profile/postnotfound');
+        }
+        elseif(!($post = Db::query(
             [
                 'SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',
                 array_merge(
@@ -285,7 +290,7 @@ else
 {
     $included = true;
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
-    $vals['presentation_n'] = ''; //cancello la presentazione
+    $vals['presentation_n'] = ''; // delete the presentation
     $user->getTPL()->assign($vals);
     $user->getTPL()->draw('profile/closed');
 }
