@@ -22,112 +22,112 @@ namespace NERDZ\Core;
  * GNU General Public License for more details at:
  * http://www.gnu.org/copyleft/gpl.html
  *
-*/ 
+ */ 
 final class Browser
 {
-        private $_agent = '';
-        private $_browser_name = '';
-        private $_version = '';
-        private $_platform = '';
-        private $_platver = '';
-        private $_is_aol = false;
-        private $_is_mobile = false;
-        private $_is_robot = false;
-        private $_aol_version = '';
+    private $_agent = '';
+    private $_browser_name = '';
+    private $_version = '';
+    private $_platform = '';
+    private $_platver = '';
+    private $_is_aol = false;
+    private $_is_mobile = false;
+    private $_is_robot = false;
+    private $_aol_version = '';
 
-        const BROWSER_UNKNOWN = 'unknown';
-        const VERSION_UNKNOWN = 'unknown';
+    const BROWSER_UNKNOWN = 'unknown';
+    const VERSION_UNKNOWN = 'unknown';
 
-        const BROWSER_OPERA = 'Opera';                            // http://www.opera.com/ version >12
-        const BROWSER_CLASSIC_OPERA = 'Classic Opera';            // http://www.opera.com/ version <=12
-        const BROWSER_OPERA_MINI = 'Opera Mini';                  // http://www.opera.com/mini/
-        const BROWSER_WEBTV = 'WebTV';                            // http://www.webtv.net/pc/
-        const BROWSER_IE = 'Internet Explorer';                   // http://www.microsoft.com/ie/
-        const BROWSER_POCKET_IE = 'Pocket Internet Explorer';     // http://en.wikipedia.org/wiki/Internet_Explorer_Mobile
-        const BROWSER_KONQUEROR = 'Konqueror';                    // http://www.konqueror.org/
-        const BROWSER_ICAB = 'iCab';                              // http://www.icab.de/
-        const BROWSER_OMNIWEB = 'OmniWeb';                        // http://www.omnigroup.com/applications/omniweb/
-        const BROWSER_FIREBIRD = 'Firebird';                      // http://www.ibphoenix.com/
-        const BROWSER_FIREFOX = 'Firefox';                        // http://www.mozilla.com/en-US/firefox/firefox.html
-        const BROWSER_ICEWEASEL = 'Iceweasel';                    // http://www.geticeweasel.org/
-        const BROWSER_SHIRETOKO = 'Shiretoko';                    // http://wiki.mozilla.org/Projects/shiretoko
-        const BROWSER_MOZILLA = 'Mozilla';                        // http://www.mozilla.com/en-US/
-        const BROWSER_SEAMONKEY = 'SeaMonkey';                    // http://www.seamonkey-project.org/
-        const BROWSER_AMAYA = 'Amaya';                            // http://www.w3.org/Amaya/
-        const BROWSER_EPIPHANY = 'Epiphany';                      // http://projects.gnome.org/epiphany/
-        const BROWSER_LYNX = 'Lynx';                              // http://en.wikipedia.org/wiki/Lynx
-        const BROWSER_SAFARI = 'Safari';                          // http://apple.com
-        const BROWSER_IPHONE = 'iOS';                             // http://apple.com
-        const BROWSER_IPOD = 'iOS';                               // http://apple.com
-        const BROWSER_IPAD = 'iOS';                               // http://apple.com
-        const BROWSER_CHROME = 'Chrome';                          // http://www.google.com/chrome
-        const BROWSER_ANDROID = 'Android Stock Browser';          // http://www.android.com/
-        const BROWSER_GOOGLEBOT = 'GoogleBot';                    // http://en.wikipedia.org/wiki/Googlebot
-        const BROWSER_SLURP = 'Yahoo! Slurp';                     // http://en.wikipedia.org/wiki/Yahoo!_Slurp
-        const BROWSER_W3CVALIDATOR = 'W3C Validator';             // http://validator.w3.org/
-        const BROWSER_BLACKBERRY = 'BlackBerry';                  // http://www.blackberry.com/
-        const BROWSER_ICECAT = 'IceCat';                          // http://en.wikipedia.org/wiki/GNU_IceCat
-        const BROWSER_NOKIA_S60 = 'Nokia S60 OSS Browser';        // http://en.wikipedia.org/wiki/Web_Browser_for_S60
-        const BROWSER_NOKIA = 'Nokia Browser';                    // * all other WAP-based browsers on the Nokia Platform
-        const BROWSER_MSN = 'MSN Browser';                        // http://explorer.msn.com/
-        const BROWSER_MSNBOT = 'MSN Bot';                         // http://search.msn.com/msnbot.htm
-                                                                  // http://en.wikipedia.org/wiki/Msnbot  (used for Bing as well)
-        
-        const BROWSER_NETSCAPE_NAVIGATOR = 'Netscape Navigator';  // http://browser.netscape.com/ (DEPRECATED)
-        const BROWSER_GALEON = 'Galeon';                          // http://galeon.sourceforge.net/ (DEPRECATED)
-        const BROWSER_NETPOSITIVE = 'NetPositive';                // http://en.wikipedia.org/wiki/NetPositive (DEPRECATED)
-        const BROWSER_PHOENIX = 'Phoenix';                        // http://en.wikipedia.org/wiki/History_of_Mozilla_Firefox (DEPRECATED)
+    const BROWSER_OPERA = 'Opera';                            // http://www.opera.com/ version >12
+    const BROWSER_CLASSIC_OPERA = 'Classic Opera';            // http://www.opera.com/ version <=12
+    const BROWSER_OPERA_MINI = 'Opera Mini';                  // http://www.opera.com/mini/
+    const BROWSER_WEBTV = 'WebTV';                            // http://www.webtv.net/pc/
+    const BROWSER_IE = 'Internet Explorer';                   // http://www.microsoft.com/ie/
+    const BROWSER_POCKET_IE = 'Pocket Internet Explorer';     // http://en.wikipedia.org/wiki/Internet_Explorer_Mobile
+    const BROWSER_KONQUEROR = 'Konqueror';                    // http://www.konqueror.org/
+    const BROWSER_ICAB = 'iCab';                              // http://www.icab.de/
+    const BROWSER_OMNIWEB = 'OmniWeb';                        // http://www.omnigroup.com/applications/omniweb/
+    const BROWSER_FIREBIRD = 'Firebird';                      // http://www.ibphoenix.com/
+    const BROWSER_FIREFOX = 'Firefox';                        // http://www.mozilla.com/en-US/firefox/firefox.html
+    const BROWSER_ICEWEASEL = 'Iceweasel';                    // http://www.geticeweasel.org/
+    const BROWSER_SHIRETOKO = 'Shiretoko';                    // http://wiki.mozilla.org/Projects/shiretoko
+    const BROWSER_MOZILLA = 'Mozilla';                        // http://www.mozilla.com/en-US/
+    const BROWSER_SEAMONKEY = 'SeaMonkey';                    // http://www.seamonkey-project.org/
+    const BROWSER_AMAYA = 'Amaya';                            // http://www.w3.org/Amaya/
+    const BROWSER_EPIPHANY = 'Epiphany';                      // http://projects.gnome.org/epiphany/
+    const BROWSER_LYNX = 'Lynx';                              // http://en.wikipedia.org/wiki/Lynx
+    const BROWSER_SAFARI = 'Safari';                          // http://apple.com
+    const BROWSER_IPHONE = 'iOS';                             // http://apple.com
+    const BROWSER_IPOD = 'iOS';                               // http://apple.com
+    const BROWSER_IPAD = 'iOS';                               // http://apple.com
+    const BROWSER_CHROME = 'Chrome';                          // http://www.google.com/chrome
+    const BROWSER_ANDROID = 'Android Stock Browser';          // http://www.android.com/
+    const BROWSER_GOOGLEBOT = 'GoogleBot';                    // http://en.wikipedia.org/wiki/Googlebot
+    const BROWSER_SLURP = 'Yahoo! Slurp';                     // http://en.wikipedia.org/wiki/Yahoo!_Slurp
+    const BROWSER_W3CVALIDATOR = 'W3C Validator';             // http://validator.w3.org/
+    const BROWSER_BLACKBERRY = 'BlackBerry';                  // http://www.blackberry.com/
+    const BROWSER_ICECAT = 'IceCat';                          // http://en.wikipedia.org/wiki/GNU_IceCat
+    const BROWSER_NOKIA_S60 = 'Nokia S60 OSS Browser';        // http://en.wikipedia.org/wiki/Web_Browser_for_S60
+    const BROWSER_NOKIA = 'Nokia Browser';                    // * all other WAP-based browsers on the Nokia Platform
+    const BROWSER_MSN = 'MSN Browser';                        // http://explorer.msn.com/
+    const BROWSER_MSNBOT = 'MSN Bot';                         // http://search.msn.com/msnbot.htm
+    // http://en.wikipedia.org/wiki/Msnbot  (used for Bing as well)
 
-        const PLATFORM_UNKNOWN = 'unknown';
-        const PLATFORM_WINDOWS = 'Windows';
-        const PLATFORM_WINDOWS_PHONE = 'Windows Phone';
-        const PLATFORM_WINDOWS_CE = 'Windows CE';
-        const PLATFORM_APPLE = 'Mac OS X';
-        const PLATFORM_LINUX = 'GNU/Linux';
-        const PLATFORM_OS2 = 'OS/2';
-        const PLATFORM_BEOS = 'BeOS';
-        const PLATFORM_IPHONE = 'iPhone';
-        const PLATFORM_IPOD = 'iPod';
-        const PLATFORM_IPAD = 'iPad';
-        const PLATFORM_BLACKBERRY = 'BlackBerry';
-        const PLATFORM_NOKIA = 'Nokia';
-        const PLATFORM_FREEBSD = 'FreeBSD';
-        const PLATFORM_OPENBSD = 'OpenBSD';
-        const PLATFORM_NETBSD = 'NetBSD';
-        const PLATFORM_SUNOS = 'SunOS';
-        const PLATFORM_OPENSOLARIS = 'OpenSolaris';
-        const PLATFORM_ANDROID = 'Android';
-        const PLATFORM_CHROMEOS = 'Chrome OS (GNU/Linux)';
-        
-        const WINVER_XP = 'XP';
-        const WINVER_VISTA = 'Vista';
-        const WINVER_7 = '7';
-        const WINVER_8 = '8';
-        const WINVER_81 = '8.1';
-        
-        const LINARCH_IA32 = 'IA32';
-        const LINARCH_x86_64 = 'x86_64';
-        const LINARCH_ARM = 'ARM';
-        
-        const ANDRVER_GB = 'Gingerbread';
-        const ANDRVER_ICS = 'Ice Cream Sandwich';
-        const ANDRVER_JB = 'Jelly Bean';
-        const ANDRVER_KK = 'KitKat';
-        
-        const PLATVER_UNKNOWN = '';
-        
-        const OPERATING_SYSTEM_UNKNOWN = 'Unknown OS';
+    const BROWSER_NETSCAPE_NAVIGATOR = 'Netscape Navigator';  // http://browser.netscape.com/ (DEPRECATED)
+    const BROWSER_GALEON = 'Galeon';                          // http://galeon.sourceforge.net/ (DEPRECATED)
+    const BROWSER_NETPOSITIVE = 'NetPositive';                // http://en.wikipedia.org/wiki/NetPositive (DEPRECATED)
+    const BROWSER_PHOENIX = 'Phoenix';                        // http://en.wikipedia.org/wiki/History_of_Mozilla_Firefox (DEPRECATED)
 
-        public function __construct($useragent= NULL)
-        {
-            $this->reset();
-            if( $useragent != NULL )
-                $this->setUserAgent($useragent);
+    const PLATFORM_UNKNOWN = 'unknown';
+    const PLATFORM_WINDOWS = 'Windows';
+    const PLATFORM_WINDOWS_PHONE = 'Windows Phone';
+    const PLATFORM_WINDOWS_CE = 'Windows CE';
+    const PLATFORM_APPLE = 'Mac OS X';
+    const PLATFORM_LINUX = 'GNU/Linux';
+    const PLATFORM_OS2 = 'OS/2';
+    const PLATFORM_BEOS = 'BeOS';
+    const PLATFORM_IPHONE = 'iPhone';
+    const PLATFORM_IPOD = 'iPod';
+    const PLATFORM_IPAD = 'iPad';
+    const PLATFORM_BLACKBERRY = 'BlackBerry';
+    const PLATFORM_NOKIA = 'Nokia';
+    const PLATFORM_FREEBSD = 'FreeBSD';
+    const PLATFORM_OPENBSD = 'OpenBSD';
+    const PLATFORM_NETBSD = 'NetBSD';
+    const PLATFORM_SUNOS = 'SunOS';
+    const PLATFORM_OPENSOLARIS = 'OpenSolaris';
+    const PLATFORM_ANDROID = 'Android';
+    const PLATFORM_CHROMEOS = 'Chrome OS (GNU/Linux)';
+
+    const WINVER_XP = 'XP';
+    const WINVER_VISTA = 'Vista';
+    const WINVER_7 = '7';
+    const WINVER_8 = '8';
+    const WINVER_81 = '8.1';
+
+    const LINARCH_IA32 = 'IA32';
+    const LINARCH_x86_64 = 'x86_64';
+    const LINARCH_ARM = 'ARM';
+
+    const ANDRVER_GB = 'Gingerbread';
+    const ANDRVER_ICS = 'Ice Cream Sandwich';
+    const ANDRVER_JB = 'Jelly Bean';
+    const ANDRVER_KK = 'KitKat';
+
+    const PLATVER_UNKNOWN = '';
+
+    const OPERATING_SYSTEM_UNKNOWN = 'Unknown OS';
+
+    public function __construct($useragent= NULL)
+    {
+        $this->reset();
+        if( $useragent != NULL )
+            $this->setUserAgent($useragent);
         }
 
         /**
-        * Reset all properties
-        */
+         * Reset all properties
+         */
         public function reset()
         {
             $this->_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
@@ -142,134 +142,134 @@ final class Browser
         }
 
         /**
-        * Check to see if the specific browser is valid
-        * @param string $browserName
-        * @return True if the browser is the specified browser
-        */
+         * Check to see if the specific browser is valid
+         * @param string $browserName
+         * @return True if the browser is the specified browser
+         */
         function isBrowser($browserName)
         {
             return ( 0 == strcasecmp($this->_browser_name, trim($browserName)));
         }
 
         /**
-        * The name of the browser.  All return types are from the class contants
-        * @return string Name of the browser
-        */
+         * The name of the browser.  All return types are from the class contants
+         * @return string Name of the browser
+         */
         public function getBrowser()
         {
             return $this->_browser_name;
         }
-        
+
         /**
-        * Set the name of the browser
-        * @param $browser The name of the Browser
-        */
+         * Set the name of the browser
+         * @param $browser The name of the Browser
+         */
         public function setBrowser($browser)
         {
             return $this->_browser_name = $browser;
         }
-        
+
         /**
-        * The name of the platform.  All return types are from the class contants
-        * @return string Name of the browser
-        */
+         * The name of the platform.  All return types are from the class contants
+         * @return string Name of the browser
+         */
         public function getPlatform()
         {
             return $this->_platform;
         }
-        
+
         /**
-        * Platform version, if available.
-        * @return string Name of the version or architecture of the platform you're running
-        */
+         * Platform version, if available.
+         * @return string Name of the version or architecture of the platform you're running
+         */
         public function getPlatformVersion() {
             return $this->_platver;
         }
-        
+
         public function setPlatformVersion($platver) {
             $this->_platver = $platver;
         }
-        
+
         /**
-        * Set the name of the platform
-        * @param $platform The name of the Platform
-        */
+         * Set the name of the platform
+         * @param $platform The name of the Platform
+         */
         public function setPlatform($platform)
         {
             return $this->_platform = $platform;
         }
-        
+
         /**
-        * The version of the browser.
-        * @return string Version of the browser (will only contain alpha-numeric characters and a period)
-        */
+         * The version of the browser.
+         * @return string Version of the browser (will only contain alpha-numeric characters and a period)
+         */
         public function getVersion()
         {
             return $this->_version;
         }
-        
+
         /**
-        * Set the version of the browser
-        * @param $version The version of the Browser
-        */
+         * Set the version of the browser
+         * @param $version The version of the Browser
+         */
         public function setVersion($version)
         {
             $this->_version = preg_replace('/[^0-9,.,a-z,A-Z-]/','',$version);
         }
-        
+
         /**
-        * The version of AOL.
-        * @return string Version of AOL (will only contain alpha-numeric characters and a period)
-        */
+         * The version of AOL.
+         * @return string Version of AOL (will only contain alpha-numeric characters and a period)
+         */
         public function getAolVersion()
         {
             return $this->_aol_version;
         }
-        
+
         /**
-        * Set the version of AOL
-        * @param $version The version of AOL
-        */
+         * Set the version of AOL
+         * @param $version The version of AOL
+         */
         public function setAolVersion($version)
         {
             $this->_aol_version = preg_replace('/[^0-9,.,a-z,A-Z]/','',$version);
         }
         /**
-        * Is the browser from AOL?
-        * @return boolean True if the browser is from AOL otherwise false
-        */
+         * Is the browser from AOL?
+         * @return boolean True if the browser is from AOL otherwise false
+         */
         public function isAol()
         {
             return $this->_is_aol;
         }
-        
+
         /**
-        * Is the browser from a mobile device?
-        * @return boolean True if the browser is from a mobile device otherwise false
-        */
+         * Is the browser from a mobile device?
+         * @return boolean True if the browser is from a mobile device otherwise false
+         */
         public function isMobile()
         {
             return $this->_is_mobile;
         }
-        
+
         /**
-        * Is the browser from a robot (ex Slurp,GoogleBot)?
-        * @return boolean True if the browser is from a robot otherwise false
-        */
+         * Is the browser from a robot (ex Slurp,GoogleBot)?
+         * @return boolean True if the browser is from a robot otherwise false
+         */
         public function isRobot()
         {
             return $this->_is_robot;
         }
-        
+
         /**
-        * Set the browser to be from AOL
-        * @param $isAol
-        */
+         * Set the browser to be from AOL
+         * @param $isAol
+         */
         public function setAol($isAol)
         {
             $this->_is_aol = $isAol;
         }
-        
+
         /**
          * Set the Browser to be mobile
          * @param boolean $value is the browser a mobile brower or not
@@ -278,7 +278,7 @@ final class Browser
         {
             $this->_is_mobile = $value;
         }
-        
+
         /**
          * Set the Browser to be a robot
          * @param boolean $value is the browser a robot or not
@@ -287,27 +287,27 @@ final class Browser
         {
             $this->_is_robot = $value;
         }
-        
+
         /**
-        * Get the user agent value in use to determine the browser
-        * @return string The user agent from the HTTP header
-        */
+         * Get the user agent value in use to determine the browser
+         * @return string The user agent from the HTTP header
+         */
         public function getUserAgent()
         {
             return $this->_agent;
         }
-        
+
         /**
-        * Set the user agent value (the construction will use the HTTP header value - this will overwrite it)
-        * @param $agent_string The value for the User Agent
-        */
+         * Set the user agent value (the construction will use the HTTP header value - this will overwrite it)
+         * @param $agent_string The value for the User Agent
+         */
         public function setUserAgent($agent_string)
         {
             $this->reset();
             $this->_agent = $agent_string;
             $this->determine();
         }
-        
+
         /**
          * Used to determine if the browser is actually "chromeframe"
          * @since 1.7
@@ -318,14 +318,14 @@ final class Browser
             return( strpos($this->_agent,'chromeframe') !== false );
         }
         /**
-        * Returns a formatted string with a summary of the details of the browser.
-        * @return string formatted string with a summary of the browser
-        */
+         * Returns a formatted string with a summary of the details of the browser.
+         * @return string formatted string with a summary of the browser
+         */
         public function toString()
         {
             return "{$this->getBrowser()}\n" .
-                   "{$this->getVersion()}\n" .
-                   $this->getPlatform();
+                "{$this->getVersion()}\n" .
+                $this->getPlatform();
         }
 
         /**
@@ -335,12 +335,12 @@ final class Browser
         {
             return [
                 'name' => $this->getBrowser(),
-                'version' => $this->versionTrim($this->getVersion()),
+                    'version' => $this->versionTrim($this->getVersion()),
                 'platform' => $this->getPlatform(),
                 'platver' => $this->getPlatformVersion()
-             ];
+            ];
         }
-        
+
         /**
          * private routine to calculate and determine what the browser is in use (including platform)
          */
@@ -350,69 +350,69 @@ final class Browser
             $this->checkBrowsers();
             $this->checkForAol();
         }
-        
+
         /**
          * private routine to determine the browser type
          * @return boolean True if the browser was detected otherwise false
          */
          private function checkBrowsers()
          {
-            return (
-                // well-known, well-used
-                // Special Notes:
-                // (1) Classic Opera must be checked before FireFox due to the odd
-                //     user agents used in some older versions of Opera and new Opera must be checked 
-                //     before Chrome due its being a Chromium-based browser.
-                // (2) WebTV is strapped onto Internet Explorer so we must
-                //     check for WebTV before IE
-                // (3) (deprecated) Galeon is based on Firefox and needs to be
-                //     tested before Firefox is tested
-                // (4) OmniWeb is based on Safari so OmniWeb check must occur
-                //     before Safari
-                // (5) Netscape 9+ is based on Firefox so Netscape checks
-                //     before FireFox are necessary
-                $this->checkBrowserWebTv() ||
-                $this->checkBrowserInternetExplorer() ||
-                $this->checkBrowserOpera() ||
-                $this->checkBrowserClassicOpera() ||
-                $this->checkBrowserGaleon() ||
-                $this->checkBrowserNetscapeNavigator9Plus() ||
-                $this->checkBrowserSeaMonkey() ||
-                $this->checkBrowserIceweasel() ||
-                $this->checkBrowserFirefox() ||
-                $this->checkBrowserChrome() ||
-                $this->checkBrowserEpiphany() ||
-                $this->checkBrowserOmniWeb() ||
+             return (
+                 // well-known, well-used
+                 // Special Notes:
+                 // (1) Classic Opera must be checked before FireFox due to the odd
+                 //     user agents used in some older versions of Opera and new Opera must be checked 
+                 //     before Chrome due its being a Chromium-based browser.
+                 // (2) WebTV is strapped onto Internet Explorer so we must
+                 //     check for WebTV before IE
+                 // (3) (deprecated) Galeon is based on Firefox and needs to be
+                 //     tested before Firefox is tested
+                 // (4) OmniWeb is based on Safari so OmniWeb check must occur
+                 //     before Safari
+                 // (5) Netscape 9+ is based on Firefox so Netscape checks
+                 //     before FireFox are necessary
+                 $this->checkBrowserWebTv() ||
+                 $this->checkBrowserInternetExplorer() ||
+                 $this->checkBrowserOpera() ||
+                 $this->checkBrowserClassicOpera() ||
+                 $this->checkBrowserGaleon() ||
+                 $this->checkBrowserNetscapeNavigator9Plus() ||
+                 $this->checkBrowserSeaMonkey() ||
+                 $this->checkBrowserIceweasel() ||
+                 $this->checkBrowserFirefox() ||
+                 $this->checkBrowserChrome() ||
+                 $this->checkBrowserEpiphany() ||
+                 $this->checkBrowserOmniWeb() ||
 
-                // common mobile
-                $this->checkBrowserAndroid() ||
-                $this->checkBrowseriPad() ||
-                $this->checkBrowseriPod() ||
-                $this->checkBrowseriPhone() ||
-                $this->checkBrowserBlackBerry() ||
-                $this->checkBrowserNokia() ||
+                 // common mobile
+                 $this->checkBrowserAndroid() ||
+                 $this->checkBrowseriPad() ||
+                 $this->checkBrowseriPod() ||
+                 $this->checkBrowseriPhone() ||
+                 $this->checkBrowserBlackBerry() ||
+                 $this->checkBrowserNokia() ||
 
-                // common bots
-                $this->checkBrowserGoogleBot() ||
-                $this->checkBrowserMSNBot() ||
-                $this->checkBrowserSlurp() ||
+                 // common bots
+                 $this->checkBrowserGoogleBot() ||
+                 $this->checkBrowserMSNBot() ||
+                 $this->checkBrowserSlurp() ||
 
-                // WebKit base check (post mobile and others)
-                $this->checkBrowserSafari() ||
-                
-                // everyone else
-                $this->checkBrowserNetPositive() ||
-                $this->checkBrowserFirebird() ||
-                $this->checkBrowserKonqueror() ||
-                $this->checkBrowserIcab() ||
-                $this->checkBrowserPhoenix() ||
-                $this->checkBrowserAmaya() ||
-                $this->checkBrowserLynx() ||
-                $this->checkBrowserShiretoko() ||
-                $this->checkBrowserIceCat() ||
-                $this->checkBrowserW3CValidator() ||
-                $this->checkBrowserMozilla() /* Mozilla is such an open standard that you must check it last */
-            );
+                 // WebKit base check (post mobile and others)
+                 $this->checkBrowserSafari() ||
+
+                 // everyone else
+                 $this->checkBrowserNetPositive() ||
+                 $this->checkBrowserFirebird() ||
+                 $this->checkBrowserKonqueror() ||
+                 $this->checkBrowserIcab() ||
+                 $this->checkBrowserPhoenix() ||
+                 $this->checkBrowserAmaya() ||
+                 $this->checkBrowserLynx() ||
+                 $this->checkBrowserShiretoko() ||
+                 $this->checkBrowserIceCat() ||
+                 $this->checkBrowserW3CValidator() ||
+                 $this->checkBrowserMozilla() /* Mozilla is such an open standard that you must check it last */
+             );
         }
 
         /**
@@ -487,7 +487,7 @@ final class Browser
             }
             return false;
         }        
-        
+
         /**
          * Determine if the browser is the W3C Validator or not (last updated 1.7)
          * @return boolean True if the browser is the W3C Validator otherwise false
@@ -549,7 +549,7 @@ final class Browser
                 $aresult = stristr($this->_agent, '/');
                 if( preg_match('/308|425|426|474|0b1/i', $aresult) )
                     $this->setVersion('1.5');
-                
+
                 return true;
             }
             // Test for versions > 1.5
@@ -576,7 +576,7 @@ final class Browser
                     $this->setPlatform( static::PLATFORM_WINDOWS_CE );
                     $this->setBrowser( static::BROWSER_POCKET_IE );
                     $this->setMobile(true);
-    
+
                     if( stripos($this->_agent,'mspie') !== false ) {
                         $this->setVersion($aresult[1]);
                     }
@@ -588,7 +588,7 @@ final class Browser
                 }
             return false;
         }
-        
+
         /**
          * Determine if the browser is the new Chromium-based Opera or not.
          * @return boolean True if the browser is Opera otherwise false
@@ -1028,7 +1028,7 @@ final class Browser
                 }
                 else
                     $this->setVersion(static::VERSION_UNKNOWN);
-                
+
                 $this->setBrowser(static::BROWSER_SAFARI);
                 return true;
             }
@@ -1051,7 +1051,7 @@ final class Browser
                 }
                 else
                     $this->setVersion(static::VERSION_UNKNOWN);
-                    
+
                 $this->setMobile(true);
                 $this->setBrowser(static::BROWSER_IPHONE);
                 return true;
@@ -1075,7 +1075,7 @@ final class Browser
                 }
                 else 
                     $this->setVersion(static::VERSION_UNKNOWN);
-                
+
                 $this->setMobile(true);
                 $this->setBrowser(static::BROWSER_IPAD);
                 return true;
@@ -1099,7 +1099,7 @@ final class Browser
                 }
                 else
                     $this->setVersion(static::VERSION_UNKNOWN);
-                
+
                 $this->setMobile(true);
                 $this->setBrowser(static::BROWSER_IPOD);
                 return true;
@@ -1123,7 +1123,7 @@ final class Browser
                 }
                 else
                     $this->setVersion(static::VERSION_UNKNOWN);
-                
+
                 $this->setMobile(true);
                 $this->setBrowser(static::BROWSER_ANDROID);
                 return true;
@@ -1140,22 +1140,22 @@ final class Browser
                 $this->_platform = static::PLATFORM_WINDOWS_PHONE;
                 return;
             }
-            
+
             if( stripos($this->_agent, 'windows') !== false )
                 $this->checkWindowsVersion();
-            
+
             else if( stripos($this->_agent, 'iPad') !== false )
                 $this->_platform = static::PLATFORM_IPAD;
-            
+
             else if( stripos($this->_agent, 'iPod') !== false )
                 $this->_platform = static::PLATFORM_IPOD;
-            
+
             else if( stripos($this->_agent, 'iPhone') !== false )
                 $this->_platform = static::PLATFORM_IPHONE;
-            
+
             elseif( stripos($this->_agent, 'mac') !== false )
                 $this->_platform = static::PLATFORM_APPLE;
-            
+
             elseif( stripos($this->_agent, 'android') !== false )
                 $this->_platform = static::PLATFORM_ANDROID;
             elseif( stripos($this->_agent, 'CrOS') !== false ) 
@@ -1164,48 +1164,48 @@ final class Browser
                 $this->checkLinuxArchitecture();        
             } else if( stripos($this->_agent, 'Nokia') !== false )
                 $this->_platform = static::PLATFORM_NOKIA;
-            
+
             else if( stripos($this->_agent, 'BlackBerry') !== false )
                 $this->_platform = static::PLATFORM_BLACKBERRY;
-            
+
             elseif( stripos($this->_agent,'FreeBSD') !== false )
                 $this->_platform = static::PLATFORM_FREEBSD;
-            
+
             elseif( stripos($this->_agent,'OpenBSD') !== false )
                 $this->_platform = static::PLATFORM_OPENBSD;
-            
+
             elseif( stripos($this->_agent,'NetBSD') !== false )
                 $this->_platform = static::PLATFORM_NETBSD;
-            
+
             elseif( stripos($this->_agent, 'OpenSolaris') !== false )
                 $this->_platform = static::PLATFORM_OPENSOLARIS;
-            
+
             elseif( stripos($this->_agent, 'SunOS') !== false )
                 $this->_platform = static::PLATFORM_SUNOS;
-            
+
             elseif( stripos($this->_agent, 'OS\/2') !== false )
                 $this->_platform = static::PLATFORM_OS2;
-            
+
             elseif( stripos($this->_agent, 'BeOS') !== false )
                 $this->_platform = static::PLATFORM_BEOS;
-            
+
             elseif( stripos($this->_agent, 'win') !== false )
                 $this->_platform = static::PLATFORM_WINDOWS;
         }
-        
+
         /**                                                                                                                                                                                     
          * Determine the architecture of the ChromeOS system the user is using.                                                                                                                    
          */
         private function checkCrOSArchitecture() {
 
-          $this->_platform = static::PLATFORM_CHROMEOS;
+            $this->_platform = static::PLATFORM_CHROMEOS;
 
-          if (stripos($this->_agent, 'CrOS x86_64') != false) {
-            $this->_platver = static::LINARCH_x86_64;
+            if (stripos($this->_agent, 'CrOS x86_64') != false) {
+                $this->_platver = static::LINARCH_x86_64;
           } elseif (stripos($this->_agent, 'CrOS i686') != false) {
-            $this->_platver = static::LINARCH_IA32;
+              $this->_platver = static::LINARCH_IA32;
           } elseif (stripos($this->_agent, 'CrOS arm') != false) {
-            $this->_platver = static::LINARCH_ARM;
+              $this->_platver = static::LINARCH_ARM;
           }
         }
 
@@ -1213,9 +1213,9 @@ final class Browser
          * Determine the architecture of the Linux system the user is using.
          */
         private function checkLinuxArchitecture() {
-            
+
             $this->_platform = static::PLATFORM_LINUX; 
-            
+
             if (stripos($this->_agent, 'Linux x86_64') != false) {
                 $this->_platver = static::LINARCH_x86_64;
             } elseif (stripos($this->_agent, 'Linux i686') != false) {
@@ -1224,37 +1224,37 @@ final class Browser
                 $this->_platver = static::LINARCH_ARM;
             }
         }
-        
+
         /**
          * Finds what version of Windows the user is using.
          */
         private function checkWindowsVersion() {
-            
+
             $this->_platform = static::PLATFORM_WINDOWS;
-            
+
             $matches = null;
             if(preg_match("/Windows NT (.*?)(;|\\))/", $this->_agent, $matches)) {
                 switch (trim($matches[1])) {
-                    case '5.1':
-                        $this->_platver = static::WINVER_XP;
-                        break;
-                    case '6.0':
-                        $this->_platver = static::WINVER_VISTA;
-                        break;
-                    case '6.1':
-                        $this->_platver = static::WINVER_7;
-                        break;
-                    case '6.2':
-                        $this->_platver = static::WINVER_8;
-                        break;
-                    case '6.3':
-                        $this->_platver = static::WINVER_81;
-                        break;
+                case '5.1':
+                    $this->_platver = static::WINVER_XP;
+                    break;
+                case '6.0':
+                    $this->_platver = static::WINVER_VISTA;
+                    break;
+                case '6.1':
+                    $this->_platver = static::WINVER_7;
+                    break;
+                case '6.2':
+                    $this->_platver = static::WINVER_8;
+                    break;
+                case '6.3':
+                    $this->_platver = static::WINVER_81;
+                    break;
                 }
             }
-            
+
         }
-        
+
         private function versionTrim($string) {
             $elems = explode('.', $string);
             return count($elems) > 1 ? $elems[0].(($elems[1] !== '0') ? '.'.$elems[1] : '') : $string;

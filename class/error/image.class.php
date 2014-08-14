@@ -15,7 +15,7 @@ final class Image extends User
         $red = rand(100,255);
         $green = rand(100,250);
         $blue = rand(100,200);
-        
+
         $string = is_array($langindex) ? parent::lang($langindex[0]).': '.parent::lang($langindex[1]) : parent::lang($langindex);
         $string = html_entity_decode($string,ENT_QUOTES,'UTF-8');
 

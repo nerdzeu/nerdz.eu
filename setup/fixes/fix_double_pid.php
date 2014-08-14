@@ -31,7 +31,7 @@ foreach($profilesToFix as $profile) {
     $stmt = $pdo->query('SELECT hpid FROM posts WHERE hpid > '.$start->hpid." AND \"to\" = {$profile->to} ORDER BY hpid ASC LIMIT 1");
     $start = $stmt->fetch(PDO::FETCH_OBJ);
     echo "First HPID to edit: $start->hpid\n";
-    
+
     $startpid++;
     for($i = $startpid; $i <= $maxpid; $i++) {
         $query = "UPDATE posts SET pid = '{$i}' WHERE hpid = '{$start->hpid}'";
@@ -74,7 +74,7 @@ foreach($profilesToFix as $profile) {
     $stmt = $pdo->query('SELECT hpid FROM groups_posts WHERE hpid > '.$start->hpid." AND \"to\" = {$profile->to} ORDER BY hpid ASC LIMIT 1");
     $start = $stmt->fetch(PDO::FETCH_OBJ);
     echo "First HPID to edit: $start->hpid\n";
-    
+
     $startpid++;
     for($i = $startpid; $i <= $maxpid; $i++) {
         $query = "UPDATE groups_posts SET pid = '{$i}' WHERE hpid = '{$start->hpid}'";

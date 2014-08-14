@@ -6,7 +6,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 if(!$user->isLogged())
     die($user->lang('REGISTER'));
-    
+
 $vals = [];
 $vals['tok_n'] = $user->getCsrfToken('edit');
 $longlangs  = $user->getAvailableLanguages(1);

@@ -74,18 +74,18 @@ if(!isset($_POST['goal']))
 
 if(!isset($_POST['website']))
     $_POST['website'] = '';
-       
+
 if(!empty($_POST['website']) && !Utils::isValidURL($_POST['website']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WEBSITE').': '.$user->lang('INVALID_URL')));
-    
+
 if(!empty($_POST['photo']))
 {
     if(!Utils::isValidURL($_POST['photo']))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('PHOTO').': '.$user->lang('INVALID_URL')));
-        
+
     if(!($head = get_headers($_POST['photo'],1)) || !isset($head['Content-Type']))
         die(NERDZ\Core\Utils::jsonResponse('error','Something wrong with your project image'));
-        
+
     if(false === strpos($head['Content-Type'],'image'))
         die(NERDZ\Core\Utils::jsonResponse('error','Your project image, is not a photo or is protected, change it'));
 }

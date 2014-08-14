@@ -26,14 +26,14 @@ if($user->isLogged())
                 ]
             ], Db::FETCH_OBJ)
         ))
-            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
         $userData['password'] = $obj->password; //saved hashed password
     }
     else
     {
-         $userData['password'] = $_POST['password'];
-         $updatedPassword = true;
+        $userData['password'] = $_POST['password'];
+        $updatedPassword = true;
     }
 }
 else
@@ -61,26 +61,26 @@ if(!$user_flag||!$birth_flag)
                 $msg.= "\n";
                 switch($id)
                 {
-                    case 'username':
-                        $msg.=$user->lang('USERNAME');
+                case 'username':
+                    $msg.=$user->lang('USERNAME');
                     break;
-                    case 'name':
-                        $msg.=$user->lang('NAME');
+                case 'name':
+                    $msg.=$user->lang('NAME');
                     break;
-                    case 'surname':
-                        $msg.=$user->lang('SURNAME');
+                case 'surname':
+                    $msg.=$user->lang('SURNAME');
                     break;
-                    case 'password':
-                        $msg.=$user->lang('PASSWORD');
+                case 'password':
+                    $msg.=$user->lang('PASSWORD');
                     break;
-                    case 'gender':
-                        $msg.=$user->lang('GENDER');
+                case 'gender':
+                    $msg.=$user->lang('GENDER');
                     break;
-                    case 'email':
-                        $msg.=$user->lang('EMAIL');
+                case 'email':
+                    $msg.=$user->lang('EMAIL');
                     break;
-                    case 'timezone':
-                        $msg.='Time zone';
+                case 'timezone':
+                    $msg.='Time zone';
                     break;
                 }
             }
@@ -92,14 +92,14 @@ if(!$user_flag||!$birth_flag)
                 $msg.= "\n";
                 switch($id)
                 {
-                    case 'birth_day':
-                        $msg.=$user->lang('DAY');
+                case 'birth_day':
+                    $msg.=$user->lang('DAY');
                     break;
-                    case 'birth_month':
-                        $msg.=$user->lang('MONTH');
+                case 'birth_month':
+                    $msg.=$user->lang('MONTH');
                     break;
-                    case 'birth_year':
-                        $msg.=$user->lang('YEAR');
+                case 'birth_year':
+                    $msg.=$user->lang('YEAR');
                     break;
                 }
             }
@@ -111,7 +111,7 @@ if(!$user->isLogged()) //username field
 {
     if(mb_strlen($userData['username'],'UTF-8') < Config\MIN_LENGTH_USER)
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('USERNAME_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_USER));
-    
+
     if(is_numeric($userData['username']))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('USERNAME_NUMBER')));
 
@@ -162,7 +162,7 @@ if(isset($userData['name'][60]))
 
 if(isset($userData['surname'][60]))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('SURNAME_LONG')));
-    
+
 if((!$user->isLogged() || $updatedPassword) && isset($userData['password'][40]))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('PASSWORD_LONG')));
 

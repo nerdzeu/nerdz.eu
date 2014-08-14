@@ -6,7 +6,7 @@ $user = new NERDZ\Core\User();
 
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
-    
+
 if(!$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 

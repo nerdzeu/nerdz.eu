@@ -13,7 +13,7 @@ $id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
 
 if(!$user->isLogged() || !$id || !($info = $project->getObject($id)) || $info->owner != $_SESSION['id'] )
     die($user->lang('ERROR'));
-    
+
 $vals = [];
 
 function sortbyusername($a, $b)

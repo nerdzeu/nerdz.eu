@@ -15,12 +15,12 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
 case 'del':
     die(NERDZ\Core\Utils::jsonDbResponse($user->defollow($_POST['id'], $prj)));
-break;
+    break;
 case 'add':
     die(NERDZ\Core\Utils::jsonDbResponse($user->follow($_POST['id'], $prj)));
-break;
+    break;
 default:
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-break;
+    break;
 }
 ?>

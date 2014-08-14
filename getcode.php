@@ -19,7 +19,7 @@ if(!isset($id) || !isset($gid))
 {
     if(isset($_GET['pcid']) && is_numeric($_GET['pcid']))
         $pcid = intval($_GET['pcid']);
-    
+
     if(isset($_GET['gcid']) && is_numeric($_GET['gcid']))
         $gcid = intval($_GET['gcid']);
 }
@@ -31,44 +31,44 @@ if((isset($id) || isset($gid)) && isset($pid))
 {
     $new = isset($id) ? $id : $gid;
     if(!($o = Db::query(
-                    [
-                        'SELECT "message" FROM "'.(isset($id) ? '' : 'groups_').'posts" WHERE "pid" = :pid AND "to" = :new',
-                        [
-                            ':pid' => $pid,
-                            ':new' => $new
-                        ]
-                    ],Db::FETCH_OBJ)))
-        die('Error');
+        [
+            'SELECT "message" FROM "'.(isset($id) ? '' : 'groups_').'posts" WHERE "pid" = :pid AND "to" = :new',
+                [
+                    ':pid' => $pid,
+                    ':new' => $new
+                ]
+            ],Db::FETCH_OBJ)))
+            die('Error');
 }
 elseif(isset($pcid) || isset($gcid))
 {
     $new = isset($pcid) ? $pcid : $gcid;
     if(!($o = Db::query(
-                    [
-                        'SELECT "message" FROM "'.(isset($pcid) ? '' : 'groups_').'comments" WHERE "hcid" = :hcid',
-                        [
-                            ':hcid' => $new
-                        ]
-                    ],Db::FETCH_OBJ)))
-        die('error');
+        [
+            'SELECT "message" FROM "'.(isset($pcid) ? '' : 'groups_').'comments" WHERE "hcid" = :hcid',
+                [
+                    ':hcid' => $new
+                ]
+            ],Db::FETCH_OBJ)))
+            die('error');
 }
 else
     die();
 $codes = $user->getCodes($o->message);
 if ( isset($codes[$ncode]['code']) && isset($codes[$ncode]['lang']) ) {
     switch(strtolower(trim($codes[$ncode]['lang']))) {
-        case 'js':
-        case 'javascript':
-        case 'jquery':
-            header('Content-type: application/javascript; charset=utf-8');
+    case 'js':
+    case 'javascript':
+    case 'jquery':
+        header('Content-type: application/javascript; charset=utf-8');
         break;
 
-        case 'css':
-            header('Content-Type: text/css; charset=utf-8');
+    case 'css':
+        header('Content-Type: text/css; charset=utf-8');
         break;
 
-        default:
-            header('Content-Type: text/plain; charset=utf-8');
+    default:
+        header('Content-Type: text/plain; charset=utf-8');
         break;
     }
     die(html_entity_decode($codes[$ncode]['code'],ENT_QUOTES,'UTF-8'));

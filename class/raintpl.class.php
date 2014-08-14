@@ -77,7 +77,7 @@ final class RainTPL
      * false: loads the compiled template. Set false if server doesn't have write permission for cache_directory.
      */
     static $check_template_update = true;
-            
+
     /**
      * Debug mode flag.
      * True: debug mode is used, syntax errors are displayed directly in template. Execution of script is not terminated.
@@ -102,7 +102,7 @@ final class RainTPL
             $cache = true;        // static cache enabled / disabled
 
     private static $config_name_sum = null;   // takes all the config to create the md5 of the file
-    
+
     const CACHE_EXPIRE_TIME = 1800; // default cache expire time
 
     public function __construct()
@@ -182,7 +182,7 @@ final class RainTPL
         }
         unset($user);
     }
-    
+
     /**
      * Configure the settings of RainTPL
      */
@@ -230,9 +230,9 @@ final class RainTPL
     }
 
     /**
-    * execute stripslaches() on the xml block. Invoqued by preg_replace_callback function below
-    * @access private
-    */
+     * execute stripslaches() on the xml block. Invoqued by preg_replace_callback function below
+     * @access private
+     */
     private function xml_reSubstitution($capture)
     {
         return "<?php echo '<?xml ".stripslashes($capture[1])." ?>'; ?>";
@@ -258,7 +258,7 @@ final class RainTPL
 
         //compile template
         $template_compiled = "<?php if(!class_exists('".__NAMESPACE__."\\RainTPL')) die('".__NAMESPACE__."\\RainTPL does not exists'); if(!isset(\$user)) die('core not set');?>" . $this->compileTemplate( $template_code, $tpl_basedir );
-        
+
 
         // fix the php-eating-newline-after-closing-tag-problem
         $template_compiled = str_replace( "?>\n", "?>\n\n", $template_compiled );
@@ -283,20 +283,20 @@ final class RainTPL
     {
         //tag list
         $tag_regexp = array(
-                    'loop'             => '(\{loop(?: name){0,1}="\${0,1}[^"]*"\})',
-                    'loop_close'    => '(\{\/loop\})',
-                    'if'            => '(\{if(?: condition){0,1}="[^"]*"\})',
-                    'elseif'        => '(\{elseif(?: condition){0,1}="[^"]*"\})',
-                    'else'            => '(\{else\})',
-                    'if_close'        => '(\{\/if\})',
-                    'function'        => '(\{function="[^"]*"\})',
-                    'noparse'        => '(\{noparse\})',
-                    'noparse_close' => '(\{\/noparse\})',
-                    'ignore'        => '(\{ignore\}|\{\*)',
-                    'ignore_close'    => '(\{\/ignore\}|\*\})',
-                    'include'        => '(\{include="[^"]*"(?: cache="[^"]*")?\})',
-                    'template_info'    => '(\{\$template_info\})'
-                    );
+            'loop'             => '(\{loop(?: name){0,1}="\${0,1}[^"]*"\})',
+            'loop_close'    => '(\{\/loop\})',
+            'if'            => '(\{if(?: condition){0,1}="[^"]*"\})',
+            'elseif'        => '(\{elseif(?: condition){0,1}="[^"]*"\})',
+            'else'            => '(\{else\})',
+            'if_close'        => '(\{\/if\})',
+            'function'        => '(\{function="[^"]*"\})',
+            'noparse'        => '(\{noparse\})',
+            'noparse_close' => '(\{\/noparse\})',
+            'ignore'        => '(\{ignore\}|\{\*)',
+            'ignore_close'    => '(\{\/ignore\}|\*\})',
+            'include'        => '(\{include="[^"]*"(?: cache="[^"]*")?\})',
+            'template_info'    => '(\{\$template_info\})'
+        );
 
         $tag_regexp = '/' . join( '|', $tag_regexp ) . '/';
 
@@ -323,27 +323,27 @@ final class RainTPL
         $compiled_code = $open_if = $comment_is_open = $ignore_is_open = null;
         $loop_level = 0;
 
-         //read all parsed code
-         while( $html = array_shift( $parsed_code ) )
-         {
-             //close ignore tag
+        //read all parsed code
+        while( $html = array_shift( $parsed_code ) )
+        {
+            //close ignore tag
             if( !$comment_is_open && strpos( $html, '{/ignore}' ) !== false)
-                 $ignore_is_open = false;
-             //code between tag ignore id deleted
-             elseif( $ignore_is_open )
+                $ignore_is_open = false;
+            //code between tag ignore id deleted
+            elseif( $ignore_is_open )
                 continue;
-             //close no parse tag
+            //close no parse tag
             elseif( strpos( $html, '{/noparse}' ) !== false )
-                 $comment_is_open = false;
-             //code between tag noparse is not compiled
-             elseif( $comment_is_open )
-                 $compiled_code .= $html;
-             //ignore
+                $comment_is_open = false;
+            //code between tag noparse is not compiled
+            elseif( $comment_is_open )
+                $compiled_code .= $html;
+            //ignore
             elseif( strpos( $html, '{ignore}' ) !== false )
-                 $ignore_is_open = true;
-             //noparse
-             elseif( strpos( $html, '{noparse}' ) !== false )
-                 $comment_is_open = true;
+                $ignore_is_open = true;
+            //noparse
+            elseif( strpos( $html, '{noparse}' ) !== false )
+                $comment_is_open = true;
             //include tag
             elseif( preg_match( '/(?:\{include="([^"]*)"(?: cache="([^"]*)"){0,1}\})/', $html, $code ) )
             {
@@ -354,30 +354,30 @@ final class RainTPL
                 if( isset($code[ 2 ]) )
                     //dynamic include
                     $compiled_code .= '<?php require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\'; $tpl = new '.__NAMESPACE__.'\\RainTPL();' .
-                                 'if( $cache = $tpl->cache( $template = basename("'.$include_var.'") ) )' .
-                                 '    echo $cache;' .
-                                 'else{ ' .
-                                 '$tpl_dir_temp = static::$tpl_dir;' .
-                                 '$tpl->assign( $this->var );' .
-                                 ( !$loop_level ? null : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
-                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1, 1) != "/" ? "/" : "" ) . $template );'.
-                                 '}' .
-                                 '?>';
+                    'if( $cache = $tpl->cache( $template = basename("'.$include_var.'") ) )' .
+                    '    echo $cache;' .
+                    'else{ ' .
+                    '$tpl_dir_temp = static::$tpl_dir;' .
+                    '$tpl->assign( $this->var );' .
+                    ( !$loop_level ? null : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
+                    '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1, 1) != "/" ? "/" : "" ) . $template );'.
+                    '}' .
+                    '?>';
                 else
                     //dynamic include
                     $compiled_code .= '<?php require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\'; $tpl = new '.__NAMESPACE__.'\\RainTPL();' .
-                                 '$tpl_dir_temp = static::$tpl_dir;' .
-                                 '$tpl->assign( $this->var );' .
-                                 ( !$loop_level ? '' : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
-                                 '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,1) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
-                                 '?>';
+                    '$tpl_dir_temp = static::$tpl_dir;' .
+                    '$tpl->assign( $this->var );' .
+                    ( !$loop_level ? '' : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
+                    '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,1) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
+                    '?>';
 
             }
              //loop
             elseif( preg_match( '/\{loop(?: name){0,1}="\${0,1}([^"]*)"\}/', $html, $code ) )
             {
-                 //increase the loop counter
-                 ++$loop_level;
+                //increase the loop counter
+                ++$loop_level;
 
                 //replace the variable in the loop
                 $var = $this->var_replace( '$' . $code[ 1 ], $tag_left_delimiter=null, $tag_right_delimiter=null, $php_left_delimiter=null, $php_right_delimiter=null, $loop_level-1 );
@@ -510,7 +510,7 @@ final class RainTPL
     {
         if( static::$path_replace )
         {
-             // reduce the path
+            // reduce the path
             $path = preg_replace('/\w+\/\.\.\//', '', $this->base_url . static::$tpl_dir . $tpl_basedir );
 
             $exp = $sub = [];
@@ -548,10 +548,10 @@ final class RainTPL
 
             return preg_replace( $exp, $sub, $html );
         }
-        
+
         return $html;
     }
-    
+
     // replace const
     private function const_replace( $html, $tag_left_delimiter, $tag_right_delimiter, $php_left_delimiter = null, $php_right_delimiter = null, $loop_level = null, $echo = null )
     {
@@ -580,7 +580,7 @@ final class RainTPL
             $this->function_check( $tag );
 
             $extra_var = $this->var_replace( $extra_var, null, null, null, null, $loop_level );
-            
+
 
             // check if there's an operator = in the variable tags, if there's this is an initialization so it will not output any value
             $is_init_variable = preg_match( '/^(\s*?)\=[^=](.*?)$/', $extra_var );
@@ -662,55 +662,55 @@ final class RainTPL
 
             foreach( $parsed as $tag => $array )
             {
-                    //variable name ex: news.title
-                    $var = $array['var'];
+                //variable name ex: news.title
+                $var = $array['var'];
 
-                    //function and parameters associate to the variable ex: substr:0,100
-                    $extra_var = $array['extra_var'];
+                //function and parameters associate to the variable ex: substr:0,100
+                $extra_var = $array['extra_var'];
 
-                    // check if there's any function disabled by black_list
-                    $this->function_check( $tag );
+                // check if there's any function disabled by black_list
+                $this->function_check( $tag );
 
-                    $extra_var = $this->var_replace( $extra_var, null, null, null, null, $loop_level );
+                $extra_var = $this->var_replace( $extra_var, null, null, null, null, $loop_level );
 
-                    // check if there's an operator = in the variable tags, if there's this is an initialization so it will not output any value
-                    $is_init_variable = preg_match( '/^(\s*?)\=[^=](.*?)$/', $extra_var );
-                    
-                    //function associate to variable
-                    $function_var = ( $extra_var && $extra_var[0] == '|') ? substr( $extra_var, 1 ) : null;
+                // check if there's an operator = in the variable tags, if there's this is an initialization so it will not output any value
+                $is_init_variable = preg_match( '/^(\s*?)\=[^=](.*?)$/', $extra_var );
 
-                    //variable path split array (ex. $news.title o $news[title]) or object (ex. $news->title)
-                    $temp = preg_split( '/\.|\[|\-\>/', $var );
+                //function associate to variable
+                $function_var = ( $extra_var && $extra_var[0] == '|') ? substr( $extra_var, 1 ) : null;
 
-                    //variable name
-                    $var_name = $temp[ 0 ];
+                //variable path split array (ex. $news.title o $news[title]) or object (ex. $news->title)
+                $temp = preg_split( '/\.|\[|\-\>/', $var );
 
-                    //variable path
-                    $variable_path = substr( $var, strlen( $var_name ) );
+                //variable name
+                $var_name = $temp[ 0 ];
 
-                    //parentesis transform [ e ] in [" e in "]
-                    $variable_path = str_replace( '[', '["', $variable_path );
-                    $variable_path = str_replace( ']', '"]', $variable_path );
+                //variable path
+                $variable_path = substr( $var, strlen( $var_name ) );
 
-                    //transform .$variable in ["$variable"] and .variable in ["variable"]
-                    $variable_path = preg_replace('/\.(\${0,1}\w+)/', '["\\1"]', $variable_path );
-                    
-                    // if is an assignment also assign the variable to $this->var['value']
-                    if( $is_init_variable )
-                        $extra_var = "=\$this->var['{$var_name}']{$variable_path}" . $extra_var;
+                //parentesis transform [ e ] in [" e in "]
+                $variable_path = str_replace( '[', '["', $variable_path );
+                $variable_path = str_replace( ']', '"]', $variable_path );
 
-                    //if there's a function
-                    if( $function_var )
+                //transform .$variable in ["$variable"] and .variable in ["variable"]
+                $variable_path = preg_replace('/\.(\${0,1}\w+)/', '["\\1"]', $variable_path );
+
+                // if is an assignment also assign the variable to $this->var['value']
+                if( $is_init_variable )
+                    $extra_var = "=\$this->var['{$var_name}']{$variable_path}" . $extra_var;
+
+                //if there's a function
+                if( $function_var )
+                {
+                    // check if there's a function or a static method and separate, function by parameters
+                    $function_var = str_replace('::', '@double_dot@', $function_var );
+
+                    // get the position of the first :
+                    if( $dot_position = strpos( $function_var, ':' ) )
                     {
-                            // check if there's a function or a static method and separate, function by parameters
-                            $function_var = str_replace('::', '@double_dot@', $function_var );
-
-                            // get the position of the first :
-                            if( $dot_position = strpos( $function_var, ':' ) )
-                            {
-                                // get the function and the parameters
-                                $function = substr( $function_var, 0, $dot_position );
-                                $params = substr( $function_var, $dot_position+1 );
+                        // get the function and the parameters
+                        $function = substr( $function_var, 0, $dot_position );
+                        $params = substr( $function_var, $dot_position+1 );
                             }
                             else
                             {
@@ -729,19 +729,19 @@ final class RainTPL
                     //if it is inside a loop
                     if( $loop_level )
                     {
-                            //verify the variable name
-                            if( $var_name == 'key' )
-                                    $php_var = '$key' . $loop_level;
-                            elseif( $var_name == 'value' )
-                                    $php_var = '$value' . $loop_level . $variable_path;
-                            elseif( $var_name == 'counter' )
-                                    $php_var = '$counter' . $loop_level;
-                            else
-                                    $php_var = '$' . $var_name . $variable_path;
+                        //verify the variable name
+                        if( $var_name == 'key' )
+                            $php_var = '$key' . $loop_level;
+                        elseif( $var_name == 'value' )
+                            $php_var = '$value' . $loop_level . $variable_path;
+                        elseif( $var_name == 'counter' )
+                            $php_var = '$counter' . $loop_level;
+                        else
+                            $php_var = '$' . $var_name . $variable_path;
                     }
                     else
                         $php_var = '$' . $var_name . $variable_path;
-                    
+
                     // compile the variable for php
                     if( isset( $function ) )
                         $php_var = $php_left_delimiter . ( !$is_init_variable && $echo ? 'echo ' : null ) . ( $params ? "( {$function}( {$php_var}, {$params} ) )" : "{$function}( {$php_var} )" ) . $php_right_delimiter;
@@ -750,20 +750,20 @@ final class RainTPL
                         $arith = '(\s*(\+|\-|\*|\/|%)\s*[a-z0-9]*)?';
                         $php_var = $php_left_delimiter .
                             ( !$is_init_variable && $echo
-                                ? 'echo ' .
+                            ? 'echo ' .
+                            (
+                                preg_match('#\_[n|b]$|\_a(\[.+?\])?'.$arith.'$|key[0-9]+'.$arith.'$|value[0-9]+(\[.+?\])?'.$arith.'$|counter[0-9]+'.$arith.'$#i',"$php_var$extra_var") ? //match loop variables, template variable [ boolean: _b, array: _a, nerdz values n]
                                 (
-                                    preg_match('#\_[n|b]$|\_a(\[.+?\])?'.$arith.'$|key[0-9]+'.$arith.'$|value[0-9]+(\[.+?\])?'.$arith.'$|counter[0-9]+'.$arith.'$#i',"$php_var$extra_var") ? //match loop variables, template variable [ boolean: _b, array: _a, nerdz values n]
-                                    (
-                                         preg_match('#^\$banners_a#',"$php_var$extra_var") ?
-                                         "isset($php_var$extra_var) ? $php_var$extra_var : ''"  :
-                                         "$php_var$extra_var"
-                                    ) :
-                                    "\$user->lang('".strtoupper(ltrim("$php_var$extra_var",'$'))."')"
-                                ) 
-                                : $php_var.$extra_var
-                            ) .$php_right_delimiter;
+                                    preg_match('#^\$banners_a#',"$php_var$extra_var") ?
+                                    "isset($php_var$extra_var) ? $php_var$extra_var : ''"  :
+                                    "$php_var$extra_var"
+                                ) :
+                                "\$user->lang('".strtoupper(ltrim("$php_var$extra_var",'$'))."')"
+                            ) 
+                            : $php_var.$extra_var
+                        ) .$php_right_delimiter;
                     }
-                    
+
                     $html = str_replace( $tag, $php_var, $html );
             }
         }
@@ -805,7 +805,7 @@ final class RainTPL
     {
         if (!static::$debug)
             throw $e;
-        
+
         $output = sprintf('<h2>Exception: %s</h2><h3>%s</h3><p>template: %s</p>',
             get_class($e),
             $e->getMessage(),
@@ -815,7 +815,7 @@ final class RainTPL
         {
             if (null != $e->getTemplateLine())
                 $output .= '<p>line: ' . $e->getTemplateLine() . '</p>';
-            
+
             if (null != $e->getTag())
                 $output .= '<p>in tag: ' . htmlspecialchars($e->getTag()) . '</p>';
 
@@ -872,7 +872,7 @@ class RainTpl_Exception extends \Exception
  */
 class RainTpl_NotFoundException extends RainTpl_Exception
 {
-    
+
 }
 
 /**

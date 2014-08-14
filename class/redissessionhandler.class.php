@@ -33,10 +33,10 @@ class RedisSessionHandler implements \SessionHandlerInterface
     public function __construct()
     {
         $this->redis = new Predis\Client(array(
-                    'scheme' => 'tcp',
-                    'host' => $this->host,
-                    'port' => $this->port
-                    ));
+            'scheme' => 'tcp',
+            'host' => $this->host,
+            'port' => $this->port
+        ));
         session_set_save_handler($this,true);
         session_start();
     }

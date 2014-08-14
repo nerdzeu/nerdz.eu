@@ -16,7 +16,7 @@ final class Captcha
     public function show()
     {
         if (count(ob_list_handlers()) > 0) {
-             ob_clean();
+            ob_clean();
         }
         header('Content-Type: image/png');
         $this->generate();
@@ -30,7 +30,7 @@ final class Captcha
         for($i=0;$i<20;++$i)
         {
             $x1 = rand(1,80);
-               $y1 = rand(1,25);
+            $y1 = rand(1,25);
             $x2 = $x1+4;
             $y2 = $y1+4;
             $color = imagecolorallocate($image,~$green,~$blue,~$red);
@@ -55,7 +55,7 @@ final class Captcha
         $ret = '';
         while($i++<=$len)
             $ret.=$casual[rand(0,62)];
-    
+
         return trim($ret);
     }
 }

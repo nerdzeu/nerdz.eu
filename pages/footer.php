@@ -10,7 +10,7 @@ $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 
 if($fl)
     echo '<script type="application/javascript">
-      (function() {
+    (function() {
         var po = document.createElement(\'script\'); po.type = \'application/javascript\'; po.async = true;
         po.src = \'https://apis.google.com/js/plusone.js\';
         var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(po, s);

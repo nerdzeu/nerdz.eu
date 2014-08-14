@@ -11,12 +11,12 @@ if(!$user->isLogged())
     die($user->lang('REGISTER'));
 
 if(!($o = Db::query(
-                [
-                    'SELECT "private" FROM "users" WHERE "counter" = :id',
-                    [
-                        ':id' => $_SESSION['id']
-                    ]
-                ],Db::FETCH_OBJ)))
+    [
+        'SELECT "private" FROM "users" WHERE "counter" = :id',
+        [
+            ':id' => $_SESSION['id']
+        ]
+    ],Db::FETCH_OBJ)))
     die($user->lang('ERROR'));
 
 $vals['private_b'] = $o->private;

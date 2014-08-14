@@ -113,13 +113,13 @@ class Variables
     ];
 }
 
-    // Hint: you want to test SSL login locally, but you don't have the time.
-    // Here's a little help for you. First, create an alias in your system's
-    // hosts file for 127.0.0.1 (localhost won't work, sorry). Something like
-    // dev.nerdz or similar (I don't recommend using *.nerdz.eu, otherwise
-    // something on the remote side will explode).
-    // Then, edit your configuration properly, and uncomment this snippet
-    // to magically handle everything CORS-related. Enjoy.
+// Hint: you want to test SSL login locally, but you don't have the time.
+// Here's a little help for you. First, create an alias in your system's
+// hosts file for 127.0.0.1 (localhost won't work, sorry). Something like
+// dev.nerdz or similar (I don't recommend using *.nerdz.eu, otherwise
+// something on the remote side will explode).
+// Then, edit your configuration properly, and uncomment this snippet
+// to magically handle everything CORS-related. Enjoy.
     /*
     if ($_SERVER['PHP_SELF'] == '/pages/profile/login.json.php' &&
         isset ($_SERVER['HTTP_ORIGIN']) && (
@@ -130,5 +130,5 @@ class Variables
         header ('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
         header ('Access-Control-Allow-Credentials: true');
     }
-    */
+     */
 ?>

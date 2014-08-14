@@ -27,7 +27,7 @@ if(empty($o->http_user_agent) || empty($_SESSION['http_user_agent']) || ($o->htt
 {
     if(Db::NO_ERRNO != Db::query(array('UPDATE "users" SET "http_user_agent" = :uag WHERE "counter" = :id',array(':uag' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8'), ':id' => $_SESSION['id'])),Db::FETCH_ERRNO))
         die(NERDZ\Core\Utils::jsonResponse('error','UA'));
-    
+
     $_SESSION['http_user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 }
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));

@@ -94,13 +94,13 @@ class Messages
         };
 
         $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#i',function($m) use ($validURL) {
-                   return $validURL($m);
+            return $validURL($m);
             },$str);
         $str = preg_replace_callback('#\[url=(.+?)\](.+?)\[/url\]#i',function($m) use ($validURL) {
-                return $validURL($m);
+            return $validURL($m);
             },$str);
         $str = preg_replace_callback('#\[url\](.+?)\[/url\]#i',function($m) use ($validURL) {
-                return $validURL($m);
+            return $validURL($m);
             },$str);
 
         $str = preg_replace('#\[i\](.+?)\[/i\]#i','<span style="font-style:italic">$1</span>',$str);
@@ -115,90 +115,90 @@ class Messages
         $str = preg_replace('#\[wat\]#i','<span style="font-size:22pt">WAT</span>',$str); //easter egg [never change]
 
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#i',function($m) {
-                return '<a href="/'.Utils::userLink($m[1])."\">{$m[1]}</a>";
+            return '<a href="/'.Utils::userLink($m[1])."\">{$m[1]}</a>";
                 },$str);
         $str = preg_replace_callback('#\[project\](.+?)\[/project\]#i',function($m) {
-                return '<a href="/'.Utils::projectLink($m[1])."\">{$m[1]}</a>";
+            return '<a href="/'.Utils::projectLink($m[1])."\">{$m[1]}</a>";
                 },$str);
         $str = preg_replace_callback('#\[wiki=([a-z]{2})\](.+?)\[/wiki\]#i',function($m) {
-                return '<a href="http://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ','_',html_entity_decode($m[2],ENT_QUOTES,'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
+            return '<a href="http://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ','_',html_entity_decode($m[2],ENT_QUOTES,'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
                 },$str);
         $str = preg_replace_callback("#(\[math\]|\[m\])(.+?)(\[/math\]|\[/m\])#i",function($m) {
-                return $m[1].strip_tags($m[2]).$m[3];
+            return $m[1].strip_tags($m[2]).$m[3];
                 },$str);
 
         $str = preg_replace_callback('#\[list\](.+?)\[\/list\]#i',function($m) {
-                $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[1]))));
-                if(empty($arr))
-                    return $m[0];
+            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[1]))));
+            if(empty($arr))
+                return $m[0];
 
-                $ret = '<ul>';
-                foreach($arr as $v)
-                    $ret .= '<li>'.trim($v).'</li>';
-                $ret .= '</ul>';
+            $ret = '<ul>';
+            foreach($arr as $v)
+                $ret .= '<li>'.trim($v).'</li>';
+            $ret .= '</ul>';
 
-                return $ret;
+            return $ret;
                 },$str,20); //ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i', function($m) {
-                $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
-                if(empty($arr))
-                    return $m[0];
+            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
+            if(empty($arr))
+                return $m[0];
 
-                $ret = '<ol type="'.$m[1].'">';
-                foreach($arr as $v)
-                    $ret .= '<li>'.trim($v).'</li>';
-                $ret .= '</ol>';
+            $ret = '<ol type="'.$m[1].'">';
+            foreach($arr as $v)
+                $ret .= '<li>'.trim($v).'</li>';
+            $ret .= '</ol>';
 
-                return $ret;
+            return $ret;
                 },$str,10); //ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
-                $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
-                if(empty($arr))
-                    return $m[0];
+            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
+            if(empty($arr))
+                return $m[0];
 
-                $ret = '<ol start="'.$m[1].'">';
-                foreach($arr as $v)
-                    $ret .= '<li>'.trim($v).'</li>';
-                $ret .= '</ol>';
+            $ret = '<ol start="'.$m[1].'">';
+            foreach($arr as $v)
+                $ret .= '<li>'.trim($v).'</li>';
+            $ret .= '</ol>';
 
-                return $ret;
+            return $ret;
 
                 },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i',function($m) {
-                $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
-                if(empty($arr))
-                    return $m[0];
+            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
+            if(empty($arr))
+                return $m[0];
 
-                $ret = '<ol start="'.$m[1].'" type="'.$m[2].'">';
-                foreach($arr as $v)
-                    $ret .= '<li>'.trim($v).'</li>';
-                $ret .= '</ol>';
+            $ret = '<ol start="'.$m[1].'" type="'.$m[2].'">';
+            foreach($arr as $v)
+                $ret .= '<li>'.trim($v).'</li>';
+            $ret .= '</ol>';
 
-                return $ret;
+            return $ret;
 
                 },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
-                $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
-                if(empty($arr))
-                    return $m[0];
+            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
+            if(empty($arr))
+                return $m[0];
 
-                $ret = '<ol start="'.$m[2].'" type="'.$m[1].'">';
-                foreach($arr as $v)
-                    $ret .= '<li>'.trim($v).'</li>';
-                $ret .= '</ol>';
+            $ret = '<ol start="'.$m[2].'" type="'.$m[1].'">';
+            foreach($arr as $v)
+                $ret .= '<li>'.trim($v).'</li>';
+            $ret .= '</ol>';
 
-                return $ret;
+            return $ret;
 
         },$str,10);
 
         // Quote in comments, new version
         while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#i', $str))
             $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', function($m) {
-                    return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
+                return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
                 }, $str, 1);
 
         while(preg_match('#\[quote=(.+?)\](.+?)\[/quote\]#i',$str))
@@ -206,47 +206,47 @@ class Messages
                 return '<div class="quote">
                     <div style="font-weight: bold">'.$m[1].':</div>
                     <span style="float: left; margin-top: 5px">
-                        <img src="'.$domain.'/static/images/oquotes.gif" alt="quote" width="20" height="11" />
+                    <img src="'.$domain.'/static/images/oquotes.gif" alt="quote" width="20" height="11" />
                     </span>
                     <div style="font-style:italic">
-                        <blockquote style="margin-left: 3%">'.trim($m[2]).'</blockquote>
+                    <blockquote style="margin-left: 3%">'.trim($m[2]).'</blockquote>
                     </div>
                     <span style="float: right">
-                        <img src="'.$domain.'/static/images/cquotes.gif" alt="cquote" width="20" height="11" />
+                    <img src="'.$domain.'/static/images/cquotes.gif" alt="cquote" width="20" height="11" />
                     </span>
-                </div>';
+                    </div>';
             },$str,1);
 
         while(preg_match('#\[quote\](.+?)\[/quote\]#i',$str))
             $str = preg_replace_callback('#\[quote\](.+?)\[/quote\]#im',function($m) use($domain) {
                 return '<div class="quote">
                     <span style="float: left; margin-top: 5px">
-                        <img src="'.$domain.'/static/images/oquotes.gif" alt="quote" width="20" height="11" />
+                    <img src="'.$domain.'/static/images/oquotes.gif" alt="quote" width="20" height="11" />
                     </span>
                     <div style="font-style:italic">
-                        <blockquote style="margin-left: 3%">'.trim($m[1]).'</blockquote>
+                    <blockquote style="margin-left: 3%">'.trim($m[1]).'</blockquote>
                     </div>
                     <span style="float: right">
-                        <img src="'.$domain.'/static/images/cquotes.gif" alt="cquote" width="20" height="11" />
+                    <img src="'.$domain.'/static/images/cquotes.gif" alt="cquote" width="20" height="11" />
                     </span>
-                </div>';
+                    </div>';
             },$str,1);
 
         while(preg_match('#\[spoiler\](.+?)\[/spoiler\]#i',$str))
             $str = preg_replace('#\[spoiler\](.+?)\[/spoiler]#im',
-            '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
+                '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">SPOILER:</span>
                 <div style="display:none"><hr /></div>
                 <div style="display:none; margin-left:3%;overflow:hidden">$1</div>
-            </div>',$str,1);
+                </div>',$str,1);
 
         while(preg_match('#\[spoiler=(.+?)\](.+?)\[/spoiler\]#i',$str))
             $str = preg_replace('#\[spoiler=(.+?)\](.+?)\[/spoiler]#im',
-            '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
+                '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">$1:</span>
                 <div style="display:none"><hr /></div>
                 <div style="display:none; margin-left:3%;overflow:hidden">$2</div>
-            </div>',$str,1);
+                </div>',$str,1);
 
         $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#i',function($m) use($ssl, $truncate) {
             $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
@@ -294,9 +294,9 @@ class Messages
                 else
                     return $m[0];
                 return '<a class="yt_frame" data-vid="' . $output[1] . '" data-host="' . $output[0] . '">' .
-                       '<span>' . $this->user->lang ('VIDEO') . '</span>' .
-                       '<img src="' . $output[2] . '" alt="" width="130" height="' . $output[3] . '" style="float:left;margin-right:4px"' . (isset ($output[4]) ? 'onload="' . $output[4] . '"' : '') . ' />' .
-                       '</a>';
+                    '<span>' . $this->user->lang ('VIDEO') . '</span>' .
+                    '<img src="' . $output[2] . '" alt="" width="130" height="' . $output[3] . '" style="float:left;margin-right:4px"' . (isset ($output[4]) ? 'onload="' . $output[4] . '"' : '') . ' />' .
+                    '</a>';
             };
             $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
             // don't break older posts and preserve the [yt] and [youtube] tags.
@@ -304,13 +304,13 @@ class Messages
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
-                    $url = Utils::getValidImageURL($m[1], $domain, $ssl);
-                    return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
-                                    <span>
-                                        '.$this->user->lang('IMAGES').'
-                                    </span>
-                                    <img src="'.$url.'" alt="" onload="N.imgLoad(this)" onerror="N.imgErr(this)" />
-                                </a>';
+                $url = Utils::getValidImageURL($m[1], $domain, $ssl);
+                return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
+                    <span>
+                    '.$this->user->lang('IMAGES').'
+                    </span>
+                    <img src="'.$url.'" alt="" onload="N.imgLoad(this)" onerror="N.imgErr(this)" />
+                    </a>';
                     },$str,10);
         }
         else
@@ -336,7 +336,7 @@ class Messages
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
-                    return '<img src="'.Utils::getValidImageURL($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
+                return '<img src="'.Utils::getValidImageURL($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
             },$str);
         }
 
@@ -367,8 +367,8 @@ class Messages
                     [
                         ':hpid' => $hpid
                     ]
-            ],Db::FETCH_OBJ))
-        )
+                ],Db::FETCH_OBJ))
+            )
             return new \StdClass();
 
         return $o;
@@ -429,34 +429,34 @@ class Messages
 
             if($this->user->isLogged())
                 $glue .= ' OR (\''.$_SESSION['id'].'\' IN (
-                            SELECT "from" FROM groups_members WHERE "to" = p."to"
-                           )) OR \''.$_SESSION['id'].'\' = g.owner';
+                    SELECT "from" FROM groups_members WHERE "to" = p."to"
+                )) OR \''.$_SESSION['id'].'\' = g.owner';
             $glue .= ') ';
         }
 
         if(!($result = Db::query(
             [
                 'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p '.$join.' WHERE '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,
-                array_merge(
-                    $id             ? [ ':id'   => $id ]             : [],
-                    $search4Lang    ? [ ':lang' => $lang]            : [],
-                    $hpid           ? [ ':hpid' => $hpid ]           : [],
-                    $search         ? [ ':like' => '%'.$search.'%' ] : []
-                )
+                    array_merge(
+                        $id             ? [ ':id'   => $id ]             : [],
+                        $search4Lang    ? [ ':lang' => $lang]            : [],
+                        $hpid           ? [ ':hpid' => $hpid ]           : [],
+                        $search         ? [ ':like' => '%'.$search.'%' ] : []
+                    )
 
-            ],Db::FETCH_STMT))
-          )
-          return [];
+                ],Db::FETCH_STMT))
+            )
+            return [];
 
         $c = 0;
         $ret = [];
         while(($row = $result->fetch(PDO::FETCH_OBJ)))
         {
             $ret[$c] = $this->getPost($row,
-                    [
-                        'project' => $project,
-                        'truncate' => $truncate
-                    ]);
+                [
+                    'project' => $project,
+                    'truncate' => $truncate
+                ]);
 
             if($inHome)
                 $ret[$c]['news_b'] = $project ? $row->to == PROJECTS_NEWS : $row->to == USERS_NEWS;
@@ -477,10 +477,10 @@ class Messages
         $retStr = Db::query(
             [
                 'INSERT INTO "'.$table.'" ("from","to","message", "news") VALUES (:id,:to,:message, :news)',
-                [
-                    ':id'      => $_SESSION['id'],
-                    ':to'      => $to,
-                    ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8'),
+                    [
+                        ':id'      => $_SESSION['id'],
+                        ':to'      => $to,
+                        ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8'),
                     ':news'    => $news ? 'true' : 'false'
                 ]
             ],Db::FETCH_ERRSTR);
@@ -496,9 +496,9 @@ class Messages
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
-                    'body'  => User::getUsername().': '.$message
-                ]
-             );
+                        'body'  => User::getUsername().': '.$message
+                    ]
+                );
         }
     }
 
@@ -540,8 +540,8 @@ class Messages
                 ]
             ],Db::FETCH_OBJ)) ||
             !$this->canEdit(['from' => $obj->from, 'to' => $obj->to], $project)
-          )
-              return 'ERROR';
+        )
+        return 'ERROR';
 
         return Db::query(
             [
@@ -552,7 +552,7 @@ class Messages
                 ]
             ],Db::FETCH_ERRSTR);
     }
- 
+
     public function canEdit($post, $project = false)
     {
         return $this->user->isLogged() && (
@@ -566,7 +566,7 @@ class Messages
     {
         return $this->user->isLogged() && (
             $project ?
-                in_array($_SESSION['id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
+            in_array($_SESSION['id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
             : in_array($_SESSION['id'], [ $post['to'], $post['from'] ] )
         );
     }
@@ -581,68 +581,68 @@ class Messages
                 : in_array($_SESSION['id'],array($post['from'],$post['to']))
             ) ||
             Db::query(
-                     [
-                         'SELECT DISTINCT "from" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
-                         [
-                             ':hpid' => $post['hpid'],
-                             ':id' => $_SESSION['id']
-                         ]
-                     ], Db::ROW_COUNT) > 0
+                [
+                    'SELECT DISTINCT "from" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
+                    [
+                        ':hpid' => $post['hpid'],
+                        ':id' => $_SESSION['id']
+                    ]
+                ], Db::ROW_COUNT) > 0
             );
     }
 
     public function stripTags($message)
     {
         return  str_ireplace('[url="','',
-                str_ireplace('[url=','',
-                str_replace('"]',' ',
-                str_replace(']',' ',
-                str_ireplace('[url]','',
-                str_ireplace('[twitter]','',
-                str_ireplace('[/twitter]','',
-                str_ireplace('[video]','',
-                str_ireplace('[music]','',
-                str_ireplace('[img]','',
-                str_ireplace('[/img]','',
-                str_ireplace('[/url]','',
-                str_ireplace('[youtube]','',
-                str_ireplace('[/youtube]','',
-                str_ireplace('[yt]','',
-                str_ireplace('[/yt]','',
-                str_ireplace('[i]','',
-                str_ireplace('[/i]','',
-                str_ireplace('[b]','',
-                str_ireplace('[/b]','',
-                str_ireplace('[code=','',
-                str_ireplace('[/code]','',
-                str_ireplace('[cur]','',
-                str_ireplace('[/cur]','',
-                str_ireplace('[list]','',
-                str_ireplace('[/list]','',
-                str_ireplace('[gist]','',
-                str_replace('[*]','',
-                str_ireplace('[quote]','',
-                str_ireplace('[user]','',
-                str_ireplace('[/user]','',
-                str_ireplace('[project]','',
-                str_ireplace('[/project]','',
-                str_ireplace('[spoiler]','',
-                str_ireplace('[/spoiler]','',
-                str_ireplace('[small]','',
-                str_ireplace('[/small]','',
-                str_ireplace('[m]','',
-                str_ireplace('[/m]','',
-                str_ireplace('[math]','',
-                str_ireplace('[/math]','',
-                str_ireplace('[wiki=','',
-                str_ireplace('[/wiki]','',
-                str_ireplace('[u]','',
-                str_ireplace('[big]','',
-                str_ireplace('[/u]','',
-                str_ireplace('[/big]','',
-                str_ireplace('[hr]','',
-                str_ireplace('[wat]','',
-                str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))));
+            str_ireplace('[url=','',
+            str_replace('"]',' ',
+            str_replace(']',' ',
+            str_ireplace('[url]','',
+            str_ireplace('[twitter]','',
+            str_ireplace('[/twitter]','',
+            str_ireplace('[video]','',
+            str_ireplace('[music]','',
+            str_ireplace('[img]','',
+            str_ireplace('[/img]','',
+            str_ireplace('[/url]','',
+            str_ireplace('[youtube]','',
+            str_ireplace('[/youtube]','',
+            str_ireplace('[yt]','',
+            str_ireplace('[/yt]','',
+            str_ireplace('[i]','',
+            str_ireplace('[/i]','',
+            str_ireplace('[b]','',
+            str_ireplace('[/b]','',
+            str_ireplace('[code=','',
+            str_ireplace('[/code]','',
+            str_ireplace('[cur]','',
+            str_ireplace('[/cur]','',
+            str_ireplace('[list]','',
+            str_ireplace('[/list]','',
+            str_ireplace('[gist]','',
+            str_replace('[*]','',
+            str_ireplace('[quote]','',
+            str_ireplace('[user]','',
+            str_ireplace('[/user]','',
+            str_ireplace('[project]','',
+            str_ireplace('[/project]','',
+            str_ireplace('[spoiler]','',
+            str_ireplace('[/spoiler]','',
+            str_ireplace('[small]','',
+            str_ireplace('[/small]','',
+            str_ireplace('[m]','',
+            str_ireplace('[/m]','',
+            str_ireplace('[math]','',
+            str_ireplace('[/math]','',
+            str_ireplace('[wiki=','',
+            str_ireplace('[/wiki]','',
+            str_ireplace('[u]','',
+            str_ireplace('[big]','',
+            str_ireplace('[/u]','',
+            str_ireplace('[/big]','',
+            str_ireplace('[hr]','',
+            str_ireplace('[wat]','',
+            str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))));
     }
 
     public function getThumbs($hpid, $project = false) {
@@ -651,13 +651,13 @@ class Messages
         $ret = Db::query(
             [
                 'SELECT SUM("vote") AS "sum" FROM "'.$table.'" WHERE "hpid" = :hpid GROUP BY hpid',
-                [
-                  ':hpid' => $hpid
-                ]
+                    [
+                        ':hpid' => $hpid
+                    ]
 
-            ],
-            Db::FETCH_OBJ
-        );
+                ],
+                Db::FETCH_OBJ
+            );
 
         return isset($ret->sum) ? $ret->sum : 0;
     }
@@ -668,13 +668,13 @@ class Messages
         $ret = Db::query(
             [
                 'SELECT COALESCE( MAX("rev_no"), 0 )  AS "rev_no" FROM "'.$table.'" WHERE "hpid" = :hpid',
-                [
-                  ':hpid' => $hpid
-                ]
+                    [
+                        ':hpid' => $hpid
+                    ]
 
-            ],
-            Db::FETCH_OBJ
-        );
+                ],
+                Db::FETCH_OBJ
+            );
 
         return isset($ret->rev_no) ? $ret->rev_no : 0;
     }
@@ -685,20 +685,20 @@ class Messages
         return Db::query(
             [
                 'SELECT message, EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" = :hpid AND "rev_no" = :number',
-                [
+                    [
 
-                    ':hpid' => $hpid,
-                    ':number' => $number
-                ]
+                        ':hpid' => $hpid,
+                        ':number' => $number
+                    ]
 
-            ],
-            Db::FETCH_OBJ
-        );
+                ],
+                Db::FETCH_OBJ
+            );
     }
 
     public function getUserThumb($hpid, $project = false) {
         if (!$this->user->isLogged()) {
-          return 0;
+            return 0;
         }
         $table = $project ? "groups_thumbs" : "thumbs";
 
@@ -706,8 +706,8 @@ class Messages
             [
                 'SELECT "vote" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :from',
                 [
-                  ':hpid' => $hpid,
-                  ':from' => $_SESSION['id']
+                    ':hpid' => $hpid,
+                    ':from' => $_SESSION['id']
                 ]
 
             ],
@@ -715,7 +715,7 @@ class Messages
         );
 
         if (isset($ret->vote)) {
-           return $ret->vote;
+            return $ret->vote;
         }
 
         return 0;
@@ -723,7 +723,7 @@ class Messages
 
     public function setThumbs($hpid, $vote, $project = false) {
         if (!$this->user->isLogged()) {
-          return false;
+            return false;
         }
 
         $table = ($project ? 'groups_' : '') .'thumbs';
@@ -731,14 +731,14 @@ class Messages
         $ret = Db::query(
             [
                 'INSERT INTO '.$table.'(hpid, "from", vote) VALUES(:hpid, :from, :vote)',
-                [
-                    ':hpid' => (int) $hpid,
-                    ':from' => (int) $_SESSION['id'],
-                    ':vote' => (int) $vote
-                ]
-            ],
-            Db::FETCH_ERRNO
-        );
+                    [
+                        ':hpid' => (int) $hpid,
+                        ':from' => (int) $_SESSION['id'],
+                        ':vote' => (int) $vote
+                    ]
+                ],
+                Db::FETCH_ERRNO
+            );
 
         return $ret == Db::NO_ERRNO;
     }
@@ -753,7 +753,7 @@ class Messages
             $totalcode = $code['code'];
             $lang = $code['lang'];
             $codeurl = '';
-            
+
             if($pid && $id)
             {
                 if(isset($type))
@@ -771,15 +771,15 @@ class Messages
             }
             else
                 $pid = $id = 0;
-            
+
             $str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
-                               '<div class="nerdz-code-wrapper">
-                                    <div class="nerdz-code-title">'.$lang.':</div><pre class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
-                                        (
-                                         empty($codeurl) ? '' :
-                                         '<a href="'.$codeurl.'" onclick="window.open(this.href); return false">'.$this->user->lang('TEXT_VERSION').'</a>'
-                                        ).'</div>',
-                                $str);
+                '<div class="nerdz-code-wrapper">
+                <div class="nerdz-code-title">'.$lang.':</div><pre class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
+                (
+                    empty($codeurl) ? '' :
+                    '<a href="'.$codeurl.'" onclick="window.open(this.href); return false">'.$this->user->lang('TEXT_VERSION').'</a>'
+                ).'</div>',
+                $str);
             ++$i;
         }
         return $str;
@@ -800,8 +800,8 @@ class Messages
             $from = '';
 
         $toFunc = $project
-                ? [__NAMESPACE__.'\\Project', 'getName']
-                : [__NAMESPACE__.'\\User', 'getUsername'];
+            ? [__NAMESPACE__.'\\Project', 'getName']
+            : [__NAMESPACE__.'\\User', 'getUsername'];
 
         $toFuncLink = [ __NAMESPACE__.'\\Utils', ($project ? 'project' : 'user').'Link' ];
 
@@ -830,7 +830,7 @@ class Messages
 
         $ret['canshowlurk_b']     = $logged ? !$ret['canshowlock_b'] : false;
         $ret['lurk_b']            = $this->user->hasLurked($dbPost, $project);
-        
+
         $ret['canshowbookmark_b'] = $logged;
         $ret['bookmark_b']        = $this->user->hasBookmarked($dbPost, $project);
 
@@ -847,32 +847,32 @@ class Messages
          if($this->user->isLogged())
          {
              if(!($o = Db::query(
+                 [
+                     'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
+                         SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
+                         (
+                             $prj
+                             ? ''
+                             : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'
+                         ),
                          [
-                             'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
-                                 SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
-                             (
-                                 $prj
-                                 ? ''
-                                 : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'
-                             ),
-                             [
-                                ':hpid' => $hpid,
-                                ':id' => $_SESSION['id']
-                             ]
-                         ],Db::FETCH_OBJ))
-               )
+                             ':hpid' => $hpid,
+                             ':id' => $_SESSION['id']
+                         ]
+                     ],Db::FETCH_OBJ))
+                 )
                  return 0;
          }
          else
          {
              if(!($o = Db::query(
+                 [
+                     'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
                          [
-                             'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
-                             [
-                                 ':hpid' => $hpid
-                             ]
-                         ],Db::FETCH_OBJ))
-               )
+                             ':hpid' => $hpid
+                         ]
+                     ],Db::FETCH_OBJ))
+                 )
                  return 0;
          }
          return $o->cc;

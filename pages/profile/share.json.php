@@ -9,7 +9,7 @@ $user = new Messages();
 
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
-    
+
 if(!$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
 
@@ -33,18 +33,18 @@ if($_SESSION['id'] != $to)
     if($user->hasClosedProfile($to))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('CLOSED_PROFILE_DESCR')));
 }
-    
+
 $share = function($to,$url,$message = NULL) use($user)
 {
     if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$url))
         $url = "http://{$url}";
-        
+
     if(preg_match('#(.*)youtube.com\/watch\?v=(.{11})#Usim',$url)|| preg_match('#http:\/\/youtu.be\/(.{11})#Usim',$url))
     {
         $message = "[youtube]{$url}[/youtube] ".$message;
         return $user->add($to,$message);
     }
-    
+
     if(preg_match('#http://sprunge.us/([a-z0-9\.]+)\?(.+?)#i',$url,$res))
     {
         $file = file_get_contents('http://sprunge.us/'.$res[1]);
@@ -63,7 +63,7 @@ $share = function($to,$url,$message = NULL) use($user)
             $message = "[img]{$url}[/img]".$message;
             return $user->add($to,$message);
         }
-        
+
         if(preg_match('#(htm)#i',$ct))
         {
             $file = file_get_contents($url);

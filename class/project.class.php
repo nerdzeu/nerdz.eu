@@ -62,8 +62,8 @@ class Project
                     [
                         ':name' => htmlspecialchars($name,ENT_QUOTES,'UTF-8')
                     ]
-            ],Db::FETCH_OBJ)))
-            return 0;
+                ],Db::FETCH_OBJ)))
+                return 0;
         return $o->counter;
     }
 
@@ -95,7 +95,7 @@ class Project
 
         return $o->open;
     }
-   
+
     public function getMembers($id = null)
     {
         $this->checkId($id);

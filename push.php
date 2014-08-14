@@ -13,7 +13,7 @@ function jsonResponse($object) {
 
 $user = new User();
 try {
-    
+
     if(!$user->isLogged()) {
         jsonResponse(['ERROR' => 'Not logged']);
     }
@@ -34,13 +34,13 @@ try {
 
     switch($_GET['action']) {    
 
-        case 'subscribe':
-            if (!isset($_POST['service']) || !isset($_POST['deviceId'])) {
-                jsonResponse(['ERROR' => 'Field not set']);
+    case 'subscribe':
+        if (!isset($_POST['service']) || !isset($_POST['deviceId'])) {
+            jsonResponse(['ERROR' => 'Field not set']);
             }
 
             $user->setPush($thisUser, true);
-                 
+
             if(!$pushed->exists($thisUser)){
                 if($pushed->addUser($thisUser)[0] !== Pushed::$ACCEPTED) {
                     jsonResponse(['ERROR' => 'Request rejected']);
@@ -55,14 +55,14 @@ try {
 
             break;
 
-        case 'unsubscribe': {
+case 'unsubscribe': {
 
-            if (!isset($_POST['service']) || !isset($_POST['deviceId'])) {
-                jsonResponse(['ERROR' => 'Field not set']);
+    if (!isset($_POST['service']) || !isset($_POST['deviceId'])) {
+        jsonResponse(['ERROR' => 'Field not set']);
             }
 
             $user->setPush($thisUser, true);
-                 
+
             if(!$pushed->exists($thisUser)){
                 jsonResponse(['ERROR' => 'No push for this user']);
             }
@@ -76,8 +76,8 @@ try {
             break;
         }
 
-        default: {
-            jsonResponse(['ERROR' => "Unknown request: '".$_GET['action']."'"]);
+default: {
+    jsonResponse(['ERROR' => "Unknown request: '".$_GET['action']."'"]);
         }        
 
     }
@@ -88,4 +88,4 @@ try {
 jsonResponse($resp);
 
 ?>
- 
+

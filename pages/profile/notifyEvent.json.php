@@ -12,7 +12,7 @@ header("Content-Type: text/event-stream\n\n");
 
 $push = function($event, $status, $message) use ($user) {
     echo 'event: ', $event, "\n",
-         'data: ',  Utils::toJsonResponse($status,$message), "\n\n";
+        'data: ',  Utils::toJsonResponse($status,$message), "\n\n";
     ob_flush();
     flush();
 };
@@ -67,7 +67,7 @@ if(!$user->isLogged()) {
                         ':on' => $viewonline,
                         ':id' => $_SESSION['id']
                     ]
-            ], Db::NO_RETURN);
+                ], Db::NO_RETURN);
 
         if(($o = Db::query(
             [
@@ -80,19 +80,19 @@ if(!$user->isLogged()) {
             if(empty($o->remote_addr) || empty($_SESSION['remote_addr']) || 
                 $o->remote_addr != $_SERVER['REMOTE_ADDR']) {
                 Db::query(
-                     [
-                         'UPDATE "users" SET "remote_addr" = :addr WHERE "counter" = :id',
-                         [
-                             ':addr' => $_SERVER['REMOTE_ADDR'],
-                             ':id'   => $_SESSION['id']
-                         ]
+                    [
+                        'UPDATE "users" SET "remote_addr" = :addr WHERE "counter" = :id',
+                        [
+                            ':addr' => $_SERVER['REMOTE_ADDR'],
+                            ':id'   => $_SESSION['id']
+                        ]
                     ] ,Db::NO_RETURN);
 
                 $dontSendCacheLimiter();
                 $_SESSION['remote_addr'] = $_SERVER['REMOTE_ADDR'];
                 session_write_close();
             }
-       
+
             if(empty($o->http_user_agent) || empty($_SESSION['http_user_agent']) || 
                 $o->http_user_agent != $_SERVER['HTTP_USER_AGENT']) {
                 Db::query(
@@ -100,9 +100,9 @@ if(!$user->isLogged()) {
                         'UPDATE "users" SET "http_user_agent" = :uag WHERE "counter" = :id',
                         [
                             ':uag' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8'),
-                            ':id'  => $_SESSION['id']
-                        ]
-                    ], Db::NO_RETURN);
+                                ':id'  => $_SESSION['id']
+                            ]
+                        ], Db::NO_RETURN);
 
                 $dontSendCacheLimiter();
                 $_SESSION['http_user_agent'] = $_SERVER['HTTP_USER_AGENT'];

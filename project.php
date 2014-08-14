@@ -67,11 +67,11 @@ while((isset($a[$i])))
 $title = implode(' ',$a);
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
     <head>
-        <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming, projects, group" />
-        <meta name="description" content="
+    <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming, projects, group" />
+    <meta name="description" content="
 <?php
 if($pid)
     echo $description;
@@ -79,9 +79,9 @@ echo ($pid ? ' ' : ''), $name, ' @ NERDZ';
 if($pid)
     echo ' #',$pid;
 ?>" />
-        <meta name="robots" content="index,follow" />
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>
+    <meta name="robots" content="index,follow" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>
 <?php
 if(!empty($title))
     echo $title, '... ⇒ ',$name;
@@ -91,13 +91,13 @@ if($pid)
     echo ' #', $pid;
 echo ' @ '.NERDZ\Core\Utils::getSiteName();
 ?></title>
-        <link rel="alternate" type="application/atom+xml" title="<?php echo $name; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $gid; ?>&amp;project=1" />
+    <link rel="alternate" type="application/atom+xml" title="<?php echo $name; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $gid; ?>&amp;project=1" />
 <?php
 $headers = $tplcfg->getTemplateVars('project');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
-<?php ob_flush(); ?>
+    <?php ob_flush(); ?>
 <body>
     <div id="body">
 <?php
@@ -116,5 +116,5 @@ else
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
 ?>
     </div>
-</body>
-</html>
+    </body>
+    </html>

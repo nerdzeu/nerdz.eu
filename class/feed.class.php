@@ -16,14 +16,14 @@ class Feed extends Messages
     public function error($desc)
     {
         return '<?xml version="1.0" encoding="UTF-8" ?>
-                    <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-                    <channel>
-                        <atom:link href="'.$this->baseurl.'error.php" rel="self" type="application/rss+xml" />
-                        <title>RSS Error</title>
-                        <description>'.$desc.'</description>
-                        <link></link>
-                    </channel>
-                    </rss>';
+            <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+            <channel>
+            <atom:link href="'.$this->baseurl.'error.php" rel="self" type="application/rss+xml" />
+            <title>RSS Error</title>
+            <description>'.$desc.'</description>
+            <link></link>
+            </channel>
+            </rss>';
     }
 
     private function getValidFeedMessage($message) //40 words
@@ -44,12 +44,12 @@ class Feed extends Messages
         $url = $this->baseurl.$post['to4link_n'].$post['pid_n'];
 
         return "<item>
-                    <title>{$from} =&gt; {$to} - {$post['pid_n']}</title>
-                    <description><![CDATA[".$this->getValidFeedMessage($post['message_n'])."]]></description>
-                    <link>{$url}</link>
-                    <pubDate>".date('r',$post['timestamp_n'])."</pubDate>
-                    <guid>{$url}</guid>
-                </item>";
+            <title>{$from} =&gt; {$to} - {$post['pid_n']}</title>
+            <description><![CDATA[".$this->getValidFeedMessage($post['message_n'])."]]></description>
+            <link>{$url}</link>
+            <pubDate>".date('r',$post['timestamp_n'])."</pubDate>
+            <guid>{$url}</guid>
+            </item>";
     }
 
     private function getProjectItem($post)
@@ -60,12 +60,12 @@ class Feed extends Messages
         $url = $this->baseurl.$post['to4link_n'].$post['pid_n'];
 
         return "<item>
-                    <title>{$from} =&gt; {$to} - {$post['pid_n']}</title>
-                    <description><![CDATA[".$this->getValidFeedMessage($post['message_n'])."]]></description>
-                    <link>{$url}</link>
-                    <pubDate>".date('r',$post['timestamp_n'])."</pubDate>
-                    <guid>{$url}</guid>
-                </item>";    
+            <title>{$from} =&gt; {$to} - {$post['pid_n']}</title>
+            <description><![CDATA[".$this->getValidFeedMessage($post['message_n'])."]]></description>
+            <link>{$url}</link>
+            <pubDate>".date('r',$post['timestamp_n'])."</pubDate>
+            <guid>{$url}</guid>
+            </item>";    
     }
 
     public function getHomeProfileFeed()
@@ -76,10 +76,10 @@ class Feed extends Messages
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-                <atom:link href="http'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
-                <title>Homepage [Users] - '.Config\SITE_NAME.' RSS</title>
-                <description>Homepage [Users] - '.Config\SITE_NAME.' RSS</description>
-                <link>'.$this->baseurl.'/home.php</link>';
+            <atom:link href="http'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
+            <title>Homepage [Users] - '.Config\SITE_NAME.' RSS</title>
+            <description>Homepage [Users] - '.Config\SITE_NAME.' RSS</description>
+            <link>'.$this->baseurl.'/home.php</link>';
 
         if(($m = parent::getPosts(null, [ 'limit' => 15 ])))
             foreach($m as $post)
@@ -98,10 +98,10 @@ class Feed extends Messages
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-                <atom:link href="http'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
-                <title>Homepage [Projects] - '.Config\SITE_NAME.' RSS</title>
-                <description>Homepage [Projects] - '.Config\SITE_NAME.' RSS</description>
-                <link>'.$this->baseurl.'/home.php?project=1</link>';
+            <atom:link href="http'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
+            <title>Homepage [Projects] - '.Config\SITE_NAME.' RSS</title>
+            <description>Homepage [Projects] - '.Config\SITE_NAME.' RSS</description>
+            <link>'.$this->baseurl.'/home.php?project=1</link>';
 
         if(($m = parent::getPosts(null, [ 'project' => true, 'limit' => 15 ] )))
             foreach($m as $post)
@@ -118,7 +118,7 @@ class Feed extends Messages
             return $this->error('Invalid user ID');
 
         $urluser = Utils::userLink($us);
-    
+
         if(!$this->user->isLogged() && (!($p = Db::query(
             [
                 'SELECT "private" FROM "users" WHERE "counter" = :id',
@@ -126,22 +126,22 @@ class Feed extends Messages
                     ':id' => $id
                 ]
             ],Db::FETCH_OBJ)) || $p->private))
-                return $this->error('Private profile OR undefined error');
+            return $this->error('Private profile OR undefined error');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-                <atom:link href="http'.$this->baseurl.'feed.php?id='.$id.'" rel="self" type="application/rss+xml" />
-                <title>'.$us.'</title>
-                <description>'.$us.' '.Config\SITE_NAME.' RSS</description>
-                <link>'.$this->baseurl.$urluser.'</link>';
+            <atom:link href="http'.$this->baseurl.'feed.php?id='.$id.'" rel="self" type="application/rss+xml" />
+            <title>'.$us.'</title>
+            <description>'.$us.' '.Config\SITE_NAME.' RSS</description>
+            <link>'.$this->baseurl.$urluser.'</link>';
 
         if(($m = parent::getPosts($id,[ 'limit' => 15 ])))
             foreach($m as $post)
                 $xml .= $this->getProfileItem($post);
         else
             return $this->error('Empty profile');
-        
+
         return $xml.'</channel></rss>';
     }
 
@@ -151,7 +151,7 @@ class Feed extends Messages
             return $this->error('Invalid project ID');
 
         $urlprj = Utils::projectLink($us);
-    
+
         if(!($p = Db::query(
             [
                 'SELECT "private","owner" FROM "groups" WHERE "counter" = :id',
@@ -167,17 +167,17 @@ class Feed extends Messages
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-                <atom:link href="http'.$this->baseurl.'feed.php?id='.$id.'&amp;project=1" rel="self" type="application/rss+xml" />
-                <title>'.$us.'</title>
-                <description>'.$us.' '.Config\SITE_NAME.' RSS</description>
-                <link>'.$this->baseurl.$urlprj.'</link>';
+            <atom:link href="http'.$this->baseurl.'feed.php?id='.$id.'&amp;project=1" rel="self" type="application/rss+xml" />
+            <title>'.$us.'</title>
+            <description>'.$us.' '.Config\SITE_NAME.' RSS</description>
+            <link>'.$this->baseurl.$urlprj.'</link>';
 
         if(($m = parent::getPosts($id, ['project' => true, 'limit' => 15 ]) ))
             foreach($m as $post)
                 $xml .= $this->getProjectItem($post);
         else
             return $this->error('Empty project');
-        
+
         return $xml.'</channel></rss>';
     }
 }

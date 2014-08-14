@@ -60,9 +60,9 @@ while((isset($a[$i])))
 $title = implode(' ',$a);
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
     <meta name="author" content="Paolo Galeone" />
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
     <meta name="description" content="
@@ -85,13 +85,13 @@ if($pid)
     echo ' #', $pid;
 echo ' @ '.NERDZ\Core\Utils::getSiteName();
 ?></title>
-        <link rel="alternate" type="application/atom+xml" title="<?php echo $username; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $id; ?>" />
+    <link rel="alternate" type="application/atom+xml" title="<?php echo $username; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $id; ?>" />
 <?php
 $headers = $tplcfg->getTemplateVars('profile');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
-</head>
-<?php ob_flush(); ?>
+    </head>
+    <?php ob_flush(); ?>
 <body>
     <div id="body">
 <?php
@@ -105,5 +105,5 @@ else
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
 ?>
     </div>
-</body>
-</html>
+    </body>
+    </html>

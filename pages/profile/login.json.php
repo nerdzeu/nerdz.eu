@@ -3,7 +3,7 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\User;
 $user = new User();
-    
+
 if($user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ALREADY_LOGGED')));
 
@@ -14,13 +14,13 @@ if(!$username || !$pass)
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('INSERT_USER_PASS')));
 
 if(is_numeric($username))
-   $username = User::getUsername($username);
+    $username = User::getUsername($username);
 
 if(!$username)
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USER_OR_PASSWORD')));
 
 if($user->login($username, $pass, isset($_POST['setcookie']), isset($_POST['offline'])))
-     die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('LOGIN_OK')));
+    die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('LOGIN_OK')));
 
 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USER_OR_PASSWORD')));
 ?>

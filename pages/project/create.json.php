@@ -24,14 +24,14 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateproject.php';
 if(Db::NO_ERRNO != Db::query(
     [
         'INSERT INTO groups ("description","owner","name") VALUES (:description,:owner,:name)',
-         [
-             ':description' => $projectData['description'],
-             ':owner'       => $projectData['owner'],
-             ':name'        => $projectData['name']
-         ]
-     ],Db::FETCH_ERRNO)
- )
+            [
+                ':description' => $projectData['description'],
+                ':owner'       => $projectData['owner'],
+                ':name'        => $projectData['name']
+            ]
+        ],Db::FETCH_ERRNO)
+    )
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-        
+
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

@@ -23,7 +23,7 @@ if($code)
 }
 else
     $vals['error_n'] = $vals['errorcode_n'] = $vals['ip_n'] = $vals['useragent_n'] = $vals['referrer_n'] = 'Undefined Error';
-    
+
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/error');
 ?>

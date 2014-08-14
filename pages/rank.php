@@ -25,13 +25,13 @@ if(!apc_exists($path))
         $stupid = Stuff::stupid($n);
         $ss[$us] = $stupid['now'];
     }
-    
+
     asort($rank);
     $rank = array_reverse($rank,true);
 
     $i = 0;
     $ret = [];
-    
+
     foreach($rank as $username => $val)
     {
         $ret[$i]['position_n'] = $i+1;

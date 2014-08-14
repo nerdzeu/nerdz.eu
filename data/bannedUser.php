@@ -11,10 +11,10 @@
         </header>
         <br />
         <h1 style="text-align: center; color: #ffffff">
-            <?php 
-            echo $motivation;
-            ?>
-        </h1>
+<?php 
+echo $motivation;
+?>
+    </h1>
     </div>
-</body>
-</html>
+    </body>
+    </html>

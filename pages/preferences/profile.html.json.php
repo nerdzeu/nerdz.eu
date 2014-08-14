@@ -8,13 +8,13 @@ $user = new User();
 
 if(!$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
-    
+
 if(!$user->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
-    
+
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
-    
+
 $userData['interests']  = isset($_POST['interests'])  ? trim($_POST['interests'])               : '';
 $userData['biography']  = isset($_POST['biography'])  ? trim($_POST['biography'])               : '';
 $userData['quotes']     = isset($_POST['quotes'])     ? trim($_POST['quotes'])                  : '';
@@ -33,7 +33,7 @@ $flag = true;
 
 if(!empty($userData['website']) && !Utils::isValidURL($userData['website']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WEBSITE').': '.$user->lang('INVALID_URL')));
-    
+
 if(!empty($userData['userscript']) && !Utils::isValidURL($userData['userscript']))
     die(NERDZ\Core\Utils::jsonResponse('error','Userscript: '.$user->lang('INVALID_URL')));
 
@@ -42,20 +42,20 @@ if(!empty($userData['github']) && !preg_match('#^https?://(www\.)?github\.com/[a
 
 if(false == ($obj = $user->getObject($_SESSION['id'])))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-    
+
 if(!empty($userData['jabber']) && (false == filter_var($userData['jabber'],FILTER_VALIDATE_EMAIL)))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('JABBER').': '.$user->lang('MAIL_NOT_VALID')));
-    
+
 if(empty($userData['dateformat']))
     $userData['dateformat'] = 'd/m/Y, H:i';
 
 if(!empty($userData['facebook']) &&
-        ( !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/people/[^/]+/([a-z0-9_\-]+)#i',$userData['facebook']) &&
-          !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/profile\.php\?id\=([0-9]+)#i',$userData['facebook']) &&
-          !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/([a-z0-9_\-\.]+)#i',$userData['facebook'])
-        )
+    ( !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/people/[^/]+/([a-z0-9_\-]+)#i',$userData['facebook']) &&
+    !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/profile\.php\?id\=([0-9]+)#i',$userData['facebook']) &&
+    !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/([a-z0-9_\-\.]+)#i',$userData['facebook'])
+)
   )
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Facebook URL'));
+  die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Facebook URL'));
 
 
 if(!empty($userData['twitter']) && !preg_match('#^https?://twitter.com/([a-z0-9_]+)#i',$userData['twitter']))
@@ -63,27 +63,27 @@ if(!empty($userData['twitter']) && !preg_match('#^https?://twitter.com/([a-z0-9_
 
 if(!empty($userData['steam']) && strlen($userData['steam']) > 35)
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Steam'));
-    
+
 foreach($user as &$value)
     $value = htmlspecialchars($value,ENT_QUOTES,'UTF-8');
 
 $par = [
     ':interests'   => $userData['interests'],
-     ':biography'  => $userData['biography'],
-     ':quotes'     => $userData['quotes'],
-     ':website'    => $userData['website'],
-     ':dateformat' => $userData['dateformat'],
-     ':github'     => $userData['github'],
-     ':jabber'     => $userData['jabber'],
-     ':yahoo'      => $userData['yahoo'],
-     ':userscript' => $userData['userscript'],
-     ':facebook'   => $userData['facebook'],
-     ':twitter'    => $userData['twitter'],
-     ':steam'      => $userData['steam'],
-     ':skype'      => $userData['skype'],
-     ':counter'    => $obj->counter
+    ':biography'  => $userData['biography'],
+    ':quotes'     => $userData['quotes'],
+    ':website'    => $userData['website'],
+    ':dateformat' => $userData['dateformat'],
+    ':github'     => $userData['github'],
+    ':jabber'     => $userData['jabber'],
+    ':yahoo'      => $userData['yahoo'],
+    ':userscript' => $userData['userscript'],
+    ':facebook'   => $userData['facebook'],
+    ':twitter'    => $userData['twitter'],
+    ':steam'      => $userData['steam'],
+    ':skype'      => $userData['skype'],
+    ':counter'    => $obj->counter
 ];
-    
+
 if(
     Db::NO_ERRNO != Db::query(
         [
@@ -102,34 +102,34 @@ if(
             "steam"       = :steam,
             "skype"       = :skype
             WHERE "counter" = :counter',
-           $par
+            $par
         ],Db::FETCH_ERRNO)
- )
+    )
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
 if($closed)
 {
     if(!$user->hasClosedProfile($_SESSION['id']))
         if(Db::NO_ERRNO != Db::query(
-                    [
-                        'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter',
-                        [
-                            ':closed'  => 'true',
-                            ':counter' => $_SESSION['id']
-                        ]
-                    ],Db::FETCH_ERRNO)
-          )
-            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+            [
+                'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter',
+                [
+                    ':closed'  => 'true',
+                    ':counter' => $_SESSION['id']
+                ]
+            ],Db::FETCH_ERRNO)
+        )
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 }
 else {
     if(Db::NO_ERRNO != Db::query(
-                [
-                    'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter',
-                    [
-                        ':closed'  => 'false',
-                        ':counter' => $_SESSION['id']
-                    ]
-                ],Db::FETCH_ERRNO))
+        [
+            'UPDATE "profiles" SET "closed" = :closed WHERE "counter" = :counter',
+            [
+                ':closed'  => 'false',
+                ':counter' => $_SESSION['id']
+            ]
+        ],Db::FETCH_ERRNO))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 }
 
@@ -147,16 +147,16 @@ if(isset($_POST['whitelist']))
         if(is_numeric($uid) && $uid > 0)
         {
             if(Db::NO_ERRNO != Db::query(
-                    [
-                        'INSERT INTO "whitelist"("from","to")
-                        SELECT :id, :uid
-                        WHERE NOT EXISTS (SELECT 1 FROM "whitelist" WHERE "from" = :id AND "to" = :uid)',
+                [
+                    'INSERT INTO "whitelist"("from","to")
+                    SELECT :id, :uid
+                    WHERE NOT EXISTS (SELECT 1 FROM "whitelist" WHERE "from" = :id AND "to" = :uid)',
                         [
                             ':id'  => $_SESSION['id'],
                             ':uid' => $uid
                         ]
                     ],Db::FETCH_ERRNO))
-                die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'1'));
+                    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'1'));
             $newlist[] = $uid;
         }
         else
@@ -169,15 +169,15 @@ if(isset($_POST['whitelist']))
 
     foreach($toremove as $val)
         if(Db::NO_ERRNO != Db::query(
+            [
+                'DELETE FROM "whitelist" WHERE "from" = :id AND "to" = :val',
                 [
-                    'DELETE FROM "whitelist" WHERE "from" = :id AND "to" = :val',
-                    [
-                        ':id'  => $_SESSION['id'],
-                        ':val' => $val
-                    ]
-                ],Db::FETCH_ERRNO))
+                    ':id'  => $_SESSION['id'],
+                    ':val' => $val
+                ]
+            ],Db::FETCH_ERRNO))
             die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'4'));
 }
-        
+
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

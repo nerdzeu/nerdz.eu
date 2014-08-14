@@ -26,14 +26,14 @@ else
 
     $queries = [
         0 => 'SELECT COUNT(counter) AS cc FROM users',
-        1 => 'SELECT COUNT(hpid)    AS cc FROM posts',
-        2 => 'SELECT COUNT(hcid)    AS cc FROM comments',
-        3 => 'SELECT COUNT(counter) AS cc FROM groups',
-        4 => 'SELECT COUNT(hpid)    AS cc FROM groups_posts',
-        5 => 'SELECT COUNT(hcid)    AS cc FROM groups_comments',
-        6 => 'SELECT COUNT(counter) AS cc FROM users WHERE last > (NOW() - INTERVAL \'4 MINUTES\') AND viewonline IS TRUE',
-        7 => 'SELECT COUNT(counter) AS cc FROM users WHERE last > (NOW() - INTERVAL \'4 MINUTES\') AND viewonline IS FALSE',
-    ];
+            1 => 'SELECT COUNT(hpid)    AS cc FROM posts',
+            2 => 'SELECT COUNT(hcid)    AS cc FROM comments',
+            3 => 'SELECT COUNT(counter) AS cc FROM groups',
+            4 => 'SELECT COUNT(hpid)    AS cc FROM groups_posts',
+            5 => 'SELECT COUNT(hcid)    AS cc FROM groups_comments',
+            6 => 'SELECT COUNT(counter) AS cc FROM users WHERE last > (NOW() - INTERVAL \'4 MINUTES\') AND viewonline IS TRUE',
+            7 => 'SELECT COUNT(counter) AS cc FROM users WHERE last > (NOW() - INTERVAL \'4 MINUTES\') AND viewonline IS FALSE',
+        ];
     foreach($queries as $position => $query) {
         createArray($user, $ret, $query, $position);
     }

@@ -12,10 +12,10 @@ final class Banners
     public function __construct()
     {
         $this->Banners = [];
-        
+
         $cache = 'bannerarray'.Config\SITE_HOST;
         if(apc_exists($cache))
-           $this->Banners = unserialize(apc_fetch($cache));
+            $this->Banners = unserialize(apc_fetch($cache));
         else
         {
             $path = $_SERVER['DOCUMENT_ROOT'].'/data/banner.list';

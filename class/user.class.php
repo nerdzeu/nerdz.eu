@@ -127,12 +127,12 @@ class User
         if(!($o = Db::query(
             [
                 'SELECT "counter", "username" FROM "users" WHERE LOWER("username") = LOWER(:user) AND "password" = :pass',
-                 [
-                     ':user' => $username,
-                     ':pass' => $shaPass
-                 ]
-             ],Db::FETCH_OBJ))
-         )
+                    [
+                        ':user' => $username,
+                        ':pass' => $shaPass
+                    ]
+                ],Db::FETCH_OBJ))
+            )
             return false;
 
         if($cookie)
@@ -220,7 +220,7 @@ class User
                 // create a list like "en" => 0.8
                 $langs = array_combine($lang_parse[1], $lang_parse[4]);
 
-                 // set default to 1 for any without q factor
+                // set default to 1 for any without q factor
                 foreach ($langs as $lang => $val)
                     if (empty($val))
                         $langs[$lang] = 1;
@@ -386,25 +386,25 @@ class User
     {
         if(!$this->isLogged())
             return User::$registerArray;
-        
+
         $table = ($prj ? 'groups_' : '').'followers';
         return Db::query(
             [
                 'INSERT INTO "'.$table.'"("to","from")
-                 SELECT :id, :me
-                 WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "to" = :id AND "from" = :me)',
-                 [
-                     ':id' => $id,
-                     ':me' => $_SESSION['id']
-                 ]
-            ],Db::FETCH_ERRSTR);
+                SELECT :id, :me
+                WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "to" = :id AND "from" = :me)',
+                    [
+                        ':id' => $id,
+                        ':me' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_ERRSTR);
     }
 
     public function defollow($id, $prj = false)
     {
         if(!$this->isLogged())
             return User::$registerArray;
-        
+
         $table = ($prj ? 'groups_' : '').'followers';
         return Db::query(
             [
@@ -420,17 +420,17 @@ class User
         if(!($stmt = Db::query(
             [
                 'select "to" from (
-                 select "to" from followers where "from" = :id) as f
+                    select "to" from followers where "from" = :id) as f
                     inner join 
-                 (select "from" from followers where "to" = :id) as e
+                    (select "from" from followers where "to" = :id) as e
                     on f.to = e.from',
-                [
-                    ':id' => $id
-                ]
+[
+    ':id' => $id
+]
             ], Db::FETCH_STMT)))
             return [];
 
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function isOnline($id)
@@ -438,11 +438,11 @@ class User
         if(!($o = Db::query(
             [
                 'SELECT ("last" + INTERVAL \'300 SECONDS\') > NOW() AS online,"viewonline"
-                 FROM "users" WHERE "counter" = :id',
-                 [
-                     ':id' => $id
-                 ]
-             ],Db::FETCH_OBJ)))
+                FROM "users" WHERE "counter" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
             return false;
         return $o->viewonline && $o->online;
     }
@@ -452,9 +452,9 @@ class User
         if(!($o = Db::query(
             [
                 'SELECT "closed" FROM "profiles" WHERE "counter" = :id',
-                 [
-                     ':id' => $id
-                 ]
+                [
+                    ':id' => $id
+                ]
             ],Db::FETCH_OBJ)))
             return false;
         return $o->closed;
@@ -480,61 +480,61 @@ class User
             return false;
 
         return $stmt = Db::query(
-                    [
-                        'SELECT 1 FROM "blacklist" WHERE "from" = :from AND "to" = :other',
-                        [
-                            ':from'  => $_SESSION['id'],
-                            ':other' => $other
-                        ]
-                    ],Db::ROW_COUNT);
+            [
+                'SELECT 1 FROM "blacklist" WHERE "from" = :from AND "to" = :other',
+                [
+                    ':from'  => $_SESSION['id'],
+                    ':other' => $other
+                ]
+            ],Db::ROW_COUNT);
     }
 
     public function hasLocked($post, $project = false)
     {
         $table = ($project ? 'groups_' : '').'posts_no_notify';
         return (
-                $this->isLogged() &&
-                Db::query(
+            $this->isLogged() &&
+            Db::query(
+                [
+                    'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :id',
                     [
-                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "user" = :id',
-                        [
-                            ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['id']
-                        ]
-                    ],Db::ROW_COUNT) > 0
-               );
+                        ':hpid' => $post['hpid'],
+                        ':id'   => $_SESSION['id']
+                    ]
+                ],Db::ROW_COUNT) > 0
+            );
     }
 
     public function hasLurked($post, $project = false)
     {
         $table = ($project ? 'groups_' : '').'lurkers';
         return (
-                $this->isLogged() &&
-                Db::query(
+            $this->isLogged() &&
+            Db::query(
+                [
+                    'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
                     [
-                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
-                        [
-                            ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['id']
-                        ]
-                    ],Db::ROW_COUNT) > 0
-               );
+                        ':hpid' => $post['hpid'],
+                        ':id'   => $_SESSION['id']
+                    ]
+                ],Db::ROW_COUNT) > 0
+            );
     }
 
     public function hasBookmarked($post, $project = false)
     {
         $table = ($project ? 'groups_' : '').'bookmarks';
         return (
-                $this->isLogged() &&
-                Db::query(
+            $this->isLogged() &&
+            Db::query(
+                [
+                    'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
                     [
-                        'SELECT "hpid" FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" = :id',
-                        [
-                            ':hpid' => $post['hpid'],
-                            ':id'   => $_SESSION['id']
-                        ]
-                    ],Db::ROW_COUNT) > 0
-               );
+                        ':hpid' => $post['hpid'],
+                        ':id'   => $_SESSION['id']
+                    ]
+                ],Db::ROW_COUNT) > 0
+            );
     }
 
     public function getWhitelist($id)
@@ -588,11 +588,11 @@ class User
         if(!($id = Db::query(
             [
                 'SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',
-                [
-                    ':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8')
-                ]
-            ],Db::FETCH_OBJ)))
-            return 0;
+                    [
+                        ':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8')
+                    ]
+                ],Db::FETCH_OBJ)))
+                return 0;
 
         return $id->counter;
     }
@@ -714,7 +714,7 @@ class User
             return 'UTC';
 
         if($id ==  $_SESSION['id'])
-             $_SESSION['timezone'] = $o->timezone;
+            $_SESSION['timezone'] = $o->timezone;
 
         return $o->timezone;
     }
@@ -731,7 +731,7 @@ class User
             $id = $_SESSION['id'];
 
         if($id ==  $_SESSION['id'] && isset($_SESSION['dateformat']))
-             return $_SESSION['dateformat'];
+            return $_SESSION['dateformat'];
 
         if(!($o = Db::query(
             [
@@ -784,16 +784,16 @@ class User
         //If there are no cookie, no autologin
         if(!isset($_COOKIE['nerdz_u']) || !isset($_COOKIE['nerdz_id']) || !is_numeric($_COOKIE['nerdz_id']))
             return false;
-        
+
         if(($obj = Db::query(
-                    [
-                        'SELECT "username","password" FROM "users" WHERE "counter" = :id',
-                        [
-                            ':id' => $_COOKIE['nerdz_id']
-                        ]
-                    ],Db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u']
-          )
-            return $this->login($obj->username, $obj->password, true, false, true);
+            [
+                'SELECT "username","password" FROM "users" WHERE "counter" = :id',
+                [
+                    ':id' => $_COOKIE['nerdz_id']
+                ]
+            ],Db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u']
+        )
+        return $this->login($obj->username, $obj->password, true, false, true);
 
         return false;
     }

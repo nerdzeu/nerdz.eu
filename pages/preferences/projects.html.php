@@ -6,13 +6,13 @@ use NERDZ\Core\Db;
 
 $user = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
-    
+
 if(!$user->refererControl())
     die($user->lang('ERROR'));
-    
+
 if(!$user->isLogged())
     die($user->lang('REGISTER'));
-    
+
 $vals = [];
 $vals['tok_n'] = $user->getCsrfToken('edit');
 

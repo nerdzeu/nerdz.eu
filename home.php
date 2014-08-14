@@ -8,25 +8,25 @@ $user = new NERDZ\Core\User();
 $tplcfg = $user->getTemplateCfg();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 ?>
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
     <head>
-        <meta name="author" content="Paolo Galeone" />
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title><?=NERDZ\Core\Utils::getSiteName(); ?> - Homepage</title>
+    <meta name="author" content="Paolo Galeone" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title><?=NERDZ\Core\Utils::getSiteName(); ?> - Homepage</title>
 <?php
-    $headers = $tplcfg->getTemplateVars('home');
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
+$headers = $tplcfg->getTemplateVars('home');
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
-<?php ob_flush(); ?>
+    <?php ob_flush(); ?>
 <body>
     <div id="body">
 <?php
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/main.php';
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/main.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
 ?>
     </div>
-</body>
-</html>
+    </body>
+    </html>

@@ -9,21 +9,21 @@ $user = new User();
 
 if(!$user->isLogged())
     die($user->lang('REGISTER'));
- 
+
 if(!$user->refererControl())
     die($user->lang('ERROR'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
-    case 'get':
-        //fa tutto lei compresa la gestione di $_POST[hpid]
-        $hpid = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
-        $draw = true;
-        require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';
+case 'get':
+    //fa tutto lei compresa la gestione di $_POST[hpid]
+    $hpid = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
+    $draw = true;
+    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';
     break;
-    
-    default:
-        die($user->lang('ERROR'));
+
+default:
+    die($user->lang('ERROR'));
     break;
 }
 ?>

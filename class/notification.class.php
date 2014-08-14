@@ -15,7 +15,7 @@ class Notification
     const PROJECT_COMMENT = 'project_comments';
     const PROJECT_POST    = 'news_project';
     const PROJECT_FOLLOW  = 'new_project_follower';
-    
+
     public function __construct($group = true)
     {
         $this->user     = new User();
@@ -29,50 +29,50 @@ class Notification
             [
                 'SELECT COUNT(DISTINCT "from") as cc FROM ( 
                     SELECT "from" FROM "pms" WHERE "to" = :id AND "to_read" = TRUE
-                 ) AS tmp1',
-                [
-                    ':id' => $_SESSION['id']
-                ]
+                ) AS tmp1',
+[
+    ':id' => $_SESSION['id']
+]
             ],Db::FETCH_OBJ)))
             return 0;
-        return $o->cc;
+return $o->cc;
     }
-    
+
     public function count($what = null,$rag = null)
     {
         $c = -1;
         $this->rag = $rag;
-        
+
         if(empty($what))
             $what = 'all';
-        
+
         switch(trim(strtolower($what)))
         {
-            case 'users':
-                $c = $this->countUserComments();
+        case 'users':
+            $c = $this->countUserComments();
             break;
-            case 'posts':
-                $c = $this->countUserPosts();
+        case 'posts':
+            $c = $this->countUserPosts();
             break;
-            case 'projects':
-                $c = $this->countProjectComments();
+        case 'projects':
+            $c = $this->countProjectComments();
             break;
-            case 'projects_posts':
-                $c = $this->countProjectPosts();
+        case 'projects_posts':
+            $c = $this->countProjectPosts();
             break;
-            case 'follow':
-                $c = $this->countFollow();
+        case 'follow':
+            $c = $this->countFollow();
             break;
-            case 'projects_follow':
-                $c = $this->countUserComments();
+        case 'projects_follow':
+            $c = $this->countUserComments();
             break;
-            case 'all':
-                $c = $this->countUserComments()    +
-                     $this->countUserPosts()       +
-                     $this->countProjectComments() +
-                     $this->countProjectPosts()    +
-                     $this->countFollow()          +
-                     $this->countProjectFollow();
+        case 'all':
+            $c = $this->countUserComments()    +
+                $this->countUserPosts()       +
+                $this->countProjectComments() +
+                $this->countProjectPosts()    +
+                $this->countFollow()          +
+                $this->countProjectFollow();
             break;
         }
         return $c;
@@ -83,7 +83,7 @@ class Notification
         $q = $this->rag
             ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM "comments_notify" WHERE "to" = :id GROUP BY "hpid") AS c'
             : 'SELECT COUNT("to") AS cc FROM "comments_notify" WHERE "to" = :id';
-        
+
         if(!($o = Db::query(
             [
                 $q,
@@ -92,7 +92,7 @@ class Notification
                 ]
             ],Db::FETCH_OBJ)))
             return 0;
-        
+
         return $o->cc;
     }
 
@@ -101,12 +101,12 @@ class Notification
         if(!($o = Db::query(
             [
                 'SELECT COUNT("hpid") AS cc FROM "posts_notify" WHERE "to" = :id',
-                [
-                    ':id' => $_SESSION['id']
-                ]
-            ],Db::FETCH_OBJ)))
-            return 0;
-        
+                    [
+                        ':id' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_OBJ)))
+                return 0;
+
         return $o->cc;
     }
 
@@ -115,7 +115,7 @@ class Notification
         $q = $this->rag
             ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM groups_comments_notify WHERE "to" = :id GROUP BY "hpid") AS c'
             : 'SELECT COUNT("to") AS cc FROM "groups_comments_notify" WHERE "to" = :id';
-            
+
         if(!($o = Db::query(
             [
                 $q,
@@ -124,7 +124,7 @@ class Notification
                 ]
             ],Db::FETCH_OBJ)))
             return 0;
-        
+
         return $o->cc;
     }
 
@@ -133,11 +133,11 @@ class Notification
         if(!($o = Db::query(
             [
                 'SELECT COUNT("from") AS cc FROM "groups_notify" WHERE "to" = :id',
-                [
-                    ':id' => $_SESSION['id']
-                ]
-            ],Db::FETCH_OBJ)))
-            return 0;
+                    [
+                        ':id' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_OBJ)))
+                return 0;
         return $o->cc;
     }
 
@@ -146,12 +146,12 @@ class Notification
         if(!($o = Db::query(
             [
                 'SELECT COUNT("to") AS cc FROM "followers" WHERE "to" = :id AND "to_notify" = TRUE',
-                [
-                    ':id' => $_SESSION['id']
-                ]
-            ],Db::FETCH_OBJ)))
-            return 0;
-    
+                    [
+                        ':id' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_OBJ)))
+                return 0;
+
         return $o->cc;
     }
 
@@ -161,13 +161,13 @@ class Notification
             [
                 'SELECT COUNT("to") AS cc FROM "groups_followers" WHERE "to" IN (
                     SELECT "counter" FROM "groups" WHERE "owner" = :id
-                   ) AND "to_notify" = TRUE',
+                ) AND "to_notify" = TRUE',
                 [
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_OBJ)))
             return 0;
-    
+
         return $o->cc;
     }
 
@@ -176,30 +176,30 @@ class Notification
         $ret = [];
         if(empty($what))
             $what = 'all';
-            
+
         switch(trim(strtolower($what)))
         {
-            case 'users':
-                $ret = $this->getUserComments($del);
+        case 'users':
+            $ret = $this->getUserComments($del);
             break;
-            case 'posts':
-                $ret = $this->getUserPosts($del);
+        case 'posts':
+            $ret = $this->getUserPosts($del);
             break;
-            case 'projects':
-                $ret = $this->getProjectComments($del);
+        case 'projects':
+            $ret = $this->getProjectComments($del);
             break;
-            case 'projects_posts':
-                $ret = $this->getProjectPosts($del);
+        case 'projects_posts':
+            $ret = $this->getProjectPosts($del);
             break;
-            case 'follow':
-                $ret = $this->getUserFollowers($del);
+        case 'follow':
+            $ret = $this->getUserFollowers($del);
             break;
-            case 'projects_follow':
-                $ret = $this->getProjectFollowers($del);
+        case 'projects_follow':
+            $ret = $this->getProjectFollowers($del);
             break;
-            case 'all':
-                $ret = array_merge(
-                    $this->getUserComments($del),
+        case 'all':
+            $ret = array_merge(
+                $this->getUserComments($del),
                     $this->getUserPosts($del),
                     $this->getProjectComments($del),
                     $this->getProjectPosts($del),
@@ -276,7 +276,7 @@ class Notification
                     ':id' => $_SESSION['id']
                 ]
             ],Db::FETCH_STMT);
-        
+
         while(($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
             [
                 'SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',
@@ -424,7 +424,7 @@ class Notification
                     'post' => $p
                 ], static::PROJECT_POST);
         }
-        
+
         if($del) {
             Db::query(
                 [
@@ -434,7 +434,7 @@ class Notification
                     ]
                 ],Db::NO_RETURN);
         }
-        
+
         return $ret;
     }
 
@@ -445,17 +445,17 @@ class Notification
         $result = Db::query(
             [
                 'SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time FROM "followers" WHERE "to" = :id AND "to_notify" = TRUE',
-                [
-                    ':id' => $_SESSION['id']
-                ]
-            ],Db::FETCH_STMT);
+                    [
+                        ':id' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_STMT);
 
         while(($o = $result->fetch(PDO::FETCH_OBJ)))
             $ret[$i++] = $this->get(
                 [
                     'row' => $o
                 ], static::USER_FOLLOW);
-        
+
         if($del) {
             Db::query(
                 [
@@ -476,7 +476,7 @@ class Notification
             [
                 'SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time FROM "groups_followers" WHERE "to" IN (
                     SELECT "counter" FROM "groups" WHERE "owner" = :id
-                 ) AND "to_notify" = TRUE',
+                ) AND "to_notify" = TRUE',
                 [
                     ':id' => $_SESSION['id']
                 ]
@@ -487,16 +487,16 @@ class Notification
                 [
                     'row' => $o
                 ], static::PROJECT_FOLLOW);   
-        
+
         if($del) {
             Db::query(
                 [
                     'UPDATE "groups_followers" SET "to_notify" = FALSE WHERE "to" IN (
                         SELECT "counter" FROM "groups" WHERE "owner" = :id
-                     )',
-                    [
-                        ':id' => $_SESSION['id']
-                    ]
+                    )',
+[
+    ':id' => $_SESSION['id']
+]
                 ],Db::NO_RETURN);
         }
         return $ret;
@@ -516,8 +516,8 @@ class Notification
                     ]
                 ],Db::FETCH_OBJ))
             )
-                return [];
-        
+            return [];
+
             $ret = json_decode($o->notify_story,true);
             @apc_store($this->cachekey,serialize($ret),300);
             return $ret;
@@ -534,10 +534,10 @@ class Notification
                     'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
                         ':story' => json_encode($new,JSON_FORCE_OBJECT),
-                        ':id'    => $_SESSION['id']
-                     ]
-                ],Db::FETCH_ERRNO)
-            )
+                            ':id'    => $_SESSION['id']
+                        ]
+                    ],Db::FETCH_ERRNO)
+                )
                 return false;
         }
         else
@@ -559,10 +559,10 @@ class Notification
                     'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
                         ':story' => json_encode($old,JSON_FORCE_OBJECT),
-                        ':id'    => $_SESSION['id']
-                    ]
-                ],Db::FETCH_ERRNO)
-            )
+                            ':id'    => $_SESSION['id']
+                        ]
+                    ],Db::FETCH_ERRNO)
+                )
                 return false;
         }
         apc_delete($this->cachekey);

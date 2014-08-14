@@ -10,7 +10,7 @@ if(!$user->isLogged())
 
 if(!($obj = Db::query(array('SELECT * FROM "users" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ)))
     die($user->lang('ERROR'));
-    
+
 $vals = [];
 $vals['username_n'] = $obj->username;
 $vals['name_n'] = $obj->name;

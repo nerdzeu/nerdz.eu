@@ -50,7 +50,7 @@ if($tot>0)
                 ++$c;
             $myarray[$i]['birthday_b'] = date('d-m',strtotime($o->birth_date)) == date('d-m',time());
         }
-        
+
         function sortbyusername($a, $b)
         {
             $x = strtolower($a['username_n']);
@@ -59,15 +59,15 @@ if($tot>0)
                 return 0;
             return $x < $y ? -1 : 1;
         }
-        
+
         function sortbyonlinestatus($a,$b)
         {
             if(($a['online_b'] && $b['online_b']) || (!$a['online_b'] && !$b['online_b']))
                 return sortbyusername($a,$b);
-                
+
             return $b['online_b'] ? 1 : -1;
         }
-        
+
         usort($myarray,'sortbyonlinestatus');
     }
     $vals['followed_a'] = $myarray;
@@ -81,7 +81,7 @@ $vals['followedonlinetot_n'] = $c;
 
 if(!($r = Db::query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
     die($user->lang('ERROR'));
-    
+
 $vals['ownerof_a'] = [];
 $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))
@@ -93,7 +93,7 @@ while(($o = $r->fetch(PDO::FETCH_OBJ)))
 
 if(!($r = Db::query(array('SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."to" WHERE "from" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
     die($user->lang('ERROR'));
-    
+
 $vals['memberof_a'] = [];
 $i = 0;
 while(($o = $r->fetch(PDO::FETCH_OBJ)))

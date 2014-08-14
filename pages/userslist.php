@@ -6,29 +6,29 @@ $limit = isset($_GET['lim']) ? $user->limitControl($_GET['lim'], 20) : 20;
 
 switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 {
-    case 'name':
-        $orderby = 'name';
+case 'name':
+    $orderby = 'name';
     break;
 
-    case 'surname':
-        $orderby = 'surname';
+case 'surname':
+    $orderby = 'surname';
     break;
 
-    case 'username':
-        $orderby = 'username';
+case 'username':
+    $orderby = 'username';
     break;
 
-    case 'birthdate':
-        $orderby = 'birth_date';
+case 'birthdate':
+    $orderby = 'birth_date';
     break;
 
-    case 'online':
-        $orderby = 'last';
+case 'online':
+    $orderby = 'last';
     break;
 
-    case 'id':
-    default:
-        $orderby = 'counter';
+case 'id':
+default:
+    $orderby = 'counter';
     break;
 }
 
@@ -39,8 +39,8 @@ $vals = [];
 $q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
 
 $query = empty($q) ?
-        "SELECT name,surname,username, counter, birth_date, EXTRACT(EPOCH FROM last) AS last FROM users ORDER BY {$orderby} {$order} LIMIT {$limit}" :
-        array("SELECT name,surname,username, counter,birth_date,EXTRACT(EPOCH FROM last) AS last FROM users WHERE CAST({$orderby} AS TEXT) ILIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
+    "SELECT name,surname,username, counter, birth_date, EXTRACT(EPOCH FROM last) AS last FROM users ORDER BY {$orderby} {$order} LIMIT {$limit}" :
+    array("SELECT name,surname,username, counter,birth_date,EXTRACT(EPOCH FROM last) AS last FROM users WHERE CAST({$orderby} AS TEXT) ILIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",array("%{$q}%"));
 
 $vals['list_a'] = [];
 

@@ -71,7 +71,7 @@ final class TemplateConfig
                 foreach($ff as $id => &$val)
                     if(($id != $page) && ($id != 'default'))
                         unset($ret[$pid][$id]);
-                        
+
         if(count($ret)<3)
             if(isset($ret['js']))
                 $ret['css'] = [];
@@ -81,7 +81,7 @@ final class TemplateConfig
                 $ret['langs'] = [];
             else
                 $ret['js'] = $ret['css'] = $ret['langs'] = [];
-            
+
         //control for css/js file modification and substitution of %lang% with selected language
         foreach($ret as $id => &$arr)
             if($id != 'langs')
@@ -157,19 +157,19 @@ final class TemplateConfig
                 $path .= '?'.filemtime($userfile); //force cache refresh if file is changed
                 return;
             }
-            
+
             $userfiletime = $_SERVER['DOCUMENT_ROOT'].'/tmp/'.md5($path).$this->tpl_no.$id;
             $ext = "min.{$id}";
 
             $updateTime = 0;
 
             if(!file_exists ($userfiletime) || // intval won't get called if the file doesn't exist
-               intval(file_get_contents($userfiletime)) < ($updateTime = filemtime($userfile)))
+                intval(file_get_contents($userfiletime)) < ($updateTime = filemtime($userfile)))
             {
                 Minification::minifyTemplateFile ($userfiletime, $userfile, $userfile . $ext, $id);
                 $updateTime = time();
             }
-            
+
             $path.=$ext."?$updateTime"; // append min.ext to file path, and add ?time, to force cache refresh if file is changed
         }
 

@@ -14,12 +14,12 @@ $prj = isset($_GET['project']);
 
 switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 {
-    case 'preview':
-        $orderby = 'message';
+case 'preview':
+    $orderby = 'message';
     break;
 
-    default:
-        $orderby = 'time';
+default:
+    $orderby = 'time';
     break;
 }
 
@@ -35,15 +35,15 @@ if($prj)
     $orderby = $orderby == 'time' ? 'groups_bookmarks.time' : $orderby;
     $query = empty($q)
         ?
-         array(
-                'SELECT p.*, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time FROM "groups_bookmarks" INNER JOIN "groups_posts" p ON p.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? ORDER BY '.$orderby.' '.$order.' LIMIT '.$limit,
-                array($_SESSION['id'])
-             )
+        array(
+            'SELECT p.*, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time FROM "groups_bookmarks" INNER JOIN "groups_posts" p ON p.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? ORDER BY '.$orderby.' '.$order.' LIMIT '.$limit,
+            array($_SESSION['id'])
+        )
         :
         array(
-                "SELECT p.*, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time FROM groups_bookmarks INNER JOIN groups_posts p ON p.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? AND CAST({$orderby} AS TEXT) LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-                array($_SESSION['id'],"%{$q}%")
-             );
+            "SELECT p.*, EXTRACT(EPOCH FROM groups_bookmarks.time) AS time FROM groups_bookmarks INNER JOIN groups_posts p ON p.hpid = groups_bookmarks.hpid WHERE groups_bookmarks.from = ? AND CAST({$orderby} AS TEXT) LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+            array($_SESSION['id'],"%{$q}%")
+        );
 
     $linkMethod = 'projectLink';
     $nameMethod = 'getName';
@@ -54,15 +54,15 @@ else
     $orderby = $orderby == 'time' ? 'bookmarks.time' : $orderby;
     $query = empty($q)
         ?
-         array(
-                 "SELECT p.*, EXTRACT(EPOCH FROM bookmarks.time) AS time FROM bookmarks INNER JOIN posts p ON p.hpid = bookmarks.hpid WHERE bookmarks.from = ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-                 array($_SESSION['id'])
-             )
+        array(
+            "SELECT p.*, EXTRACT(EPOCH FROM bookmarks.time) AS time FROM bookmarks INNER JOIN posts p ON p.hpid = bookmarks.hpid WHERE bookmarks.from = ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+            array($_SESSION['id'])
+        )
         :
         array(
-                "SELECT p.*, EXTRACT(EPOCH FROM bookmarks.time) AS time FROM bookmarks INNER JOIN posts p ON p.hpid = bookmarks.hpid WHERE bookmarks.from = ? AND CAST({$orderby} AS TEXT) LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-                array($_SESSION['id'],"%{$q}%")
-             );
+            "SELECT p.*, EXTRACT(EPOCH FROM bookmarks.time) AS time FROM bookmarks INNER JOIN posts p ON p.hpid = bookmarks.hpid WHERE bookmarks.from = ? AND CAST({$orderby} AS TEXT) LIKE ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
+            array($_SESSION['id'],"%{$q}%")
+        );
 
     $linkMethod = 'userLink';
     $nameMethod = 'getUsername';

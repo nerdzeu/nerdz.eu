@@ -8,22 +8,22 @@ $user = new User();
 
 if(!$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
-    
+
 if(!$user->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
-    
+
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php'; //include $updatedPassword
 $params = [
-     ':timezone' => $userData['timezone'],
-     ':name'     => $userData['name'],
-     ':surname'  => $userData['surname'],
-     ':email'    => $userData['email'],
-     ':gender'   => $userData['gender'],
-     ':date'     => $birth['date'],
-     ':id'       => $_SESSION['id']
+    ':timezone' => $userData['timezone'],
+    ':name'     => $userData['name'],
+    ':surname'  => $userData['surname'],
+    ':email'    => $userData['email'],
+    ':gender'   => $userData['gender'],
+    ':date'     => $birth['date'],
+    ':id'       => $_SESSION['id']
 ];
 
 if($updatedPassword) {

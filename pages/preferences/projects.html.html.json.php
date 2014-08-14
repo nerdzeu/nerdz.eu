@@ -18,44 +18,44 @@ $id = $_POST['id'] = isset($_POST['id']) && is_numeric($_POST['id']) ? trim($_PO
 
 if($_SESSION['id'] != $project->getOwner($id) || !$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-    
+
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
-    case 'del':
-        $capt = new Captcha();
+case 'del':
+    $capt = new Captcha();
 
-        if(!($capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : '')))
-            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': '.$user->lang('CAPTCHA')));
+    if(!($capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : '')))
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': '.$user->lang('CAPTCHA')));
 
-        if(Db::NO_ERRNO != Db::query(
+    if(Db::NO_ERRNO != Db::query(
+        [
+            'DELETE FROM "groups" WHERE "counter" = :id',
             [
-                'DELETE FROM "groups" WHERE "counter" = :id',
-                [
-                    ':id' => $id
-                ]
-            ],Db::FETCH_ERRNO))
-            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+                ':id' => $id
+            ]
+        ],Db::FETCH_ERRNO))
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
     break;
-    
-    case 'update':
-        //validate fields
-        require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateproject.php';
 
-        // Members
-        $_POST['members'] = isset($_POST['members']) ? $_POST['members'] : '';
+case 'update':
+    //validate fields
+    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateproject.php';
 
-        $oldmem = $project->getMembers($id);
+    // Members
+    $_POST['members'] = isset($_POST['members']) ? $_POST['members'] : '';
 
-        $m = array_filter(array_unique(explode("\n",$_POST['members'])));
-        $newmem = [];
-        $userMap = [];
-        foreach($m as $v)
-        {
-            $username = trim($v);
-            $uid = $user->getId($username);
-            if(is_numeric($uid) && $uid > 0) {
-                $newmem[] = $uid;
-                $userMap[$uid] = $username;
+    $oldmem = $project->getMembers($id);
+
+    $m = array_filter(array_unique(explode("\n",$_POST['members'])));
+    $newmem = [];
+    $userMap = [];
+    foreach($m as $v)
+    {
+        $username = trim($v);
+        $uid = $user->getId($username);
+        if(is_numeric($uid) && $uid > 0) {
+            $newmem[] = $uid;
+            $userMap[$uid] = $username;
             }
             else
                 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Invalid member - '.$v));
@@ -65,8 +65,8 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $toadd = array_diff($newmem, $oldmem);
         foreach($toadd as $uid) {
             $ret = Db::query(
-                    [
-                        'INSERT INTO "groups_members"("to","from") VALUES(:project,:user)',
+                [
+                    'INSERT INTO "groups_members"("to","from") VALUES(:project,:user)',
                         [
                             ':project' => $id,
                             ':user'    => $uid
@@ -81,16 +81,16 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
         $toremove = array_diff($oldmem, $newmem);
         foreach($toremove as $val)
             if(Db::NO_ERRNO != Db::query(
+                [
+                    'DELETE FROM groups_members WHERE "to" = :project AND "from" = :user',
                     [
-                        'DELETE FROM groups_members WHERE "to" = :project AND "from" = :user',
-                        [
-                            ':project' => $id,
-                            ':user'    => $val
-                        ]
-                    ],Db::FETCH_ERRNO))
+                        ':project' => $id,
+                        ':user'    => $val
+                    ]
+                ],Db::FETCH_ERRNO))
 
                 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'4'));
-      
+
         if(Db::NO_ERRNO != Db::query(
             [
                 'UPDATE "groups" SET "description" = :desc, "website" = :website, "photo" = :photo,
@@ -107,10 +107,10 @@ switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
                 ]
             ],Db::FETCH_ERRNO)
         )
-            die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-    break;
-    default:
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+        break;
+default:
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
     break;
 }
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));

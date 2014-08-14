@@ -64,8 +64,8 @@ if($enter)
     if(!($o = Db::query(
         [
             'SELECT EXTRACT(EPOCH FROM "registration_time") AS registration_time from "users" WHERE "counter" = :id',
-            $ida
-        ],Db::FETCH_OBJ)))
+                $ida
+            ],Db::FETCH_OBJ)))
             die($user->lang('ERROR'));
 
     $vals['registrationtime_n'] = $user->getDateTime($o->registration_time);
@@ -88,9 +88,9 @@ if($enter)
         if(!($o = Db::query(
             [
                 'SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',
-                $ida
-            ],Db::FETCH_OBJ)
-        ))
+                    $ida
+                ],Db::FETCH_OBJ)
+            ))
             die($user->lang('ERROR'));
 
         $n = $o->cc;
@@ -98,9 +98,9 @@ if($enter)
         if(!($o = Db::query(
             [
                 'SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',
-                $ida
-            ],Db::FETCH_OBJ)
-        ))
+                    $ida
+                ],Db::FETCH_OBJ)
+            ))
             die($user->lang('ERROR'));
 
         $n += $o->cc;
@@ -121,9 +121,9 @@ if($enter)
     if(!($o = Db::query(
         [
             'SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',
-            $ida
-        ],Db::FETCH_OBJ)
-    ))
+                $ida
+            ],Db::FETCH_OBJ)
+        ))
         die($user->lang('ERROR'));
 
     $vals['lastvisit_n'] = $user->getDateTime($o->last);
@@ -190,7 +190,7 @@ if($enter)
             $ida
         ],Db::FETCH_STMT)
     ))
-        die($user->lang('ERROR'));
+    die($user->lang('ERROR'));
 
     $vals['ownerof_a'] = [];
     $i = 0;
@@ -207,7 +207,7 @@ if($enter)
             $ida
         ],Db::FETCH_STMT)
     ))
-        die($user->lang('ERROR'));
+    die($user->lang('ERROR'));
 
     $vals['memberof_a'] = [];
     $i = 0;
@@ -224,7 +224,7 @@ if($enter)
             $ida
         ],Db::FETCH_STMT)
     ))
-        die($user->lang('ERROR'));
+    die($user->lang('ERROR'));
 
     $vals['userof_a'] = [];
     $i = 0;
@@ -262,12 +262,12 @@ if($enter)
             [
                 'SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',
                 array_merge(
-                   [ ':pid' => $pid ],
-                   $ida
+                    [ ':pid' => $pid ],
+                    $ida
                 )
             ]
-               ,Db::FETCH_OBJ)
-           ))
+            ,Db::FETCH_OBJ)
+        ))
         {
             $user->getTPL()->assign('banners_a',$vals['banners_a']);
             $user->getTPL()->draw('profile/postnotfound');

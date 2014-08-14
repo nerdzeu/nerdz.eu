@@ -30,14 +30,14 @@ try {
 
     switch($_GET['action']) {
 
-        case 'conversations': 
-            $response = $ff->fetchConversations();
-            break;
+    case 'conversations': 
+        $response = $ff->fetchConversations();
+        break;
 
-        case 'messages': {
+    case 'messages': {
 
-            if (!isset($_GET['otherid']) || !is_numeric($_GET['otherid'])) {
-                throw new FFException(FFErrCode::NO_OTHER_ID);
+        if (!isset($_GET['otherid']) || !is_numeric($_GET['otherid'])) {
+            throw new FFException(FFErrCode::NO_OTHER_ID);
             }
 
             $start = 0;
@@ -58,18 +58,18 @@ try {
             $response = $ff->fetchMessages($_GET['otherid'], $start, $limit);
             break;
         }
-        
-        case 'getid': {
-            if(!isset($_GET['username'])) {
-                throw new FFException(FFErrCode::WRONG_REQUEST);
+
+case 'getid': {
+    if(!isset($_GET['username'])) {
+        throw new FFException(FFErrCode::WRONG_REQUEST);
             }
 
             $response = $ff->getIdFromUsername($_GET['username']);           
             break;
         }
-        
-        default:
-            throw new FFException(FFErrCode::INVALID_ACTION);
+
+default:
+    throw new FFException(FFErrCode::INVALID_ACTION);
     }
 } catch (FFException $e) {
     $response = bakeError($e);
@@ -78,4 +78,4 @@ try {
 jsonResponse($response);
 
 ?>
- 
+

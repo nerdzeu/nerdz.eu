@@ -14,7 +14,7 @@ if( empty($hpid) || !($o = $messages->getMessage($hpid, $prj)) )
     die($user->lang('ERROR'));
 
 $user->getTPL()->assign($messages->getPost($o, ['project' => $prj ]));
-    
+
 if(isset($draw))
     $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post');
 else

@@ -28,7 +28,7 @@ if ($uagdata['platform'] == 'Windows' && (float)$uagdata['version'] >= 10) {
 /* BEGIN FAVICON */
 if (User::isOnMobileHost()) { ?>
     <link rel="shortcut icon" sizes="196x196" href="<?php echo $static_domain;?>/static/images/droidico.png">
-<?php } else { ?>
+    <?php } else { ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $static_domain;?>/static/images/favicon.ico" />
 <?php
 } /* END FAVICON */
@@ -54,20 +54,20 @@ foreach($headers['js'] as $var) {
 }
 ?>
     <script type="application/javascript" src="<?php echo $static_domain;?>/static/js/api.php"></script>
-    <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        extensions: ["tex2jax.js"],
-        jax: ["input/TeX", "output/HTML-CSS"],
-        tex2jax: {
-          inlineMath: [ ['[m]','[/m]'] ],
-          displayMath: [ ['[math]','[/math]'] ],
-          processEscapes: true
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+    inlineMath: [ ['[m]','[/m]'] ],
+        displayMath: [ ['[math]','[/math]'] ],
+        processEscapes: true
         },
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
     </script>
     <script type="application/javascript" src="http<?php echo $is_ssl ? 's://c328740.ssl.cf1.rackcdn.com' : '://cdn.mathjax.org' ?>/mathjax/latest/MathJax.js"></script>
-    <script type="application/javascript">
+<script type="application/javascript">
 <?php
 if(!apc_exists('tracking_js'))
 {
@@ -78,9 +78,9 @@ echo unserialize(apc_fetch('tracking_js'));
 
 /* BEGIN SSL_VARIABLES (used by the JS API) */
 ?>
-        var Nssl = {
-            login:     <?=Config\LOGIN_SSL_ONLY ? 'true' : 'false'?>,
-            domain:    "<?=Config\HTTPS_DOMAIN?>"
+var Nssl = {
+login:     <?=Config\LOGIN_SSL_ONLY ? 'true' : 'false'?>,
+    domain:    "<?=Config\HTTPS_DOMAIN?>"
         };
 <?php
 /* END SSL_VARIABLES */
@@ -93,7 +93,7 @@ if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['sta
 } /* END NERDZ_VERSION */
 /* BEGIN NERDZ_STATIC_DATA */
 ?>
-        var Nstatic = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js']['staticData'] : [], JSON_HEX_TAG)?>;
+var Nstatic = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js']['staticData'] : [], JSON_HEX_TAG)?>;
 <?php
 /* END NERDZ_STATIC_DATA */
 /* BEGIN BLACKLIST_STUFF */

@@ -6,17 +6,17 @@ $limit = isset($_GET['lim']) ? $user->limitControl($_GET['lim'],20) : 20;
 
 switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 {
-    case 'name':
-        $orderby = 'name';
+case 'name':
+    $orderby = 'name';
     break;
 
-    case 'description':
-        $orderby = 'description';
+case 'description':
+    $orderby = 'description';
     break;
 
-    case 'id':
-    default:
-        $orderby = 'counter';
+case 'id':
+default:
+    $orderby = 'counter';
     break;
 }
 
@@ -32,7 +32,7 @@ else
 {
     $orderbycounter = $orderby == 'counter';
     $query = array("SELECT name,description, counter FROM groups WHERE CAST({$orderby} AS TEXT) ".($orderbycounter ? '=' : 'ILIKE')." ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-            $orderbycounter ? array($q) : array("%{$q}%"));
+        $orderbycounter ? array($q) : array("%{$q}%"));
 }
 
 $vals['list_a'] = [];

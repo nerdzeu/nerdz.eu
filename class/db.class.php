@@ -23,10 +23,10 @@ class Db
     {
         $this->dbh = new PDO(
             'pgsql:host='.Config\POSTGRESQL_HOST.
-            ';dbname='.Config\POSTGRESQL_DATA_NAME.
-            ';port='.Config\POSTGRESQL_PORT,
-            Config\POSTGRESQL_USER,
-            Config\POSTGRESQL_PASS
+';dbname='.Config\POSTGRESQL_DATA_NAME.
+';port='.Config\POSTGRESQL_PORT,
+Config\POSTGRESQL_USER,
+Config\POSTGRESQL_PASS
         );
 
         $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
@@ -65,7 +65,7 @@ class Db
     {
         if(empty(static::$instance))
             static::$instance = new Db();
-        
+
         return static::$instance;
     }
 
@@ -128,20 +128,20 @@ class Db
 
         switch($action)
         {
-            case static::FETCH_ERRNO:
-                return static::NO_ERRNO;
+        case static::FETCH_ERRNO:
+            return static::NO_ERRNO;
 
-            case static::FETCH_STMT:
-                return $stmt;
+        case static::FETCH_STMT:
+            return $stmt;
 
-            case static::FETCH_OBJ:
-                return ($all === false) ? $stmt->fetch(PDO::FETCH_OBJ) : $stmt->fetchAll(PDO::FETCH_OBJ);
-            
-            case static::ROW_COUNT:
-                return $stmt->rowCount();
+        case static::FETCH_OBJ:
+            return ($all === false) ? $stmt->fetch(PDO::FETCH_OBJ) : $stmt->fetchAll(PDO::FETCH_OBJ);
 
-            case static::NO_RETURN:
-                return true;
+        case static::ROW_COUNT:
+            return $stmt->rowCount();
+
+        case static::NO_RETURN:
+            return true;
         }
 
         return false;

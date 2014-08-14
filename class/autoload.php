@@ -21,7 +21,7 @@ class Autoloader
         // separators with directory separators in the relative class name, set to lower case,
         // append with .class.php
         $file = $base_dir . strtolower(str_replace('\\', '/', $relative_class)) . '.class.php';
-        
+
         // if the file is readable and exists, require_once it
         if (is_readable($file)) {
             require_once $file;

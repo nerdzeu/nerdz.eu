@@ -93,7 +93,7 @@ else
         $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.Config\SITE_HOST.'/' : $info->website;
 
         $vals['openproject_b'] = $project->isOpen($info->counter);
-        
+
         $banners = (new Banners())->getBanners();
         $vals['banners_a'] = [];
         shuffle($banners);
@@ -114,14 +114,14 @@ else
         if($vals['singlepost_b'])
         {
             if(!($post = Db::query(
-                        [
-                            'SELECT "hpid","from" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',
-                            [
-                                ':pid' => $pid,
-                                ':gid' => $gid
-                            ]
-                        ],Db::FETCH_OBJ))
-                        || $user->hasInBlacklist($post->from) // fake post not found
+                [
+                    'SELECT "hpid","from" FROM "groups_posts" WHERE "pid" = :pid AND "to" = :gid',
+                    [
+                        ':pid' => $pid,
+                        ':gid' => $gid
+                    ]
+                ],Db::FETCH_OBJ))
+                || $user->hasInBlacklist($post->from) // fake post not found
             )
             {
                 $user->getTPL()->assign('banners_a',$vals['banners_a']);

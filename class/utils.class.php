@@ -9,7 +9,7 @@ class Utils
 
         if (empty($cache['cache_list']))
             return false;
-        
+
         foreach($cache['cache_list'] as $entry)
         {
             if($entry['key'] != $key)
@@ -65,7 +65,7 @@ class Utils
     {
         $str = explode("\n",$str);
         foreach($str as &$val)
-           $val = trim(str_replace("\t",'',$val));
+            $val = trim(str_replace("\t",'',$val));
 
         return implode('',$str);
     }
@@ -94,7 +94,7 @@ class Utils
         $ret = is_array($status) ? $status : ['status' => $status, 'message' => $message];
         return json_encode($ret,JSON_FORCE_OBJECT);
     }
-   
+
     public static function jsonResponse($status, $message = '')
     {
         header('Content-type: application/json; charset=utf-8');
