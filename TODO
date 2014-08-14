@@ -1,8 +1,3 @@
-- Move all common snippets of code to /pages/common/
-
-- ^ implies remove redoundant code
-  => move common pages to class methdos (?)
-
 - Fix database again and again
 - Fix edit [ show edit form in default template for comments either ]
 
@@ -18,5 +13,3 @@
 - Fix default template to change post language (create post options menu)
 - Add "post on github" check in ISSUE_BOOARD
 - ^^^ edit javascript API to support new features
-
-- terminate to migrate pages/common/nonotify.json.php

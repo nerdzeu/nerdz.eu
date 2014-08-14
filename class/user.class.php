@@ -468,29 +468,67 @@ class User
         {
             $table .= 'comments_no_notify';
             return Db::query(
-                [
+                    [
                     'INSERT INTO "'.$table.'"("from", "to", "hpid")
                     SELECT :from, :to, :hpid
                     WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid)',
+                        [
+                            ':from' => $from,
+                            ':to'    => $_SESSION['id'],
+                            ':hpid' => $hpid
+                        ]
+                    ], Db::FETCH_ERRSTR);
+        }
+
+        $table .= 'posts_no_notify';
+        return Db::query(
+                [
+                   'INSERT INTO "'.$table.'"("user", "hpid")
+                    SELECT :user, :hpid
+                    WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid)',
                     [
-                        ':from' => $from,
-                        ':to'    => $_SESSION['id'],
+                        ':user' => $_SESSION['id'],
                         ':hpid' => $hpid
                     ]
                 ], Db::FETCH_ERRSTR);
-        }
-        $table .= 'posts_no_notify';
+    }
 
+    public function reNotify($options = [], $prj = false)
+    {
+        if(!$this->isLogged())
+            return User::$registerArray;
+
+        extract($options);
+        $hpid = !empty($hpid) ? $hpid : 0;
+        if($hpid == 0)
+             return User::$errorArray;
+
+        $from = isset($from) ? $from : 0;
+
+        $table = ($prj ? 'groups_' : '');
+        if($from)
+        {
+            $table .= 'comments_no_notify';
+            return Db::query(
+                    [
+                       'DELETE FROM "'.$table.'" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid',
+                        [
+                            ':from' => $from,
+                            ':to'   => $_SESSION['id'],
+                            ':hpid' => $hpid
+                        ]
+                    ],Db::FETCH_ERRSTR);
+        }
+
+        $table .= 'posts_no_notify';
         return Db::query(
-            [
-                'INSERT INTO "'.$table.'"("user", "hpid")
-                SELECT :user, :hpid
-                WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid)',
                 [
-                    ':user' => $_SESSION['id'],
-                    ':hpid' => $hpid
-                ]
-            ], Db::FETCH_ERRSTR);
+                    'DELETE FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid',
+                    [
+                        ':hpid' => $hpid,
+                        ':user' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_ERRSTR);
     }
 
     public function lurk($hpid, $prj = false)
