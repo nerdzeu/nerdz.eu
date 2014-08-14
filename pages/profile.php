@@ -128,10 +128,18 @@ if($enter)
 
     $vals['lastvisit_n'] = $user->getDateTime($o->last);
 
-    if(!$user->hasClosedProfile($info->counter))
-        $vals['canwrite_b'] = true;
-    else
-        $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['id'] || in_array($_SESSION['id'],$user->getWhitelist($info->counter)));
+    $vals['singlepost_b'] = isset($pid) && isset($id) && is_numeric($pid);
+
+    if(!$vals['singlepost_b'])
+    {
+        if(!$user->hasClosedProfile($info->counter))
+            $vals['canwrite_b'] = true;
+        else
+            $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['id'] || in_array($_SESSION['id'],$user->getWhitelist($info->counter)));
+    } else
+    {
+        $vals['canwrite_b'] = false; // don't show textarea when in a singlepost
+    }
 
     $vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
 
@@ -247,7 +255,6 @@ if($enter)
 
     $vals['totalfriends_n'] = isset($c) ? $c : 0;
     $vals['friends_a'] = $amigos;
-    $vals['singlepost_b'] = isset($pid) && isset($id) && is_numeric($pid);
 
     // single post like nessuno.1
     $found = false;

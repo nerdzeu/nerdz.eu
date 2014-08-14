@@ -105,9 +105,16 @@ else
         $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $info->owner);
 
         $vals['singlepost_b'] = isset($pid) && isset($gid) && is_numeric($pid);
-
-        $vals['canwrite_b'] = $vals['logged_b'] && ($project->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
-        $vals['canwritenews_b'] = $vals['logged_b'] && (in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
+        if(!$vals['singlepost_b'])
+        {
+            $vals['canwrite_b'] = $vals['logged_b'] && ($project->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
+            $vals['canwritenews_b'] = $vals['logged_b'] && (in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
+        }
+        else
+        {
+            // don't show textarea when in a singlepost
+            $vals['canwritenews_b'] = $vals['canwrite_b'] = false;
+        }
 
         // single post handling
         $found = false;
