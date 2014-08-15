@@ -5,7 +5,7 @@ use NERDZ\Core\Db;
 use NERDZ\Core\User;
 $user = new User();
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
 
 $from  = isset($_POST['from']) && is_numeric($_POST['from']) ? $_POST['from'] : 0; // 0 = full post

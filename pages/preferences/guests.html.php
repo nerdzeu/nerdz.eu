@@ -20,7 +20,7 @@ if(!($o = Db::query(
     die($user->lang('ERROR'));
 
 $vals['private_b'] = $o->private;
-$vals['tok_n']     = $user->getCsrfToken('edit');
+$vals['tok_n']     = NERDZ\Core\Security::getCsrfToken('edit');
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('preferences/guests');

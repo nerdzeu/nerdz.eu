@@ -7,10 +7,10 @@ $user = new NERDZ\Core\User();
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
-if(!$user->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
+if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
 
 $user->logout();

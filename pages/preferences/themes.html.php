@@ -12,7 +12,7 @@ if(!$user->isLogged())
     die($user->lang('REGISTER'));
 
 $vals = [];
-$vals['tok_n'] = $user->getCsrfToken('edit');
+$vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('edit');
 
 $vals['themes_a'] = [];
 $i = 0;

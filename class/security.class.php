@@ -36,6 +36,5 @@ class Security
 
         return "{$b} OFFSET {$a}";
     }
-
 }
 ?>

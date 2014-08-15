@@ -40,7 +40,7 @@ $i = 0;
 foreach($wl as &$val)
     $vals['whitelist_a'][$i++] = User::getUsername($val);
 
-$vals['tok_n'] = $user->getCsrfToken('edit');
+$vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('edit');
 $vals['dateformat_n'] = $obj->dateformat;
 
 $user->getTPL()->assign($vals);

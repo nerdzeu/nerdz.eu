@@ -10,7 +10,7 @@ $user = new User();
 if(!$user->isLogged())
     die($user->lang('REGISTER'));
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die($user->lang('ERROR'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')

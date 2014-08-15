@@ -6,10 +6,10 @@ use NERDZ\Core\Db;
 
 $user = new User();
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
 
-if(!$user->csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
+if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
 
 if(!$user->isLogged())

@@ -10,7 +10,7 @@ $user = new Messages();
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
 
 $url     = empty($_POST['url'])     ? false : trim($_POST['url']);

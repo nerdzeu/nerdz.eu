@@ -8,7 +8,7 @@ use \PDO;
 
 $messages = new Messages();
 
-$limit = isset($_GET['lim']) ? $user->limitControl($_GET['lim'], 20) : 20;
+$limit = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'], 20) : 20;
 
 $prj = isset($_GET['project']);
 

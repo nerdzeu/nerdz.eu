@@ -11,7 +11,7 @@ $prj = isset($prj);
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error','CSRF'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')

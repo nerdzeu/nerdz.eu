@@ -7,7 +7,7 @@ $comments = new NERDZ\Core\Comments;
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error','CSRF'));
 
 $prj = isset($prj);

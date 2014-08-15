@@ -10,7 +10,7 @@ $user = new User();
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
 
 if(empty($_POST['to']) || empty($_POST['message']))

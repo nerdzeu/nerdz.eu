@@ -16,7 +16,7 @@ if(!$user->isLogged())
 
 $id = $_POST['id'] = isset($_POST['id']) && is_numeric($_POST['id']) ? trim($_POST['id']) : false;
 
-if($_SESSION['id'] != $project->getOwner($id) || !$user->refererControl())
+if($_SESSION['id'] != $project->getOwner($id) || !NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')

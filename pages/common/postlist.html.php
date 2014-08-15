@@ -17,7 +17,7 @@ $logged   = $user->isLogged();
 
 // boards
 $id         = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
-$limit      = isset($_POST['limit']) ? $user->limitControl($_POST['limit'],10)     : 10;
+$limit      = isset($_POST['limit']) ? NERDZ\Core\Security::limitControl($_POST['limit'],10)     : 10;
 $beforeHpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : false;
 
 // homepage

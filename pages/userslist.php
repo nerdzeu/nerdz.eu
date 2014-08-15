@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 
-$limit = isset($_GET['lim']) ? $user->limitControl($_GET['lim'], 20) : 20;
+$limit = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'], 20) : 20;
 
 switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
 {

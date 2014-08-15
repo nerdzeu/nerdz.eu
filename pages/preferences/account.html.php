@@ -27,7 +27,7 @@ $vals['year_n'] = $date[0];
 $vals['month_n'] = $date[1];
 $vals['day_n'] = $date[2];
 $vals['timezones_a'] = DateTimeZone::listIdentifiers();
-$vals['tok_n'] = $user->getCsrfToken('edit');
+$vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('edit');
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('preferences/account');

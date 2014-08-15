@@ -7,14 +7,14 @@ use NERDZ\Core\Db;
 $user = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die($user->lang('ERROR'));
 
 if(!$user->isLogged())
     die($user->lang('REGISTER'));
 
 $vals = [];
-$vals['tok_n'] = $user->getCsrfToken('edit');
+$vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('edit');
 
 if(!($r = Db::query(array('SELECT "name","counter" FROM "groups" WHERE "owner" = ?',array($_SESSION['id'])),Db::FETCH_STMT)))
     $vals['myprojects_a'] = [];

@@ -5,7 +5,7 @@ use NERDZ\Core\User;
 use NERDZ\Core\Db;
 $user = new User();
 
-if(!$user->refererControl())
+if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
 
 $hpid  = isset($_POST['hpid'])  && is_numeric($_POST['hpid'])  ? $_POST['hpid']  : false;
