@@ -14,13 +14,13 @@ final class TemplateConfig
     private $tpl_no;
     private $lang;
     private $tpl;
-    private $Core;
+    private $user;
 
-    public function __construct($Core)
+    public function __construct($user)
     {
-        $this->Core = $Core;
-        $this->tpl = $this->Core->getTPL();
-        $this->lang = $this->Core->isLogged() ? $this->Core->getBoardLanguage($_SESSION['id']) : $this->Core->getBrowserLanguage();
+        $this->user = $user;
+        $this->tpl = $this->user->getTPL();
+        $this->lang = $this->user->getBoardLanguage();
         $this->tpl_no = $this->tpl->getActualTemplateNumber();
     }
 
@@ -130,7 +130,7 @@ final class TemplateConfig
                     foreach ($ret[$id]['staticData']['lang'] as $key => $entry)
                     {
                         if (!is_numeric ($key)) continue;
-                        $ret[$id]['staticData']['lang'][$entry] = $this->Core->lang ($entry);
+                        $ret[$id]['staticData']['lang'][$entry] = $this->user->lang ($entry);
                         unset ($ret[$id]['staticData']['lang'][$key]);
                     }
                 }

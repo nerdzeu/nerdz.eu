@@ -397,7 +397,7 @@ class Messages
             $followed = array_merge($this->user->getFollowing($_SESSION['id']), (array)$_SESSION['id']);
             $glue    .= ' AND p."from" IN ('.implode(',',$followed).') ';
         } elseif($lang && !$anyone) {
-            $languages = array_merge($this->user->getAvailableLanguages(), (array)'*');
+            $languages = array_merge(System::getAvailableLanguages(), (array)'*');
             if(!in_array($lang,$languages))
                 $lang = $this->user->isLogged() ? $this->user->getLanguage($_SESSION['id']) : 'en';
 

@@ -5,6 +5,7 @@ if(!$user->isLogged())
 use NERDZ\Core\Banners;
 use NERDZ\Core\Db;
 use NERDZ\Core\User;
+use NERDZ\Core\System;
 $vals = [];
 
 $banners = (new Banners())->getBanners();
@@ -15,7 +16,7 @@ foreach($banners as $ban)
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-$longlangs  = $user->getAvailableLanguages(1);
+$longlangs  = System::getAvailableLanguages(1);
 
 $vals['langs_a'] = [];
 $i = 0;

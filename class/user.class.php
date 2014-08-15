@@ -26,7 +26,7 @@ class User
             die(header('Location: http://'.Config\MOBILE_HOST.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')));
 
         $this->autoLogin(); //set template value on autologin (according to mobile or destktop version)
-        $this->lang = $this->isLogged() ? $this->getBoardLanguage($_SESSION['id']) : $this->getBrowserLanguage();
+        $this->lang = $this->getBoardLanguage();
 
         $this->tpl = new RainTPL();
         $this->tpl->configure('tpl_dir',"{$_SERVER['DOCUMENT_ROOT']}/tpl/{$_SESSION['template']}/");
@@ -82,28 +82,6 @@ class User
         return isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == Config\MOBILE_HOST;
     }
 
-    public function getSafeCookieDomainName()
-    {
-        // use a simple algorithm to determine the common parts between
-        // Config\MOBILE_HOST and Config\SITE_HOST.
-        $mobile_host = explode ('.', Config\MOBILE_HOST);
-        $site_host   = explode ('.', Config\SITE_HOST);
-        $chost       = [];
-        for ($i = 0; $i < min (count ($site_host), count ($mobile_host)); $i++)
-        {
-            $sh_k = count ($site_host)   - $i;
-            $mh_k = count ($mobile_host) - $i;
-            if (isset ($site_host[--$sh_k]) && isset ($mobile_host[--$mh_k]) && $site_host[$sh_k] == $mobile_host[$mh_k])
-                array_unshift ($chost, $site_host[$sh_k]);
-            else
-                break;
-        }
-        // accept at least a domain with one dot (x.y), because
-        // chrome does not accept point-less (heh) domains for cookie usage.
-        // this also handles localhost.
-        return count ($chost) > 1 ? implode ('.', $chost) : null;
-    }
-
     public function getTPL()
     {
         return $this->tpl;
@@ -113,7 +91,7 @@ class User
     {
         if($this->isLogged())
         {
-            $chost = $this->getSafeCookieDomainName();
+            $chost = System::getSafeCookieDomainName();
             if(isset($_COOKIE['nerdz_id']))
                 setcookie('nerdz_id', $_COOKIE['nerdz_id'], time()-3600, '/', $chost, false, true);
             if(isset($_COOKIE['nerdz_u']))
@@ -139,7 +117,7 @@ class User
         if($cookie)
         {
             $exp_time = time() + 2592000;
-            $chost    = $this->getSafeCookieDomainName();
+            $chost    = System::getSafeCookieDomainName();
             setcookie ('nerdz_id', $o->counter , $exp_time, '/', $chost, false, true);
             setcookie ('nerdz_u',  md5($shaPass), $exp_time, '/', $chost, false, true);
         }
@@ -166,85 +144,6 @@ class User
             ],Db::FETCH_OBJ)))
             return false;
         return $o->motivation;
-    }
-
-    public function getAvailableLanguages($long = null)
-    {
-        //qui non ci imteressiamo se il file delle lingue è stato modificato, in tal caso si attende che scada la cache affinché si aggiorni, non si forza
-        $cache = 'AvailableLanguages'.Config\SITE_HOST;
-        if(apc_exists($cache))
-        {
-            $ret = unserialize(apc_fetch($cache));
-            if($long)
-                return $ret;
-            else
-            {
-                $short = [];
-                foreach($ret as $id => $val)
-                    $short[] = $id;
-                sort($short);
-                return $short;
-            }
-        }
-        else
-        {
-            //on error return en
-            if(!($fp = fopen($_SERVER['DOCUMENT_ROOT'].'/data/languages.csv','r')))
-                return $long ? 'English' : 'en';
-
-            $a = $b = [];
-            while(false !== ($row = fgetcsv($fp)))
-            {
-                $a[] = $row[0]; //encoding sarebbe inutile, sono due caratteri e sono ascii
-                $b[$row[0]] = htmlspecialchars($row[1],ENT_QUOTES,'UTF-8');
-            }
-            fclose($fp);
-            ksort($b);
-            @apc_store($cache,serialize($b),3600);
-
-            return $long ? $b : $a;
-        }
-    }
-
-    private function getAcceptLanguagePreference()
-    {
-        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-        {
-            $langs = [];
-            $lang_parse = [];
-
-            // break up string into pieces (languages and q factors)
-            preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
-
-            if (!empty($lang_parse[1]))
-            {
-                // create a list like "en" => 0.8
-                $langs = array_combine($lang_parse[1], $lang_parse[4]);
-
-                // set default to 1 for any without q factor
-                foreach ($langs as $lang => $val)
-                    if (empty($val))
-                        $langs[$lang] = 1;
-             }
-            // sort list based on value
-            arsort($langs, SORT_NUMERIC);
-            return $langs;
-        }
-
-        return ['en' => 1]; //english on error/default
-    }
-
-    public function getBrowserLanguage()
-    {
-        $langpref = $this->getAcceptLanguagePreference();
-        $avail    = $this->getAvailableLanguages();
-
-        foreach($langpref as $lang => $val)
-            foreach($avail as $av)
-                if(strpos($lang,$av) !== false)
-                    return $av;
-
-        return 'en'; // should never reach this line
     }
 
     public function setBoardLanguage($lang)
@@ -277,9 +176,14 @@ class User
             ],Db::FETCH_ERRNO) == Db::NO_ERRNO;
     }
 
-    public function getBoardLanguage($id)
+    public function getBoardLanguage($id = null)
     {
-        if($this->isLogged() && $id == $_SESSION['id'])
+        $logged = $this->isLogged();
+
+        if(!$logged && !$id)
+            return System::getBrowserLanguage();
+
+        if($logged && ($id == $_SESSION['id'] || !$id))
         {
             if(empty($_SESSION['board_lang']))
             {
@@ -290,13 +194,12 @@ class User
                             ':id' => $id
                         ]
                     ],Db::FETCH_OBJ)))
-                    return false;
+                    return System::getBrowserLanguage();
 
                 if(empty($o->board_lang))
                 {
-                    $_SESSION['board_lang'] = $this->getBrowserLanguage();
-                    if(!$this->setBoardLanguage($_SESSION['board_lang']))
-                        return false;
+                    $_SESSION['board_lang'] = System::getBrowserLanguage();
+                    $this->setBoardLanguage($_SESSION['board_lang']);
                 }
                 else
                     $_SESSION['board_lang'] = $o->board_lang;
@@ -311,14 +214,19 @@ class User
                     ':id' => $id
                 ]
             ],Db::FETCH_OBJ)))
-            return false;
+            return System::getBrowserLanguage();
 
-        return empty($o->board_lang) ? $this->getBrowserLanguage() : $o->board_lang;
+        return empty($o->board_lang) ? System::getBrowserLanguage() : $o->board_lang;
     }
 
-    public function getLanguage($id)
+    public function getLanguage($id = null)
     {
-        if($this->isLogged() && $id == $_SESSION['id'])
+        $logged = $this->isLogged();
+
+        if(!$id && !$logged)
+            return System::getBrowserLanguage();
+
+        if($logged && ($id == $_SESSION['id'] || !$id))
         {
             if(empty($_SESSION['lang']))
             {
@@ -329,13 +237,12 @@ class User
                             ':id' => $id
                         ]
                     ],Db::FETCH_OBJ)))
-                    return false;
+                    return System::getBrowserLanguage();
 
                 if(empty($o->lang))
                 {
-                    $_SESSION['lang'] = $this->getBrowserLanguage();
-                    if(!$this->setLanguage($_SESSION['lang']))
-                        return false;
+                    $_SESSION['lang'] = System::getBrowserLanguage();
+                    $this->setLanguage($_SESSION['lang']);
                 }
                 else
                     $_SESSION['lang'] = $o->lang;
@@ -350,9 +257,9 @@ class User
                     ':id' => $id
                 ]
             ],Db::FETCH_OBJ)))
-            return false;
+            return System::getBrowserLanguage();
 
-        return empty($o->lang) ? $this->getBrowserLanguage() : $o->lang;
+        return empty($o->lang) ? System::getBrowserLanguage() : $o->lang;
     }
 
     public function getFollowing($id)
@@ -744,20 +651,6 @@ class User
                 return 0;
 
         return $id->counter;
-    }
-
-    public function getAvailableTemplates()
-    {
-        $root = $_SERVER['DOCUMENT_ROOT'].'/tpl/';
-        $templates = array_diff(scandir($root), [ '.','..','index.html' ]);
-        $ret = [];
-        $i = 0;
-        foreach($templates as $val) {
-            $ret[$i]['number'] = $val;
-            $ret[$i]['name'] = file_get_contents($root.$val.'/NAME');
-            ++$i;
-        }
-        return $ret;
     }
 
     public function getMobileTemplate($id = null)

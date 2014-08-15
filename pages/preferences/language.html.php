@@ -1,7 +1,10 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$user = new NERDZ\Core\User();
+use NERDZ\Core\User;
+use NERDZ\Core\System;
+
+$user = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 if(!$user->isLogged())
@@ -9,7 +12,7 @@ if(!$user->isLogged())
 
 $vals = [];
 $vals['tok_n'] = $user->getCsrfToken('edit');
-$longlangs  = $user->getAvailableLanguages(1);
+$longlangs  = System::getAvailableLanguages(1);
 
 $vals['langs_a'] = [];
 $i = 0;

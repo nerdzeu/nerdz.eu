@@ -1,8 +1,11 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+use NERDZ\Core\User;
+use NERDZ\Core\System;
 
-$user = new NERDZ\Core\User();
+$user = new User();
+
 if(!$user->refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
 
@@ -14,7 +17,7 @@ if(!$user->isLogged())
 
 $lang = isset($_POST['lang']) && is_string($_POST['lang']) ? trim($_POST['lang']) : '';
 
-if(!in_array($lang,$user->getAvailableLanguages()))
+if(!in_array($lang,System::getAvailableLanguages()))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')

@@ -1,5 +1,5 @@
 <?php
-$lang = $user->isLogged() ? $user->getLanguage($_SESSION['id']) : $user->getBrowserLanguage();
+$lang = $user->getLanguage();
 
 $vals = [];
 $vals['informations_n'] = file_get_contents("{$_SERVER['DOCUMENT_ROOT']}/tpl/{$user->getTemplate()}/langs/{$lang}/informations.html");

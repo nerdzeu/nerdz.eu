@@ -3,6 +3,7 @@ ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\User;
 use NERDZ\Core\Config;
+use NERDZ\Core\System;
 
 $user = new User();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
@@ -15,7 +16,7 @@ $vals['tok_n'] = $user->getCsrfToken('edit');
 
 $vals['themes_a'] = [];
 $i = 0;
-$templates = $user->getAvailableTemplates();
+$templates = System::getAvailableTemplates();
 
 foreach($templates as $val)
 {

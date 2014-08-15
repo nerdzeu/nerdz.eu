@@ -30,7 +30,7 @@ $ret = Db::query(
                 ':gender'          => $userData['gender'],
                 ':timezone'        => $userData['timezone'],
                 ':date'            => $birth['date'],
-                ':lang'            => $user->getBrowserLanguage(),
+                ':lang'            => $user->getLanguage(),
               ':remote_addr'     => $_SERVER['REMOTE_ADDR'],
               ':http_user_agent' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8')
           ]
