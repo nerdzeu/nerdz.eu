@@ -200,6 +200,7 @@
     "URL" : "URL",
     "USER" : "Korisnik",
     "USERNAME" : "Korisničko ime",
+    "USERNAME_CANT_BE_EMAIL" : "Korisničko ime ne može biti, a e-mail adresa",
     "USERNAME_EXISTS" : "Korisničko ime već postoji",
     "USERNAME_LONG" : "Korisničko ime predugo",
     "USERNAME_NUMBER" : "Korisničko ime se ne može broj",

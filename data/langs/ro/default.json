@@ -200,6 +200,7 @@
     "URL" : "URL",
     "USER" : "Utilizator",
     "USERNAME" : "Numele de utilizator",
+    "USERNAME_CANT_BE_EMAIL" : "Numele de utilizator nu poate fi şi adresa de e-mail",
     "USERNAME_EXISTS" : "Nume de utilizator existent",
     "USERNAME_LONG" : "Numele de utilizator prea lung",
     "USERNAME_NUMBER" : "Numele de Utilizator nu poate fi un numar",

@@ -201,6 +201,7 @@
     "URL" : "URL",
     "USER" : "User",
     "USERNAME" : "Username",
+    "USERNAME_CANT_BE_EMAIL" : "The username can't be and email address",
     "USERNAME_EXISTS" : "This username has already been choosen",
     "USERNAME_LONG" : "Username too long",
     "USERNAME_NUMBER" : "The username can't be a number",

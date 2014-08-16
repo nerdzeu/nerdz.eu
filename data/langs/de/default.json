@@ -200,6 +200,7 @@
     "URL" : "URL",
     "USER" : "Benutzer",
     "USERNAME" : "Benutzername",
+    "USERNAME_CANT_BE_EMAIL" : "Der Benutzername kann nicht sein und e-Mail-Adresse",
     "USERNAME_EXISTS" : "Benutzername ist schon Registriert.",
     "USERNAME_LONG" : "Benutzername zu lang",
     "USERNAME_NUMBER" : "Der Benutzername kann keine Nummer sein",

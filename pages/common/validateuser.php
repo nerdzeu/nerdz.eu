@@ -129,6 +129,9 @@ if(!$user->isLogged()) //username field
 
     if(is_numeric(strpos($userData['username'],'%')))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': %'));
+
+    if(filter_var($userData['username'], FILTER_VALIDATE_EMAIL))
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('USERNAME_CANT_BE_EMAIL')));
 }
 
 if(mb_strlen($userData['password'],'UTF-8') < Config\MIN_LENGTH_PASS)
