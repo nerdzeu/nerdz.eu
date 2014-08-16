@@ -1,5 +1,6 @@
 - Fix database again and again
 - Fix edit [ show edit form in default template for comments either ]
+^ add edit method to comment class
 
 - Improve search support (search onlyfollowed, lang, ecc.)
 - Create search page

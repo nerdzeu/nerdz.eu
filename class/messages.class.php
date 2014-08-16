@@ -363,15 +363,15 @@ class Messages
 
         if(!($o = Db::query(
             [
-                'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" = :hpid',
+                'SELECT message FROM "'.$table.'" p WHERE p."hpid" = :hpid',
                     [
                         ':hpid' => $hpid
                     ]
                 ],Db::FETCH_OBJ))
             )
-            return new \StdClass();
+            return '';
 
-        return $o;
+        return $o->message;
     }
 
     public function getPosts($id, $options = [])
@@ -793,6 +793,21 @@ class Messages
 
         if(is_object($dbPost))
             $dbPost = (array) $dbPost;
+        else if(is_numeric($dbPost)) //hpid
+        {
+            $table = ($project ? 'groups_' : '').'posts';
+
+            if(!($o = Db::query(
+                [
+                    'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" = :hpid',
+                        [
+                            ':hpid' => $dbPost
+                        ]
+                    ],Db::FETCH_OBJ))
+                )
+                return new \StdClass();
+            $dbPost = (array) $o;
+        }
 
         $logged = $this->user->isLogged();
 

@@ -10,10 +10,10 @@ use NERDZ\Core\Messages;
 $prj = isset($prj);
 $messages = new Messages();
 
-if( empty($hpid) || !($o = $messages->getMessage($hpid, $prj)) )
+if( empty($hpid) )
     die($user->lang('ERROR'));
 
-$user->getTPL()->assign($messages->getPost($o, ['project' => $prj ]));
+$user->getTPL()->assign($messages->getPost($hpid, ['project' => $prj ]));
 
 if(isset($draw))
     $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post');

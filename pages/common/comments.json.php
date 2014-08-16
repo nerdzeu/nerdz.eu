@@ -21,7 +21,6 @@ case 'add':
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
     die(NERDZ\Core\Utils::jsonDbResponse($comments->add($hpid,$_POST['message'], $prj)));
-    break;
 
 case 'del':
     $hcid = isset($_POST['hcid']) && is_numeric($_POST['hcid']) ? $_POST['hcid'] : false;
@@ -31,10 +30,10 @@ case 'del':
     break;
 
 case 'get':
-    if(empty($_POST['hcid']) || !($o = $comments->getMessage($_POST['hcid'], $prj)))
+    if(empty($_POST['hcid']) || !($message = $comments->getMessage($_POST['hcid'], $prj)))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-    die($o->message);
-    break;
+
+    die(NERDZ\Core\Utils::jsonResponse('ok', $message));
 
 case 'edit':
     if(empty($_POST['hcid']) || empty($_POST['message']) || !$comments->editComment($_POST['hcid'], $_POST['message'], $prj))

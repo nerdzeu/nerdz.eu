@@ -52,12 +52,10 @@ case 'delconfirm':
 
 case 'get':
 
-    if(
-        empty($_POST['hpid']) ||
-        !($o = $messages->getMessage($_POST['hpid'], $prj))
-    )
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'2'));
-    die(NERDZ\Core\Utils::jsonResponse('ok', $o->message));
+    if( empty($_POST['hpid']) || !($message = $messages->getMessage($_POST['hpid'], $prj)) )
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'2'));
+
+    die(NERDZ\Core\Utils::jsonResponse('ok', $message));
     break;
 
 case 'edit':

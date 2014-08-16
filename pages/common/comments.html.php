@@ -48,7 +48,7 @@ case 'show':
     $vals['needeverycommentbtn_b'] = $doShowForm && $vals['commentcount_n'] > 20; 
 
     $user->getTPL()->assign($vals);
-    $user->getTPL()->draw('project/comments');
+    $user->getTPL()->draw(($prj ? 'project' : 'profile'). '/comments');
     break;
 default:
     die($user->lang('ERROR'));
