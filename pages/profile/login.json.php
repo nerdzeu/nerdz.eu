@@ -13,7 +13,7 @@ $pass     = isset($_POST['password']) ? $_POST['password'] : false;
 if(!$username || !$pass)
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('INSERT_USER_PASS')));
 
-if(is_numeric($username))
+if(is_numeric($username) || filter_var($username, FILTER_VALIDATE_EMAIL))
     $username = User::getUsername($username);
 
 if(!$username)

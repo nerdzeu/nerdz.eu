@@ -941,9 +941,11 @@ class User
         if(isset($_SESSION['logged']) && $_SESSION['logged'] && (($id===null) || $id == $_SESSION['id']))
             return $_SESSION['username'];
 
+        $field = is_numeric($id) ? 'counter' : 'email';
+
         if(!($o = Db::query(
             [
-                'SELECT "username" FROM "users" WHERE "counter" = :id',
+                'SELECT "username" FROM "users" WHERE "'.$field.'" = :id',
                 [
                     ':id' => $id
                 ]
