@@ -14,3 +14,5 @@
 - Fix default template to change post language (create post options menu)
 - Add "post on github" check in ISSUE_BOOARD
 - ^^^ edit javascript API to support new features
+
+- add (can|has)* to comments

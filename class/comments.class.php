@@ -11,12 +11,28 @@ class Comments extends Messages
         parent::__construct();
     }
 
+    public function canEdit($comment, $project = false)
+    {
+        return $o['editable'] && $this->user->isLogged() && $comment['from'] == $_SESSION['id'];
+    }
+
+    public function canRemove($comment, $project = false)
+    {
+        if(!$this->user->isLogged())
+            return false;
+
+        if($project)
+            $canremoveusers = $this->project->getMembersAndOwnerFromHpid($hpid);
+
+        $canremoveusers = $project ? array_merge($canremoveusers, (array)$comment['from']) : [ $comment['from'], $comment['to'] ];
+
+        return in_array($_SESSION['id'],$canremoveusers);
+    }
+
     private function getArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
     {
         $i = 0;
         $ret = [];
-        if($prj)
-            $canremoveusers = $this->project->getMembersAndOwnerFromHpid($hpid);
 
         while(($o = $res->fetch(PDO::FETCH_OBJ)))
         {
@@ -37,7 +53,7 @@ class Comments extends Messages
             $ret[$i]['thumbs_n'] = $this->getThumbs($o->hcid, $prj);
             $ret[$i]['uthumb_n'] = $this->getUserThumb($o->hcid, $prj);
             $ret[$i]['revisions_n'] = $this->getRevisionsNumber($o->hcid, $prj);
-            $ret[$i]['caneditcomment_b'] = $o->editable && $this->user->isLogged() && $o->from == $_SESSION['id'];
+            $ret[$i]['caneditcomment_b'] = $this->canEdit((array)$o);
 
             if($luck)
             {
@@ -58,9 +74,7 @@ class Comments extends Messages
             else
                 $ret[$i]['canshowlock_b'] = $ret[$i]['lock_b'] = false;
 
-
-            $canremoveusers = $prj ? array_merge($canremoveusers, (array)$o->from) : array($o->from,$o->to);
-            $ret[$i]['canremove_b'] = in_array($_SESSION['id'],$canremoveusers);
+            $ret[$i]['canremove_b'] = $this->canRemove((array)$o, $prj);
 
             ++$i;
         }
