@@ -46,9 +46,10 @@ case 'show':
     else if (isset ($_POST['hcid']) && is_numeric ($_POST['hcid']))
         $_list = $comments->getCommentsAfterHcid ($hpid, $_POST['hcid'], $prj);
     else
-        die();
+        $_list = $comments->getAll($hpid, $prj);
 
     $doShowForm = !isset ($_POST['hcid']) && (!isset ($_POST['start']) || $_POST['start'] == 0) && !isset ($_POST['forceNoForm']);
+
     if (empty ($_list) && !$doShowForm)
         die();
 

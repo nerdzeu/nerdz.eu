@@ -22,9 +22,23 @@ class Comments extends Messages
             return false;
 
         if($project)
-            $canremoveusers = $this->project->getMembersAndOwnerFromHpid($comment['hpid']);
+            $canremoveusers = array_merge(
+                    $this->project->getMembersAndOwnerFromHpid($comment['hpid']),
+                    (array)$comment['from']
+                );
+        else
+        {
+            if(!($owner = Db::query(
+                    [
+                        'SELECT "to" FROM "posts" WHERE "hpid" = :hpid',
+                        [
+                            ':hpid' => $comment['hpid']
+                        ]
+                    ],Db::FETCH_OBJ)))
+                return false;
 
-        $canremoveusers = $project ? array_merge($canremoveusers, (array)$comment['from']) : [ $comment['from'], $comment['to'] ];
+            $canremoveusers = [ $owner->to, $comment['from'], $comment['to'] ];
+        }
 
         return in_array($_SESSION['id'],$canremoveusers);
     }
@@ -111,7 +125,7 @@ class Comments extends Messages
         return $ret;
     }
 
-    private function showControl($from,$to,$hpid,$pid,$project = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
+    private function showControl($from,$to,$hpid,$pid,$project = null,$olderThanMe = null,$maxNum = null,$startFrom = 0, $singleComment = false)
     {
         if(!$project && in_array($to,$this->user->getBlacklist())) // $to is in my blacklist -> don't show comments
             return [];
@@ -121,27 +135,46 @@ class Comments extends Messages
 
         $queryArr = $olderThanMe
             ? [
-                'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable", "hpid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"',
+                'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable", "hpid"
+                FROM "'.$glue.'comments"
+                WHERE "hpid" = :hpid AND "hcid" > :hcid
+                      AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)
+                ORDER BY "hcid"',
                     [
                         ':hpid' => $hpid,
-                        ':hcid' => $olderThanMe
+                        ':hcid' => $olderThanMe,
+                        ':id'   => $_SESSION['id']
                     ]
                 ]
                 : (
                     $useLimitedQuery // sort by hcid, descending, then reverse the order (ascending)
                     ? [
-                        'SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid, q.editable, q.hpid FROM (SELECT "from", "to", "time", "message", "hcid", "editable", "hpid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) AND "to" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) ORDER BY "hcid" DESC LIMIT :limit OFFSET :offset) AS q ORDER BY q.hcid ASC', 
-                        [
-                            ':hpid' => $hpid,
-                            ':id'   => $_SESSION['id'],
-                            ':limit' => $maxNum,
-                            ':offset' => $startFrom
-                        ]
+                        'SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid, q.editable, q.hpid FROM (
+                            SELECT "from", "to", "time", "message", "hcid", "editable", "hpid"
+                            FROM "'.$glue.'comments"
+                            WHERE "hpid" = :hpid '.($singleComment ? 'AND "hcid" = :hcid' : '').'
+                                AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)
+                            ORDER BY "hcid" DESC LIMIT :limit OFFSET :offset
+                        ) AS q ORDER BY q.hcid ASC',
+                        array_merge(
+                            [
+                                ':hpid'   => $hpid,
+                                ':id'     => $_SESSION['id'],
+                                ':limit'  => $maxNum,
+                                ':offset' => $startFrom
+                            ],
+                            $singleComment ? [ ':hcid' => $singleComment ] : []
+                        )
                     ]
                     : [
-                        'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable", "hpid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',
+                        'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable", "hpid"
+                        FROM "'.$glue.'comments"
+                        WHERE "hpid" = :hpid
+                            AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)
+                         ORDER BY "hcid"',
                             [
-                                ':hpid' => $hpid
+                                ':hpid' => $hpid,
+                                ':id'   => $_SESSION['id']
                             ]
                         ]
                     );
@@ -268,9 +301,9 @@ class Comments extends Messages
             [
                 'INSERT INTO "'.$comments.'" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',
                     [
-                        ':from' => $_SESSION['id'],
-                        ':to' => $obj->to,
-                        ':hpid' => $hpid,
+                        ':from'    => $_SESSION['id'],
+                        ':to'      => $obj->to,
+                        ':hpid'    => $hpid,
                         ':message' => $message
                     ]
                 ],Db::FETCH_ERRSTR);
@@ -334,6 +367,23 @@ class Comments extends Messages
         return $this->showControl ($o->from, $o->to, $hpid, $o->pid, $project, false, $num, $cycle * $num);
     }
 
+    public function getAll($hpid, $project = false)
+    {
+        $table = ($project ? 'groups_' : '').'posts';
+
+        if(!($o = Db::query(
+                [
+                    'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                    [
+                        ':hpid' => $hpid
+                    ]
+                ],Db::FETCH_OBJ)))
+            return false;
+
+        return $this->showControl($o->from, $o->to, $hpid, $o->pid, $project);
+    }
+
+
     public function get($hcid, $project = false)
     {
         $commentTable = ($project ? 'groups_' : '').'comments';
@@ -360,21 +410,18 @@ class Comments extends Messages
             ],Db::FETCH_OBJ)))
             return 'ERROR';
 
-        return $this->showControl($o->from, $o->to, $hpid, $o->pid, $project);
+        return $this->showControl($o->from, $o->to, $hpid, $o->pid, $project, false, 1, 0, $hcid);
     }
 
     public function delete($hcid, $project = false)
     {
         if($project) {
-            if(
-                !($o = Db::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)) ||
-                !($owner = $this->project->getOwner($o->to))
-            )
-            return false;
+            if(!($o = Db::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)))
+                return false;
 
             $canremovecomment = array_merge($this->project->getMembersAndOwnerFromHpid($o->hpid), (array) $o->from);
 
-            if(in_array($_SESSION['id'],$canremovecomment))
+            if($this->canRemove((array)$o,  $project))
             {
                 if(
                     Db::NO_ERRNO != Db::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':to' => $o->to, ':time' => $o->time)),Db::FETCH_ERRNO) ||
@@ -396,27 +443,29 @@ class Comments extends Messages
         }
 
         //profile
-        $ok =  (
-            ($o = Db::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)) //cid, from, to, time servono
-            &&
-            ($owner = Db::query(array('SELECT "to" FROM "posts" WHERE "hpid" = :hpid',array(':hpid' => $o->hpid)),Db::FETCH_OBJ))
-            &&
-            in_array($_SESSION['id'],array($o->from,$owner->to)) // == canDelete
-            &&
+        if(!($o = Db::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)))
+            return false;
+
+        if($this->canRemove((array)$o, $project))
+        {
+            $ok = (
             Db::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_ERRNO) == Db::NO_ERRNO
             &&
             Db::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)',array(':from' => $o->from,':hpid' => $o->hpid,':time' => $o->time)),Db::FETCH_ERRNO)  == Db::NO_ERRNO
-        );
-        if($ok)
-        {
-            if(!($c = Db::query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
-                return false;
+            );
 
-            if($c->cc == 0)
-                if(Db::NO_ERRNO != Db::query(array('DELETE FROM "comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
+            if($ok)
+            {
+                if(!($c = Db::query(array('SELECT COUNT("hcid") AS cc FROM "comments" WHERE "hpid" = :hpid AND "from" = :id',array(':hpid' => $o->hpid,':id' => $_SESSION['id'])),Db::FETCH_OBJ)))
                     return false;
-            return true;
+
+                if($c->cc == 0)
+                    if(Db::NO_ERRNO != Db::query(array('DELETE FROM "comments_no_notify" WHERE "to" = :id AND "hpid" = :hpid',array(':id' => $_SESSION['id'],':hpid' => $o->hpid)),Db::FETCH_ERRNO))
+                        return false;
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -427,7 +476,7 @@ class Comments extends Messages
                 'UPDATE "'.($project ? 'groups_' : '').'comments" SET message = :message WHERE "hcid" = :hcid',
                 [
                     ':message' => $oldMsgObj->message.'[hr]'.$parsedMessage,
-                    ':hcid' => $oldMsgObj->hcid
+                    ':hcid'    => $oldMsgObj->hcid
                 ]
             ],Db::FETCH_ERRSTR);
     }

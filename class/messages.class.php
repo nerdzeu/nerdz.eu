@@ -861,12 +861,11 @@ class Messages
          {
              if(!($o = Db::query(
                  [
-                     'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
-                         SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
+                     'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)'.
                          (
                              $project
                              ? ''
-                             : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'
+                             : ' AND "to" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)'
                          ),
                          [
                              ':hpid' => $hpid,
