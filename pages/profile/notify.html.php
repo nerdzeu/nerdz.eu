@@ -15,8 +15,8 @@ if($user->isLogged())
 
     if(!count($vals['list_a']))
         $vals['list_a'] = $notification->story();
-
-    $notification->updateStory($vals['list_a']);
+    else
+        $notification->updateStory($vals['list_a']);
 
     $user->getTPL()->assign($vals);
     $user->getTPL()->draw('profile/notify');
