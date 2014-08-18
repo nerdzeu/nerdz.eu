@@ -23,7 +23,7 @@ There is a lot of work to do:
 *  And more...
 
 
-Over the years the authors of the original code also wrote "temporary" files and C utils to help run the site. Those files are not included in this repository.
+Over the years the authors of the original code also wrote "temporary" files and C utils to help run the site. Those files are not included in this repository. Those files are not just utilities, they're also used on the website for "statistical" features like the (Top|Monthly) 100 list. They will not work without them, and since we're not providing them, they will not work _period_. Don't ask why they aren't working in an issue.
 
 Contributing
 ============

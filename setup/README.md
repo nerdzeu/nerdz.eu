@@ -1,5 +1,6 @@
 The ultimate guide on how to setup NERDZ v2
 =================================
+
 Introduction
 ------------
 
@@ -9,10 +10,11 @@ Requirements
 ------------
 
 - PHP >= 5.4
-- PHP and PDO drivers for PostgreSQL. Under Arch linux, type `pacman -S php-pgsql`. Remember to uncomment the right PDO connector in `php.ini`. You will also need php-gd. On Windows, it should be built-in. If you installed PHP using cygwin, you should install php-gd, php-json, php-pdo_pgsql, php-session, php-zlib.
+- PHP and PDO drivers for PostgreSQL. Under Arch linux, run `pacman -S php-pgsql`; the package should be similarly named on other Linux distributions: on Debian it's called `php5-pgsql`, for example).
+Remember to uncomment the right PDO connector in `php.ini`. You will also need `php-gd`. On Windows, it should be built-in. If you installed PHP using cygwin, you should install `php-gd`, `php-json`, `php-pdo_pgsql`, `php-session`, `php-zlib`
 - PostgreSQL 9.2 or newer
-- A webserver. We recommend [lighttpd](http://www.lighttpd.net/) but [nginx](http://nginx.org/) works good too (however note that nginx is harder to set up on Windows). If you only want to try nerdz for some quick edit, you can skip this step and use the PHP's built-in web server, running `/www/start.sh`
-- php-apcu extension. It is not included by default in PHP, so you have to install it manually. On Arch Linux you need to install it (`pacman -S php-apcu`) and uncomment the `/etc/php/conf.d/acpu.ini` file, otherwise you may need to compile it with PECL. This command will work for most of the distributions: `pecl install apcu`. If you are using the standard Windows build of PHP, you can find a binary of APCu [here](http://pecl.php.net/package/APCu). For cygwin, a precompiled build is available [here](http://r.usr.sh/mirror/apcu-cygwin/). Instructions are provided inside.
+- A webserver. We recommend [lighttpd](http://www.lighttpd.net/) but [nginx](http://nginx.org/) works good too (however note that nginx is harder to set up on Windows). If you only want to try nerdz for some quick edit, you can skip this step and use the PHP's built-in _development_ web server, running `/www/start.sh`
+- `php-apcu` extension. It is not included by default in PHP, so you have to install it manually. On Arch Linux you need to install it (`pacman -S php-apcu`) and uncomment the `/etc/php/conf.d/acpu.ini` file, otherwise you may need to compile it with PECL. This command will work for most distributions: `pecl install apcu`. If you are using the standard Windows build of PHP, you can find a binary of APCu [here](http://pecl.php.net/package/APCu). For cygwin, a precompiled build is available [here](http://robertof.nwa.xyz/mirror/apcu-cygwin/). Instructions are provided inside.
 - [Composer](https://getcomposer.org/)
 - Optional: Predis for session sharing (follow the instructions [here](http://pear.nrk.io/)). Details on how to setup Redis/Predis are not included here.
 
@@ -26,7 +28,7 @@ Setup
 - Move into `static/js/` and download the following file:
     - <http://static.nerdz.eu/static/js/gistBlogger.jsmin.js>
 - Copy `setup/config.skel.php` to `class/config/index.php` and edit the variables accordingly. The configuration is well-documented so you _probably_ don't need any explanation.
-  However, don't forget to disable the minification if you haven't got csstidy / uglifyjs and remeber to set the proper static domain
+  However, don't forget to disable the minification if you haven't got csstidy/uglifyjs installed and remeber to set the proper static domain
 - Enable our rewrite rules on your webserver. We only provide examples for the recommended webservers.
 
   Lighttpd:
@@ -54,6 +56,7 @@ Setup
       rewrite ^/(.+?):(\d+)$ /project.php?gid=$1&pid=$2 last;
   }
   ```
+
 - Move to the document root and install dependencies using composer.
   ```sh
   composer.phar install
@@ -74,7 +77,7 @@ Please, get out of Iran and try again.
 
 ### I am a lazy user which still has not migrated to PostgreSQL and I can't find instructions
 
-Here you are. To run our migration script, you need groovy, MySQL Java connector and PostgreSQL JDBCv4 driver.
+Here you are. To run our migration script, you need [Groovy](http://groovy.codehaus.org/), the [MySQL Java Connector](https://dev.mysql.com/downloads/connector/j/) and the [PostgreSQL JDBCv4](http://jdbc.postgresql.org/download.html) driver.
 
 Run the script editing the parameters accordingly:
 
@@ -96,7 +99,7 @@ Check your static domain settings in the config or see below
 
 Disable minification from the config, or install uglifyjs and csstidy.
 
-### Something is not working! I see "Error"s everywhere! >:(
+### Something is not working! I see "Error" everywhere! >:(
 
 Please check `data/errlog.txt` (if present) for error debugging. Checking your webserver log may also be helpful.
 
@@ -105,18 +108,17 @@ If you think you have found a bug, please open an issue in our repository.
 ### I got `error1` while registering
 
 The database is not working properly. Remember to run the `init_postgres.sh` script from the `setup` directory.
-If it doesn't work, you will need to create the database manually (otherwise open an issue)
-
+If it doesn't work, you will need to create the database manually (otherwise open an issue on this repository)
 
 ### I got some apc_* errors
 
-Install php-apcu properly, as explained in the `Setup` section.
+Install `php-apcu` properly, as explained in the `Setup` section.
 
 ### I got some ob_gzhandler errors
 
-Install php-zlib.
+Install `php-zlib`.
 
-### The rewrite rules for the profiles doesn't work. I'm sure I wrote them correctly!
+### The rewrite rules for profiles don't work. I'm sure I wrote them correctly!
 
 Please double check your configuration.
 
@@ -130,7 +132,7 @@ We are using some C binaries for that, and using/compiling those binaries is not
 
 ### I'm getting some weird exceptions from the Groovy script, something about timestamps.
 
-Remember to set your timezone to UTC. If it still doesn't work, please open an issue.
+Remember to set your timezone to UTC. If it still doesn't work, please open an issueon this repository.
 
 ### HTTPS does not work on nginx. It does not load the assets!
 
@@ -144,4 +146,4 @@ fastcgi_param HTTPS on;
 
 ### I got some other problem!
 
-Just open an issue, we may be able to help you.
+Just open an issue in this repository, we may be able to help you.
