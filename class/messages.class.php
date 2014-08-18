@@ -505,7 +505,6 @@ class Messages
     public function delete($hpid, $project = true)
     {
         $table = ($project ? 'groups_' : '').'posts';
-        $obj = new \StdClass();
 
         if(!($obj = Db::query(
             [
@@ -530,7 +529,6 @@ class Messages
     {
         $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8');
         $table = ($project ? 'groups_' : '').'posts';
-        $obj = new \StdClass();
 
         if(!($obj = Db::query(
             [
@@ -829,7 +827,7 @@ class Messages
         $ret['uthumb_n']          = $this->getUserThumb($dbPost['hpid'], $project);
         $ret['pid_n']             = $dbPost['pid'];
         $ret['news_b']            = $dbPost['news'];
-        $ret['from4link_n']       = \NERDZ\Core\Utils::userLink($from);
+        $ret['from4link_n']       = Utils::userLink($from);
         $ret['to4link_n']         = $toFuncLink($to);
         $ret['fromid_n']          = $dbPost['from'];
         $ret['toid_n']            = $dbPost['to'];
@@ -856,9 +854,9 @@ class Messages
         return $ret;
     }
 
-     public function countComments($hpid, $prj = false)
+     public function countComments($hpid, $project = false)
      {
-         $table = ($prj ? 'groups_' : '').'comments';
+         $table = ($project ? 'groups_' : '').'comments';
          if($this->user->isLogged())
          {
              if(!($o = Db::query(
@@ -866,7 +864,7 @@ class Messages
                      'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (
                          SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'.
                          (
-                             $prj
+                             $project
                              ? ''
                              : ' AND "to" NOT IN ( SELECT "from" AS a FROM "blacklist" WHERE "to" = :id UNION SELECT "to" AS a FROM "blacklist" WHERE "from" = :id)'
                          ),

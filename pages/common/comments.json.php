@@ -36,12 +36,13 @@ case 'get':
     die(NERDZ\Core\Utils::jsonResponse('ok', $message));
 
 case 'edit':
-    if(empty($_POST['hcid']) || empty($_POST['message']) || !$comments->editComment($_POST['hcid'], $_POST['message'], $prj))
+    if(empty($_POST['hcid']))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-    break;
+
+    die(NERDZ\Core\Utils::jsonDbResponse($comments->edit($_POST['hcid'], $_POST['message'], $prj)));
+
 default:
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-    break;
 }
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

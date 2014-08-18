@@ -18,10 +18,27 @@ if(!$user->isLogged())
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')
 {
+case 'get':
+    $hcid  = isset($_POST['hcid']) && is_numeric($_POST['hcid']) ? $_POST['hcid']  : false;
+    if(!$hcid)
+        die($user->lang('ERROR').': no hcid');
+
+    $vals = [];
+    $vals['list_a']          = $comments->get($hcid, $prj);
+    $vals['showform_b']      = false;
+    $vals['needmorebtn_b']   = false;
+    $vals['commentcount_n']  = 0;
+    $vals['hpid_n']          = 0;
+    $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/red_x.png';
+
+    $user->getTPL()->assign($vals);
+    $user->getTPL()->draw(($prj ? 'project' : 'profile'). '/comments');
+    break;
+
 case 'show':
     $hpid  = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid']  : false;
     if(!$hpid )
-        die($user->lang('ERROR'));
+        die($user->lang('ERROR').': no hpid');
     $_list = null;
     if (isset ($_POST['start']) && isset ($_POST['num']) &&
         is_numeric ($_POST['start']) && is_numeric ($_POST['num']))

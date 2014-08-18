@@ -13,7 +13,7 @@ class Comments extends Messages
 
     public function canEdit($comment, $project = false)
     {
-        return $o['editable'] && $this->user->isLogged() && $comment['from'] == $_SESSION['id'];
+        return $comment['editable'] && $this->user->isLogged() && $comment['from'] == $_SESSION['id'];
     }
 
     public function canRemove($comment, $project = false)
@@ -22,14 +22,40 @@ class Comments extends Messages
             return false;
 
         if($project)
-            $canremoveusers = $this->project->getMembersAndOwnerFromHpid($hpid);
+            $canremoveusers = $this->project->getMembersAndOwnerFromHpid($comment['hpid']);
 
         $canremoveusers = $project ? array_merge($canremoveusers, (array)$comment['from']) : [ $comment['from'], $comment['to'] ];
 
         return in_array($_SESSION['id'],$canremoveusers);
     }
 
-    private function getArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
+    public function edit($hcid, $message, $project = false)
+    {
+        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8');
+        $table = ($project ? 'groups_' : '').'comments';
+
+        if(!($obj = Db::query(
+            [
+                'SELECT "editable", "from", "hpid" FROM "'.$table.'" WHERE "hcid" = :hcid',
+                [
+                    ':hcid' => $hcid
+                ]
+            ],Db::FETCH_OBJ)) ||
+            !$this->canEdit((array)$obj, $project)
+        )
+        return 'ERROR';
+
+        return Db::query(
+            [
+                'UPDATE "'.$table.'" SET "message" = :message WHERE "hcid" = :hcid',
+                [
+                    ':message' => $message,
+                    ':hcid'    => $hcid
+                ]
+            ],Db::FETCH_ERRSTR);
+    }
+
+    private function getArray($res,$hpid,$luck,$project,$blist,$gravurl,$users,$cg,$times,$lkd,$glue)
     {
         $i = 0;
         $ret = [];
@@ -39,20 +65,20 @@ class Comments extends Messages
             if(in_array($o->from,$blist))
                 continue;
 
-            $ret[$i]['fromid_n'] = $o->from;
-            $ret[$i]['gravatarurl_n'] = $gravurl[$o->from];
-            $ret[$i]['toid_n'] = $o->to;
-            $ret[$i]['from_n'] = $users[$o->from];
-            $ret[$i]['uid_n'] = "c{$o->hcid}";
-            $ret[$i]['from4link_n'] = \NERDZ\Core\Utils::userLink($users[$o->from]);
-            $ret[$i]['message_n'] = parent::bbcode($o->message,1,$cg,1,$o->hcid);
-            $ret[$i]['datetime_n'] = $this->user->getDateTime($o->time);
-            $ret[$i]['timestamp_n'] = $o->time;
-            $ret[$i]['hcid_n'] = $o->hcid;
-            $ret[$i]['hpid_n'] = $hpid;
-            $ret[$i]['thumbs_n'] = $this->getThumbs($o->hcid, $prj);
-            $ret[$i]['uthumb_n'] = $this->getUserThumb($o->hcid, $prj);
-            $ret[$i]['revisions_n'] = $this->getRevisionsNumber($o->hcid, $prj);
+            $ret[$i]['fromid_n']         = $o->from;
+            $ret[$i]['gravatarurl_n']    = $gravurl[$o->from];
+            $ret[$i]['toid_n']           = $o->to;
+            $ret[$i]['from_n']           = $users[$o->from];
+            $ret[$i]['uid_n']            = "c{$o->hcid}";
+            $ret[$i]['from4link_n']      = Utils::userLink($users[$o->from]);
+            $ret[$i]['message_n']        = parent::bbcode($o->message,1,$cg,1,$o->hcid);
+            $ret[$i]['datetime_n']       = $this->user->getDateTime($o->time);
+            $ret[$i]['timestamp_n']      = $o->time;
+            $ret[$i]['hcid_n']           = $o->hcid;
+            $ret[$i]['hpid_n']           = $hpid;
+            $ret[$i]['thumbs_n']         = $this->getThumbs($o->hcid, $project);
+            $ret[$i]['uthumb_n']         = $this->getUserThumb($o->hcid, $project);
+            $ret[$i]['revisions_n']      = $this->getRevisionsNumber($o->hcid, $project);
             $ret[$i]['caneditcomment_b'] = $this->canEdit((array)$o);
 
             if($luck)
@@ -74,7 +100,7 @@ class Comments extends Messages
             else
                 $ret[$i]['canshowlock_b'] = $ret[$i]['lock_b'] = false;
 
-            $ret[$i]['canremove_b'] = $this->canRemove((array)$o, $prj);
+            $ret[$i]['canremove_b'] = $this->canRemove((array)$o, $project);
 
             ++$i;
         }
@@ -85,17 +111,17 @@ class Comments extends Messages
         return $ret;
     }
 
-    private function showControl($from,$to,$hpid,$pid,$prj = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
+    private function showControl($from,$to,$hpid,$pid,$project = null,$olderThanMe = null,$maxNum = null,$startFrom = 0)
     {
-        if(!$prj && in_array($to,$this->user->getBlacklist())) // $to is in my blacklist -> don't show comments
+        if(!$project && in_array($to,$this->user->getBlacklist())) // $to is in my blacklist -> don't show comments
             return [];
 
-        $glue = $prj ? 'groups_' : '';
+        $glue = $project ? 'groups_' : '';
         $useLimitedQuery = is_numeric ($maxNum) && is_numeric ($startFrom);
 
         $queryArr = $olderThanMe
             ? [
-                'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"',
+                'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable", "hpid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" > :hcid ORDER BY "hcid"',
                     [
                         ':hpid' => $hpid,
                         ':hcid' => $olderThanMe
@@ -104,7 +130,7 @@ class Comments extends Messages
                 : (
                     $useLimitedQuery // sort by hcid, descending, then reverse the order (ascending)
                     ? [
-                        'SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid, q.editable FROM (SELECT "from", "to", "time", "message", "hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) AND "to" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) ORDER BY "hcid" DESC LIMIT :limit OFFSET :offset) AS q ORDER BY q.hcid ASC', 
+                        'SELECT q.from, q.to, EXTRACT(EPOCH FROM q.time) AS time, q.message, q.hcid, q.editable, q.hpid FROM (SELECT "from", "to", "time", "message", "hcid", "editable", "hpid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) AND "to" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id) ORDER BY "hcid" DESC LIMIT :limit OFFSET :offset) AS q ORDER BY q.hcid ASC', 
                         [
                             ':hpid' => $hpid,
                             ':id'   => $_SESSION['id'],
@@ -113,7 +139,7 @@ class Comments extends Messages
                         ]
                     ]
                     : [
-                        'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',
+                        'SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable", "hpid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid ORDER BY "hcid"',
                             [
                                 ':hpid' => $hpid
                             ]
@@ -152,17 +178,17 @@ class Comments extends Messages
         while(($o = $ll->fetch(PDO::FETCH_OBJ)))
             $lkd[$o->from] = User::getUsername($o->from);
 
-        $cg = $prj ? 'gc' : 'pc'; //per txt version code in commenti
+        $cg = $project ? 'gc' : 'pc'; //per txt version code in commenti
 
-        $ret = $this->getArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
+        $ret = $this->getArray($res,$hpid,$luck,$project,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
 
         /* Per il beforeHcid, nel caso in cui nella fase di posting si siano uniti gli ultimi messaggi
         allora l'hpid passato dev'essere quello dell'ultimo messaggio e glielo fetcho. Se non lo è ritorna empty */
         if($olderThanMe && empty($ret))
         {
-            if(!($res = Db::query(array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe)),Db::FETCH_STMT)))
+            if(!($res = Db::query(array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"message","hcid", "editable", "hpid" FROM "'.$glue.'comments" WHERE "hpid" = :hpid AND "hcid" = :hcid ORDER BY "hcid"',array(':hpid' => $hpid, ':hcid' => $olderThanMe)),Db::FETCH_STMT)))
                 return false;
-            $ret = $this->getArray($res,$hpid,$luck,$prj,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
+            $ret = $this->getArray($res,$hpid,$luck,$project,$blist,$gravurl,$users,$cg,$times,$lkd,$glue);
         }
 
         return $ret;
@@ -199,11 +225,11 @@ class Comments extends Messages
         return $message;
     }
 
-    public function add($hpid,$message, $prj = false)
+    public function add($hpid,$message, $project = false)
     {
 
-        $posts = ($prj ? 'groups_' : '').'posts';
-        $comments = ($prj ? 'groups_' : '').'comments';
+        $posts = ($project ? 'groups_' : '').'posts';
+        $comments = ($project ? 'groups_' : '').'comments';
 
         if(
             !($obj = Db::query(
@@ -235,7 +261,7 @@ class Comments extends Messages
                 return 'error: FLOOD'; //simulate Db response
 
             if($user->from == $_SESSION['id'])
-                return $this->append($user,$message, $prj);
+                return $this->append($user,$message, $project);
         }
 
         return Db::query(
@@ -250,9 +276,9 @@ class Comments extends Messages
                 ],Db::FETCH_ERRSTR);
     }
 
-    public function getMessage($hcid, $prj = false)
+    public function getMessage($hcid, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'comments';
+        $table = ($project ? 'groups_' : '').'comments';
 
         if(!($o = Db::query(
             [
@@ -266,17 +292,17 @@ class Comments extends Messages
         return $o->message;
     }
 
-    private function getUsernameFromCid($hcid, $prj = false)
+    private function getUsernameFromCid($hcid, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'comments';
+        $table = ($project ? 'groups_' : '').'comments';
         if(!($o = Db::query(array('SELECT "from" FROM "'.$table.'" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)))
             return '';
         return User::getUsername($o->from);
     }
 
-    public function getCommentsAfterHcid($hpid,$hcid, $prj = false)
+    public function getCommentsAfterHcid($hpid,$hcid, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'posts';
+        $table = ($project ? 'groups_' : '').'posts';
         if(!($o = Db::query(
             [
                 'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
@@ -287,12 +313,12 @@ class Comments extends Messages
         )
         return false;
 
-        return $this->showControl($o->from,$o->to,$hpid,$o->pid,$prj,$hcid);
+        return $this->showControl($o->from,$o->to,$hpid,$o->pid,$project,$hcid);
     }
 
-    public function getLastComments ($hpid, $num, $cycle = 0, $prj = false)
+    public function getLastComments ($hpid, $num, $cycle = 0, $project = false)
     {
-        $table = ($prj ? 'groups_' : '').'posts';
+        $table = ($project ? 'groups_' : '').'posts';
         if($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 ||
             !($o = Db::query(
                 [
@@ -305,12 +331,41 @@ class Comments extends Messages
         )
         return false;
 
-        return $this->showControl ($o->from, $o->to, $hpid, $o->pid, $prj, false, $num, $cycle * $num);
+        return $this->showControl ($o->from, $o->to, $hpid, $o->pid, $project, false, $num, $cycle * $num);
     }
 
-    public function delete($hcid, $prj = false)
+    public function get($hcid, $project = false)
     {
-        if($prj) {
+        $commentTable = ($project ? 'groups_' : '').'comments';
+        $postTable    = ($project ? 'groups_' : '').'posts';
+
+        if(!($o = Db::query(
+            [
+                'SELECT "hpid" FROM "'.$commentTable.'" WHERE "hcid" = :hcid',
+                [
+                    ':hcid' => $hcid
+                ]
+            ], Db::FETCH_OBJ))
+        )
+            return 'ERROR';
+
+        $hpid = $o->hpid;
+
+        if(!($o = Db::query(
+            [
+                'SELECT "to","pid","from" FROM "'.$postTable.'" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_OBJ)))
+            return 'ERROR';
+
+        return $this->showControl($o->from, $o->to, $hpid, $o->pid, $project);
+    }
+
+    public function delete($hcid, $project = false)
+    {
+        if($project) {
             if(
                 !($o = Db::query(array('SELECT "hpid","from","to",EXTRACT(EPOCH FROM "time") AS time FROM "groups_comments" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)) ||
                 !($owner = $this->project->getOwner($o->to))
@@ -365,11 +420,11 @@ class Comments extends Messages
         return false;
     }
 
-    private function append($oldMsgObj,$parsedMessage, $prj = false)
+    private function append($oldMsgObj,$parsedMessage, $project = false)
     {
         return Db::query(
             [
-                'UPDATE "'.($prj ? 'groups_' : '').'comments" SET message = :message WHERE "hcid" = :hcid',
+                'UPDATE "'.($project ? 'groups_' : '').'comments" SET message = :message WHERE "hcid" = :hcid',
                 [
                     ':message' => $oldMsgObj->message.'[hr]'.$parsedMessage,
                     ':hcid' => $oldMsgObj->hcid
@@ -377,8 +432,8 @@ class Comments extends Messages
             ],Db::FETCH_ERRSTR);
     }
 
-    public function getRevisionsNumber($hcid, $prj = false) {
-        $table = ($prj ? 'groups_' : ''). 'comments_revisions';
+    public function getRevisionsNumber($hcid, $project = false) {
+        $table = ($project ? 'groups_' : ''). 'comments_revisions';
 
         $ret = Db::query(
             [
@@ -393,8 +448,8 @@ class Comments extends Messages
         return isset($ret->rev_no) ? $ret->rev_no : 0;
     }
 
-    public function getRevision($hcid, $number,  $prj = false) {
-        $table = ($prj ? 'groups_' : ''). 'comments_revisions';
+    public function getRevision($hcid, $number,  $project = false) {
+        $table = ($project ? 'groups_' : ''). 'comments_revisions';
 
         return Db::query(
             [
@@ -409,8 +464,8 @@ class Comments extends Messages
             );
     }
 
-    public function getThumbs($hcid, $prj = false) {
-        $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
+    public function getThumbs($hcid, $project = false) {
+        $table = ($project ? 'groups_' : ''). 'comment_thumbs';
 
         $ret = Db::query(
             [
@@ -430,12 +485,12 @@ class Comments extends Messages
         return 0;
     }
 
-    public function getUserThumb($hcid, $prj = false) {
+    public function getUserThumb($hcid, $project = false) {
         if (!$this->user->isLogged()) {
             return 0;
         }
 
-        $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
+        $table = ($project ? 'groups_' : ''). 'comment_thumbs';
 
         $ret = Db::query(
             [
@@ -456,12 +511,12 @@ class Comments extends Messages
         return 0;
     }
 
-    public function setThumbs($hcid, $vote, $prj = false) {
+    public function setThumbs($hcid, $vote, $project = false) {
         if (!$this->user->isLogged()) {
             return false;
         }
 
-        $table = ($prj ? 'groups_' : ''). 'comment_thumbs';
+        $table = ($project ? 'groups_' : ''). 'comment_thumbs';
 
         $ret = Db::query(
             [

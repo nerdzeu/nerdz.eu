@@ -1090,6 +1090,19 @@ N.html.profile = function()
             done(d);
         });
     };
+
+    /**
+    * Get comment from hcid (useful to show after edit complete!)
+    * parsed
+    * @Parameters: { hcid }
+    */
+    this.getComment = function(jObj,done)
+    {
+        this.post(pp + 'comments.html.php?action=get',jObj,function(d) {
+            done(d);
+        });
+    };
+
 };
 
 N.html.profile = new N.html.profile();
@@ -1195,7 +1208,7 @@ N.html.project = function()
     };
 
     /**
-    * Get post from profile (useful to show after edit complete!)
+    * Get post from project (useful to show after edit complete!)
     * parsed
     * @Parameters: { hpid }
     */
@@ -1205,6 +1218,20 @@ N.html.project = function()
             done(d);
         });
     };
+
+    /**
+    * Get comment from hcid (useful to show after edit complete!)
+    * parsed
+    * @Parameters: { hcid }
+    */
+    this.getComment = function(jObj,done)
+    {
+        this.post(pp + 'comments.html.php?action=get',jObj,function(d) {
+            done(d);
+        });
+    };
+
+
 
     /**
      * Get lim posts from project id
