@@ -458,8 +458,11 @@ class Messages
                     'truncate' => $truncate
                 ]);
 
-            if($inHome)
-                $ret[$c]['news_b'] = $project ? $row->to == PROJECTS_NEWS : $row->to == USERS_NEWS;
+            if($inHome) {
+                $ret[$c]['news_b'] = $project
+                    ? $row->to == Config\PROJECTS_NEWS
+                    : $row->to == Config\USERS_NEWS;
+            }
             ++$c;
         }
 

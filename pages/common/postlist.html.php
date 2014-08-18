@@ -48,6 +48,7 @@ $vals['list_a'] = $messages->getPosts($id,
     array_merge(
         [ 'project'  => $prj ],
         [ 'truncate' => true ], // always truncate in postlist
+        [ 'inHome'   => !$id ],
         $limit          ? [ 'limit'        => $limit ]         : [],
         $beforeHpid     ? [ 'hpid'         => $beforeHpid ]    : [],
         $onlyfollowed   ? [ 'onlyfollowed' => $onlyfollowed ]  : [],

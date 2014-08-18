@@ -24,18 +24,18 @@ case 'add':
             die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'a'));
         else
             $_POST['to'] = $_SESSION['id'];
-        }
+    }
 
-        die(NERDZ\Core\Utils::jsonDbResponse(
-            $messages->add(
-                $_POST['to'],
-                isset($_POST['message']) ? $_POST['message'] : '',
-                [
-                    'news' => isset($_POST['news']),
-                    'project' => $prj
-                ]))
-            );
-        break;
+    die(NERDZ\Core\Utils::jsonDbResponse(
+        $messages->add(
+            $_POST['to'],
+            isset($_POST['message']) ? $_POST['message'] : '',
+            [
+                'news'    => !empty($_POST['news']),
+                'project' => $prj
+            ]))
+        );
+    break;
 
 case 'del':
 
