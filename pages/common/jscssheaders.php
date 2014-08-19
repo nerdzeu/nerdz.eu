@@ -61,7 +61,7 @@ extensions: ["tex2jax.js"],
     tex2jax: {
     inlineMath: [ ['[m]','[/m]'] ],
         displayMath: [ ['[math]','[/math]'] ],
-        processEscapes: true
+        processEscapes: false
         },
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
