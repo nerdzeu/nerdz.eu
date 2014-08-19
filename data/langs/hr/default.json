@@ -161,6 +161,7 @@
     "READ" : "Pročitajte",
     "RECV_NOTIFY" : "Primajte obavijesti",
     "REGISTER" : "Registar",
+    "REGISTERED_SINCE" : "Registriran od",
     "REGISTER_CALL" : "Registrirajte se na NERDZ da bi je vidjeli!",
     "RELOAD_CAPTCHA" : "Učitaj ponovno slika",
     "REMEMBER_ME" : "Zapamti me",

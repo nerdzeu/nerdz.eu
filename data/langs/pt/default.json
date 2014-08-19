@@ -161,6 +161,7 @@
     "READ" : "Lê",
     "RECV_NOTIFY" : "receber notificações",
     "REGISTER" : "cadastre-se",
+    "REGISTERED_SINCE" : "Registado desde",
     "REGISTER_CALL" : "Registre-se no NERDZ para vê-lo!",
     "RELOAD_CAPTCHA" : "Recarregar imagem",
     "REMEMBER_ME" : "Lembre-me",

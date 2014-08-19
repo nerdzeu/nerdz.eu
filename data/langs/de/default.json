@@ -161,6 +161,7 @@
     "READ" : "Lesen",
     "RECV_NOTIFY" : "empfangen von Benachrichtigungen",
     "REGISTER" : "Registrieren",
+    "REGISTERED_SINCE" : "Hier seit dem",
     "REGISTER_CALL" : "Registrieren Sie sich auf NERDZ damit Sie es sehen!",
     "RELOAD_CAPTCHA" : "Code Nachladen",
     "REMEMBER_ME" : "Erinnere Mich",

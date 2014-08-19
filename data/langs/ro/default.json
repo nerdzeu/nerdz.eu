@@ -161,6 +161,7 @@
     "READ" : "Citeste",
     "RECV_NOTIFY" : "primesc notificări",
     "REGISTER" : "Registreaza-te",
+    "REGISTERED_SINCE" : "Înregistrată din",
     "REGISTER_CALL" : "Înregistraţi-vă pe NERDZ pentru a o vizualiza!",
     "RELOAD_CAPTCHA" : "re-incarca Captcha",
     "REMEMBER_ME" : "Adu-mi aminte",
