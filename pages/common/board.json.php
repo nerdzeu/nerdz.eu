@@ -32,6 +32,7 @@ case 'add':
             isset($_POST['message']) ? $_POST['message'] : '',
             [
                 'news'    => !empty($_POST['news']),
+                'issue'   => !empty($_POST['issue']),
                 'project' => $prj
             ]))
         );

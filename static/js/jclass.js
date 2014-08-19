@@ -569,9 +569,10 @@ N.json.project = function()
 
     /**
     * New post in project
-    * @Parameters: { message, to [, news] }
+    * @Parameters: { message, to [, news, issue] }
     * to: project id
-    * news: optional. If present: 1 if news 0 else
+    * news:  optional. If present: 1 if news 0 otherwise
+    * issue: optional. Open issue on GitHub. If present: 1 if issue 0 otherwise
     */
     this.newPost = function(jObj,done)
     {

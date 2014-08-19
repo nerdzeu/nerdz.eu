@@ -472,8 +472,9 @@ class Messages
     public function add($to, $message, $options = [])
     {
         extract($options);
-        $news = !empty($news);
+        $news    = !empty($news);
         $project = !empty($project);
+        $issue   = !empty($issue);
 
         $table = ($project ? 'groups_' : '').'posts';
 
@@ -491,7 +492,7 @@ class Messages
         if($retStr != Db::NO_ERRSTR)
             return $retStr;
 
-        if($project && $to == Config\ISSUE_BOARD) {
+        if($project && $issue && $to == Config\ISSUE_BOARD) {
             require_once __DIR__ . '/vendor/autoload.php';
             $client = new \Github\Client();
             $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
@@ -499,10 +500,12 @@ class Messages
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
-                        'body'  => User::getUsername().': '.$message
-                    ]
-                );
+                    'body'  => User::getUsername().': '.$message
+                ]
+            );
         }
+
+        return $retStr;
     }
 
     public function delete($hpid, $project = true)

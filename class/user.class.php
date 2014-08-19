@@ -122,12 +122,12 @@ class User
             setcookie ('nerdz_u',  md5($shaPass), $exp_time, '/', $chost, false, true);
         }
 
-        $_SESSION['logged'] = true;
-        $_SESSION['id'] = $o->counter;
-        $_SESSION['username'] = $o->username;
-        $_SESSION['lang'] = $this->getLanguage($o->counter);
-        $_SESSION['board_lang'] = $this->getBoardLanguage($o->counter);
-        $_SESSION['template'] = $this->getTemplate($o->counter);
+        $_SESSION['logged']       = true;
+        $_SESSION['id']           = $o->counter;
+        $_SESSION['username']     = $o->username;
+        $_SESSION['lang']         = $this->getLanguage($o->counter);
+        $_SESSION['board_lang']   = $this->getBoardLanguage($o->counter);
+        $_SESSION['template']     = $this->getTemplate($o->counter);
         $_SESSION['mark_offline'] = $setOffline;
 
         return true;

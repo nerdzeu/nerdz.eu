@@ -7,7 +7,7 @@ owner="nerdz"
 
 deleted="14"
 users_news="1"
-issue="2"
+issue="6"
 groups_news="1"
 
 # end configuration

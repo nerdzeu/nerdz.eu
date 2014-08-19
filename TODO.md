@@ -10,7 +10,4 @@
 - Add project blacklist [!!]: certain users shouldn't be able to post, even in a open project. The project's owner should be able to decide who posts where.
 - Add hashtag support for posts categorization -> autocategorization?
 - Fix default template to change post language (create post options menu)
-- Add "Post on GitHub" checkbox in ISSUE_BOARD's "New Post" form
 - ^^^ edit javascript API to support new features
-
-BONUS: Teach Nessuno some english.
