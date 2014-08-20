@@ -76,4 +76,40 @@ begin
     END LOOP;
 END $$ LANGUAGE plpgsql;
 
+-- returns all the interacations between 2 users
+-- usage: select * from user_interactions(1, 2) as f("type" text, "from" int8, "to" int8, time timestamp with time zone) order by time limit 10;
+CREATE FUNCTION user_interactions(me int8, other int8) RETURNS SETOF record
+LANGUAGE plpgsql AS $$
+DECLARE tbl text;
+        ret record;
+        query text;
+begin
+    FOR tbl IN (select table_name from information_schema.columns where column_name = 'to' and table_name not like 'groups_%') LOOP
+        query := 'SELECT ''' || tbl || '''::text ,"from", "to", "time" FROM ' || tbl || ' WHERE ("from" = '|| me || ' AND "to" = '|| other || ') OR ("from" = '|| other ||' AND "to" = '|| me ||')';
 
+        FOR ret IN EXECUTE query LOOP
+            RETURN NEXT ret;
+        END LOOP;
+    END LOOP;
+
+   RETURN;
+END $$;
+
+-- returns the interactions between an user and a group
+-- usage: select * from group_interactions(1,1) as f("type" text, time timestamp with time zone)
+CREATE FUNCTION group_interactions(me int8, grp int8) RETURNS SETOF record
+LANGUAGE plpgsql AS $$
+DECLARE tbl text;
+        ret record;
+        query text;
+BEGIN
+    FOR tbl IN (select table_name from information_schema.columns where column_name = 'to' and table_name like 'groups_%') LOOP
+        query := 'SELECT ''' || tbl || '''::text , "time" FROM ' || tbl || ' WHERE "from" = '|| me || ' AND "to" = '|| grp;
+
+        FOR ret IN EXECUTE query LOOP
+            RETURN NEXT ret;
+        END LOOP;
+    END LOOP;
+
+   RETURN;
+END $$;
