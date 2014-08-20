@@ -306,12 +306,10 @@ BEGIN
     LOOP
         -- remove from my groups members
         DELETE FROM "groups_members" WHERE "from" = NEW."to" AND "to" = r."counter";
-        -- remove from my group follwors
-        DELETE FROM "groups_followers" WHERE "from" = NEW."to" AND "to" = r."counter";
     END LOOP;
     
     -- remove from followers
-    DELETE FROM "followers" WHERE ("from" = NEW."from" AND "to" = NEW."to") OR ("to" = NEW."from" AND "from" = NEW."to");
+    DELETE FROM "followers" WHERE ("from" = NEW."from" AND "to" = NEW."to");
 
     -- remove pms
     DELETE FROM "pms" WHERE ("from" = NEW."from" AND "to" = NEW."to") OR ("to" = NEW."from" AND "from" = NEW."to");
