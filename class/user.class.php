@@ -276,6 +276,19 @@ class User
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    public function getFollowingCount($id)
+    {
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("to") AS cc FROM "followers" WHERE "from" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
+            return 0;
+        return $o->cc;
+    }
+
     public function getFollowers($id)
     {
         if(!($stmt = Db::query(
@@ -288,6 +301,53 @@ class User
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getFollowersCount($id)
+    {
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("from") AS cc FROM "followers" WHERE "to" = :id',
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
+            return 0;
+        return $o->cc;
+    }
+
+    public function getFriends($id) {
+        if(!($stmt = Db::query(
+            [
+                'select "to" from (
+                    select "to" from followers where "from" = :id) as f
+                    inner join 
+                    (select "from" from followers where "to" = :id) as e
+                    on f.to = e.from',
+                [
+                    ':id' => $id
+                ]
+            ], Db::FETCH_STMT)))
+            return [];
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getFriendsCount($id) {
+        if(!($o = Db::query(
+            [
+                'select COUNT("to") AS cc from (
+                    select "to" from followers where "from" = :id) as f
+                    inner join 
+                    (select "from" from followers where "to" = :id) as e
+                    on f.to = e.from',
+                [
+                    ':id' => $id
+                ]
+            ], Db::FETCH_OBJ)))
+            return 0;
+
+        return $o->cc;
     }
 
     public function follow($id, $prj = false)
@@ -470,23 +530,6 @@ class User
                     ':hpid' => $hpid
                 ]
             ],Db::FETCH_ERRSTR);
-    }
-
-    public function getFriends($id) {
-        if(!($stmt = Db::query(
-            [
-                'select "to" from (
-                    select "to" from followers where "from" = :id) as f
-                    inner join 
-                    (select "from" from followers where "to" = :id) as e
-                    on f.to = e.from',
-                [
-                    ':id' => $id
-                ]
-            ], Db::FETCH_STMT)))
-            return [];
-
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function isOnline($id)

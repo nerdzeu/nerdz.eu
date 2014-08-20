@@ -7,19 +7,21 @@ use NERDZ\Core\User;
 use NERDZ\Core\Config;
 
 $messages = new Messages();
-$user = new User();
-$tplcfg = $user->getTemplateCfg();
+$user     = new User();
+$tplcfg   = $user->getTemplateCfg();
 
-$id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : false;
-$pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? $_GET['pid'] : false;
-$found = true;
+$id     = isset($_GET['id'])      && is_numeric($_GET['id'])     ? $_GET['id']     : false;
+$pid    = isset($_GET['pid'])     && is_numeric($_GET['pid'])    ? $_GET['pid']    : false;
+$action = !empty($_GET['action']) && is_string ($_GET['action']) ? $_GET['action'] : false;
+$found  = true;
+
 if($id)
 {
     if(false === ($info = $user->getObject($id))) /* false se l'id richiesto non esiste*/
     {
         $username = $user->lang('USER_NOT_FOUND');
-        $found = false;
-        $post = new stdClass();
+        $found    = false;
+        $post     = new stdClass();
         $post->message = '';
     }
     else

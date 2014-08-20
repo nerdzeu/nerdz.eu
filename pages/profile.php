@@ -128,9 +128,13 @@ if($enter)
 
     $vals['lastvisit_n'] = $user->getDateTime($o->last);
 
-    $vals['singlepost_b'] = isset($pid) && isset($id) && is_numeric($pid);
+    $vals['singlepost_b']    = isset($pid) && isset($id) && is_numeric($pid);
+    $vals['friends_b']       = isset($action) && $action == 'friends';
+    $vals['followers_b']     = isset($action) && $action == 'followers';
+    $vals['following_b']     = isset($action) && $action == 'following';
+    $vals['interactions_b']  = isset($action) && $action == 'following';
 
-    if(!$vals['singlepost_b'])
+    if(!$vals['singlepost_b'] || !$vals['friends_b'] || !$vals['followers_b'] || !$vals['following_b'] || !$vals['interactions_b'])
     {
         if(!$user->hasClosedProfile($info->counter))
             $vals['canwrite_b'] = true;
@@ -287,7 +291,16 @@ if($enter)
             $found = true;
         }
     }
-    if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
+    //TODO: place follow{ing|ers}, friends and interactions handling here
+    // followers and interactions -> common to project
+    // following and friends only users
+
+    if(($vals['singlepost_b'] && $found) ||
+        !$vals['singlepost_b'] ||
+        !$vals['friends_b']    ||
+        !$vals['followers_b']  ||
+        !$vals['following_b']  ||
+        !$vals['interactions_b'])
     {
         $user->getTPL()->assign($vals);
         $user->getTPL()->draw('profile/layout');
