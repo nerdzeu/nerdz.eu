@@ -12,9 +12,9 @@ $tplcfg   = $user->getTemplateCfg();
 
 $id     = isset($_GET['id'])      && is_numeric($_GET['id'])     ? $_GET['id']     : false;
 $pid    = isset($_GET['pid'])     && is_numeric($_GET['pid'])    ? $_GET['pid']    : false;
-$action = !empty($_GET['action']) && is_string ($_GET['action']) ? $_GET['action'] : false;
-$found  = true;
+$action = NERDZ\Core\Utils::actionValidator(!empty($_GET['action']) && is_string ($_GET['action']) ? $_GET['action'] : false);
 
+$found  = true;
 if($id)
 {
     if(false === ($info = $user->getObject($id))) /* false se l'id richiesto non esiste*/
@@ -74,6 +74,8 @@ if($pid)
 echo ($pid ? ' ' : ''), $username, ' @ NERDZ';
 if($pid)
     echo ' #',$pid;
+if($action)
+    echo ' - ', $action;
 ?>" />
     <meta name="robots" content="index,follow" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -85,6 +87,10 @@ else
     echo $username;
 if($pid)
     echo ' #', $pid;
+
+if($action)
+    echo ' - ', $action;
+
 echo ' @ '.NERDZ\Core\Utils::getSiteName();
 ?></title>
     <link rel="alternate" type="application/atom+xml" title="<?php echo $username; ?>" href="http://<?php echo Config\SITE_HOST; ?>/feed.php?id=<?php echo $id; ?>" />

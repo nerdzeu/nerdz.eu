@@ -27,23 +27,8 @@ $vals['caniblacklist_b'] = false;
 
 if($vals['logged_b'])
 {
-    $vals['canifollow_b'] = 0 == Db::query(
-        [
-            'SELECT "to" FROM "followers" WHERE "from" = :me AND "to" = :id',
-            [
-                ':me' => $_SESSION['id'],
-                ':id' => $info->counter
-            ]
-        ],Db::ROW_COUNT);
-
-    $vals['caniblacklist_b'] = 0 == Db::query(
-        [
-            'SELECT "to" FROM "blacklist" WHERE "from" = :me AND "to" = :id',
-            [
-                ':me' => $_SESSION['id'],
-                ':id' => $info->counter
-            ]
-        ], db::ROW_COUNT);
+    $vals['canifollow_b']    = !$user->isFollowing($info->counter);
+    $vals['caniblacklist_b'] = !$user->hasInBlacklist($info->counter);
 }
 
 $vals['privateprofile_b'] = !$info->private;
@@ -51,7 +36,7 @@ $enter = (!$vals['privateprofile_b'] && $vals['logged_b']) || ($vals['privatepro
 
 if($enter)
 {
-    $vals['gravatarurl_n'] = (new Gravatar())->getURL($info->counter);
+    $vals['gravatarurl_n'] = $user->getGravatar($info->counter);
 
     $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/onErrorImg.php';
     $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.Config\SITE_HOST : $info->website;
@@ -128,20 +113,19 @@ if($enter)
 
     $vals['lastvisit_n'] = $user->getDateTime($o->last);
 
-    $vals['singlepost_b']    = isset($pid) && isset($id) && is_numeric($pid);
+    $vals['singlepost_b']    = isset($pid)    && isset($id) && is_numeric($pid);
     $vals['friends_b']       = isset($action) && $action == 'friends';
     $vals['followers_b']     = isset($action) && $action == 'followers';
     $vals['following_b']     = isset($action) && $action == 'following';
-    $vals['interactions_b']  = isset($action) && $action == 'following';
+    $vals['interactions_b']  = isset($action) && $action == 'interactions';
 
-    if(!$vals['singlepost_b'] || !$vals['friends_b'] || !$vals['followers_b'] || !$vals['following_b'] || !$vals['interactions_b'])
+    if(!$vals['singlepost_b'] && !$vals['friends_b'] && !$vals['followers_b'] && !$vals['following_b'] && !$vals['interactions_b'])
     {
         if(!$user->hasClosedProfile($info->counter))
             $vals['canwrite_b'] = true;
         else
             $vals['canwrite_b'] = $vals['logged_b'] && ($info->counter == $_SESSION['id'] || in_array($_SESSION['id'],$user->getWhitelist($info->counter)));
-    } else
-    {
+    } else {
         $vals['canwrite_b'] = false; // don't show textarea when in a singlepost
     }
 
@@ -151,11 +135,6 @@ if($enter)
 
     if(!empty($f))
     {
-        function sortbyusername($a, $b)
-        {
-            return (strtolower($a['username_n']) < strtolower($b['username_n'])) ? -1 : 1;
-        }
-
         $amigos = [];
         $c = 0;
         foreach($f as $val)
@@ -166,7 +145,7 @@ if($enter)
                 ++$c;
             }
 
-        usort($amigos,'sortbyusername');
+        usort($amigos,'NERDZ\\Core\\Utils::sortByUsername');
     }
     else
         $amigos = [];
@@ -290,17 +269,24 @@ if($enter)
             $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/singlepost.html.php';
             $found = true;
         }
-    }
     //TODO: place follow{ing|ers}, friends and interactions handling here
     // followers and interactions -> common to project
     // following and friends only users
+        //
+    } elseif($vals['friends_b']) {
+        $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/friends.html.php';
+    } elseif($vals['following_b']) {
+        $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/following.html.php';
+    } elseif($vals['followers_b']) {
+        $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/followers.html.php';
+    } elseif($vals['interactions_b']) {
+         $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/interactions.html.php';
+    }
 
-    if(($vals['singlepost_b'] && $found) ||
-        !$vals['singlepost_b'] ||
-        !$vals['friends_b']    ||
-        !$vals['followers_b']  ||
-        !$vals['following_b']  ||
-        !$vals['interactions_b'])
+    if(
+        (($vals['singlepost_b'] && $found) || !$vals['singlepost_b']) ||
+        !$vals['friends_b']
+    )
     {
         $user->getTPL()->assign($vals);
         $user->getTPL()->draw('profile/layout');

@@ -55,7 +55,7 @@ case 'show':
 
     $vals = [];       
     $vals['currentuserprofile_n'] = \NERDZ\Core\Utils::userLink($_SESSION['id']);
-    $vals['currentusergravatar_n'] = (new Gravatar())->getURL($_SESSION['id']);
+    $vals['currentusergravatar_n'] = $user->getGravatar($_SESSION['id']);
     $vals['currentusername_n'] = User::getUsername();
     $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/red_x.png';
     $vals['list_a'] = $_list;

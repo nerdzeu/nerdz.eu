@@ -112,5 +112,17 @@ class Utils
     {
         return Config\SITE_NAME.( User::isOnMobileHost() ? 'Mobile' : '' );
     }
+
+    public static function sortByUsername($a, $b)
+    {
+        return (strtolower($a['username_n']) < strtolower($b['username_n'])) ? -1 : 1;
+    }
+
+    public static function actionValidator($action)
+    {
+        return in_array($action, [ 'friends', 'followers', 'following', 'interactions' ])
+            ? $action
+            : false;
+    }
 }
 ?>

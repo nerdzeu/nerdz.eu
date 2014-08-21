@@ -588,6 +588,23 @@ class User
             ],Db::ROW_COUNT);
     }
 
+    public function isFollowing($id, $project = false)
+    {
+        if(!$this->isLogged())
+            return false;
+
+        $table = ($project ? 'groups_' : '').'followers';
+
+        return $stmt = Db::query(
+            [
+                'SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "to" = :other',
+                [
+                    ':from'  => $_SESSION['id'],
+                    ':other' => $id
+                ]
+            ],Db::ROW_COUNT);
+    }
+
     public function hasLocked($post, $project = false)
     {
         $table = ($project ? 'groups_' : '').'posts_no_notify';
@@ -677,6 +694,11 @@ class User
             ],Db::FETCH_OBJ)))
             return false;
         return $o->email;
+    }
+
+    public function getGravatar($id)
+    {
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower($this->getEmail($id)));
     }
 
     public function getId($username = null)

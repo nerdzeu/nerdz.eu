@@ -40,11 +40,6 @@ else
     }
     else
     {
-        function sortbyusername($a, $b)
-        {
-            return (strtolower($a['username_n']) < strtolower($b['username_n'])) ? -1 : 1;
-        }
-
         $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
         $domain = $ssl ? '' : Config\STATIC_DOMAIN;
         $vals['photo_n'] = Utils::getValidImageURL($info->photo, $domain, $ssl);
@@ -65,9 +60,7 @@ else
             $vals['members_a'][$i]['username4link_n'] = \NERDZ\Core\Utils::userLink($uname);
             ++$i;
         }
-
-        usort($vals['members_a'],'sortbyusername');
-
+        usort($vals['members_a'],'NERDZ\\Core\\Utils::sortByUsername');
 
         $fol = $project->getFollowers($info->counter);
         $vals['users_n'] = count($fol);
@@ -81,7 +74,7 @@ else
             $vals['users_a'][$i]['username4link_n'] = \NERDZ\Core\Utils::userLink($uname);
             ++$i;
         }
-        usort($vals['users_a'],'sortbyusername');
+        usort($vals['users_a'],'NERDZ\\Core\\Utils::sortByUsername');
 
         $vals['owner_n'] = User::getUsername($info->owner);
         $vals['owner4link_n'] =  \NERDZ\Core\Utils::userLink($vals['owner_n']);

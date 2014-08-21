@@ -194,12 +194,10 @@ class Comments extends Messages
         if (!$useLimitedQuery)
             $blist = $r->fetchAll(PDO::FETCH_COLUMN);
 
-        $grav = new Gravatar();
-
         while(($o = $f->fetch(PDO::FETCH_OBJ)))
         {
             $users[$o->from] = User::getUsername($o->from);
-            $gravurl[$o->from] = $grav->getURL($o->from);
+            $gravurl[$o->from] = $this->user->getGravatar($o->from);
             $nonot[] = $o->from;
         }
 

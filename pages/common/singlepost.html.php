@@ -1,5 +1,5 @@
 <?php
-if(!isset($hpid))
+if(empty($hpid))
     die('$hpid required');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
@@ -9,9 +9,6 @@ use NERDZ\Core\Messages;
 
 $prj = isset($prj);
 $messages = new Messages();
-
-if( empty($hpid) )
-    die($user->lang('ERROR'));
 
 $user->getTPL()->assign($messages->getPost($hpid, ['project' => $prj ]));
 
