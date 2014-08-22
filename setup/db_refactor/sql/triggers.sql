@@ -57,6 +57,9 @@ END $func$ LANGUAGE plpgsql;
 CREATE FUNCTION before_insert_follower() RETURNS TRIGGER AS $$
 BEGIN
     PERFORM flood_control('"followers"', NEW."from");
+    IF NEW."from" = NEW."to" THEN
+        RAISE EXCEPTION 'CANT_FOLLOW_YOURSELF';
+    END IF;
     PERFORM blacklist_control(NEW."from", NEW."to");
     RETURN NEW;
 END $$ LANGUAGE plpgsql;

@@ -9,26 +9,14 @@ use \PDO;
 $messages = new Messages();
 
 $limit = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'], 20) : 20;
+$order = isset($_GET['asc']) && $_GET['asc'] == 1 ? 'ASC' : 'DESC';
+$q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
+$orderby = 'time';
 
 $prj = isset($_GET['project']);
 
-switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
-{
-case 'preview':
-    $orderby = 'message';
-    break;
-
-default:
-    $orderby = 'time';
-    break;
-}
-
-$order = isset($_GET['asc']) && $_GET['asc'] == 1 ? 'ASC' : 'DESC';
-
 $vals = [];
 $vals['project_b'] = $prj;
-
-$q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
 
 if($prj)
 {
@@ -89,26 +77,13 @@ if(($r = Db::query($query,Db::FETCH_STMT)))
     }
 }
 
-$desc = $order == 'DESC' ? '1' : '0';
-$url = "?orderby={$orderby}&amp;desc={$desc}&amp;q={$q}".($prj ? '&amp;project=1' : '');
-if(is_numeric($limit))
-{
-    $vals['prev_url_n'] = '';
-    $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
-}
-else
-{
-    if(2 == sscanf($_GET['lim'],"%d,%d",$a,$b))
-    {
-        $next = $a+20;
-        $prev = $a-20;
-        $limitnext = "{$next},20";
-        $limitprev = $prev >0 ? "{$prev},20" : '20';
-    }
-
-    $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
-    $vals['prev_url_n'] = $url."&amp;lim={$limitprev}";
-}
+\NERDZ\Core\Security::setNextAndPrevURLs($vals, $limit,
+    [
+        'order' => $order,
+        'query' => $q,
+        'field' => empty($_GET['orderby']) ? '' : $_GET['orderby'],
+        'validFields' => [ 'time' ]
+    ]);
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 

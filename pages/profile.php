@@ -272,7 +272,6 @@ if($enter)
     //TODO: place follow{ing|ers}, friends and interactions handling here
     // followers and interactions -> common to project
     // following and friends only users
-        //
     } elseif($vals['friends_b']) {
         $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/friends.html.php';
     } elseif($vals['following_b']) {

@@ -176,6 +176,30 @@ class User
             ],Db::FETCH_ERRNO) == Db::NO_ERRNO;
     }
 
+    public function getBasicInfo($id = null)
+    {
+        if($this->isLogged() && !$id)
+            $id = $_SESSION['id'];
+
+        if(empty($id))
+            return [];
+
+        $o = $this->getObject($id);
+        $ret = [];
+        $ret['username_n']      = $o->username;
+        $ret['username4link_n'] = Utils::userLink($o->username);
+        $ret['id_n']            = $id;
+        $ret['name_n']          = $o->name;
+        $ret['surname_n']       = $o->surname;
+        $ret['gravatarurl_n']   = $this->getGravatar($id);
+        $ret['canshowfollow_b'] = $this->isLogged() && $id !== $_SESSION['id'];
+        $ret['canifollow_b']    = !$this->isFollowing($id);
+        $ret['birthdate_n']     = $this->getDateTime(strtotime($o->birth_date));
+        $ret['since_n']         = $this->getDateTime(strtotime($o->registration_time));
+
+        return $ret;
+    }
+
     public function getBoardLanguage($id = null)
     {
         $logged = $this->isLogged();
@@ -316,14 +340,16 @@ class User
         return $o->cc;
     }
 
-    public function getFriends($id) {
+    public function getFriends($id, $limit = 0) {
+        $limit = Security::limitControl($limit, 0);
+
         if(!($stmt = Db::query(
             [
                 'select "to" from (
                     select "to" from followers where "from" = :id) as f
                     inner join 
                     (select "from" from followers where "to" = :id) as e
-                    on f.to = e.from',
+                    on f.to = e.from'.($limit != 0 ? ' limit '.$limit : ''),
                 [
                     ':id' => $id
                 ]
@@ -1019,6 +1045,5 @@ class User
 
         return $o->username;
     }
-
 }
 ?>

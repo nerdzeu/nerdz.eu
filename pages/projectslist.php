@@ -2,38 +2,27 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 
+$validFields = [ 'name', 'description' ];
+
 $limit = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'],20) : 20;
-
-switch(isset($_GET['orderby']) ? trim(strtolower($_GET['orderby'])) : '')
-{
-case 'name':
-    $orderby = 'name';
-    break;
-
-case 'description':
-    $orderby = 'description';
-    break;
-
-case 'id':
-default:
-    $orderby = 'counter';
-    break;
-}
-
 $order = isset($_GET['desc']) && $_GET['desc'] == 1 ? 'DESC' : 'ASC';
+$q     = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
+$orderby = isset($_GET['orderby']) ? NERDZ\Core\Security::fieldControl($_GET['orderby'], $validFields, 'name') : 'name';
 
 $vals = [];
 
-$q = empty($_GET['q']) ? '' : htmlspecialchars($_GET['q'],ENT_QUOTES,'UTF-8');
-
-if(empty($q))
-    $query = "SELECT name, description,counter FROM groups ORDER BY {$orderby} {$order} LIMIT {$limit}";
-else
-{
-    $orderbycounter = $orderby == 'counter';
-    $query = array("SELECT name,description, counter FROM groups WHERE CAST({$orderby} AS TEXT) ".($orderbycounter ? '=' : 'ILIKE')." ? ORDER BY {$orderby} {$order} LIMIT {$limit}",
-        $orderbycounter ? array($q) : array("%{$q}%"));
-}
+$query = empty($q)
+    ? "SELECT name, description,counter
+      FROM groups
+      ORDER BY {$orderby} {$order} LIMIT {$limit}"
+    : [
+          "SELECT name,description, counter
+           FROM groups WHERE CAST({$orderby} AS TEXT) ILIKE ?
+           ORDER BY {$orderby} {$order} LIMIT {$limit}",
+           [
+               "%{$q}%"
+           ]
+      ];
 
 $vals['list_a'] = [];
 
@@ -50,26 +39,13 @@ if(($r = Db::query($query,Db::FETCH_STMT)))
     }
 }
 
-$desc = $order == 'DESC' ? '1' : '0';
-$url = "?orderby={$orderby}&amp;desc={$desc}&amp;q={$q}";
-if(is_numeric($limit))
-{
-    $vals['prev_url_n'] = '';
-    $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
-}
-else
-{
-    if(2 == sscanf($_GET['lim'],"%d,%d",$a,$b))
-    {
-        $next =  $a+20;
-        $prev = $a-20;
-        $limitnext = "{$next},20";
-        $limitprev = $prev >0 ? "{$prev},20" : '20';
-    }
-
-    $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
-    $vals['prev_url_n'] = $url."&amp;lim={$limitprev}";
-}
+\NERDZ\Core\Security::setNextAndPrevURLs($vals, $limit,
+    [
+        'order' => $order,
+        'query' => $q,
+        'field' => empty($_GET['orderby']) ? '' : $_GET['orderby'],
+        'validFields' => $validFields
+    ]);
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 

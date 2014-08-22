@@ -257,7 +257,7 @@ final class RainTPL
         $template_code = preg_replace_callback ( "/##XML(.*?)XML##/s", array($this, 'xml_reSubstitution'), $template_code ); 
 
         //compile template
-        $template_compiled = "<?php if(!class_exists('".__NAMESPACE__."\\RainTPL')) die('".__NAMESPACE__."\\RainTPL does not exists'); if(!isset(\$user)) die('core not set');?>" . $this->compileTemplate( $template_code, $tpl_basedir );
+        $template_compiled = "<?php if(!class_exists('".__NAMESPACE__."\\RainTPL')) die('".__NAMESPACE__."\\RainTPL does not exists'); if(!isset(\$user)) die('user not set');?>" . $this->compileTemplate( $template_code, $tpl_basedir );
 
 
         // fix the php-eating-newline-after-closing-tag-problem
