@@ -33,14 +33,7 @@ Setup
 
   Lighttpd:
 
-  ```lighttpd
-  url.rewrite-once = (
-    "^/(.+?)\.$" => "/profile.php?id=$1",
-    "^/(.+?):$" => "/project.php?gid=$1",
-    "^/(.+?)\.(\d+)$" => "/profile.php?id=$1&pid=$2",
-    "^/(.+?):(\d+)$" => "/project.php?gid=$1&pid=$2",
-  )
-  ```
+  Please go to `servers/lighttpd` to see a full working virtual host configuration.
 
   Nginx:
 

@@ -282,10 +282,7 @@ if($enter)
          $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/interactions.html.php';
     }
 
-    if(
-        (($vals['singlepost_b'] && $found) || !$vals['singlepost_b']) ||
-        !$vals['friends_b']
-    )
+    if(($vals['singlepost_b'] && $found) || !$vals['singlepost_b'])
     {
         $user->getTPL()->assign($vals);
         $user->getTPL()->draw('profile/layout');

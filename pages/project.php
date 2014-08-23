@@ -98,7 +98,10 @@ else
         $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $info->owner);
 
         $vals['singlepost_b'] = isset($pid) && isset($gid) && is_numeric($pid);
-        if(!$vals['singlepost_b'])
+        $vals['followers_b']     = isset($action) && $action == 'followers';
+        $vals['interactions_b']  = isset($action) && $action == 'interactions';
+
+        if(!$vals['singlepost_b'] && !$vals['followers_b'] && !$vals['interactions_b'])
         {
             $vals['canwrite_b']      = $vals['logged_b'] && ($project->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
             $vals['canwriteissue_b'] = $vals['logged_b'] && ($info->counter == Config\ISSUE_BOARD);
@@ -138,6 +141,12 @@ else
                 $found = true;
             }
         }
+        elseif($vals['followers_b']) {
+            $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/followers.html.php';
+        } elseif($vals['interactions_b']) {
+            $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/interactions.html.php';
+        }
+
         if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
         {
             $user->getTPL()->assign($vals);

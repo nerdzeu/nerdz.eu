@@ -48,16 +48,17 @@ class Security
         return $default;
     }
 
-    public static function setNextAndPrevURLs(array &$vals, $limit, array $options)
+    public static function setNextAndPrevURLs(array &$vals, $limit, array $options = null)
     {
-
-        extract($options);
+        extract((array)$options);
         $order = !empty($order) ? $order : false;
         $query = !empty($query) ? $query : false;
         $field = !empty($field) ? $field : false;
+
+        $maxElements  = !empty($maxElements) ? $maxElements : 20;
         $validFields = !empty($validFields) && is_array($validFields) ? $validFields : [];
 
-        $limit = static::limitControl($limit, 20);
+        $limit = static::limitControl($limit, $maxElements);
 
         $queryParams = [];
         $queryParams['order'] = $order ? 'desc='.(trim(strtolower($order)) == 'desc' ? '1' : '0') : '';
@@ -66,22 +67,22 @@ class Security
         if(static::fieldControl($field, $validFields))
             $queryParams['field'] = 'orderby='.$field;
 
-        $url = '?'.implode('&amp;',$queryParams);
+        $url = '?'.implode('&amp;',array_filter($queryParams));
 
         if(is_numeric($limit)) {
             $vals['prev_url_n'] = '';
-            $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url.'&amp;lim=20,20' : '';
+            $vals['next_url_n'] = count($vals['list_a']) == $maxElements ? "{$url}&amp;lim={$maxElements},{$maxElements}" : '';
         } else {
-            $limitnext = $limitprev = '20';
+            $limitnext = $limitprev = $maxElements;
 
-            if(2 == sscanf($_GET['lim'],"%d,%d",$a,$b)) {
-                $next = $a+20;
-                $prev = $a-20;
-                $limitnext = "{$next},20";
-                $limitprev = $prev >0 ? "{$prev},20" : '20';
+            if(2 == sscanf($_GET['lim'],'%d,%d',$a,$b)) {
+                $next = $a+$maxElements;
+                $prev = $a-$maxElements;
+                $limitnext = "{$next},{$maxElements}";
+                $limitprev = $prev >0 ? "{$prev},{$maxElements}" : $maxElements;
             }
 
-            $vals['next_url_n'] = count($vals['list_a']) == 20 ? $url."&amp;lim={$limitnext}" : '';
+            $vals['next_url_n'] = count($vals['list_a']) == $maxElements ? $url."&amp;lim={$limitnext}" : '';
             $vals['prev_url_n'] = $url."&amp;lim={$limitprev}";
         }
     }

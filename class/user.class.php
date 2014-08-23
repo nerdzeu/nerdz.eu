@@ -16,7 +16,7 @@ class User
     private $browser;
 
     private static $registerArray = [ 'error', 'REGISTER' ];
-    private static $errorArray = [ 'error', 'ERRROR' ];
+    private static $errorArray    = [ 'error', 'ERRROR' ];
 
     public function __construct()
     {
@@ -341,7 +341,8 @@ class User
     }
 
     public function getFriends($id, $limit = 0) {
-        $limit = Security::limitControl($limit, 0);
+        if($limit)
+            $limit = Security::limitControl($limit, 20);
 
         if(!($stmt = Db::query(
             [

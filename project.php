@@ -14,10 +14,9 @@ $tplcfg = $user->getTemplateCfg();
 
 $gid = isset($_GET['gid']) && is_numeric($_GET['gid']) ? $_GET['gid'] : false;
 $pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? $_GET['pid'] : false;
-if(!$gid)
-    $create = true;
-else
-    $create = false;
+$action = NERDZ\Core\Utils::actionValidator(!empty($_GET['action']) && is_string ($_GET['action']) ? $_GET['action'] : false);
+
+$create = !$gid;
 $found = false;
 $post = new stdClass();
 $post->message = '';
