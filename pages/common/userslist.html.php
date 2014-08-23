@@ -29,6 +29,7 @@ usort($ret, 'NERDZ\\Core\\Utils::sortByUsername');
 
 $myvals = [];
 $myvals['list_a'] = $ret;
+$myvals['totalusers_n'] = count($ret);
 $myvals['type_n'] = $type;
 
 NERDZ\Core\Security::setNextAndPrevURLs($myvals, $limit,

@@ -530,7 +530,7 @@ insert into flood_limits(table_name, time) values
 ('groups_comments','00:05'),
 ('groups_comment_thumbs', '00:01'),
 --profiles
-('followers', '00:30'),
+('followers', '00:03'),
 --groups
-('groups_followers', '0:30');
+('groups_followers', '0:03');
 
