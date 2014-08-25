@@ -1,11 +1,10 @@
 <?php
 /**
- * constants.inc.php 
  * automatically defines constants and checks options in config/index.php
  */
 namespace NERDZ\Core;
 
-//define('DEBUG', 1);
+define('DEBUG', 1);
 
 use NERDZ\Core\Config\Variables;
 
