@@ -96,12 +96,15 @@ class Project
         return $o->open;
     }
 
-    public function getMembers($id = null)
+    public function getMembers($id = null, $limit = 0)
     {
         $this->checkId($id);
+        if($limit)
+            $limit = Security::limitControl($limit, 20);
+
         if(!($stmt = Db::query(
             [
-                'SELECT "from" FROM "groups_members" WHERE "to" = :id',
+                'SELECT "from" FROM "groups_members" WHERE "to" = :id'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':id' => $id
                 ]
@@ -111,12 +114,15 @@ class Project
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getFollowers($id = null)
+    public function getFollowers($id = null, $limit = 0)
     {
         $this->checkId($id);
+        if($limit)
+            $limit = Security::limitControl($limit, 20);
+
         if(!($stmt = Db::query(
             [
-                'SELECT "from" FROM "groups_followers" WHERE "to" = :id',
+                'SELECT "from" FROM "groups_followers" WHERE "to" = :id'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':id' => $id
                 ]
@@ -124,6 +130,34 @@ class Project
             return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getFollowersCount($id = null)
+    {
+        $this->checkId($id);
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("from") AS cc FROM "groups_followers" WHERE "to" = :id',
+                [
+                    ':id' => $id
+                ]
+            ], Db::FETCH_OBJ)))
+            return 0;
+        return $o->cc;
+    }
+
+    public function getMembersCount($id = null)
+    {
+        $this->checkId($id);
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("from") AS cc FROM "groups_members" WHERE "to" = :id',
+                [
+                    ':id' => $id
+                ]
+            ], Db::FETCH_OBJ)))
+            return 0;
+        return $o->cc;
     }
 
     public static function getName($id = null)

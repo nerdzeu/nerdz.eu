@@ -45,7 +45,7 @@ class Comments extends Messages
 
     public function edit($hcid, $message, $project = false)
     {
-        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8');
+        $message = static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8'));
         $table = ($project ? 'groups_' : '').'comments';
 
         if(!($obj = Db::query(
@@ -225,7 +225,7 @@ class Comments extends Messages
         return $ret;
     }
 
-    public function parseQuote($message)
+    public static function parseQuote($message)
     {
         $i = 0;
         $pattern = '#\[quote=([0-9]+)\|p\]#i';
@@ -281,7 +281,7 @@ class Comments extends Messages
                     )
                     return 'ERROR';
 
-        $message = trim($this->parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
+        $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
         if(($user = $stmt->fetch(PDO::FETCH_OBJ)))
         {
@@ -307,7 +307,7 @@ class Comments extends Messages
                 ],Db::FETCH_ERRSTR);
     }
 
-    public function getMessage($hcid, $project = false)
+    public static function getMessage($hcid, $project = false)
     {
         $table = ($project ? 'groups_' : '').'comments';
 
@@ -323,7 +323,7 @@ class Comments extends Messages
         return $o->message;
     }
 
-    private function getUsernameFromCid($hcid, $project = false)
+    private static function getUsernameFromCid($hcid, $project = false)
     {
         $table = ($project ? 'groups_' : '').'comments';
         if(!($o = Db::query(array('SELECT "from" FROM "'.$table.'" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)))

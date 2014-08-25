@@ -9,6 +9,7 @@ use NERDZ\Core\Db;
 $prj = isset($prj);
 $entity = $prj ? new Project() : new User();
 $users  = $entity->getFollowers($id);
+$total  = $entity->getFollowersCount($id);
 $type   = 'followers';
 $user = new User();
 $dateExtractor = function($friendId) use ($id,$user, $prj) {

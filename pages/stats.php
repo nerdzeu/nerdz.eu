@@ -53,5 +53,7 @@ $vals['lastupdate_n']           = $user->getDateTime(Utils::apc_getLastModified(
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
 $user->getTPL()->assign($vals);
-$user->getTPL()->draw('base/stats');
+
+if(isset($draw))
+    $user->getTPL()->draw('base/stats');
 ?>

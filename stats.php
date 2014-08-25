@@ -23,6 +23,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
     <div id="body">
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
+$draw = true;
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/stats.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
 ?>

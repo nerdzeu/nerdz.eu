@@ -1,23 +1,24 @@
 <?php
-if(!isset($id, $user))
+if(!isset($gid, $user, $project))
     die('$id & user required');
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 
-$limit   = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'], 20) : 20;
-$users = $user->getFollowing($id, $limit);
-$total = $user->getFollowingCount($id);
-$type = 'following';
-$dateExtractor = function($friendId) use ($id,$user) {
-    $profileId = $id;
+$limit = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'], 20) : 20;
+$users = $project->getMembers($gid, $limit);
+$total = $project->getMembersCount($gid);
+$type  = 'members';
+$dateExtractor = function($memberId) use ($gid,$user) {
+    $projectId = $gid;
     $since = Db::query(
         [
             'SELECT EXTRACT(EPOCH FROM time) AS time
-            FROM "followers"
-            WHERE "from" = :id AND "to" = :fid',
+            FROM "groups_members"
+            WHERE "from" = :fid AND "to" = :id',
             [
-                ':id' => $profileId,
-                ':fid' => $friendId
+                ':id' => $projectId,
+                ':fid' => $memberId
             ]
         ],Db::FETCH_OBJ);
     if(!$since) {

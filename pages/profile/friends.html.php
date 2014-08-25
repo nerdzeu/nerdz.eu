@@ -4,7 +4,10 @@ if(!isset($id, $user))
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 
-$users = $user->getFriends($id);
+$limit   = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'], 20) : 20;
+
+$users = $user->getFriends($id, $limit);
+$total = $user->getFriendsCount($id);
 $type = 'friends';
 $dateExtractor = function($friendId) use ($id,$user) {
     $profileId = $id;

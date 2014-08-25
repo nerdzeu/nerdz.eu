@@ -357,7 +357,7 @@ class Messages
         return str_replace('%%12now is34%%',$this->user->lang('NOW_IS'),$message);
     }
 
-    public function getMessage($hpid,$project = false)
+    public static function getMessage($hpid,$project = false)
     {
         $table = ($project ? 'groups_' : '').'posts';
 
@@ -484,7 +484,7 @@ class Messages
                     [
                         ':id'      => $_SESSION['id'],
                         ':to'      => $to,
-                        ':message' => htmlspecialchars($message,ENT_QUOTES,'UTF-8'),
+                        ':message' => Comments::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')),
                     ':news'    => $news ? 'true' : 'false'
                 ]
             ],Db::FETCH_ERRSTR);
@@ -533,7 +533,7 @@ class Messages
 
     public function edit($hpid, $message, $project = false)
     {
-        $message = htmlspecialchars($message,ENT_QUOTES,'UTF-8');
+        $message = Comments::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8'));
         $table = ($project ? 'groups_' : '').'posts';
 
         if(!($obj = Db::query(

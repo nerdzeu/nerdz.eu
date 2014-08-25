@@ -97,11 +97,12 @@ else
 
         $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $info->owner);
 
-        $vals['singlepost_b'] = isset($pid) && isset($gid) && is_numeric($pid);
+        $vals['singlepost_b']    = isset($pid) && isset($gid) && is_numeric($pid);
         $vals['followers_b']     = isset($action) && $action == 'followers';
+        $vals['members_b']       = isset($action) && $action == 'members';
         $vals['interactions_b']  = isset($action) && $action == 'interactions';
 
-        if(!$vals['singlepost_b'] && !$vals['followers_b'] && !$vals['interactions_b'])
+        if(!$vals['singlepost_b'] && !$vals['followers_b'] && !$vals['interactions_b'] && ! $vals['members_b'])
         {
             $vals['canwrite_b']      = $vals['logged_b'] && ($project->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
             $vals['canwriteissue_b'] = $vals['logged_b'] && ($info->counter == Config\ISSUE_BOARD);
@@ -145,6 +146,8 @@ else
             $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/followers.html.php';
         } elseif($vals['interactions_b']) {
             $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/interactions.html.php';
+        } elseif($vals['members_b']) {
+            $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/members.html.php';
         }
 
         if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))

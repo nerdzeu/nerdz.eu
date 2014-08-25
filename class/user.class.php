@@ -286,11 +286,14 @@ class User
         return empty($o->lang) ? System::getBrowserLanguage() : $o->lang;
     }
 
-    public function getFollowing($id)
+    public function getFollowing($id, $limit = 0)
     {
+        if($limit)
+            $limit = Security::limitControl($limit, 20);
+
         if(!($stmt = Db::query(
             [
-                'SELECT "to" FROM "followers" WHERE "from" = :id',
+                'SELECT "to" FROM "followers" WHERE "from" = :id'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':id' => $id
                 ]
@@ -313,11 +316,14 @@ class User
         return $o->cc;
     }
 
-    public function getFollowers($id)
+    public function getFollowers($id, $limit = 0)
     {
+        if($limit)
+            $limit = Security::limitControl($limit, 20);
+
         if(!($stmt = Db::query(
             [
-                'SELECT "from" FROM "followers" WHERE "to" = :id',
+                'SELECT "from" FROM "followers" WHERE "to" = :id'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':id' => $id
                 ]
@@ -350,7 +356,7 @@ class User
                     select "to" from followers where "from" = :id) as f
                     inner join 
                     (select "from" from followers where "to" = :id) as e
-                    on f.to = e.from'.($limit != 0 ? ' limit '.$limit : ''),
+                    on f.to = e.from'.($limit != 0 ? ' LIMIT '.$limit : ''),
                 [
                     ':id' => $id
                 ]
@@ -930,40 +936,6 @@ class User
         return $this->login($obj->username, $obj->password, true, false, true);
 
         return false;
-    }
-
-    public function refererControl()
-    {
-        return isset($_SERVER['HTTP_REFERER']) && in_array(parse_url($_SERVER['HTTP_REFERER'])['host'],[ Config\SITE_HOST,Config\MOBILE_HOST ] );
-    }
-
-    public function getCsrfToken($n = '')
-    {
-        $_SESSION['tok_'.$n] = isset($_SESSION['tok_'.$n]) ? $_SESSION['tok_'.$n] : md5(uniqid(rand(7,21)));
-        return $_SESSION['tok_'.$n];
-    }
-
-    public function csrfControl($tok,$n = '')
-    {
-        if(empty($_SESSION['tok_'.$n]))
-            return false;
-        return $_SESSION['tok_'.$n] === $tok;
-    }
-
-    public function limitControl($limit,$n)
-    {
-        if(is_numeric($limit) && $limit < $n && $limit > 0)
-            return $limit;
-
-        if(!is_string($limit))
-            return $n;
-
-        $r = sscanf($limit,'%d,%d',$a,$b);
-
-        if($r != 2 || ($r == 2 && $b > $n) )
-            return $n;
-
-        return "{$b} OFFSET {$a}";
     }
 
     public function parseDbMessage($msg, $otherInfo = '')

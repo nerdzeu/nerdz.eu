@@ -120,7 +120,7 @@ class Utils
 
     public static function actionValidator($action)
     {
-        return in_array($action, [ 'friends', 'followers', 'following', 'interactions' ])
+        return in_array($action, [ 'friends', 'followers', 'following', 'interactions', 'members' ])
             ? $action
             : false;
     }

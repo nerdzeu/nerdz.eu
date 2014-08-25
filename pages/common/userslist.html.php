@@ -1,11 +1,10 @@
 <?php
-if(!isset($users, $type, $dateExtractor))
-    die('$users & $type && $dateExtractor required');
+if(!isset($users, $type, $dateExtractor, $total))
+    die('$users & $type & $dateExtractor & $total required');
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\User;
 use NERDZ\Core\Utils;
-use NERDZ\Core\Db;
 
 $validFields = [ 'username', 'name', 'surname', 'birth_date', 'last', 'counter', 'registration_time' ];
 
@@ -28,9 +27,17 @@ foreach($users as $fid)
 usort($ret, 'NERDZ\\Core\\Utils::sortByUsername');
 
 $myvals = [];
-$myvals['list_a'] = $ret;
-$myvals['totalusers_n'] = count($ret);
-$myvals['type_n'] = $type;
+$myvals['list_a']           = $ret;
+$startFrom = 0;
+if(!is_numeric($limit)) {
+    $matches = [];
+    preg_match('/\d+$/',$limit, $matches);
+    if(isset($matches[0]))
+        $startFrom = $matches[0];
+}
+$myvals['displayedusers_n'] = count($ret) + $startFrom;
+$myvals['totalusers_n']     = $total;
+$myvals['type_n']           = $type;
 
 NERDZ\Core\Security::setNextAndPrevURLs($myvals, $limit,
     [

@@ -33,6 +33,10 @@ $type = 'list';
 $dateExtractor = function($friendId, $registrationDate) {
     return $registrationDate;
 };
+// Fetch total users number (from cache if present)
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/stats.php';
+// assign $vals['totusers_n'] to $total, required by userslist.html.php
+$total =  $vals['totusers_n'];
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/userslist.html.php';
 $user->getTPL()->draw('base/userslist');
 ?>

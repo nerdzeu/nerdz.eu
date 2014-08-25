@@ -131,25 +131,6 @@ if($enter)
 
     $vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
 
-    $f = $user->getFriends($info->counter);
-
-    if(!empty($f))
-    {
-        $amigos = [];
-        $c = 0;
-        foreach($f as $val)
-            if(($name = $user->getUserName($val)))
-            {
-                $amigos[$c]['username_n'] = $name;
-                $amigos[$c]['username4link_n'] = \NERDZ\Core\Utils::userLink($name);
-                ++$c;
-            }
-
-        usort($amigos,'NERDZ\\Core\\Utils::sortByUsername');
-    }
-    else
-        $amigos = [];
-
     $vals['gender_n'] = $user->lang($info->gender == 1 ? 'MALE' : 'FEMALE');
 
     $vals['biography_n'] = (new Messages())->bbcode($info->biography,1);
@@ -235,9 +216,6 @@ if($enter)
     $vals['facebook_n'] = $vals['logged_b'] ? $info->facebook : '';
     $vals['twitter_n']  = $vals['logged_b'] ? $info->twitter  : '';
     $vals['id_n']       = $id;
-
-    $vals['totalfriends_n'] = isset($c) ? $c : 0;
-    $vals['friends_a'] = $amigos;
 
     // single post like nessuno.1
     $found = false;

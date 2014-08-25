@@ -1,8 +1,11 @@
 <?php
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-$user = new NERDZ\Core\User;
-$comments = new NERDZ\Core\Comments;
+use NERDZ\Core\User;
+use NERDZ\Core\Comments;
+
+$user = new User();
+$comments = new Comments();
 
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
@@ -30,7 +33,7 @@ case 'del':
     break;
 
 case 'get':
-    if(empty($_POST['hcid']) || !($message = $comments->getMessage($_POST['hcid'], $prj)))
+    if(empty($_POST['hcid']) || !($message = Comments::getMessage($_POST['hcid'], $prj)))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
     die(NERDZ\Core\Utils::jsonResponse('ok', $message));

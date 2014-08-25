@@ -11,3 +11,4 @@
 - Add hashtag support for posts categorization -> autocategorization?
 - Fix default template to change post language (create post options menu)
 - ^^^ edit javascript API to support new features
+- Fix parsing loop of comment quote
