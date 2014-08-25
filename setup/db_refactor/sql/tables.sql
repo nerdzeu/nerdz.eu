@@ -104,7 +104,7 @@ alter table posts drop column notify;
 -- makes groups_notify similar to posts_notify
 
 -- fixes groups_notify table
-alter table groups_notify add column hpid bigint references groups_posts(hpid);
+alter table groups_notify add column hpid bigint references groups_posts(hpid) ON DELETE CASCADE;
 with firsts as (select min(hpid) as firstPost, "to" from groups_posts group by "to")
 -- put values
 update groups_notify set hpid = f.firstpost from firsts f where f.to = groups_notify."group";
