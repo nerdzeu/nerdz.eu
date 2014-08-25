@@ -22,6 +22,17 @@ if(!$capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : ''))
 if(Db::NO_ERRNO != Db::query(array('DELETE FROM "users" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_ERRNO))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
+$motivation = !empty($_POST['motivation']) ? htmlentities($_POST['motivation'], ENT_QUOTES,'UTF-8') : false;
+if($motivation)
+    Db::query(
+        [
+            'UPDATE "deleted_users" SET "motivation" = :motivation WHERE "counter" = :counter',
+            [
+                ':motivation' => $motivation,
+                ':counter'    => $_SESSION['id']
+            ]
+        ], Db::NO_RETURN);
+
 $user->logout();
 
 die(NERDZ\Core\Utils::jsonResponse('ok','Bye :('));

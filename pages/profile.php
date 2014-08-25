@@ -111,6 +111,10 @@ if($enter)
         ))
         die($user->lang('ERROR'));
 
+    $vals['following_n'] = $user->getFollowingCount($info->counter);
+    $vals['followers_n'] = $user->getFollowersCount($info->counter);
+    $vals['friends_n']   = $user->getFriendsCount($info->counter);
+
     $vals['lastvisit_n'] = $user->getDateTime($o->last);
 
     $vals['singlepost_b']    = isset($pid)    && isset($id) && is_numeric($pid);
