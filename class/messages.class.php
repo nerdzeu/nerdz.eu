@@ -377,10 +377,11 @@ class Messages
     public function getPosts($id, $options = [])
     {
         extract($options);
-        $limit        = !empty($limit)  ? $limit : 10;
-        $lang         = !empty($lang)   ? $lang : false;
-        $hpid         = !empty($hpid)   ? $hpid : false;
+        $limit        = !empty($limit)  ? $limit  : 10;
+        $lang         = !empty($lang)   ? $lang   : false;
+        $hpid         = !empty($hpid)   ? $hpid   : false;
         $search       = !empty($search) ? $search : false;
+        $vote         = !empty($vote)   ? $vote   : false;
         $project      = !empty($project);
         $inHome       = !empty($inHome);
         $onlyfollowed = !empty($onlyfollowed);
@@ -422,9 +423,9 @@ class Messages
         $glue .= $search ? ' AND p.message ILIKE :like ' : '';
         $glue .= $hpid   ? ' AND p.hpid < :hpid ' : '';
 
-        $join = '';
+        $join = $vote ? ' INNER JOIN "'.($project ?  'groups_' : '').'thumbs" t ON p.hpid = t.hpid ' : '';
         if($project) {
-            $join  = ' INNER JOIN "groups" g ON p.to = g.counter INNER JOIN "users"  u ON p."from" = u.counter ';
+            $join  .= ' INNER JOIN "groups" g ON p.to = g.counter INNER JOIN "users" u ON p."from" = u.counter ';
             $glue .= ' AND (g."visible" IS TRUE ';
 
             if($this->user->isLogged())
@@ -436,7 +437,15 @@ class Messages
 
         if(!($result = Db::query(
             [
-                'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p '.$join.' WHERE '.$glue.' ORDER BY "hpid" DESC LIMIT '.$limit,
+                'SELECT '.
+                ($vote ? 'SUM(t.vote) AS cc, ' : '').
+                ' p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.
+                $table.'" p '.$join.' WHERE '.
+                $glue.
+                ($vote ? ' GROUP BY p."hpid" ' : '').
+                ' ORDER BY '.
+                ($vote ? 'cc '.($vote == '+' ? 'DESC' : 'ASC') : "p.hpid DESC").
+                ' LIMIT '.$limit,
                     array_merge(
                         $id             ? [ ':id'   => $id ]             : [],
                         $search4Lang    ? [ ':lang' => $lang]            : [],

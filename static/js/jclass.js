@@ -999,6 +999,17 @@ N.html.profile = function()
     };
 
     /**
+     * Return the homepage with sorted by vote, starting from post number: lim
+     * @parameters lim, votetype = '+' | '-'
+     */
+    this.getByVoteHomePostList = function(lim, vote, done)
+    {
+        this.post('/pages/home/home.html.php?action=profile', {limit: !lim ? '0' : lim+",10", vote: vote}, function(d) {
+            done(d);
+        });
+    };
+
+    /**
      * Return the homepage with only posts made by follwed users (10 post), starting from post number: lim
      * @parameters lim
      */
@@ -1027,6 +1038,17 @@ N.html.profile = function()
     this.getHomePostListBeforeHpid = function(lim, hpid, done)
     {
         this.post('/pages/home/home.html.php?action=profile',{limit: lim ? lim : "10",hpid: hpid}, function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * Return the homepage with sorted by vote, starting from post with id = hpid
+     * @parameters lim, votetype = '+' | '-'
+     */
+    this.getByVoteHomePostListBeforeHpid = function(lim, vote, hpid, done)
+    {
+        this.post('/pages/home/home.html.php?action=profile', {limit: !lim ? '0' : lim+",10", vote: vote, hpid: hpid}, function(d) {
             done(d);
         });
     };
@@ -1154,6 +1176,17 @@ N.html.project = function()
     };
 
     /**
+     * Return the homepage with sorted by vote, starting from post number: lim
+     * @parameters lim, votetype = '+' | '-'
+     */
+    this.getByVoteHomePostList = function(lim, vote, done)
+    {
+        this.post('/pages/home/home.html.php?action=project', {limit: !lim ? '0' : lim+",10", vote: vote}, function(d) {
+            done(d);
+        });
+    };
+
+    /**
      * Return the homepage with only posts made by follwed users (10 post), starting from post number: lim
      * @parameters lim
      */
@@ -1182,6 +1215,17 @@ N.html.project = function()
     this.getHomePostListBeforeHpid = function(lim, hpid, done)
     {
         this.post('/pages/home/home.html.php?action=project',{limit: lim ? lim : "10", hpid:hpid}, function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * Return the homepage with sorted by vote, starting from post with id = hpid
+     * @parameters lim, votetype = '+' | '-'
+     */
+    this.getByVoteHomePostListBeforeHpid = function(lim, vote, hpid, done)
+    {
+        this.post('/pages/home/home.html.php?action=profile', {limit: !lim ? '0' : lim+",10", vote: vote, hpid: hpid}, function(d) {
             done(d);
         });
     };
