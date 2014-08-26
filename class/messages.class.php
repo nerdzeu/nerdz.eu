@@ -444,7 +444,8 @@ class Messages
                 $glue.
                 ($vote ? ' GROUP BY p."hpid" ' : '').
                 ' ORDER BY '.
-                ($vote ? 'cc '.($vote == '+' ? 'DESC' : 'ASC') : "p.hpid DESC").
+                ($vote ? 'cc '.($vote == '+' ? 'DESC' : 'ASC') .',' : '').
+                'p.hpid DESC'.
                 ' LIMIT '.$limit,
                     array_merge(
                         $id             ? [ ':id'   => $id ]             : [],
