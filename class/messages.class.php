@@ -425,7 +425,7 @@ class Messages
 
         $join = $vote ? ' INNER JOIN "'.($project ?  'groups_' : '').'thumbs" t ON p.hpid = t.hpid ' : '';
         if($project) {
-            $join  .= ' INNER JOIN "groups" g ON p.to = g.counter INNER JOIN "users" u ON p."from" = u.counter ';
+            $join .= ' INNER JOIN "groups" g ON p.to = g.counter INNER JOIN "users" u ON p."from" = u.counter ';
             $glue .= ' AND (g."visible" IS TRUE ';
 
             if($this->user->isLogged())

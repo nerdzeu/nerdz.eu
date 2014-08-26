@@ -1225,7 +1225,7 @@ N.html.project = function()
      */
     this.getByVoteHomePostListBeforeHpid = function(lim, vote, hpid, done)
     {
-        this.post('/pages/home/home.html.php?action=profile', {limit: !lim ? '0' : lim+",10", vote: vote, hpid: hpid}, function(d) {
+        this.post('/pages/home/home.html.php?action=project', {limit: !lim ? '0' : lim+",10", vote: vote, hpid: hpid}, function(d) {
             done(d);
         });
     };
