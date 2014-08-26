@@ -4,7 +4,7 @@
  */
 namespace NERDZ\Core;
 
-define('DEBUG', 1);
+//define('DEBUG', 1);
 
 use NERDZ\Core\Config\Variables;
 
