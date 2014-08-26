@@ -113,3 +113,23 @@ BEGIN
 
    RETURN;
 END $$;
+
+-- drop no more required functions and function that will be replaced
+-- before delete or now handled with on delete cascade foreign key
+-- this drops goes here because otherwise insert statement will use old triggers causing real pain
+DROP FUNCTION before_delete_post() CASCADE;
+DROP FUNCTION before_delete_group() CASCADE;
+DROP FUNCTION before_delete_groups_posts() CASCADE;
+DROP FUNCTION before_delete_user() CASCADE;
+
+DROP FUNCTION before_insert_post() CASCADE; -- become user_post
+DROP FUNCTION before_insert_blacklist() CASCADE; -- become after_insert_blacklist
+DROP FUNCTION before_insert_groups_post() CASCADE; -- become group_post_control
+DROP FUNCTION notify_user_comment() CASCADE; -- become user_comment
+DROP FUNCTION notify_group_comment() CASCADE; -- become group_comment
+DROP FUNCTION before_insert_comment() CASCADE; -- become before_insert_comment
+DROP FUNCTION before_insert_groups_comment() CASCADE; -- become before_insert_groups_comment
+DROP FUNCTION before_insert_on_groups_lurkers() CASCADE; -- become before_insert_group_post_lurker
+DROP FUNCTION before_insert_on_lurkers() CASCADE; -- become before_insert_post_lurker
+DROP FUNCTION before_insert_pm() CASCADE; -- become before_insert_pm
+

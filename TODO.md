@@ -11,5 +11,4 @@
 - Add hashtag support for posts categorization -> autocategorization?
 - Fix default template to change post language (create post options menu)
 - ^^^ edit javascript API to support new features
-- Fix sql that changes notification method (with a copy of production db gives unexpected behaviour)
 - Fix scroll down on top rated posts (request is ok, load no). But works in project [wat]

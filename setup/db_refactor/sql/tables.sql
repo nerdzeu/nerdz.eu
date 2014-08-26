@@ -19,6 +19,15 @@ insert into special_groups(role, counter) values
 ('ISSUE', %%ISSUE%%),
 ('GLOBAL_NEWS', %%GROUPS_NEWS%%);
 
+-- remove notifications created by notification bug
+DELETE FROM comments_notify
+where "from" = (select counter from "special_users" where role = 'DELETED')
+or "to" =  (select counter from "special_users" where role = 'DELETED');
+
+DELETE FROM groups_comments_notify
+where "from" = (select counter from "special_users" where role = 'DELETED')
+or "to" =  (select counter from "special_users" where role = 'DELETED');
+
 -- posts layout fixes
 
 ALTER TABLE posts ADD COLUMN "lang" VARCHAR(2) NOT NULL DEFAULT 'en';
