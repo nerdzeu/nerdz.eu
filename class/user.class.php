@@ -293,7 +293,7 @@ class User
 
         if(!($stmt = Db::query(
             [
-                'SELECT "to" FROM "followers" WHERE "from" = :id'.($limit !== 0 ? " LIMIT {$limit}" : ''),
+                'SELECT "to" FROM "followers" f JOIN "users" u ON f.to = u.counter WHERE "from" = :id ORDER BY u.username'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':id' => $id
                 ]
@@ -323,7 +323,7 @@ class User
 
         if(!($stmt = Db::query(
             [
-                'SELECT "from" FROM "followers" WHERE "to" = :id'.($limit !== 0 ? " LIMIT {$limit}" : ''),
+                'SELECT "from" FROM "followers" f JOIN "users" u ON f.from = u.counter WHERE "to" = :id ORDER BY u.username'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':id' => $id
                 ]
@@ -356,7 +356,8 @@ class User
                     select "to" from followers where "from" = :id) as f
                     inner join 
                     (select "from" from followers where "to" = :id) as e
-                    on f.to = e.from'.($limit != 0 ? ' LIMIT '.$limit : ''),
+                    on f.to = e.from
+                    inner join users u on u.counter = f.to order by username'.($limit != 0 ? ' LIMIT '.$limit : ''),
                 [
                     ':id' => $id
                 ]

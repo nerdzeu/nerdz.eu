@@ -6,22 +6,22 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Project;
 use NERDZ\Core\User;
 use NERDZ\Core\Db;
-$prj = isset($prj);
+$prj    = isset($prj);
 $entity = $prj ? new Project() : new User();
-$limit   = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'], 20) : 20;
+$limit  = isset($_GET['lim']) ? NERDZ\Core\Security::limitControl($_GET['lim'], 20) : 20;
 $users  = $entity->getFollowers($id, $limit);
 $total  = $entity->getFollowersCount($id);
 $type   = 'followers';
-$user = new User();
+$user   = new User();
 $dateExtractor = function($friendId) use ($id,$user, $prj) {
     $profileId = $id;
     $since = Db::query(
         [
             'SELECT EXTRACT(EPOCH FROM time) AS time
             FROM "'.($prj ? 'groups_' : '').'followers"
-            WHERE "from" = :id AND "to" = :fid',
+            WHERE "to" = :id AND "from" = :fid',
             [
-                ':id' => $profileId,
+                ':id'  => $profileId,
                 ':fid' => $friendId
             ]
         ],Db::FETCH_OBJ);

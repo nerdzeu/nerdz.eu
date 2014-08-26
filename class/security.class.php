@@ -31,8 +31,9 @@ class Security
 
         $r = sscanf($limit,'%d,%d',$a,$b);
 
-        if($r != 2)
-            $r = sscanf($limit,'%d OFFSET %d',$a,$b);
+        if($r != 2) {
+            $r = sscanf($limit,'%d OFFSET %d',$b,$a);
+        }
 
         if($r != 2 || ($r == 2 && $b > $n))
             return $n;
