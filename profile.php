@@ -48,7 +48,7 @@ else
 
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
-$a = explode(' ',$messages->parseNews($messages->stripTags(str_replace("\n",' ',$post->message))));
+$a = explode(' ',$messages->parseNews(Messages::stripTags(str_replace("\n",' ',$post->message))));
 
 $i = 25;
 while((isset($a[$i])))

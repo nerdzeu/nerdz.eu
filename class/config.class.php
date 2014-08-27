@@ -4,10 +4,6 @@
  */
 namespace NERDZ\Core;
 
-//define('DEBUG', 1);
-
-use NERDZ\Core\Config\Variables;
-
 class Config
 {
     private static $instance;
@@ -16,8 +12,8 @@ class Config
     {
         require_once __DIR__ . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR. 'index.php';
 
-        if (!is_array (Variables::$data))
-            trigger_error ('Invalid configuration: missing Variables::$data variable', E_USER_ERROR);
+        if (!is_array (Config\Variables::$data))
+            trigger_error ('Invalid configuration: missing Config\\Variables::$data variable', E_USER_ERROR);
 
         $CONSTANTS = [
             'MINIFICATION_ENABLED' => true,
@@ -50,7 +46,7 @@ class Config
             'SMTP_PASS'            => -1,
         ];
 
-        foreach (Variables::$data as $const_key => $const_val)
+        foreach (Config\Variables::$data as $const_key => $const_val)
         {
             if (!isset ($CONSTANTS[$const_key]))
                 trigger_error ('Unknown constant: ' . $const_key, E_USER_ERROR);
@@ -78,8 +74,6 @@ class Config
     public static function add($key, $value)
     {
         define(__NAMESPACE__.'\\Config\\'.$key, $value);
-        if(defined('DEBUG'))
-            echo __NAMESPACE__.'\\Config\\', $key, ' => ' , $value, "\n";
     }
 }
 ?>

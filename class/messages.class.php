@@ -506,7 +506,7 @@ class Messages
             require_once __DIR__ . '/vendor/autoload.php';
             $client = new \Github\Client();
             $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
-            $message = $this->stripTags($message);
+            $message = static::stripTags($message);
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
@@ -605,7 +605,7 @@ class Messages
             );
     }
 
-    public function stripTags($message)
+    public static function stripTags($message)
     {
         return  str_ireplace('[url="','',
             str_ireplace('[url=','',
