@@ -3,6 +3,9 @@ namespace NERDZ\Core;
 
 class Utils
 {
+    public static $REGISTER_DB_MESSAGE = [ 'error', 'REGISTER' ];
+    public static $ERROR_DB_MESSAGE    = [ 'error', 'ERRROR' ];
+
     public static function apc_getLastModified($key)
     {
         $cache = apc_cache_info('user');

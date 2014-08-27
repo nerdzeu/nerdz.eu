@@ -2,7 +2,10 @@
 ob_start('ob_gzhandler');
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 
-$user = new NERDZ\Core\User();
+use NERDZ\Core\Db;
+use NERDZ\Core\User;
+
+$user = new User();
 
 if(isset($_POST['comment'])) {
     $message = new NERDZ\Core\Comments();
@@ -24,9 +27,10 @@ if (!$user->isLogged()) {
 if (isset($_POST['thumb']) && is_numeric($_POST['thumb'])) {   
     $thumb = (int) $_POST['thumb'];
 
-    if (!$message->setThumbs($id, $thumb, isset($prj))) {
-        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': 2'));
-    }
+    $dbResponse = $message->setThumbs($id, $thumb, isset($prj));
+    if($dbResponse != Db::NO_ERRSTR)
+        die(NERDZ\Core\Utils::jsonDbResponse($dbResponse));
+
 }
 else {
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': 3'));

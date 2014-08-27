@@ -736,13 +736,12 @@ class Messages
     }
 
     public function setThumbs($hpid, $vote, $project = false) {
-        if (!$this->user->isLogged()) {
-            return false;
-        }
-
+        if (!$this->user->isLogged())
+            return Utils::$REGISTER_DB_MESSAGE;
+        
         $table = ($project ? 'groups_' : '') .'thumbs';
 
-        $ret = Db::query(
+        return Db::query(
             [
                 'INSERT INTO '.$table.'(hpid, "from", vote) VALUES(:hpid, :from, :vote)',
                     [
@@ -751,10 +750,8 @@ class Messages
                         ':vote' => (int) $vote
                     ]
                 ],
-                Db::FETCH_ERRNO
+                Db::FETCH_ERRSTR
             );
-
-        return $ret == Db::NO_ERRNO;
     }
 
     private function parseCode($str,$type = NULL,$pid = NULL,$id = NULL)

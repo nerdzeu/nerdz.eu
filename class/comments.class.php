@@ -559,13 +559,12 @@ class Comments extends Messages
     }
 
     public function setThumbs($hcid, $vote, $project = false) {
-        if (!$this->user->isLogged()) {
-            return false;
-        }
+        if (!$this->user->isLogged())
+            return Utils::$REGISTER_DB_MESSAGE;
 
         $table = ($project ? 'groups_' : ''). 'comment_thumbs';
 
-        $ret = Db::query(
+        return Db::query(
             [
                 'INSERT INTO '.$table.' (hcid, "from", vote) VALUES(:hcid, :from, :vote)',
                     [
@@ -574,10 +573,8 @@ class Comments extends Messages
                         ':vote' => (int) $vote
                     ]
                 ],
-                Db::FETCH_ERRNO
+                Db::FETCH_ERRSTR
             );
-
-        return $ret == Db::NO_ERRNO;
     }
 }
 ?>

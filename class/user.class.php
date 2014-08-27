@@ -15,9 +15,6 @@ class User
     private $templateConfig;
     private $browser;
 
-    private static $registerArray = [ 'error', 'REGISTER' ];
-    private static $errorArray    = [ 'error', 'ERRROR' ];
-
     public function __construct()
     {
         $this->browser = new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
@@ -387,7 +384,7 @@ class User
     public function follow($id, $prj = false)
     {
         if(!$this->isLogged())
-            return User::$registerArray;
+            return Utils::$REGISTER_DB_MESSAGE;
 
         $table = ($prj ? 'groups_' : '').'followers';
         return Db::query(
@@ -405,7 +402,7 @@ class User
     public function defollow($id, $prj = false)
     {
         if(!$this->isLogged())
-            return User::$registerArray;
+            return Utils::$REGISTER_DB_MESSAGE;
 
         $table = ($prj ? 'groups_' : '').'followers';
         return Db::query(
@@ -421,7 +418,7 @@ class User
     public function bookmark($hpid, $prj = false)
     {
         if(!$this->isLogged())
-            return User::$registerArray;
+            return Utils::$REGISTER_DB_MESSAGE;
 
         $table = ($prj ? 'groups_' : '').'bookmarks';
         return Db::query(
@@ -439,7 +436,7 @@ class User
     public function unbookmark($hpid, $prj = false)
     {
         if(!$this->isLogged())
-            return User::$registerArray;
+            return Utils::$REGISTER_DB_MESSAGE;
 
         $table = ($prj ? 'groups_' : '').'bookmarks';
         return Db::query(
@@ -455,12 +452,12 @@ class User
     public function dontNotify($options = [], $prj = false)
     {
         if(!$this->isLogged())
-            return User::$registerArray;
+            return Utils::$REGISTER_DB_MESSAGE;
 
         extract($options);
         $hpid = !empty($hpid) ? $hpid : 0;
         if($hpid == 0)
-            return User::$errorArray;
+            return Utils::$ERROR_DB_MESSAGE;
 
         $from = isset($from) ? $from : 0;
 
@@ -497,12 +494,12 @@ class User
     public function reNotify($options = [], $prj = false)
     {
         if(!$this->isLogged())
-            return User::$registerArray;
+            return Utils::$REGISTER_DB_MESSAGE;
 
         extract($options);
         $hpid = !empty($hpid) ? $hpid : 0;
         if($hpid == 0)
-             return User::$errorArray;
+             return Utils::$ERROR_DB_MESSAGE;
 
         $from = isset($from) ? $from : 0;
 
@@ -535,7 +532,7 @@ class User
     public function lurk($hpid, $prj = false)
     {
         if(!$this->isLogged())
-            return User::$registerArray;
+            return Utils::$REGISTER_DB_MESSAGE;
 
         $table = ($prj ? 'groups_' : '').'lurkers';
         return Db::query(
@@ -553,7 +550,7 @@ class User
     public function unlurk($hpid, $prj = false)
     {
         if(!$this->isLogged())
-            return User::$registerArray;
+            return Utils::$REGISTER_DB_MESSAGE;
 
         $table = ($prj ? 'groups_' : '').'lurkers';
         return Db::query(
