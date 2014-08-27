@@ -25,8 +25,6 @@ Setup
 - Run `setup/init_postgres.sh "admin_account_name"`. You'll need an up and running PostgreSQL installation along with an admin user (`postgres` is okay). On Windows, place `setup/init_postgres.bat` in your PostgreSQL `bin` directory and execute it. It will use the `postgres` account.
 
   **IMPORTANT**: Remember to set `timezone = 'UTC'` in your `postgresql.conf`.
-- Move into `static/js/` and download the following file:
-    - <http://static.nerdz.eu/static/js/gistBlogger.jsmin.js>
 - Copy `setup/config.skel.php` to `class/config/index.php` and edit the variables accordingly. The configuration is well-documented so you _probably_ don't need any explanation.
   However, don't forget to disable the minification if you haven't got csstidy/uglifyjs installed and remeber to set the proper static domain
 - Enable our rewrite rules on your webserver. We only provide examples for the recommended webservers.

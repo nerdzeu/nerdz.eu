@@ -78,8 +78,7 @@ class Messages
             ++$index;
         }
 
-        $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-        $domain = $ssl ? 'https://'.Config\SITE_HOST : Config\STATIC_DOMAIN;
+        $domain = Utils::getResourceDomain();
 
         $validURL = function($m) {
             $m[1] = trim($m[1]);
@@ -248,7 +247,7 @@ class Messages
                 <div style="display:none; margin-left:3%;overflow:hidden">$2</div>
                 </div>',$str,1);
 
-        $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#i',function($m) use($ssl, $truncate) {
+        $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#i',function($m) use($truncate) {
             $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
             if (stripos ($uri, 'spotify') !== false) // TODO: use a single regexp
             {
@@ -273,14 +272,14 @@ class Messages
                 return $m[0];
         },$str,10);
 
-        $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#i',function($m) use($ssl) {
+        $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#i',function($m) {
             // The reason for the 'data-uuid' attribute is in the jclass.js file, in the loadTweet function.
             return '<img data-id="'.$m[1].'" data-uuid="'.mt_rand().'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)">';
         },$str,10);
 
         if($truncate)
         {
-            $videoCallback = function($m) use($ssl) {
+            $videoCallback = function($m) {
                 $v_url  = html_entity_decode ($m[1],ENT_QUOTES,'UTF-8');
                 $output = [];
                 if      (preg_match (static::YOUTUBE_REGEXP,  $v_url, $match))
@@ -303,8 +302,8 @@ class Messages
             $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
-            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
-                $url = Utils::getValidImageURL($m[1], $domain, $ssl);
+            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) {
+                $url = Utils::getValidImageURL($m[1]);
                 return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
                     <span>
                     '.$this->user->lang('IMAGES').'
@@ -315,7 +314,7 @@ class Messages
         }
         else
         {
-            $videoCallback = function($m) use($ssl) {
+            $videoCallback = function($m) {
                 $v_url       = html_entity_decode ($m[1], ENT_QUOTES, 'UTF-8');
                 $iframe_code = '';
                 if      (preg_match (static::YOUTUBE_REGEXP,  $v_url, $match))
@@ -335,8 +334,8 @@ class Messages
             $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
             $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
 
-            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) use($domain,$ssl) {
-                return '<img src="'.Utils::getValidImageURL($m[1],$domain,$ssl).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
+            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) {
+                return '<img src="'.Utils::getValidImageURL($m[1]).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
             },$str);
         }
 

@@ -24,16 +24,26 @@ class Utils
         return filter_var($url, FILTER_VALIDATE_URL);
     }
 
-    public static function getValidImageURL($url, $domain, $sslEnabled)
+    public static function getResourceDomain()
     {
-        $url = strip_tags(trim($url));
+        return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
+            ? 'https://'.Config\SITE_HOST
+            : Config\STATIC_DOMAIN;
+    }
+
+    public static function getValidImageURL($url)
+    {
+        $url        = strip_tags(trim($url));
+        $sslEnabled = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+        $domain     = static::getResourceDomain();
+
         if (!static::isValidURL($url))
             return $domain.'/static/images/invalidImgUrl.php';
 
         if($sslEnabled) {
             // valid ssl url
             if(preg_match('#^https://#i',$url))
-                return strip_tags($url);
+                return $url;
 
             // imgur without ssl
             if(preg_match("#^http://(www\.)?(i\.)?imgur\.com/[a-z0-9]+\..{3}$#i",$url)) {
@@ -43,13 +53,12 @@ class Utils
             }
 
             // url hosted on a non ssl host - use camo or our trusted proxy
-            return Config\CAMO_KEY == '' ?
-                'https://i0.wp.com/' . preg_replace ('#^http://|^ftp://#i', '', strip_tags($url)) :
-                $domain.'/secure/image/'.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
+            return Config\CAMO_KEY == ''
+                ? 'https://i0.wp.com/' . preg_replace ('#^http://|^ftp://#i', '', $url)
+                : $domain.'/secure/image/'.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
         }
-        return strip_tags($url);
+        return $url;
     }
-
 
     public static function userLink($user)
     {

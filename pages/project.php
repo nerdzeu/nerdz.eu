@@ -40,10 +40,8 @@ else
     }
     else
     {
-        $ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-        $domain = $ssl ? '' : Config\STATIC_DOMAIN;
-        $vals['photo_n'] = Utils::getValidImageURL($info->photo, $domain, $ssl);
-        $vals['onerrorimgurl_n'] = $domain.'/static/images/onErrorImg.php';
+        $vals['photo_n']          = !empty($info->photo) ? Utils::getValidImageURL($info->photo) : 'https://www.gravatar.com/avatar/';
+        $vals['onerrorimgurl_n']  = '/static/images/onErrorImg.php';
         $vals['id_n'] = $info->counter;
 
         $vals['name_n'] = $info->name;
