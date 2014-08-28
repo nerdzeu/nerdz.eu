@@ -253,7 +253,9 @@ class Comments extends Messages
         if($i == 11)
             $message = preg_replace('#\[quote=([0-9]+)\|u\]#i','',$message);
 
-        return $message;
+        // remove nested commentquote
+        // http://stackoverflow.com/questions/18754062/remove-nested-quotes
+        return preg_replace('~\G(?<!^)(?>(\[commentquote=\[user\].+?\[/user\]\](?>[^[]++|\[(?!/?commentquote)|(?1))*\[/commentquote])|(?<!\[)(?>[^[]++|\[(?!/?commentquote))+\K)|\[commentquote\b[^]]*]\K~', '', $message);
     }
 
     public function add($hpid,$message, $project = false)
