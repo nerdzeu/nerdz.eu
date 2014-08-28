@@ -302,7 +302,8 @@ BEGIN
     RETURN NULL;
 END $$;
 
-CREATE FUNCTION comment_edit_control() RETURNS TRIGGER AS $$
+CREATE FUNCTION group_comment_edit_control() RETURNS TRIGGER AS $$
+DECLARE postFrom int8;
 BEGIN
     IF OLD.editable IS FALSE THEN
         RAISE EXCEPTION 'NOT_EDITABLE';
@@ -310,6 +311,28 @@ BEGIN
 
     -- update time
     SELECT NOW() INTO NEW.time;
+
+    NEW.message = message_control(NEW.message);
+    PERFORM flood_control('"groups_comments"', NEW."from", NEW.message);
+
+    SELECT T."from" INTO postFrom FROM (SELECT "from" FROM "groups_posts" WHERE hpid = NEW.hpid) AS T;
+    PERFORM blacklist_control(NEW."from", postFrom); --blacklisted post creator
+
+    RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION user_comment_edit_control() RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.editable IS FALSE THEN
+        RAISE EXCEPTION 'NOT_EDITABLE';
+    END IF;
+
+    -- update time
+    SELECT NOW() INTO NEW.time;
+
+    NEW.message = message_control(NEW.message);
+    PERFORM flood_control('"comments"', NEW."from", NEW.message);
+    PERFORM blacklist_control(NEW."from", NEW."to");
 
     RETURN NEW;
 END $$ LANGUAGE plpgsql;
@@ -711,7 +734,7 @@ CREATE TRIGGER after_insert_blacklist AFTER INSERT ON blacklist FOR EACH ROW EXE
  -- before insert
 CREATE TRIGGER before_insert_comment BEFORE INSERT ON comments FOR EACH ROW EXECUTE PROCEDURE before_insert_comment();
   -- before update
-CREATE TRIGGER before_update_comment_message BEFORE UPDATE ON comments FOR EACH ROW EXECUTE PROCEDURE comment_edit_control();
+CREATE TRIGGER before_update_comment_message BEFORE UPDATE ON comments FOR EACH ROW EXECUTE PROCEDURE user_comment_edit_control();
 
   -- after insert
 CREATE TRIGGER after_insert_comment AFTER INSERT ON comments FOR EACH ROW EXECUTE PROCEDURE user_comment();
@@ -725,7 +748,7 @@ EXECUTE PROCEDURE user_comment();
   -- before insert
 CREATE TRIGGER before_insert_groups_comment BEFORE INSERT ON groups_comments FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_comment();
   -- before update
-CREATE TRIGGER before_update_group_comment_message BEFORE UPDATE ON groups_comments FOR EACH ROW EXECUTE PROCEDURE comment_edit_control();
+CREATE TRIGGER before_update_group_comment_message BEFORE UPDATE ON groups_comments FOR EACH ROW EXECUTE PROCEDURE group_comment_edit_control();
 
   -- after insert
 CREATE TRIGGER after_insert_group_comment AFTER INSERT ON groups_comments FOR EACH ROW EXECUTE PROCEDURE group_comment();

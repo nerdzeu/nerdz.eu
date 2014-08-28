@@ -61,7 +61,7 @@ case 'get':
 
 case 'edit':
 
-    if(empty($_POST['hpid']) || empty($_POST['message']))
+    if(empty($_POST['hpid']))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
     die(NERDZ\Core\Utils::jsonDbResponse(
