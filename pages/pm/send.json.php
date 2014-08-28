@@ -13,7 +13,7 @@ if(!$user->isLogged())
 if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
 
-if(empty($_POST['to']) || empty($_POST['message']))
+if(empty($_POST['to']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('SOMETHING_MISS')));
 
 if(!($toid = $user->getId($_POST['to']))) //getId DON'T what htmlspecialchars in parameter
