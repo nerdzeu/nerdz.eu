@@ -21,6 +21,7 @@
     "CAPTCHA" : "Captcha",
     "CHAR_NOT_ALLOWED" : "Caracterul nu este permis",
     "CHAT_MESSAGES_TODAY" : "Mesajele convorbite de azi in chat",
+    "CLOSED_POST" : "Închis post",
     "CLOSED_PROFILE" : "Profil închis (nimeni poate posta pe bord)",
     "CLOSED_PROFILE_DESCR" : "Profil inchis. Numai proprietarul poate scrie pe ea",
     "CLOSED_PROJECT" : "Închis proiect",

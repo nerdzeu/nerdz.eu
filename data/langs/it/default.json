@@ -21,6 +21,7 @@
     "CAPTCHA" : "Codice di sicurezza",
     "CHAR_NOT_ALLOWED" : "Carattere non ammesso",
     "CHAT_MESSAGES_TODAY" : "Messaggi scambiati online oggi",
+    "CLOSED_POST" : "Post chiuso",
     "CLOSED_PROFILE" : "Profilo chiuso (nessuno potrà scrivere sulla tua board)",
     "CLOSED_PROFILE_DESCR" : "Profilo chiuso, solo il proprietario può scriverci.",
     "CLOSED_PROJECT" : "Progetto chiuso",

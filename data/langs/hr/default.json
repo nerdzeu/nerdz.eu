@@ -21,6 +21,7 @@
     "CAPTCHA" : "Sigurnosni kod",
     "CHAR_NOT_ALLOWED" : "Lik nije dopušteno",
     "CHAT_MESSAGES_TODAY" : "Razmjenjuju poruke chat danas",
+    "CLOSED_POST" : "Zatvorena Post",
     "CLOSED_PROFILE" : "Zatvoreno profil (nitko ne može postavljati na brodu)",
     "CLOSED_PROFILE_DESCR" : "Zatvoreno profil. Samo vlasnik može pisati na njemu",
     "CLOSED_PROJECT" : "Zatvoren projekt",

@@ -77,6 +77,10 @@ alter table groups_comments add column editable boolean not null default true;
 update comments set editable = false where message like '%<%' or message like '%>%';
 update groups_comments set editable = false where message like '%<%' or message like '%>%';
 
+-- add the ability to close a post
+alter table posts add column closed boolean not null default false;
+alter table groups_posts add column closed boolean not null default false;
+
 -- posts revisions
 
 CREATE TABLE posts_revisions(

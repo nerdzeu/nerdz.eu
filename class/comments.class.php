@@ -225,49 +225,16 @@ class Comments extends Messages
         return $ret;
     }
 
-    public static function parseQuote($message)
-    {
-        $i = 0;
-        $pattern = '#\[quote=([0-9]+)\|p\]#i';
-        while(preg_match($pattern,$message) && (++$i < 11))
-            $message = preg_replace_callback($pattern,function($m) {
-                $username = comments::getUsernameFromCid($m[1], true);
-                return $username
-                    ? '[commentquote=[user]'.$username.'[/user]]'.comments::getMessage($m[1], true).'[/commentquote]'
-                    : '';
-                    },$message,1);
-
-        if($i == 11)
-            $message = preg_replace('#\[quote=([0-9]+)\|p\]#i','',$message);
-
-        $i = 0;
-        $pattern = '#\[quote=([0-9]+)\|u\]#i';
-        while(preg_match($pattern,$message) && (++$i < 11))
-            $message = preg_replace_callback($pattern,function($m) {
-                $username = comments::getUsernameFromCid($m[1]);
-                return $username
-                    ? '[commentquote=[user]'.$username.'[/user]]'.comments::getMessage($m[1]).'[/commentquote]'
-                    : '';
-                    },$message,1);
-
-        if($i == 11)
-            $message = preg_replace('#\[quote=([0-9]+)\|u\]#i','',$message);
-
-        // remove nested commentquote
-        // http://stackoverflow.com/questions/18754062/remove-nested-quotes
-        return preg_replace('~\G(?<!^)(?>(\[commentquote=\[user\].+?\[/user\]\](?>[^[]++|\[(?!/?commentquote)|(?1))*\[/commentquote])|(?<!\[)(?>[^[]++|\[(?!/?commentquote))+\K)|\[commentquote\b[^]]*]\K~', '', $message);
-    }
-
     public function add($hpid,$message, $project = false)
     {
 
-        $posts = ($project ? 'groups_' : '').'posts';
+        $posts    = ($project ? 'groups_' : '').'posts';
         $comments = ($project ? 'groups_' : '').'comments';
 
         if(
             !($obj = Db::query(
                 [
-                    'SELECT "to" FROM "'.$posts.'" WHERE "hpid" = :hpid',
+                    'SELECT "to","closed" FROM "'.$posts.'" WHERE "hpid" = :hpid',
                     [
                         ':hpid' => $hpid
                     ]
@@ -282,6 +249,9 @@ class Comments extends Messages
                         ],Db::FETCH_STMT))
                     )
                     return 'ERROR';
+
+        if($obj->closed)
+            return 'error: CLOSED_POST'; // fake Db response
 
         $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
@@ -577,6 +547,39 @@ class Comments extends Messages
                 ],
                 Db::FETCH_ERRSTR
             );
+    }
+
+    public static function parseQuote($message)
+    {
+        $i = 0;
+        $pattern = '#\[quote=([0-9]+)\|p\]#i';
+        while(preg_match($pattern,$message) && (++$i < 11))
+            $message = preg_replace_callback($pattern,function($m) {
+                $username = comments::getUsernameFromCid($m[1], true);
+                return $username
+                    ? '[commentquote=[user]'.$username.'[/user]]'.comments::getMessage($m[1], true).'[/commentquote]'
+                    : '';
+                    },$message,1);
+
+        if($i == 11)
+            $message = preg_replace('#\[quote=([0-9]+)\|p\]#i','',$message);
+
+        $i = 0;
+        $pattern = '#\[quote=([0-9]+)\|u\]#i';
+        while(preg_match($pattern,$message) && (++$i < 11))
+            $message = preg_replace_callback($pattern,function($m) {
+                $username = comments::getUsernameFromCid($m[1]);
+                return $username
+                    ? '[commentquote=[user]'.$username.'[/user]]'.comments::getMessage($m[1]).'[/commentquote]'
+                    : '';
+                    },$message,1);
+
+        if($i == 11)
+            $message = preg_replace('#\[quote=([0-9]+)\|u\]#i','',$message);
+
+        // remove nested commentquotes
+        // http://stackoverflow.com/questions/18754062/remove-nested-quotes
+        return preg_replace('~\G(?<!^)(?>(\[commentquote=\[user\].+?\[/user\]\](?>[^[]++|\[(?!/?commentquote)|(?1))*\[/commentquote])|(?<!\[)(?>[^[]++|\[(?!/?commentquote))+\K)|\[commentquote\b[^]]*]\K~', '', $message);
     }
 }
 ?>

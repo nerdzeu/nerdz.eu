@@ -21,6 +21,7 @@
     "CAPTCHA" : "Captcha",
     "CHAR_NOT_ALLOWED" : "Character not allowed",
     "CHAT_MESSAGES_TODAY" : "Exchanged chat messages today",
+    "CLOSED_POST" : "Closed post",
     "CLOSED_PROFILE" : "Closed profile (nobody can post on your board)",
     "CLOSED_PROFILE_DESCR" : "Closed profile. Only the owner can write on it",
     "CLOSED_PROJECT" : "Closed project",

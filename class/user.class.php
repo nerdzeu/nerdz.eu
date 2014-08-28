@@ -283,6 +283,41 @@ class User
         return empty($o->lang) ? System::getBrowserLanguage() : $o->lang;
     }
 
+    public function getInteractions($id, $limit = 0)
+    {
+        if(!$this->isLogged())
+            return [];
+
+        if($limit)
+            $limit = Security::limitControl($limit, 20);
+
+        $objs = [];
+        if(!($objs = Db::query(
+            [
+                'SELECT "type", "from", "to", extract(epoch from time) as time
+                FROM user_interactions(:me, :id) AS
+                f("type" text, "from" int8, "to" int8, "time" timestamp with time zone)
+                ORDER BY f.time'.($limit !== 0 ? " LIMIT {$limit}" : ''),
+                [
+                    ':me' => $_SESSION['id'],
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ, true)))
+            return [];
+
+        $ret = [];
+        for($i=0, $count = count($ret); $i<$count; ++$i) {
+            $ret[$i]['type_n']      = $objs[$i]->type;
+            $ret[$i]['fromid_n']    = $objs[$i]->from;
+            $ret[$i]['from4link_n'] = Utils::userLink($objs[$i]->from);
+            $ret[$i]['toid_n']      = $objs[$i]->to;
+            $ret[$i]['to4link_n']   = Utils::userLink($objs[$i]->to);
+            $ret[$i]['datetime_n']  = $this->getDateTime($ret[$i]->time);
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     public function getFollowing($id, $limit = 0)
     {
         if($limit)

@@ -567,6 +567,11 @@ class Messages
             ],Db::FETCH_ERRSTR);
     }
 
+    public function canClose($post, $project = false)
+    {
+        return $this->canRemove($post, $project);
+    }
+
     public function canEdit($post, $project = false)
     {
         return $this->user->isLogged() && (
@@ -849,6 +854,8 @@ class Messages
         $ret['datetime_n']        = $this->user->getDateTime($dbPost['time']);
         $ret['timestamp_n']       = $dbPost['time'];
 
+        $ret['canclosepost_b']    = $this->canClose($dbPost, $project);
+        $ret['closed_b']          = $dbPost['closed'];
         $ret['canremovepost_b']   = $this->canRemove($dbPost, $project);
         $ret['caneditpost_b']     = $this->canEdit($dbPost, $project);
         $ret['canshowlock_b']     = $this->canShowLock($dbPost, $project);
