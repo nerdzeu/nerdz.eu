@@ -500,9 +500,14 @@ end $$ language plpgsql;
 -- update functions with new support functions and default vaulues
 
 CREATE FUNCTION before_insert_comment() RETURNS trigger
-LANGUAGE plpgsql
-AS $$
+LANGUAGE plpgsql AS $$
+DECLARE closedPost boolean;
 BEGIN
+    SELECT closed FROM posts INTO closedPost WHERE hpid = NEW.hpid;
+    IF closedPost THEN
+        RAISE EXCEPTION 'CLOSED_POST';
+    END IF;
+
     NEW.message = message_control(NEW.message);
     PERFORM flood_control('"comments"', NEW."from", NEW.message);
     PERFORM blacklist_control(NEW."from", NEW."to");
@@ -512,7 +517,13 @@ END $$;
 CREATE FUNCTION before_insert_groups_comment() RETURNS trigger LANGUAGE plpgsql
 AS $$
 DECLARE postFrom int8;
+        closedPost boolean;
 BEGIN
+    SELECT closed FROM groups_posts INTO closedPost WHERE hpid = NEW.hpid;
+    IF closedPost THEN
+        RAISE EXCEPTION 'CLOSED_POST';
+    END IF;
+
     NEW.message = message_control(NEW.message);
     PERFORM flood_control('"groups_comments"', NEW."from", NEW.message);
 

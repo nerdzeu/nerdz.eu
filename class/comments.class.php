@@ -234,7 +234,7 @@ class Comments extends Messages
         if(
             !($obj = Db::query(
                 [
-                    'SELECT "to","closed" FROM "'.$posts.'" WHERE "hpid" = :hpid',
+                    'SELECT "to" FROM "'.$posts.'" WHERE "hpid" = :hpid',
                     [
                         ':hpid' => $hpid
                     ]
@@ -249,9 +249,6 @@ class Comments extends Messages
                         ],Db::FETCH_STMT))
                     )
                     return 'ERROR';
-
-        if($obj->closed)
-            return 'error: CLOSED_POST'; // fake Db response
 
         $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
