@@ -84,7 +84,7 @@ class Messages
             $m[1] = trim($m[1]);
             if(!Utils::isValidURL($m[1]))
             {
-                $m[1] = 'www.'.$m[1];
+                $m[1] = 'http://'.$m[1];
                 if(!Utils::isValidURL($m[1]))
                     return '<b>'.$this->user->lang('INVALID_URL').'</b>';
             }
@@ -111,7 +111,7 @@ class Messages
         $str = preg_replace('#\[hr\]#i','<hr style="clear:both" />',$str);
         $str = preg_replace('#\[small\](.+?)\[/small\]#i','<span style="font-size:7pt">$1</span>',$str);
         $str = preg_replace('#\[big\](.+?)\[/big\]#i','<span style="font-size:14pt">$1</span>',$str);
-        $str = preg_replace('#\[wat\]#i','<span style="font-size:22pt">WAT</span>',$str); //easter egg [never change]
+        $str = preg_replace('#\[wat\]#i','<span style="font-size:22pt">WAT</span>',$str);
 
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#i',function($m) {
             return '<a href="/'.Utils::userLink($m[1])."\">{$m[1]}</a>";
