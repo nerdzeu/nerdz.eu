@@ -94,13 +94,13 @@ class Messages
 
         $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#i',function($m) use ($validURL) {
             return $validURL($m);
-            },$str);
+        },$str);
         $str = preg_replace_callback('#\[url=(.+?)\](.+?)\[/url\]#i',function($m) use ($validURL) {
             return $validURL($m);
-            },$str);
+        },$str);
         $str = preg_replace_callback('#\[url\](.+?)\[/url\]#i',function($m) use ($validURL) {
             return $validURL($m);
-            },$str);
+        },$str);
 
         $str = preg_replace('#\[i\](.+?)\[/i\]#i','<span style="font-style:italic">$1</span>',$str);
         $str = preg_replace('#\[cur\](.+?)\[/cur\]#i','<span style="font-style:italic">$1</span>',$str);
@@ -115,16 +115,16 @@ class Messages
 
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#i',function($m) {
             return '<a href="/'.Utils::userLink($m[1])."\">{$m[1]}</a>";
-                },$str);
+        },$str);
         $str = preg_replace_callback('#\[project\](.+?)\[/project\]#i',function($m) {
             return '<a href="/'.Utils::projectLink($m[1])."\">{$m[1]}</a>";
-                },$str);
+        },$str);
         $str = preg_replace_callback('#\[wiki=([a-z]{2})\](.+?)\[/wiki\]#i',function($m) {
             return '<a href="http://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ','_',html_entity_decode($m[2],ENT_QUOTES,'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
-                },$str);
+        },$str);
         $str = preg_replace_callback("#(\[math\]|\[m\])(.+?)(\[/math\]|\[/m\])#i",function($m) {
             return $m[1].strip_tags($m[2]).$m[3];
-                },$str);
+        },$str);
 
         $str = preg_replace_callback('#\[list\](.+?)\[\/list\]#i',function($m) {
             $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[1]))));
@@ -137,7 +137,7 @@ class Messages
             $ret .= '</ul>';
 
             return $ret;
-                },$str,20); //ok
+        },$str,20); //ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i', function($m) {
             $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
@@ -150,7 +150,7 @@ class Messages
             $ret .= '</ol>';
 
             return $ret;
-                },$str,10); //ok
+        },$str,10); //ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
             $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
@@ -164,7 +164,7 @@ class Messages
 
             return $ret;
 
-                },$str,10);//ok
+        },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i',function($m) {
             $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
@@ -178,7 +178,7 @@ class Messages
 
             return $ret;
 
-                },$str,10);//ok
+        },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
             $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
@@ -198,7 +198,7 @@ class Messages
         while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#i', $str))
             $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', function($m) {
                 return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
-                }, $str, 1);
+            }, $str, 1);
 
         while(preg_match('#\[quote=(.+?)\](.+?)\[/quote\]#i',$str))
             $str = preg_replace_callback('#\[quote=(.+?)\](.+?)\[/quote\]#im',function($m) use($domain) {
@@ -311,7 +311,7 @@ class Messages
                     </span>
                     <img src="'.$url.'" alt="" onload="N.imgLoad(this)" onerror="N.imgErr(this)" />
                     </a>';
-                    },$str,10);
+            },$str,10);
         }
         else
         {
@@ -364,12 +364,12 @@ class Messages
         if(!($o = Db::query(
             [
                 'SELECT message FROM "'.$table.'" p WHERE p."hpid" = :hpid',
-                    [
-                        ':hpid' => $hpid
-                    ]
-                ],Db::FETCH_OBJ))
-            )
-            return '';
+                [
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_OBJ))
+        )
+        return '';
 
         return $o->message;
     }
@@ -447,16 +447,16 @@ class Messages
                 ($vote ? 'cc '.($vote == '+' ? 'DESC' : 'ASC') .',' : '').
                 'p.hpid DESC'.
                 ' LIMIT '.$limit,
-                    array_merge(
-                        $id             ? [ ':id'   => $id ]             : [],
-                        $search4Lang    ? [ ':lang' => $lang]            : [],
-                        $hpid           ? [ ':hpid' => $hpid ]           : [],
-                        $search         ? [ ':like' => '%'.$search.'%' ] : []
-                    )
+                array_merge(
+                    $id             ? [ ':id'   => $id ]             : [],
+                    $search4Lang    ? [ ':lang' => $lang]            : [],
+                    $hpid           ? [ ':hpid' => $hpid ]           : [],
+                    $search         ? [ ':like' => '%'.$search.'%' ] : []
+                )
 
-                ],Db::FETCH_STMT))
-            )
-            return [];
+            ],Db::FETCH_STMT))
+        )
+        return [];
 
         $c = 0;
         $ret = [];
@@ -495,9 +495,9 @@ class Messages
                         ':id'      => $_SESSION['id'],
                         ':to'      => $to,
                         ':message' => Comments::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')),
-                    ':news'    => $news ? 'true' : 'false'
-                ]
-            ],Db::FETCH_ERRSTR);
+                        ':news'    => $news ? 'true' : 'false'
+                    ]
+                ],Db::FETCH_ERRSTR);
 
         if($retStr != Db::NO_ERRSTR)
             return $retStr;
@@ -510,12 +510,60 @@ class Messages
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
-                    'body'  => User::getUsername().': '.$message
-                ]
-            );
+                        'body'  => User::getUsername().': '.$message
+                    ]
+                );
         }
 
         return $retStr;
+    }
+
+    public function reOpen($hpid, $project = false)
+    {
+        $table = ($project ? 'groups_' : '').'posts';
+
+        if(!($obj = Db::query(
+            [
+                'SELECT "from","to","pid" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_OBJ)) ||
+            !$this->canClose(['from' => $obj->from, 'to' => $obj->to], $project)
+        )
+        return 'ERROR';
+
+        return Db::query(
+            [
+                'UPDATE "'.$table.'" SET closed = FALSE WHERE hpid = :hpid',
+                [
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_ERRSTR);
+    }
+
+    public function close($hpid, $project = false)
+    {
+        $table = ($project ? 'groups_' : '').'posts';
+
+        if(!($obj = Db::query(
+            [
+                'SELECT "from","to","pid" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                [
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_OBJ)) ||
+            !$this->canClose(['from' => $obj->from, 'to' => $obj->to], $project)
+        )
+        return 'ERROR';
+
+        return Db::query(
+            [
+                'UPDATE "'.$table.'" SET closed = TRUE WHERE hpid = :hpid',
+                [
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_ERRSTR);
     }
 
     public function delete($hpid, $project = true)
@@ -584,8 +632,12 @@ class Messages
     public function canRemove($post, $project = false)
     {
         return $this->user->isLogged() && (
-            $project ?
-            in_array($_SESSION['id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
+            $project
+            ? in_array($_SESSION['id'],array_merge(
+                (array)$this->project->getMembers($post['to']),
+                (array)$this->project->getOwner($post['to']),
+                (array)$post['from'])
+            )
             : in_array($_SESSION['id'], [ $post['to'], $post['from'] ] )
         );
     }
@@ -743,7 +795,7 @@ class Messages
     public function setThumbs($hpid, $vote, $project = false) {
         if (!$this->user->isLogged())
             return Utils::$REGISTER_DB_MESSAGE;
-        
+
         $table = ($project ? 'groups_' : '') .'thumbs';
 
         return Db::query(
@@ -804,8 +856,8 @@ class Messages
     public function getPost($dbPost, $options = [])
     {
         extract($options);
-        $project  = !empty($project);
-        $truncate = !empty($truncate);
+        $project      = !empty($project);
+        $truncate     = !empty($truncate);
 
         if(is_object($dbPost))
             $dbPost = (array) $dbPost;
@@ -874,41 +926,41 @@ class Messages
         return $ret;
     }
 
-     public function countComments($hpid, $project = false)
-     {
-         $table = ($project ? 'groups_' : '').'comments';
-         if($this->user->isLogged())
-         {
-             if(!($o = Db::query(
-                 [
-                     'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)'.
-                         (
-                             $project
-                             ? ''
-                             : ' AND "to" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)'
-                         ),
-                         [
-                             ':hpid' => $hpid,
-                             ':id' => $_SESSION['id']
-                         ]
-                     ],Db::FETCH_OBJ))
-                 )
-                 return 0;
-         }
-         else
-         {
-             if(!($o = Db::query(
-                 [
-                     'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
-                         [
-                             ':hpid' => $hpid
-                         ]
-                     ],Db::FETCH_OBJ))
-                 )
-                 return 0;
-         }
-         return $o->cc;
-     }
+    public function countComments($hpid, $project = false)
+    {
+        $table = ($project ? 'groups_' : '').'comments';
+        if($this->user->isLogged())
+        {
+            if(!($o = Db::query(
+                [
+                    'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid AND "from" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)'.
+                    (
+                        $project
+                        ? ''
+                        : ' AND "to" NOT IN (SELECT "to" FROM "blacklist" WHERE "from" = :id)'
+                    ),
+                    [
+                        ':hpid' => $hpid,
+                        ':id' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_OBJ))
+            )
+            return 0;
+        }
+        else
+        {
+            if(!($o = Db::query(
+                [
+                    'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
+                        [
+                            ':hpid' => $hpid
+                        ]
+                    ],Db::FETCH_OBJ))
+                )
+                return 0;
+        }
+        return $o->cc;
+    }
 
 }
 ?>

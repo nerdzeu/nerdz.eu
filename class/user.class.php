@@ -526,20 +526,6 @@ class User
             ], Db::FETCH_ERRSTR);
     }
 
-    public function reOpen($hpid, $prj = false)
-    {
-        if(!$this->isLogged())
-            return Utils::$REGISTER_DB_MESSAGE;
-
-        return Db::query(
-            [
-                'UPDATE "'.$table.'" SET closed = FALSE WHERE hpid = :hpid',
-                [
-                    ':hpid' => $hpid
-                ]
-            ]);
-    }
-
     public function reNotify($options = [], $prj = false)
     {
         if(!$this->isLogged())

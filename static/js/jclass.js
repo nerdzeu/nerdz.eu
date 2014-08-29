@@ -504,6 +504,30 @@ N.json.profile = function()
     };
 
     /**
+     * close that post
+     * @parameters: {hpid}
+     * hpid: hidden post id
+     */
+    this.closePost = function(jObj,done)
+    {
+        this.post('post.json.php?action=close',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * open that post
+     * @parameters: {hpid}
+     * hpid: hidden post id
+     */
+    this.openPost = function(jObj,done)
+    {
+        this.post('post.json.php?action=open',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
      * set thumbs for post
      * @parameters;  {hpid, thumb}
      * hpid: hidden post id
@@ -791,6 +815,30 @@ N.json.project = function()
     this.unbookmarkPost = function(jObj,done)
     {
         this.post('bookmark.json.php?action=del',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * close that post
+     * @parameters: {hpid}
+     * hpid: hidden post id
+     */
+    this.closePost = function(jObj,done)
+    {
+        this.post('post.json.php?action=close',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * open that post
+     * @parameters: {hpid}
+     * hpid: hidden post id
+     */
+    this.openPost = function(jObj,done)
+    {
+        this.post('post.json.php?action=open',jObj,function(d) {
             done(d);
         });
     };
