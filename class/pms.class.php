@@ -34,10 +34,10 @@ final class Pms extends Messages
                 $msg = json_encode(
                     [ 
                         'messageFrom'   => html_entity_decode(User::getUsername(), ENT_QUOTES, 'UTF-8'), 
-                                     'messageFromId' => $this->user->getId(),
-                                     'messageBody'   => substr(html_entity_decode($message, ENT_QUOTES, 'UTF-8'), 0, 2000)
-                                 ]
-                             ); //truncate to 2000 chars because of possibile service limitations
+                        'messageFromId' => $this->user->getId(),
+                        'messageBody'   => substr(html_entity_decode($message, ENT_QUOTES, 'UTF-8'), 0, 2000)
+                    ]
+                ); //truncate to 2000 chars because of possibile service limitations
 
                 $pushed->push($to, $msg);
 

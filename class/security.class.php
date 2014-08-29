@@ -87,5 +87,34 @@ class Security
             $vals['prev_url_n'] = $url."&amp;lim={$limitprev}";
         }
     }
+
+    public static function floodPushRegControl()
+    {
+        if(!(new User())->isLogged())
+            return false;
+
+        $id = $_SESSION['id'];
+        //If there has been a request in the last 5 seconds, return false.
+        //Always update timer to NOW to cut off flooders.
+        if (!($o = Db::query(
+            [
+                'SELECT EXTRACT(EPOCH FROM NOW() - "pushregtime") >= 3 AS valid
+                FROM "profiles" WHERE "counter" = :user',
+                [
+                    ':user' => $id
+                ]
+            ],Db::FETCH_OBJ)) ||
+            Db::NO_ERRNO != Db::query(
+                [
+                    'UPDATE "profiles" SET "pushregtime" = NOW() WHERE "counter" = :user',
+                    [
+                        ':user' => $id
+                    ]
+                ],Db::FETCH_ERRNO)
+            )
+            return false;
+
+        return $o->valid;
+    }
 }
 ?>

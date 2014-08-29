@@ -515,15 +515,29 @@ class User
 
         $table .= 'posts_no_notify';
         return Db::query(
+            [
+               'INSERT INTO "'.$table.'"("user", "hpid")
+                SELECT :user, :hpid
+                WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid)',
                 [
-                   'INSERT INTO "'.$table.'"("user", "hpid")
-                    SELECT :user, :hpid
-                    WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid)',
-                    [
-                        ':user' => $_SESSION['id'],
-                        ':hpid' => $hpid
-                    ]
-                ], Db::FETCH_ERRSTR);
+                    ':user' => $_SESSION['id'],
+                    ':hpid' => $hpid
+                ]
+            ], Db::FETCH_ERRSTR);
+    }
+
+    public function reOpen($hpid, $prj = false)
+    {
+        if(!$this->isLogged())
+            return Utils::$REGISTER_DB_MESSAGE;
+
+        return Db::query(
+            [
+                'UPDATE "'.$table.'" SET closed = FALSE WHERE hpid = :hpid',
+                [
+                    ':hpid' => $hpid
+                ]
+            ]);
     }
 
     public function reNotify($options = [], $prj = false)
@@ -1018,19 +1032,6 @@ class User
         }
 
         return $o->push;
-    }
-
-    public function floodPushRegControl($id) {
-        //If there has been a request in the last 5 seconds, return false. Always update timer to NOW to cut off flooders.
-        if (!($o = Db::query(['SELECT EXTRACT(EPOCH FROM NOW() - "pushregtime") >= 3 AS valid FROM "profiles" WHERE "counter" = :user',[':user' => $id]],Db::FETCH_OBJ))) {
-            return false;
-        }
-
-        if (!Db::query(['UPDATE "profiles" SET "pushregtime" = NOW() WHERE "counter" = :user',[':user' => $id]])) {
-            return false;
-        }
-
-        return $o->valid;
     }
 
     public static function getUsername($id=null)

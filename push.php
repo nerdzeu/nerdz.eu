@@ -1,10 +1,11 @@
 <?php
-
 ob_start('ob_gzhandler');
-
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
+use MCilloni\Pushed\Pushed;
+use MCilloni\Pushed\PushedException;
 use NERDZ\Core\User;
-use NERDZ\Core\Client\Pushed;
+use NERDZ\Core\Config;
 
 function jsonResponse($object) {
     header('Content-Type: application/json; charset=utf-8');
@@ -24,11 +25,11 @@ try {
 
     $thisUser = $user->getId();
 
-    if(!$user->floodPushRegControl($thisUser)) {
-        die('NO SPAM');
+    if(!NERDZ\Core\Security::floodPushRegControl()) {
+        jsonResponse(['ERROR' => 'NO SPAM']);
     }
 
-    $pushed = Pushed::connectIp(PUSHED_PORT,PUSHED_IP6);
+    $pushed = Pushed::connectIp(Config\PUSHED_PORT,Config\PUSHED_IP6);
 
     $resp = [];
 
