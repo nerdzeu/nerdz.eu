@@ -52,19 +52,10 @@ if($tot>0)
             $myarray[$i]['birthday_b'] = date('d-m',strtotime($o->birth_date)) == date('d-m',time());
         }
 
-        function sortbyusername($a, $b)
-        {
-            $x = strtolower($a['username_n']);
-            $y = strtolower($b['username_n']);
-            if ($y == $x)
-                return 0;
-            return $x < $y ? -1 : 1;
-        }
-
         function sortbyonlinestatus($a,$b)
         {
             if(($a['online_b'] && $b['online_b']) || (!$a['online_b'] && !$b['online_b']))
-                return sortbyusername($a,$b);
+                return \NERDZ\Core\Utils::sortByUsername($a,$b);
 
             return $b['online_b'] ? 1 : -1;
         }
