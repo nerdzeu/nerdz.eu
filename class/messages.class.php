@@ -255,6 +255,8 @@ class Messages
                     $ID = $uri;
                 else if (preg_match('#^https?://(?:open|play)\.spotify\.com/track/[\w\d]+$#i',$uri))
                     $ID = 'spotify:track:' . basename ($uri);
+                else if (preg_match('#^https?://(?:open|play)\.spotify\.com/user/([\w\d]+)/playlist/[\w\d]+#i', $uri, $matches))
+                    $ID = "spotify:user:{$matches[1]}:playlist:" . basename ($uri);
                 else
                     return $m[0];
                 return '<iframe src="https://embed.spotify.com/?uri='.$ID.'" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
