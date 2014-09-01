@@ -160,6 +160,43 @@ class Project
         return $o->cc;
     }
 
+    public function getInteractions($id, $limit = 0)
+    {
+        if(!$this->isLogged())
+            return [];
+
+        if($limit)
+            $limit = Security::limitControl($limit, 20);
+
+        $objs = [];
+        if(!($objs = Db::query(
+            [
+                'SELECT "type", extract(epoch from time) as time, pid, post_to
+                FROM group_interactions(:me, :id) AS
+                f("type" text, "time" timestamp with time zone, pid int8, post_to int8)
+                ORDER BY f.time DESC'.($limit !== 0 ? " LIMIT {$limit}" : ''),
+                [
+                    ':me' => $_SESSION['id'],
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ, true)))
+            return [];
+
+        //TODO: fix this
+        $ret = [];
+        for($i=0, $count = count($objs); $i<$count; ++$i) {
+            $ret[$i]['type_n']      = $objs[$i]->type;
+            $ret[$i]['to_n']        = static::getUsername($objs[$i]->to);
+            $ret[$i]['datetime_n']  = $this->getDateTime($objs[$i]->time);
+            $ret[$i]['pid_n']       = $objs[$i]->pid;
+            $ret[$i]['postto_n']    = static::getUsername($objs[$i]->post_to);
+            $ret[$i]['link_n']      = Utils::userLink($ret[$i]['postto_n']).$objs[$i]->pid;
+        }
+
+        return $ret;
+    }
+
+
     public static function getName($id = null)
     {
         if(!($o = Db::query(
