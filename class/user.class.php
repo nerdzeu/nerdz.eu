@@ -294,10 +294,10 @@ class User
         $objs = [];
         if(!($objs = Db::query(
             [
-                'SELECT "type", "from", "to", extract(epoch from time) as time
+                'SELECT "type", "from", "to", extract(epoch from time) as time, pid, post_to
                 FROM user_interactions(:me, :id) AS
-                f("type" text, "from" int8, "to" int8, "time" timestamp with time zone)
-                ORDER BY f.time'.($limit !== 0 ? " LIMIT {$limit}" : ''),
+                f("type" text, "from" int8, "to" int8, "time" timestamp with time zone, pid int8, post_to int8)
+                ORDER BY f.time DESC'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':me' => $_SESSION['id'],
                     ':id' => $id
@@ -306,16 +306,21 @@ class User
             return [];
 
         $ret = [];
-        for($i=0, $count = count($ret); $i<$count; ++$i) {
+        for($i=0, $count = count($objs); $i<$count; ++$i) {
             $ret[$i]['type_n']      = $objs[$i]->type;
             $ret[$i]['fromid_n']    = $objs[$i]->from;
-            $ret[$i]['from4link_n'] = Utils::userLink($objs[$i]->from);
+            $ret[$i]['from_n']      = static::getUsername($objs[$i]->from);
+            $ret[$i]['from4link_n'] = Utils::userLink($ret[$i]['from_n']);
             $ret[$i]['toid_n']      = $objs[$i]->to;
-            $ret[$i]['to4link_n']   = Utils::userLink($objs[$i]->to);
-            $ret[$i]['datetime_n']  = $this->getDateTime($ret[$i]->time);
+            $ret[$i]['to_n']        = static::getUsername($objs[$i]->to);
+            $ret[$i]['to4link_n']   = Utils::userLink($ret[$i]['to_n']);
+            $ret[$i]['datetime_n']  = $this->getDateTime($objs[$i]->time);
+            $ret[$i]['pid_n']       = $objs[$i]->pid;
+            $ret[$i]['postto_n']    = static::getUsername($objs[$i]->post_to);
+            $ret[$i]['link_n']      = Utils::userLink($ret[$i]['postto_n']).$objs[$i]->pid;
         }
 
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $ret;
     }
 
     public function getFollowing($id, $limit = 0)

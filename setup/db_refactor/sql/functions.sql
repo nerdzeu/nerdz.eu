@@ -76,41 +76,92 @@ begin
     END LOOP;
 END $$ LANGUAGE plpgsql;
 
--- returns all the interacations between 2 users
--- usage: select * from user_interactions(1, 2) as f("type" text, "from" int8, "to" int8, time timestamp with time zone) order by time limit 10;
+CREATE FUNCTION interactions_query_builder(tbl text, me int8, other int8, grp boolean) returns text
+language plpgsql as $$
+declare ret text;
+begin
+    ret := 'SELECT ''' || tbl || '''::text';
+    IF NOT grp THEN
+        ret = ret || ' ,t."from", t."to"';
+    END IF;
+    ret = ret || ', t."time" ';
+    --joins
+        IF tbl ILIKE '%comments' OR tbl = 'thumbs' OR tbl = 'groups_thumbs' OR tbl ILIKE '%lurkers'
+        THEN
+
+            ret = ret || ' , p."pid", p."to" FROM "' || tbl || '" t INNER JOIN "';
+            IF grp THEN
+                ret = ret || 'groups_';
+            END IF;
+            ret = ret || 'posts" p ON p.hpid = t.hpid';
+
+        ELSIF tbl ILIKE '%posts' THEN
+
+            ret = ret || ', "pid", "to" FROM "' || tbl || '" t';
+
+        ELSIF tbl ILIKE '%comment_thumbs' THEN
+
+            ret = ret || ', p."pid", p."to" FROM "';
+
+            IF grp THEN
+                ret = ret || 'groups_';
+            END IF;
+
+            ret = ret || 'comments" c INNER JOIN "' || tbl || '" t
+                ON t.hcid = c.hpid
+            INNER JOIN "';
+
+            IF grp THEN
+                ret = ret || 'groups_';
+            END IF;
+
+            ret = ret || 'posts" p ON p.hpid = c.hpid';
+
+        ELSE
+            ret = ret || ', null::int8, null::int8  FROM ' || tbl || ' t ';
+
+        END IF;
+    --conditions
+    ret = ret || ' WHERE (t."from" = '|| me ||' AND t."to" = '|| other ||')';
+
+    IF NOT grp THEN
+        ret = ret || ' OR (t."from" = '|| other ||' AND t."to" = '|| me ||')';
+    END IF;
+
+    RETURN ret;
+end $$;
+
+-- returns all the interacations between 2 user
+-- usage: select * from user_interactions(1, 2) as ("type" text, "from" int8, "to" int8,time timestamp with time zone, "pid" int8, "postTo" int8) order by time desc limit 10;
 CREATE FUNCTION user_interactions(me int8, other int8) RETURNS SETOF record
 LANGUAGE plpgsql AS $$
 DECLARE tbl text;
         ret record;
         query text;
 begin
-    FOR tbl IN (select table_name from information_schema.columns where column_name = 'to' and table_name not like 'groups_%') LOOP
-        query := 'SELECT ''' || tbl || '''::text ,"from", "to", "time" FROM ' || tbl || ' WHERE ("from" = '|| me || ' AND "to" = '|| other || ') OR ("from" = '|| other ||' AND "to" = '|| me ||')';
-
+    FOR tbl IN (select table_name from information_schema.columns where column_name = 'to' and table_name not like 'groups_%' and table_name not like '%notify') LOOP
+        query := interactions_query_builder(tbl, me, other, false);
         FOR ret IN EXECUTE query LOOP
             RETURN NEXT ret;
         END LOOP;
     END LOOP;
-
    RETURN;
 END $$;
 
 -- returns the interactions between an user and a group
--- usage: select * from group_interactions(1,1) as f("type" text, time timestamp with time zone)
+-- usage: select * from group_interactions(1, 1) as ("type" text, time timestamp with time zone, "pid" int8, "postTo" int8) order by time desc limit 10;
 CREATE FUNCTION group_interactions(me int8, grp int8) RETURNS SETOF record
 LANGUAGE plpgsql AS $$
 DECLARE tbl text;
         ret record;
         query text;
 BEGIN
-    FOR tbl IN (select table_name from information_schema.columns where column_name = 'to' and table_name like 'groups_%') LOOP
-        query := 'SELECT ''' || tbl || '''::text , "time" FROM ' || tbl || ' WHERE "from" = '|| me || ' AND "to" = '|| grp;
-
+    FOR tbl IN (select table_name from information_schema.columns where column_name = 'to' and table_name like 'groups_%' and table_name not like '%notify') LOOP
+        query := interactions_query_builder(tbl, me, grp, true);
         FOR ret IN EXECUTE query LOOP
             RETURN NEXT ret;
         END LOOP;
     END LOOP;
-
    RETURN;
 END $$;
 
