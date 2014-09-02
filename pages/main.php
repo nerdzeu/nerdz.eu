@@ -30,6 +30,18 @@ foreach($longlangs as $id => $val)
 $l = $user->getFollowing($_SESSION['id']);
 $tot = count($l);
 
+$longlangs  = System::getAvailableLanguages(1);
+
+$vals['langs_a'] = [];
+$i = 0;
+foreach($longlangs as $id => $val)
+{
+    $vals['langs_a'][$i]['longlang_n'] = $val;
+    $vals['langs_a'][$i]['shortlang_n'] = $id;
+    ++$i;
+}
+$vals['mylang_n'] = $user->getLanguage($_SESSION['id']);
+
 if($tot>0)
 {
     if(!empty($l[0]))
