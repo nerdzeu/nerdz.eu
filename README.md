@@ -16,14 +16,11 @@ There is a lot of work to do:
 
 *  <del> Move templates to separate repositories, so designers can just fork the template they need and work on it. </del>
 *  <del> Improve the User Experience (work on the design of templates located in the `tpl` folder. </del>
-*  <del> Create a file containing associations between template number and name, and... </del>
+*  <del> Create a file containing associations between template number and name.</del>
 *  <del> Create an option to make it possible to choose between templates in the user's preferences. </del>
 *  Create REST APIs (in a new repository, written in go) and create the required tables and options in this part of the code.
 *  On [nerdz.eu](http://www.nerdz.eu), once the APIs are ready, a reverse proxy Node server will run on api.nerdz.eu:80, hopefully giving us proper APIs!
 *  And more...
-
-
-Over the years the authors of the original code also wrote "temporary" files and C utils to help run the site. Those files are not included in this repository. Those files are not just utilities, they're also used on the website for "statistical" features like the (Top|Monthly) 100 list. They will not work without them, and since we're not providing them, they will not work _period_. Don't ask why they aren't working in an issue.
 
 Contributing
 ============
@@ -47,6 +44,3 @@ git checkout master
 git pull
 git submodule update --init --recursive
 ```
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nerdzeu/nerdz.eu/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
