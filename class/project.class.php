@@ -6,9 +6,11 @@ use PDO;
 class Project
 {
     private $id;
+    private $user;
 
     public function __construct($id = null)
     {
+        $this->user = new User();
         if($id !== null) {
             if(!is_numeric($id)) {
                 $this->id = $this->getId($id);
@@ -162,7 +164,7 @@ class Project
 
     public function getInteractions($id, $limit = 0)
     {
-        if(!$this->isLogged())
+        if(!$this->user->isLogged())
             return [];
 
         if($limit)
@@ -186,11 +188,10 @@ class Project
         $ret = [];
         for($i=0, $count = count($objs); $i<$count; ++$i) {
             $ret[$i]['type_n']      = $objs[$i]->type;
-            $ret[$i]['to_n']        = static::getUsername($objs[$i]->to);
-            $ret[$i]['datetime_n']  = $this->getDateTime($objs[$i]->time);
+            $ret[$i]['datetime_n']  = $this->user->getDateTime($objs[$i]->time);
             $ret[$i]['pid_n']       = $objs[$i]->pid;
-            $ret[$i]['postto_n']    = static::getUsername($objs[$i]->post_to);
-            $ret[$i]['link_n']      = Utils::userLink($ret[$i]['postto_n']).$objs[$i]->pid;
+            $ret[$i]['postto_n']    = static::getName($objs[$i]->post_to);
+            $ret[$i]['link_n']      = Utils::projectLink($ret[$i]['postto_n']).$objs[$i]->pid;
         }
 
         return $ret;

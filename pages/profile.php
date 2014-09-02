@@ -32,7 +32,15 @@ if($vals['logged_b'])
 }
 
 $vals['privateprofile_b'] = !$info->private;
-$enter = (!$vals['privateprofile_b'] && $vals['logged_b']) || ($vals['privateprofile_b']);
+$vals['singlepost_b']    = isset($pid)    && isset($id) && is_numeric($pid);
+$vals['friends_b']       = isset($action) && $action == 'friends';
+$vals['followers_b']     = isset($action) && $action == 'followers';
+$vals['following_b']     = isset($action) && $action == 'following';
+$vals['interactions_b']  = isset($action) && $action == 'interactions';
+
+$enter = $vals['interactions_b'] && !$vals['logged_b']
+    ? false
+    : (!$vals['privateprofile_b'] && $vals['logged_b']) || $vals['privateprofile_b'];
 
 if($enter)
 {
@@ -116,12 +124,6 @@ if($enter)
     $vals['friends_n']   = $user->getFriendsCount($info->counter);
 
     $vals['lastvisit_n'] = $user->getDateTime($o->last);
-
-    $vals['singlepost_b']    = isset($pid)    && isset($id) && is_numeric($pid);
-    $vals['friends_b']       = isset($action) && $action == 'friends';
-    $vals['followers_b']     = isset($action) && $action == 'followers';
-    $vals['following_b']     = isset($action) && $action == 'following';
-    $vals['interactions_b']  = isset($action) && $action == 'interactions';
 
     if(!$vals['singlepost_b'] && !$vals['friends_b'] && !$vals['followers_b'] && !$vals['following_b'] && !$vals['interactions_b'])
     {

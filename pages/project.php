@@ -19,7 +19,14 @@ $vals['logged_b'] = $user->isLogged();
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
-if(($info->private && !$vals['logged_b']) || (!$info->visible && !$vals['logged_b']))
+$vals['singlepost_b']    = isset($pid) && isset($gid) && is_numeric($pid);
+$vals['followers_b']     = isset($action) && $action == 'followers';
+$vals['members_b']       = isset($action) && $action == 'members';
+$vals['interactions_b']  = isset($action) && $action == 'interactions';
+
+if( ($info->private && !$vals['logged_b']) ||
+    (!$info->visible && !$vals['logged_b']) ||
+    ($vals['interactions_b'] && !$vals['logged_b']))
 {
     $included = true;
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
@@ -94,11 +101,6 @@ else
         $vals['canifollow_b'] = $vals['logged_b'] && !in_array($_SESSION['id'],array_merge($mem,$fol));
 
         $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $info->owner);
-
-        $vals['singlepost_b']    = isset($pid) && isset($gid) && is_numeric($pid);
-        $vals['followers_b']     = isset($action) && $action == 'followers';
-        $vals['members_b']       = isset($action) && $action == 'members';
-        $vals['interactions_b']  = isset($action) && $action == 'interactions';
 
         if(!$vals['singlepost_b'] && !$vals['followers_b'] && !$vals['interactions_b'] && ! $vals['members_b'])
         {
