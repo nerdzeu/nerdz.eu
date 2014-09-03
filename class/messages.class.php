@@ -518,12 +518,18 @@ class Messages
             $client = new \Github\Client();
             $client->authenticate(Config\ISSUE_GIT_KEY, null, \Github\client::AUTH_URL_TOKEN);
             $message = static::stripTags($message);
-            $client->api('issue')->create('orgs/nerdzeu','nerdz.eu',
-                [
-                    'title' => substr($message, 0, 128),
-                    'body'  => User::getUsername().': '.$message
-                ]
-            );
+            try {
+                $client->api('issue')->create('nerdzeu','nerdz.eu',
+                    [
+                        'title' => substr($message, 0, 128),
+                        'body'  => User::getUsername().': '.$message
+                    ]
+                );
+            } catch(\Github\Exception\RuntimeException $exception) {
+                System::dumpError('GitHub API: '. $exception->getMessage());
+                var_dump($exception->getPrevious());
+                System::dumpError('GitHub API: '. $exception->getPrevious());
+            }
         }
 
         return $retStr;
