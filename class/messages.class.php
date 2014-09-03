@@ -516,9 +516,9 @@ class Messages
         if($project && $issue && $to == Config\ISSUE_BOARD) {
             require_once __DIR__ . '/vendor/autoload.php';
             $client = new \Github\Client();
-            $client->authenticate(ISSUE_GIT_KEY, null, Github\client::AUTH_URL_TOKEN);
+            $client->authenticate(Config\ISSUE_GIT_KEY, null, \Github\client::AUTH_URL_TOKEN);
             $message = static::stripTags($message);
-            $client->api('issue')->create('nerdzeu','nerdz.eu',
+            $client->api('issue')->create('orgs/nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
                     'body'  => User::getUsername().': '.$message
