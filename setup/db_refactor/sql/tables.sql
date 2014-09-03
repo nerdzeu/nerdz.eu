@@ -520,6 +520,10 @@ ALTER TABLE "followers" ALTER COLUMN "to_notify" SET NOT NULL;
 ALTER TABLE "groups_followers" ADD COLUMN "to_notify" BOOLEAN NOT NULL DEFAULT TRUE;
 update "groups_followers" SET "to_notify" = false;
 
+-- add notification field when owner add a member
+ALTER TABLE "groups_members" ADD COLUMN "to_notify" BOOLEAN NOT NULL DEFAULT TRUE;
+UPDATE "groups_members" SET "to_notify" = FALSE;
+
 -- empty notify_story
 UPDATE "users" SET "notify_story" = NULL;
 

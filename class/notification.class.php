@@ -15,6 +15,7 @@ class Notification
     const PROJECT_COMMENT = 'project_comments';
     const PROJECT_POST    = 'news_project';
     const PROJECT_FOLLOW  = 'new_project_follower';
+    const PROJECT_MEMBER  = 'new_project_member';
 
     public function __construct($group = true)
     {
@@ -30,12 +31,12 @@ class Notification
                 'SELECT COUNT(DISTINCT "from") as cc FROM ( 
                     SELECT "from" FROM "pms" WHERE "to" = :id AND "to_read" = TRUE
                 ) AS tmp1',
-[
-    ':id' => $_SESSION['id']
-]
+                [
+                    ':id' => $_SESSION['id']
+                ]
             ],Db::FETCH_OBJ)))
             return 0;
-return $o->cc;
+        return $o->cc;
     }
 
     public function count($what = null,$rag = null)
@@ -64,15 +65,19 @@ return $o->cc;
             $c = $this->countFollow();
             break;
         case 'projects_follow':
-            $c = $this->countUserComments();
+            $c = $this->countProjectFollow();
+            break;
+        case 'projects_members':
+            $c = $this->countProjectMember();
             break;
         case 'all':
-            $c = $this->countUserComments()    +
+            $c = $this->countUserComments()   +
                 $this->countUserPosts()       +
                 $this->countProjectComments() +
                 $this->countProjectPosts()    +
                 $this->countFollow()          +
-                $this->countProjectFollow();
+                $this->countProjectFollow()   +
+                $this->countProjectMember();
             break;
         }
         return $c;
@@ -171,6 +176,20 @@ return $o->cc;
         return $o->cc;
     }
 
+    private function countProjectMember()
+    {
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("to") AS cc FROM "groups_members" WHERE "from" = :id AND "to_notify" = TRUE',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_OBJ)))
+            return 0;
+
+        return $o->cc;
+    }
+
     public function show($what = null,$del = true)
     {
         $ret = [];
@@ -197,6 +216,9 @@ return $o->cc;
         case 'projects_follow':
             $ret = $this->getProjectFollowers($del);
             break;
+        case 'projects_member':
+            $ret = $this->getProjectMember($del);
+            break;
         case 'all':
             $ret = array_merge(
                 $this->getUserComments($del),
@@ -204,7 +226,9 @@ return $o->cc;
                     $this->getProjectComments($del),
                     $this->getProjectPosts($del),
                     $this->getUserFollowers($del),
-                    $this->getProjectFollowers($del));
+                    $this->getProjectFollowers($del),
+                    $this->getProjectMember($del)
+                );
             break;
         }
         usort($ret,array(__CLASS__,'echoSort'));
@@ -243,7 +267,7 @@ return $o->cc;
                 $ret['to_n'] = User::getUsername($post->to);
                 $ret['to4link_n']  = Utils::userLink($ret['to_n']).$ret['pid_n'];
             }
-        } else { // followers
+        } else { // followers - members
             $ret['toid_n'] = $row->to;
             if($this->isProject($type)) {
                 $ret['to_n']   = Project::getName($row->to);
@@ -486,7 +510,7 @@ return $o->cc;
             $ret[$i++] = $this->get(
                 [
                     'row' => $o
-                ], static::PROJECT_FOLLOW);   
+                ], static::PROJECT_FOLLOW);
 
         if($del) {
             Db::query(
@@ -494,9 +518,39 @@ return $o->cc;
                     'UPDATE "groups_followers" SET "to_notify" = FALSE WHERE "to" IN (
                         SELECT "counter" FROM "groups" WHERE "owner" = :id
                     )',
-[
-    ':id' => $_SESSION['id']
-]
+                    [
+                        ':id' => $_SESSION['id']
+                    ]
+                ],Db::NO_RETURN);
+        }
+        return $ret;
+    }
+
+    private function getProjectMember($del)
+    {
+        $ret = [];
+        $i = 0;
+        $result = Db::query(
+            [
+                'SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time FROM "groups_members" WHERE "from" = :id AND "to_notify" = TRUE',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT);
+
+        while(($o = $result->fetch(PDO::FETCH_OBJ)))
+            $ret[$i++] = $this->get(
+                [
+                    'row' => $o
+                ], static::PROJECT_MEMBER);
+
+        if($del) {
+            Db::query(
+                [
+                    'UPDATE "groups_members" SET "to_notify" = FALSE WHERE "from" = :id',
+                    [
+                        ':id' => $_SESSION['id']
+                    ]
                 ],Db::NO_RETURN);
         }
         return $ret;
