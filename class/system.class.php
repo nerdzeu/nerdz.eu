@@ -27,6 +27,13 @@ class System
         return count ($chost) > 1 ? implode ('.', $chost) : null;
     }
 
+    public static function getResourceDomain()
+    {
+        return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
+            ? 'https://'.Config\SITE_HOST
+            : Config\STATIC_DOMAIN;
+    }
+
     public static function getAvailableLanguages($long = null)
     {
         $cache = 'AvailableLanguages'.Config\SITE_HOST;

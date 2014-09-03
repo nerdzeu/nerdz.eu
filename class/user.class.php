@@ -444,6 +444,21 @@ class User
         if(!$this->isLogged())
             return Utils::$REGISTER_DB_MESSAGE;
 
+        // defollow to remove from members, if member
+        if($prj)
+        {
+            $project = new Project($id);
+            if(in_array($_SESSION['id'], $project->getMembers()))
+                return Db::query(
+                [
+                    'DELETE FROM "groups_members" WHERE "to" = :id AND "from" = :me',
+                    [
+                        ':id' => $id,
+                        ':me' => $_SESSION['id']
+                    ]
+                ],Db::FETCH_ERRSTR);   
+        }
+
         $table = ($prj ? 'groups_' : '').'followers';
         return Db::query(
             [

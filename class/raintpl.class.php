@@ -38,7 +38,6 @@ final class RainTPL
      *
      * @var string
      */
-    //static $base_url = Config\STATIC_DOMAIN;
     private $base_url = '';
 
     /**
@@ -107,16 +106,12 @@ final class RainTPL
 
     public function __construct()
     {
-        if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') //ssl
-        {
-            $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/ssltmp/';
-            $this->base_url = 'https://'.Config\SITE_HOST;
-        }
-        else
-        {
-            $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/tmp/';
-            $this->base_url = Config\STATIC_DOMAIN;
-        }
+        $this->cache_dir = $_SERVER['DOCUMENT_ROOT']. '/'. (
+                !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
+                ? 'ssl'
+                : ''
+            ).'tmp/';
+        $this->base_url = System::getResourceDomain();
     }
 
     public function getActualTemplateNumber()

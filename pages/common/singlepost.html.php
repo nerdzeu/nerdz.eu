@@ -9,7 +9,7 @@ use NERDZ\Core\Messages;
 
 $prj = isset($prj);
 $messages = new Messages();
-
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 $user->getTPL()->assign($messages->getPost($hpid, ['project' => $prj ]));
 
 if(isset($draw))

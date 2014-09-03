@@ -78,7 +78,7 @@ class Messages
             ++$index;
         }
 
-        $domain = Utils::getResourceDomain();
+        $domain = System::getResourceDomain();
 
         $validURL = function($m) {
             $m[1] = trim($m[1]);
@@ -908,6 +908,7 @@ class Messages
         $ret['uthumb_n']          = $this->getUserThumb($dbPost['hpid'], $project);
         $ret['pid_n']             = $dbPost['pid'];
         $ret['news_b']            = $dbPost['news'];
+        $ret['language_n']        = $dbPost['lang'];
         $ret['from4link_n']       = Utils::userLink($from);
         $ret['to4link_n']         = $toFuncLink($to);
         $ret['fromid_n']          = $dbPost['from'];

@@ -15,32 +15,13 @@ foreach($banners as $ban)
     $vals['banners_a'][$ban[1]] = $ban[2];
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
-
-$longlangs  = System::getAvailableLanguages(1);
-
-$vals['langs_a'] = [];
-$i = 0;
-foreach($longlangs as $id => $val)
-{
-    $vals['langs_a'][$i]['longlang_n'] = $val;
-    $vals['langs_a'][$i]['shortlang_n'] = $id;
-    ++$i;
-}
+$vals['canwriteissue_b'] = false;
+$vals['canwritenews_b'] = true;
+$vals['id_n'] = $_SESSION['id'];
 
 $l = $user->getFollowing($_SESSION['id']);
+
 $tot = count($l);
-
-$longlangs  = System::getAvailableLanguages(1);
-
-$vals['langs_a'] = [];
-$i = 0;
-foreach($longlangs as $id => $val)
-{
-    $vals['langs_a'][$i]['longlang_n'] = $val;
-    $vals['langs_a'][$i]['shortlang_n'] = $id;
-    ++$i;
-}
-$vals['mylang_n'] = $user->getLanguage($_SESSION['id']);
 
 if($tot>0)
 {

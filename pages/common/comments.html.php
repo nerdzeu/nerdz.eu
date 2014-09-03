@@ -6,7 +6,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 use NERDZ\Core\Comments;
 use NERDZ\Core\Messages;
 use NERDZ\Core\Gravatar;
-use NERDZ\Core\Config;
+use NERDZ\Core\System;
 use NERDZ\Core\User;
 
 $prj = isset($prj);
@@ -29,7 +29,7 @@ case 'get':
     $vals['needmorebtn_b']   = false;
     $vals['commentcount_n']  = 0;
     $vals['hpid_n']          = 0;
-    $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/red_x.png';
+    $vals['onerrorimgurl_n'] = System::getResourceDomain().'/static/images/red_x.png';
 
     $user->getTPL()->assign($vals);
     $user->getTPL()->draw(($prj ? 'project' : 'profile'). '/comments');
@@ -57,7 +57,7 @@ case 'show':
     $vals['currentuserprofile_n'] = \NERDZ\Core\Utils::userLink($_SESSION['id']);
     $vals['currentusergravatar_n'] = $user->getGravatar($_SESSION['id']);
     $vals['currentusername_n'] = User::getUsername();
-    $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/red_x.png';
+    $vals['onerrorimgurl_n'] = System::getResourceDomain().'/static/images/red_x.png';
     $vals['list_a'] = $_list;
     $vals['showform_b'] = $doShowForm;
     $vals['hpid_n'] = $hpid;

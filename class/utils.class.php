@@ -27,18 +27,11 @@ class Utils
         return filter_var($url, FILTER_VALIDATE_URL);
     }
 
-    public static function getResourceDomain()
-    {
-        return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
-            ? 'https://'.Config\SITE_HOST
-            : Config\STATIC_DOMAIN;
-    }
-
     public static function getValidImageURL($url)
     {
         $url        = strip_tags(trim($url));
         $sslEnabled = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-        $domain     = static::getResourceDomain();
+        $domain     = System::getResourceDomain();
 
         if (!static::isValidURL($url))
             return $domain.'/static/images/invalidImgUrl.php';

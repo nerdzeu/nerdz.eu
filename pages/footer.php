@@ -1,11 +1,10 @@
 <?php
+use NERDZ\Core\System;
 $vals = [];
 $vals['logged_b'] = $user->isLogged();
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/footer');
-
-$ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 
 if(in_array($_SERVER['SCRIPT_NAME'], array('/profile.php','/project.php'))) { ?>
 <script type="application/javascript">
@@ -20,7 +19,7 @@ if(in_array($_SERVER['SCRIPT_NAME'], array('/profile.php','/project.php'))) { ?>
 <script type="application/javascript">
 (function() {
     var gi = document.createElement('script'); gi.type = 'application/javascript'; gi.async = true;
-    gi.src = '<?php echo ($ssl ? '' : NERDZ\Core\Config\STATIC_DOMAIN). '/static/js/gistBlogger.min.js';?>';
+    gi.src = '<?php echo System::getResourceDomain(). '/static/js/gistBlogger.min.js';?>';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gi,s);
 })();
 </script>

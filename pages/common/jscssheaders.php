@@ -4,6 +4,7 @@ use NERDZ\Core\Browser;
 use NERDZ\Core\Config;
 use NERDZ\Core\Db;
 use NERDZ\Core\Utils;
+use NERDZ\Core\System;
 use NERDZ\Core\User;
 // Displays the stuff contained in the <head> tag.
 $logged = $user->isLogged();
@@ -15,8 +16,7 @@ if (User::isOnMobileHost()) { ?>
     <meta name="mobile-web-app-capable" content="yes">
 <?php
 } /* END MOBILE_META_TAGS */
-$is_ssl = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-$static_domain = $is_ssl ? '' : Config\STATIC_DOMAIN;
+$static_domain = System::getResourceDomain();
 /* BEGIN WINDOWS_META_TAGS */
 if ($uagdata['platform'] == 'Windows' && (float)$uagdata['version'] >= 10) {
 ?>
@@ -66,7 +66,9 @@ extensions: ["tex2jax.js"],
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
     </script>
-    <script type="application/javascript" src="http<?php echo $is_ssl ? 's://c328740.ssl.cf1.rackcdn.com' : '://cdn.mathjax.org' ?>/mathjax/latest/MathJax.js"></script>
+<script type="application/javascript" src="http<?php echo !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
+    ? 's://c328740.ssl.cf1.rackcdn.com'
+    : '://cdn.mathjax.org' ?>/mathjax/latest/MathJax.js"></script>
 <script type="application/javascript">
 <?php
 if(!apc_exists('tracking_js'))
@@ -79,9 +81,9 @@ echo unserialize(apc_fetch('tracking_js'));
 /* BEGIN SSL_VARIABLES (used by the JS API) */
 ?>
 var Nssl = {
-login:     <?=Config\LOGIN_SSL_ONLY ? 'true' : 'false'?>,
-    domain:    "<?=Config\HTTPS_DOMAIN?>"
-        };
+    login:  <?=Config\LOGIN_SSL_ONLY ? 'true' : 'false'?>,
+    domain: "<?=Config\HTTPS_DOMAIN?>"
+};
 <?php
 /* END SSL_VARIABLES */
 /* BEGIN NERDZ_VERSION */

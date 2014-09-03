@@ -3,6 +3,7 @@
 use NERDZ\Core\Banners;
 use NERDZ\Core\Browser;
 use NERDZ\Core\Config;
+use NERDZ\Core\System;
 use NERDZ\Core\Db;
 use NERDZ\Core\Gravatar;
 use NERDZ\Core\Messages;
@@ -13,6 +14,8 @@ $vals['logged_b'] = $user->isLogged();
 $vals['id_n'] = $info->counter;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
+$vals['canwriteissue_b'] = false;
+$vals['canwritenews_b']  = true;
 
 $banners = (new Banners())->getBanners();
 $vals['banners_a'] = [];
@@ -46,7 +49,7 @@ if($enter)
 {
     $vals['gravatarurl_n'] = $user->getGravatar($info->counter);
 
-    $vals['onerrorimgurl_n'] = Config\STATIC_DOMAIN.'/static/images/onErrorImg.php';
+    $vals['onerrorimgurl_n'] = System::getResourceDomain().'/static/images/onErrorImg.php';
     $vals['website_n'] = $vals['website4link_n'] = empty($info->website) ? 'http://'.Config\SITE_HOST : $info->website;
 
     if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$vals['website4link_n']))
