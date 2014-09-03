@@ -527,7 +527,6 @@ class Messages
                 );
             } catch(\Github\Exception\RuntimeException $exception) {
                 System::dumpError('GitHub API: '. $exception->getMessage());
-                var_dump($exception->getPrevious());
                 System::dumpError('GitHub API: '. $exception->getPrevious());
             }
         }
