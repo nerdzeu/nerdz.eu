@@ -184,3 +184,7 @@ DROP FUNCTION before_insert_on_groups_lurkers() CASCADE; -- become before_insert
 DROP FUNCTION before_insert_on_lurkers() CASCADE; -- become before_insert_post_lurker
 DROP FUNCTION before_insert_pm() CASCADE; -- become before_insert_pm
 
+-- don't chage pid after post deletion (preserve urls consistency)
+DROP FUNCTION after_delete_groups_post() CASCADE;
+DROP FUNCTION after_delete_post() CASCADE;
+

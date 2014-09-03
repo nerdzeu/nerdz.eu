@@ -82,6 +82,7 @@
     "INSERT_USER_PASS" : "Inserisci nome utente / password",
     "INTERACTIONS" : "Interazioni",
     "INTERESTS" : "Interessi",
+    "INVALID_LANGUAGE" : "Lingua non valida",
     "INVALID_URL" : "Il formato dell'URL non è corretto",
     "INVISIBLE_PROJECT" : "Progetto invisibile",
     "INVISIBLE_PROJECT_DESCR" : "Progetto invisible. Visibile ai soli membri",

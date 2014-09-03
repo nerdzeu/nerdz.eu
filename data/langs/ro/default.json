@@ -82,6 +82,7 @@
     "INSERT_USER_PASS" : "Scrie nume utilizator / parola",
     "INTERACTIONS" : "Interacţiuni",
     "INTERESTS" : "Interesuri",
+    "INVALID_LANGUAGE" : "Limba nevalid",
     "INVALID_URL" : "Formatul de URL este incorect",
     "INVISIBLE_PROJECT" : "project vizibil",
     "INVISIBLE_PROJECT_DESCR" : "Project visibil duar de membri",

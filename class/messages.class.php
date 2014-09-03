@@ -484,20 +484,29 @@ class Messages
     public function add($to, $message, $options = [])
     {
         extract($options);
-        $news    = !empty($news);
-        $project = !empty($project);
-        $issue   = !empty($issue);
+        $news     = !empty($news);
+        $project  = !empty($project);
+        $issue    = !empty($issue);
+        $language = !empty($language) ? $language : false;
 
+        if($language) {
+            if(!in_array($language, System::getAvailableLanguages()))
+                return 'error: INVALID_LANGUAGE';
+        } else {
+            $language = $this->user->getLanguage();
+        }
+        
         $table = ($project ? 'groups_' : '').'posts';
 
         $retStr = Db::query(
             [
-                'INSERT INTO "'.$table.'" ("from","to","message", "news") VALUES (:id,:to,:message, :news)',
+                'INSERT INTO "'.$table.'" ("from","to","message","news","lang") VALUES (:id,:to,:message, :news, :language)',
                     [
-                        ':id'      => $_SESSION['id'],
-                        ':to'      => $to,
-                        ':message' => Comments::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')),
-                        ':news'    => $news ? 'true' : 'false'
+                        ':id'       => $_SESSION['id'],
+                        ':to'       => $to,
+                        ':message'  => Comments::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')),
+                        ':news'     => $news ? 'true' : 'false',
+                        ':language' => $language
                     ]
                 ],Db::FETCH_ERRSTR);
 
@@ -512,9 +521,9 @@ class Messages
             $client->api('issue')->create('nerdzeu','nerdz.eu',
                 [
                     'title' => substr($message, 0, 128),
-                        'body'  => User::getUsername().': '.$message
-                    ]
-                );
+                    'body'  => User::getUsername().': '.$message
+                ]
+            );
         }
 
         return $retStr;

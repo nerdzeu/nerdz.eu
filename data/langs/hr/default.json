@@ -82,6 +82,7 @@
     "INSERT_USER_PASS" : "Unesite svoje korisničko ime / lozinku",
     "INTERACTIONS" : "Interakcije",
     "INTERESTS" : "Interesi",
+    "INVALID_LANGUAGE" : "Neispravan jezik",
     "INVALID_URL" : "URL Format je netočna",
     "INVISIBLE_PROJECT" : "Nevidljivi projekt",
     "INVISIBLE_PROJECT_DESCR" : "Nevidljiv projekt. Vidljiv samo članovima",
