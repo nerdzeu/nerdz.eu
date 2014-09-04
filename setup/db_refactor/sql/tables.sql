@@ -43,6 +43,62 @@ update groups_posts set lang = u.lang from users u where u.counter = "from";
 
 update groups_posts set news = true where "to" = (select counter from "special_groups" where role = 'GLOBAL_NEWS');
 
+-- post classification
+create table posts_classification(
+    id bigserial primary key, -- required for better indexing
+    u_hpid int8 references posts(hpid) on delete cascade,
+    g_hpid int8 references groups_posts(hpid) on delete cascade,
+    tag varchar(35) not null, -- not only hashtags, general support for tag in every format (text mining support in the later future (?))
+    hits   int8 not null default 0, -- increment every time the same tag is used in the post comments
+    check(u_hpid is not null OR g_hpid is not null)
+);
+
+-- index on case insensitive tags
+create index on posts_classification((lower(tag))); --efficient case-insensitive searches
+create unique index on posts_classification(u_hpid, lower(tag));
+create unique index on posts_classification(g_hpid, lower(tag));
+
+-- populate posts_classfications with old "tagging" method use by the users
+-- 1: find the hastag if present and tag the post (search for /#[a-z][a-z0-9]{,33}/ )
+-- 2: search for [spoiler=something] and if "#" + something matches the previous regexp tag the post
+-- 3: search for [code=language] and if "#" + language matches the regexp tag the post
+
+-- user posts
+insert into posts_classification(u_hpid, tag)
+select distinct tmp.hpid, lower(tmp.matchedTag[1]) from (
+    -- 1: existing hashtags
+    select hpid, regexp_matches(message, '#[a-z][a-z0-9]{0,33}', 'gi') as matchedTag
+    from posts
+        union distinct -- 2: spoiler
+    select a.hpid, concat('{#', a.matchedTag[1], '}')::text[] from (
+        select hpid, regexp_matches(message, '\[spoiler=([a-z][a-z0-9]{0,34})\]', 'gi')
+        as matchedTag from posts
+    ) as a
+        union distinct -- 3: languages
+     select b.hpid, concat('{#', b.matchedTag[1], '}')::text[] from (
+         select hpid, regexp_matches(message, '\[code=([a-z][a-z0-9]{0,34})\]', 'gi')
+        as matchedTag from posts
+    ) as b
+) tmp;
+
+-- project posts
+insert into posts_classification(g_hpid, tag)
+select distinct tmp.hpid, lower(tmp.matchedTag[1]) from (
+    -- 1: existing hashtags
+    select hpid, regexp_matches(message, '#[a-z][a-z0-9]{0,33}', 'gi') as matchedTag
+    from groups_posts
+        union distinct -- 2: spoiler
+    select a.hpid, concat('{#', a.matchedTag[1], '}')::text[] from (
+        select hpid, regexp_matches(message, '\[spoiler=([a-z][a-z0-9]{0,34})\]', 'gi')
+        as matchedTag from groups_posts
+    ) as a
+        union distinct -- 3: languages
+     select b.hpid, concat('{#', b.matchedTag[1], '}')::text[] from (
+         select hpid, regexp_matches(message, '\[code=([a-z][a-z0-9]{0,34})\]', 'gi')
+        as matchedTag from groups_posts
+    ) as b
+) tmp;
+
 -- history of deleted users
 
 create table deleted_users(
