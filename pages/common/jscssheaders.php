@@ -66,9 +66,7 @@ extensions: ["tex2jax.js"],
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
     </script>
-<script type="application/javascript" src="http<?php echo !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
-    ? 's://c328740.ssl.cf1.rackcdn.com'
-    : '://cdn.mathjax.org' ?>/mathjax/latest/MathJax.js"></script>
+<script type="application/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <script type="application/javascript">
 <?php
 if(!apc_exists('tracking_js'))
@@ -80,10 +78,10 @@ echo unserialize(apc_fetch('tracking_js'));
 
 /* BEGIN SSL_VARIABLES (used by the JS API) */
 ?>
-var Nssl = {
-    login:  <?=Config\LOGIN_SSL_ONLY ? 'true' : 'false'?>,
-    domain: "<?=Config\HTTPS_DOMAIN?>"
-};
+    var Nssl = {
+        login: <?=Config\LOGIN_SSL_ONLY ? 'true' : 'false'?>,
+        domain: "<?=Config\HTTPS_DOMAIN?>"
+    };
 <?php
 /* END SSL_VARIABLES */
 /* BEGIN NERDZ_VERSION */
