@@ -63,11 +63,12 @@ BEGIN
     RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-create function user_post() returns trigger as $$
+create function after_insert_user_post() returns trigger as $$
 begin
     IF NEW."from" <> NEW."to" THEN
         insert into posts_notify("from", "to", "hpid", "time") values(NEW."from", NEW."to", NEW."hpid", NEW."time");
     END IF;
+    PERFORM hashtag(NEW.message, NEW.hpid, false);
     return null;
 end $$ language plpgsql;
 
@@ -341,6 +342,7 @@ CREATE FUNCTION user_comment() RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 BEGIN
+    PERFORM hashtag(NEW.message, NEW.hpid, false);
     -- edit support
     IF TG_OP = 'UPDATE' THEN
         INSERT INTO comments_revisions(hcid, time, message, rev_no)
@@ -404,6 +406,7 @@ CREATE FUNCTION group_comment() RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 BEGIN
+    PERFORM hashtag(NEW.message, NEW.hpid, true);
     -- edit support
     IF TG_OP = 'UPDATE' THEN
         INSERT INTO groups_comments_revisions(hcid, time, message, rev_no)
@@ -462,17 +465,21 @@ BEGIN
     RETURN NULL;
 END $$;
 
-CREATE FUNCTION save_post_revision() RETURNS TRIGGER AS $$
+CREATE FUNCTION post_update() RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO posts_revisions(hpid, time, message, rev_no) VALUES(OLD.hpid, OLD.time, OLD.message,
         (SELECT COUNT(hpid) +1 FROM posts_revisions WHERE hpid = OLD.hpid));
+
+    PERFORM hashtag(NEW.message, NEW.hpid, false);
     RETURN NULL;
 END $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION save_groups_post_revision() RETURNS TRIGGER AS $$
+CREATE FUNCTION groups_post_update() RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO groups_posts_revisions(hpid, time, message, rev_no) VALUES(OLD.hpid, OLD.time, OLD.message,
         (SELECT COUNT(hpid) +1 FROM groups_posts_revisions WHERE hpid = OLD.hpid));
+
+    PERFORM hashtag(NEW.message, NEW.hpid, true);
     RETURN NULL;
 END $$ LANGUAGE plpgsql;
 
@@ -641,7 +648,7 @@ BEGIN
     RETURN NEW;
 END $$;
 
-CREATE FUNCTION after_insert_groups_post() RETURNS trigger
+CREATE FUNCTION after_insert_group_post() RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -670,6 +677,7 @@ BEGIN
         SELECT NEW."to", "user", NEW."time", NEW."hpid" FROM to_notify
     );
 
+    PERFORM hashtag(NEW.message, NEW.hpid, true);
     RETURN NULL;
 END $$;
 
@@ -685,12 +693,12 @@ EXECUTE PROCEDURE post_control();
 CREATE TRIGGER before_insert_post BEFORE INSERT ON posts FOR EACH ROW EXECUTE PROCEDURE post_control();
 
   -- after insert
-create trigger after_insert_user_post after insert on posts for each row execute procedure user_post();
+create trigger after_insert_user_post after insert on posts for each row execute procedure after_insert_user_post();
 
   -- after update
 CREATE TRIGGER after_update_post_message AFTER UPDATE ON posts FOR EACH ROW
 WHEN ( NEW.message <> OLD.message )
-EXECUTE PROCEDURE save_post_revision();
+EXECUTE PROCEDURE post_update();
 
 -- groups_posts --
   -- before update
@@ -700,12 +708,12 @@ EXECUTE PROCEDURE group_post_control();
     -- before insert
 CREATE TRIGGER before_insert_group_post BEFORE INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE group_post_control();
   -- after insert
-CREATE TRIGGER after_insert_groups_post AFTER INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE after_insert_groups_post();
+CREATE TRIGGER after_insert_group_post AFTER INSERT ON groups_posts FOR EACH ROW EXECUTE PROCEDURE after_insert_group_post();
 
   --after update
 CREATE TRIGGER after_update_groups_post_message AFTER UPDATE ON groups_posts FOR EACH ROW
 WHEN ( NEW.message <> OLD.message )
-EXECUTE PROCEDURE save_groups_post_revision();
+EXECUTE PROCEDURE groups_post_update();
 
 -- user post lurker
 CREATE TRIGGER before_insert_user_post_lurker BEFORE INSERT ON lurkers FOR EACH ROW EXECUTE PROCEDURE before_insert_user_post_lurker();

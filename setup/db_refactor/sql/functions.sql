@@ -165,6 +165,41 @@ BEGIN
    RETURN;
 END $$;
 
+-- parse and add hastags present in message
+CREATE FUNCTION hashtag(message text, hpid int8, grp boolean) RETURNS VOID LANGUAGE plpgsql AS $$
+declare field text;
+BEGIN
+    IF grp THEN
+        field := 'g_hpid';
+    ELSE
+        field := 'u_hpid';
+    END IF;
+
+    message = quote_literal(message);
+
+    EXECUTE '
+    insert into posts_classification(' || field || ' , tag)
+    select distinct ' || hpid ||', tmp.matchedTag[1] from (
+        -- 1: existing hashtags
+        select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\])(#[a-z][a-z0-9]{0,33})(:?\s|$)(?![^\[]*?\[\/(url|code)\])'', ''gi'')
+        as matchedTag
+            union distinct -- 2: spoiler
+        select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
+            select regexp_matches(' || message || ', ''\[spoiler=([a-z][a-z0-9]{0,34})\]'', ''gi'')
+            as matchedTag
+        ) as a
+            union distinct -- 3: languages
+         select concat(''{#'', b.matchedTag[1], ''}'')::text[] from (
+             select regexp_matches(' || message || ', ''\[code=([a-z][a-z0-9]{0,34})\]'', ''gi'')
+            as matchedTag
+        ) as b
+    ) tmp
+    where not exists (
+        select 1 from posts_classification p where ' || field ||'  = ' || hpid || ' and p.tag = tmp.matchedTag[1]
+    )
+    ';
+END $$;
+
 -- drop no more required functions and function that will be replaced
 -- before delete or now handled with on delete cascade foreign key
 -- this drops goes here because otherwise insert statement will use old triggers causing real pain
