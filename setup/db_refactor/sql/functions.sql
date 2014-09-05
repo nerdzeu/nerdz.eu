@@ -181,7 +181,7 @@ BEGIN
     insert into posts_classification(' || field || ' , tag)
     select distinct ' || hpid ||', tmp.matchedTag[1] from (
         -- 1: existing hashtags
-        select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\])(#[a-z][a-z0-9]{0,33})(:?\s|$)(?![^\[]*?\[\/(url|code)\])'', ''gi'')
+        select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\].*)(#[a-z][a-z0-9]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi'')
         as matchedTag
             union distinct -- 2: spoiler
         select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
