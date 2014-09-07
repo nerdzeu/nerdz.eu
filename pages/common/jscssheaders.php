@@ -66,8 +66,8 @@ extensions: ["tex2jax.js"],
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
     </script>
-<script type="application/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
-<script type="application/javascript">
+    <script type="application/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+    <script type="application/javascript">
 <?php
 if(!apc_exists('tracking_js'))
 {
