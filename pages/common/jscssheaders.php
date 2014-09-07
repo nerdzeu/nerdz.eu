@@ -61,7 +61,7 @@ foreach($headers['js'] as $var) {
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
     </script>
-    <script type="application/javascript" src="http<?php echo $is_ssl ? 's://c328740.ssl.cf1.rackcdn.com' : '://cdn.mathjax.org' ?>/mathjax/latest/MathJax.js"></script>
+    <script type="application/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
     <script type="application/javascript">
 <?php
 if(!apc_exists('tracking_js'))
