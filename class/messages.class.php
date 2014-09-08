@@ -103,9 +103,8 @@ class Messages
         },$str);
 
         //hashtag
-        $str = preg_replace_callback('/(?!\[(?:url|code)[^\]]*?\].*)(#[a-z][a-z0-9]{0,33})(\s|$)(?!.*[^\[]*?\[\/(?:url|ode)\])/',function($m) {
-            return '<a href="/search.php?q='.str_replace('#','%23', $m[1]).'">'.
-                $m[1].'</a>'.$m[2];
+        $str = preg_replace_callback('/(?!\[(?:url|code)[^\]]*?\].*)#([a-z][a-z0-9]{0,33})(\s|<br \/>|$)(?!.*[^\[]*?\[\/(?:url|ode)\])/i',function($m) {
+            return '<a href="/search.php?q=%23'.$m[1].'">#'.$m[1].'</a>'.$m[2];
         }, $str);
 
         $str = preg_replace('#\[i\](.+?)\[/i\]#i','<span style="font-style:italic">$1</span>',$str);
@@ -461,10 +460,11 @@ class Messages
             [
                 'SELECT '.
                 ($vote ? 'SUM(t.vote) AS cc, ' : '').
+                ($tag  ? 'p.hpid, ' : '').
                 ' p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.
                 $table.'" p '.$join.' WHERE '.
                 $glue.
-                ($vote ? ' GROUP BY p."hpid" ' : '').
+                ($vote || $tag ? ' GROUP BY p."hpid" ' : '').
                 ' ORDER BY '.
                 ($vote ? 'cc '.($vote == '+' ? 'DESC' : 'ASC') .',' : '').
                 'p.hpid DESC'.
