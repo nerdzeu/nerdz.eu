@@ -48,6 +48,8 @@ if($specific) {
 $vals = [];
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
+var_dump($prj);
+
 $vals['list_a'] = $messages->getPosts($id,
     array_merge(
         [ 'project'  => $prj ],
