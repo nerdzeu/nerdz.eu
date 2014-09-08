@@ -102,6 +102,12 @@ class Messages
             return $validURL($m);
         },$str);
 
+        //hashtag
+        $str = preg_replace_callback('/(?!\[(?:url|code)[^\]]*?\].*)(#[a-z][a-z0-9]{0,33})(\s|$)(?!.*[^\[]*?\[\/(?:url|ode)\])/',function($m) {
+            return '<a href="/search.php?q='.str_replace('#','%23', $m[1]).'">'.
+                $m[1].'</a>'.$m[2];
+        }, $str);
+
         $str = preg_replace('#\[i\](.+?)\[/i\]#i','<span style="font-style:italic">$1</span>',$str);
         $str = preg_replace('#\[cur\](.+?)\[/cur\]#i','<span style="font-style:italic">$1</span>',$str);
         $str = preg_replace('#\[gist\]([0-9a-z]+)\[/gist\]#i','<div class="gistLoad" data-id="$1" id="gist-$1">'.$this->user->lang('LOADING').'...</div>',$str);
@@ -422,10 +428,24 @@ class Messages
             }
         }
 
-        $glue .= $search ? ' AND p.message ILIKE :like ' : '';
+        $join = '';
+
+        if($search) {
+            $tag = false;
+            if(preg_match('/^#[a-z][a-z0-9]{0,33}$/i',$search)) {
+                $tag = true;
+                $glue .= ' AND lower(pc.tag) = lower(:tag) ';
+                $tagField = ($project ? 'g' : 'u').'_hpid';
+                $join .= ' INNER JOIN posts_classification pc ON p.hpid = pc.'.$tagField;
+            }
+            else {
+                $glue .= ' AND p.message ILIKE :like ';
+            }
+        }
+
         $glue .= $hpid   ? ' AND p.hpid < :hpid ' : '';
 
-        $join = $vote ? ' INNER JOIN "'.($project ?  'groups_' : '').'thumbs" t ON p.hpid = t.hpid ' : '';
+        $join .= $vote ? ' INNER JOIN "'.($project ?  'groups_' : '').'thumbs" t ON p.hpid = t.hpid ' : '';
         if($project) {
             $join .= ' INNER JOIN "groups" g ON p.to = g.counter INNER JOIN "users" u ON p."from" = u.counter ';
             $glue .= ' AND (g."visible" IS TRUE ';
@@ -450,10 +470,11 @@ class Messages
                 'p.hpid DESC'.
                 ' LIMIT '.$limit,
                 array_merge(
-                    $id             ? [ ':id'   => $id ]             : [],
-                    $search4Lang    ? [ ':lang' => $lang]            : [],
-                    $hpid           ? [ ':hpid' => $hpid ]           : [],
-                    $search         ? [ ':like' => '%'.$search.'%' ] : []
+                    $id              ? [ ':id'   => $id ]             : [],
+                    $search4Lang     ? [ ':lang' => $lang]            : [],
+                    $hpid            ? [ ':hpid' => $hpid ]           : [],
+                    $search && !$tag ? [ ':like' => '%'.$search.'%' ] : [],
+                    $search && $tag  ? [ ':tag'  => $search         ] : []
                 )
 
             ],Db::FETCH_STMT))

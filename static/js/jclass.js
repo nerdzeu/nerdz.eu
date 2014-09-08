@@ -1443,6 +1443,32 @@ N.html.search = function()
      * num: number of posts
      * returns n <= num posts matching q
      */
+    this.globalPosts = function(num, q, done) {
+        this.post('posts.html.php',{q:q, limit: num},function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * @Parameters: num, q, hpid
+     * q:query string
+     * num: number of posts
+     * hpid: hidden post id
+     * returns n <= num posts matching q with id < hpid
+     */
+    this.globalPostsBeforeHpid = function(num, q, hpid, done)
+    {
+        this.post('posts.html.php',{q: q, hpid: hpid, limit: num},function(d) {
+                done(d);
+        });
+    };
+
+    /**
+     * @Parameters: num, q
+     * q:query string
+     * num: number of posts
+     * returns n <= num posts matching q
+     */
     this.globalProfilePosts = function(num, q, done)
     {
         this.post('posts.html.php?action=profile',{q:q, limit: num},function(d) {
@@ -1535,7 +1561,7 @@ N.html.search = function()
     };
 
     /**
-     * @Parameters: num, q, hpi8d, id
+     * @Parameters: num, q, hpid, id
      * q:query string
      * id: project id
      * num: number of posts
