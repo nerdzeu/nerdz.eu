@@ -34,6 +34,7 @@
     "CONTINUE" : "Continue",
     "CONTINUE_FULL_CODE" : "Click on 'continue' to see the full code",
     "CREATE" : "Create",
+    "CREATED" : "Created",
     "CREATE_PROJECT_DESCR" : "Completing the form below, you'll create a project. Then you can manage you project in Preferences => Projects.\nAdding members, a goal and much more",
     "DATE_FORMAT" : "Date format",
     "DATE_FORMAT_DESCR" : "The syntax used is identical to the PHP date() function",

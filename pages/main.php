@@ -15,8 +15,7 @@ foreach($banners as $ban)
     $vals['banners_a'][$ban[1]] = $ban[2];
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
-$vals['canwriteissue_b'] = false;
-$vals['canwritenews_b'] = true;
+$vals['canwriteissue_b'] = $vals['canwritenews_b'] = false;
 $vals['id_n'] = $_SESSION['id'];
 
 $l = $user->getFollowing($_SESSION['id']);

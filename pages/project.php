@@ -54,6 +54,17 @@ else
         $vals['name_n'] = $info->name;
         $vals['name4link_n'] =  \NERDZ\Core\Utils::projectLink($info->name);
 
+        if(!($o = Db::query(
+            [
+                'SELECT EXTRACT(EPOCH FROM "creation_time") AS creation_time from "groups" WHERE "counter" = :id',
+                [
+                    ':id' => $info->counter
+                ]
+            ],Db::FETCH_OBJ)))
+                die($user->lang('ERROR'));
+
+        $vals['creationtime_n'] = $user->getDateTime($o->creation_time);
+
         $vals['members_n'] = count($mem);
         $vals['members_a'] = [];
         $i = 0;

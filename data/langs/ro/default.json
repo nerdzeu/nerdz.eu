@@ -34,6 +34,7 @@
     "CONTINUE" : "Continua",
     "CONTINUE_FULL_CODE" : "Apasa pe butonul ca sa vezi restul codului...",
     "CREATE" : "Creiaza",
+    "CREATED" : "Creat",
     "CREATE_PROJECT_DESCR" : "Completand formularul aici mai jos ai sa creiezi un proiect. Pe urma Preferintele  => Proiectele ai sa le poti administra, sa adaugi membri, sa ajungila  un obiectiv si mai multe.",
     "DATE_FORMAT" : "formatul dat-ei",
     "DATE_FORMAT_DESCR" : "Sintaxa utilizata este identica cu functia PHP,date()",

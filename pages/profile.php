@@ -15,7 +15,7 @@ $vals['id_n'] = $info->counter;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 $vals['canwriteissue_b'] = false;
-$vals['canwritenews_b']  = true;
+$vals['canwritenews_b']  = $user->isLogged() && $info->counter == $_SESSION['id'];
 
 $banners = (new Banners())->getBanners();
 $vals['banners_a'] = [];

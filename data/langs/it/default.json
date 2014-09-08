@@ -34,6 +34,7 @@
     "CONTINUE" : "Continua",
     "CONTINUE_FULL_CODE" : "Premi su continua per vedere tutto il codice...",
     "CREATE" : "Crea",
+    "CREATED" : "Creato il",
     "CREATE_PROJECT_DESCR" : "Completando il form qui sotto creerai un progetto. Poi andando in Preferenze  => Progetti potrai gestirlo, aggiungere membri, fissare un obbiettivo e molto altro.",
     "DATE_FORMAT" : "Formato data",
     "DATE_FORMAT_DESCR" : "La sintassi della data è uguale alla funzione date() del PHP",

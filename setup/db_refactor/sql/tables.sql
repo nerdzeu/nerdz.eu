@@ -230,6 +230,10 @@ ALTER TABLE users ADD CONSTRAINT uniqueUsername UNIQUE(username);
 ALTER TABLE users ADD COLUMN "registration_time" timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW();
 UPDATE users SET registration_time = p.time FROM posts p where counter = p."to" AND hpid = (select min(hpid) from posts where "to" = p."to");
 
+ALTER TABLE groups ADD COLUMN "creation_time" timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW();
+
+UPDATE groups SET creation_time = p.time FROM groups_posts p WHERE counter = p."to" AND hpid = (select min(hpid) from groups_posts where "to" = p."to");
+
 ALTER TABLE posts ADD CONSTRAINT uniquePostPidHpid UNIQUE(hpid, pid);
 ALTER TABLE groups_posts ADD CONSTRAINT uniqueGroupsPostPidHpid UNIQUE(hpid, pid);
 

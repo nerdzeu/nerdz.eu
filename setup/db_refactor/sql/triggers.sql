@@ -28,6 +28,10 @@ BEGIN
         ) AS T1;
     END IF;
 
+    IF NEW."to" <> NEW."from" THEN -- can't write news to others board
+        SELECT false INTO NEW.news;
+    END IF;
+
     -- if to = GLOBAL_NEWS set the news filed to true
     IF NEW."to" = (SELECT counter FROM special_users where "role" = 'GLOBAL_NEWS') THEN
         SELECT true INTO NEW.news;
@@ -545,6 +549,7 @@ LANGUAGE plpgsql
 AS $$
 DECLARE group_owner int8;
         open_group boolean;
+        members int8[];
 BEGIN
     NEW.message = message_control(NEW.message);
 
@@ -557,7 +562,8 @@ BEGIN
 
     IF group_owner <> NEW."from" AND
         (
-            open_group IS FALSE AND NEW."from" NOT IN ( SELECT "from" FROM "groups_members" WHERE "to" = NEW."to")
+            open_group IS FALSE AND NEW."from" NOT IN (
+                SELECT "from" FROM "groups_members" WHERE "to" = NEW."to" )
         )
     THEN
         RAISE EXCEPTION 'CLOSED_PROJECT';
@@ -576,6 +582,12 @@ BEGIN
             ORDER BY "hpid" DESC
             FETCH FIRST ROW ONLY), 1) AS "pid"
         ) AS T1;
+    END IF;
+
+    IF NEW."from" <> group_owner AND NEW."from" NOT IN (
+        SELECT "from" FROM "groups_members" WHERE "to" = NEW."to"
+    ) THEN
+        SELECT false INTO NEW.news; -- Only owner and members can send news
     END IF;
 
     -- if to = GLOBAL_NEWS set the news filed to true

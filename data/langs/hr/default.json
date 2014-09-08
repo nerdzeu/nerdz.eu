@@ -34,6 +34,7 @@
     "CONTINUE" : "Nastaviti",
     "CONTINUE_FULL_CODE" : "Pritisnite Nastavi da biste vidjeli sve kod ...",
     "CREATE" : "Stvoriti",
+    "CREATED" : "Izrađeno",
     "CREATE_PROJECT_DESCR" : "Popunjavanjem obrasca ispod crerrai projekt. Zatim idite na Postavke => Projekti možete upravljati, dodali članove, postavite cilj i još mnogo toga.",
     "DATE_FORMAT" : "Datum formatu",
     "DATE_FORMAT_DESCR" : "Sintaksa koristi je identičan PHP datuma () funkcija",
