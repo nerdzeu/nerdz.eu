@@ -381,6 +381,53 @@ class Messages
         return $o->message;
     }
 
+    private function tagSearch($tag, $limit, $hpid = 0) {
+        $imp_blist = implode(',',$this->user->getBlacklist());
+
+        $query = 'with tagged_posts(u_hpid, g_hpid) as (
+            select u_hpid, g_hpid from posts_classification
+            where lower(tag) = lower(:tag)) ';
+
+        $query.= ' SELECT * FROM ( (SELECT p.hpid, p.from, p.to, p.closed, p.lang, p.news, EXTRACT(EPOCH FROM p."time") AS time, p.message, p.pid, false as "group"
+                    FROM posts p INNER JOIN (select u_hpid FROM tagged_posts) AS pc
+                    ON pc.u_hpid = p.hpid ';
+        $query.= !empty($imp_blist)
+                 ? ' WHERE p."from" NOT IN ('.$imp_blist.') AND p."to" NOT IN ('.$imp_blist.') '
+                 : '';
+        $query.= ') union (
+                   SELECT gp.hpid, gp.from, gp.to, gp.closed, gp.lang, gp.news, EXTRACT(EPOCH FROM gp."time") AS time, gp.message, gp.pid, true as "group"
+                    FROM "groups_posts" gp INNER JOIN (select g_hpid FROM tagged_posts) AS pc
+                    ON pc.g_hpid = gp.hpid ';
+        $query.= !empty($imp_blist)
+                 ? ' WHERE gp."from" NOT IN ('.$imp_blist.')'
+                 : '';
+$query.= ')) AS t ORDER BY t.time DESC LIMIT '.$limit;
+
+        if(!($result = Db::query(
+            [
+                $query,
+                array_merge(
+                    [ ':tag' => $tag ],
+                    $hpid ? [ ':hpid' => $hpid ] : []
+                )
+            ],Db::FETCH_STMT))
+        )
+        return [];
+
+        $c = 0;
+        $ret = [];
+        while(($row = $result->fetch(PDO::FETCH_OBJ)))
+        {
+            $ret[$c] = $this->getPost($row,
+                [
+                    'project'  => $row->group,
+                    'truncate' => true
+                ]);
+            ++$c;
+        }
+        return $ret;
+    }
+
     public function getPosts($id, $options = [])
     {
         extract($options);
@@ -416,6 +463,17 @@ class Messages
         if($limit > 20 || $limit <= 0) // at most 20 posts
             $limit = 20;
 
+        $join = '';
+
+        if($search) {
+            if(preg_match('/^#[a-z][a-z0-9]{0,33}$/i',$search)) {
+                return $this->tagSearch($search, $limit, $hpid);
+            }
+            else {
+                $glue .= ' AND p.message ILIKE :like ';
+            }
+        }
+
         $blist = $this->user->getBlacklist();
 
         if(!empty($blist))
@@ -427,22 +485,7 @@ class Messages
             }
         }
 
-        $join = '';
-
-        if($search) {
-            $tag = false;
-            if(preg_match('/^#[a-z][a-z0-9]{0,33}$/i',$search)) {
-                $tag = true;
-                $glue .= ' AND lower(pc.tag) = lower(:tag) ';
-                $tagField = ($project ? 'g' : 'u').'_hpid';
-                $join .= ' INNER JOIN posts_classification pc ON p.hpid = pc.'.$tagField;
-            }
-            else {
-                $glue .= ' AND p.message ILIKE :like ';
-            }
-        }
-
-        $glue .= $hpid   ? ' AND p.hpid < :hpid ' : '';
+        $glue .= $hpid ? ' AND p.hpid < :hpid ' : '';
 
         $join .= $vote ? ' INNER JOIN "'.($project ?  'groups_' : '').'thumbs" t ON p.hpid = t.hpid ' : '';
         if($project) {
@@ -460,11 +503,10 @@ class Messages
             [
                 'SELECT '.
                 ($vote ? 'SUM(t.vote) AS cc, ' : '').
-                ($tag  ? 'p.hpid, ' : '').
                 ' p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.
                 $table.'" p '.$join.' WHERE '.
                 $glue.
-                ($vote || $tag ? ' GROUP BY p."hpid" ' : '').
+                ($vote ? ' GROUP BY p."hpid" ' : '').
                 ' ORDER BY '.
                 ($vote ? 'cc '.($vote == '+' ? 'DESC' : 'ASC') .',' : '').
                 'p.hpid DESC'.
@@ -473,8 +515,7 @@ class Messages
                     $id              ? [ ':id'   => $id ]             : [],
                     $search4Lang     ? [ ':lang' => $lang]            : [],
                     $hpid            ? [ ':hpid' => $hpid ]           : [],
-                    $search && !$tag ? [ ':like' => '%'.$search.'%' ] : [],
-                    $search && $tag  ? [ ':tag'  => $search         ] : []
+                    $search          ? [ ':like' => '%'.$search.'%' ] : []
                 )
 
             ],Db::FETCH_STMT))
@@ -487,7 +528,7 @@ class Messages
         {
             $ret[$c] = $this->getPost($row,
                 [
-                    'project' => $project,
+                    'project'  => $project,
                     'truncate' => $truncate
                 ]);
 
