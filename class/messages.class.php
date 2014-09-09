@@ -927,11 +927,11 @@ class Messages
 
             $str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
                 '<div class="nerdz-code-wrapper">
-                <div class="nerdz-code-title">'.$lang.':</div><pre class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</pre>'.
-                (
-                    empty($codeurl) ? '' :
-                    '<a href="'.$codeurl.'" onclick="window.open(this.href); return false">'.$this->user->lang('TEXT_VERSION').'</a>'
-                ).'</div>',
+                <div class="nerdz-code-title">'.$lang.':'.( empty($codeurl)
+                    ? ''
+                    : '<a href="'.$codeurl.'" onclick="window.open(this.href); return false" class="nerdz-code-text-version">'.
+                    $this->user->lang('TEXT_VERSION').'</a>'
+                ).'</div><pre class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</pre></div>',
                 $str);
             ++$i;
         }
