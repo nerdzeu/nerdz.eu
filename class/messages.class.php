@@ -391,17 +391,24 @@ class Messages
         $query.= ' SELECT * FROM ( (SELECT p.hpid, p.from, p.to, p.closed, p.lang, p.news, EXTRACT(EPOCH FROM p."time") AS time, p.message, p.pid, false as "group"
                     FROM posts p INNER JOIN (select u_hpid FROM tagged_posts) AS pc
                     ON pc.u_hpid = p.hpid ';
-        $query.= !empty($imp_blist)
-                 ? ' WHERE p."from" NOT IN ('.$imp_blist.') AND p."to" NOT IN ('.$imp_blist.') '
-                 : '';
+
+        if(!empty($imp_blist))
+            $query .= ' WHERE p."from" NOT IN ('.$imp_blist.') AND p."to" NOT IN ('.$imp_blist.') ';
+
         $query.= ') union (
                    SELECT gp.hpid, gp.from, gp.to, gp.closed, gp.lang, gp.news, EXTRACT(EPOCH FROM gp."time") AS time, gp.message, gp.pid, true as "group"
                     FROM "groups_posts" gp INNER JOIN (select g_hpid FROM tagged_posts) AS pc
                     ON pc.g_hpid = gp.hpid ';
-        $query.= !empty($imp_blist)
-                 ? ' WHERE gp."from" NOT IN ('.$imp_blist.')'
-                 : '';
-$query.= ')) AS t ORDER BY t.time DESC LIMIT '.$limit;
+
+        if(!empty($imp_blist))
+            $query .= ' WHERE gp."from" NOT IN ('.$imp_blist.')';
+
+        $query.= ')) AS t ';
+
+        if($hpid) {
+            $query .= ' WHERE t.hpid < :hpid ';
+        }
+        $query.= ' ORDER BY t.time DESC LIMIT '.$limit;
 
         if(!($result = Db::query(
             [
