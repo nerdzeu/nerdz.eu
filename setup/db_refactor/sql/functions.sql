@@ -214,7 +214,7 @@ BEGIN
 
     EXECUTE 'select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi'')' INTO matches;
 
-    FOR username IN matches LOOP
+    FOREACH username IN ARRAY matches LOOP
         --username exists
         EXECUTE 'SELECT counter FROM users WHERE username = ' || quote_literal(username) || ';' INTO other;
         IF other IS NULL THEN
@@ -222,8 +222,7 @@ BEGIN
         END IF;
 
         -- blacklist control
-        BEGIN controls
-
+        BEGIN
             PERFORM blacklist_control(me, other);
 
             IF grp THEN
@@ -238,15 +237,15 @@ BEGIN
                 IF project.visible IS FALSE AND other NOT IN (
                     SELECT "from" FROM groups_members WHERE "to" = project.counter
                         UNION
-                      owner
+                      SELECT owner
                     ) THEN
                     RETURN;
                 END IF;
             END IF;
         EXCEPTION
-            WHEN OTHER THEN
+            WHEN OTHERS THEN
                 CONTINUE;
-        END controls;
+        END;
 
         IF grp THEN
             field := 'g_hpid';
