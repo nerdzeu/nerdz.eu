@@ -43,6 +43,20 @@ update groups_posts set lang = u.lang from users u where u.counter = "from";
 
 update groups_posts set news = true where "to" = (select counter from "special_groups" where role = 'GLOBAL_NEWS');
 
+-- mentions
+create table mentions(
+    id bigserial primary key, -- required for better indexing
+    u_hpid int8 references posts(hpid) on delete cascade,
+    g_hpid int8 references groups_posts(hpid) on delete cascade,
+    "from" int8 not null references users(counter) on delete cascade,
+    "to"   int8 not null references users(counter) on delete cascade,
+    time timestamp(0) with time zone not null default now(),
+    to_notify boolean not null default true,
+    check(u_hpid is not null OR g_hpid is not null)
+);
+
+create index on mentions("to", to_notify); -- efficient searches (where to = me and to_notify = true)
+
 -- post classification
 create table posts_classification(
     id bigserial primary key, -- required for better indexing

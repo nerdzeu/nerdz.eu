@@ -200,6 +200,66 @@ BEGIN
     ';
 END $$;
 
+-- if 'me' can mention 'other' add record, otherwise skip (catch blacklist expcetion and ignore them)
+-- TODO: this function is broken yet
+CREATE FUNCTION mention(me int8, message text, hpid int8, grp boolean) RETURNS VOID LANGUAGE plpgsql AS $$
+DECLARE field text;
+    project record;
+    owner int8;
+    other int8;
+    matches text[];
+    username text;
+BEGIN
+    message = quote_literal(message);
+
+    EXECUTE 'select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi'')' INTO matches;
+
+    FOR username IN matches LOOP
+        --username exists
+        EXECUTE 'SELECT counter FROM users WHERE username = ' || quote_literal(username) || ';' INTO other;
+        IF other IS NULL THEN
+            CONTINUE;
+        END IF;
+
+        -- blacklist control
+        BEGIN controls
+
+            PERFORM blacklist_control(me, other);
+
+            IF grp THEN
+
+                SELECT counter, visible INTO project
+                FROM groups WHERE "counter" = (SELECT "to" FROM groups_posts p WHERE p.hpid = hpid);
+                select "from" INTO owner FROM groups_owners WHERE "to" = project.counter;
+                -- other can't access groups if the owner blacklisted him
+                PERFORM blacklist_control(owner, other);
+
+                -- if the project is invisible and the other is not the owner or a member
+                IF project.visible IS FALSE AND other NOT IN (
+                    SELECT "from" FROM groups_members WHERE "to" = project.counter
+                        UNION
+                      owner
+                    ) THEN
+                    RETURN;
+                END IF;
+            END IF;
+        EXCEPTION
+            WHEN OTHER THEN
+                CONTINUE;
+        END controls;
+
+        IF grp THEN
+            field := 'g_hpid';
+        ELSE
+            field := 'u_hpid';
+        END IF;
+
+        -- if here, add record
+        EXECUTE 'INSERT INTO mentions(' || field ' , "from", "to) VALUES(' || hpid || ', ' || me || ', '|| other ||')';
+    END LOOP;
+
+END $$;
+
 -- drop no more required functions and function that will be replaced
 -- before delete or now handled with on delete cascade foreign key
 -- this drops goes here because otherwise insert statement will use old triggers causing real pain
