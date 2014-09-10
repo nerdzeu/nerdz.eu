@@ -50,21 +50,19 @@ class User
     {
         // we don't worrie about language file modifications, since this ones shouldn't occur often
         $cache = "language-file-{$this->lang}-{$this->tpl_no}".Config\SITE_HOST;
-        if(apc_exists($cache))
-            $_LANG = unserialize(apc_fetch($cache));
-        else
-        {
-            // first load default language film
-            $defaultLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/langs/{$this->lang}/default.json"), true);
+        if(!($_LANG = Utils::apc_get($cache)))
+            $_LANG = Utils::apc_set($cache, function() {
+                // first load default language file
+                $defaultLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/langs/{$this->lang}/default.json"), true);
 
-            // then we add eventually merge template additions
-            $tplFile = $_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/langs/{$this->lang}/json/default.json";
-            if(is_readable($tplFile))
-                $defaultLang = array_merge($defaultLang, json_decode(file_get_contents($tplFile), true));
+                // then we add eventually merge template additions
+                $tplFile = $_SERVER['DOCUMENT_ROOT']."/tpl/{$this->tpl_no}/langs/{$this->lang}/json/default.json";
+                if(is_readable($tplFile))
+                    $defaultLang = array_merge($defaultLang, json_decode(file_get_contents($tplFile), true));
 
-            $_LANG = $defaultLang;
-            @apc_store($cache,serialize($_LANG),3600);
-        }
+                return $defaultLang;
+            }, 3600);
+
         return nl2br(htmlspecialchars($_LANG[$index],ENT_QUOTES,'UTF-8'));
     }
 

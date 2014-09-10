@@ -22,6 +22,20 @@ class Utils
         }
     }
 
+    public static function apc_get($key)
+    {
+        if(apc_exists($key))
+            return unserialize(apc_fetch($key));
+        return null;
+    }
+
+    public static function apc_set($key, callable $setter, $ttl)
+    {
+        $ret = $setter();
+        @apc_store ($key, serialize($ret), $ttl);
+        return $ret;
+    }
+
     public static function isValidURL($url)
     {
         return filter_var($url, FILTER_VALIDATE_URL);
@@ -79,19 +93,20 @@ class Utils
     {
         $cache = 'NERDZVersion'.Config\SITE_HOST;
 
-        if (apc_exists ($cache))
-            return apc_fetch ($cache);
+        if(($version = static::apc_get($cache)))
+            return $version;
 
-        if (!is_dir ($_SERVER['DOCUMENT_ROOT'] . '/.git') ||
-            !file_exists ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'))
-            return 'null';
+        return static::apc_set($cache, function() {
+            if (!is_dir ($_SERVER['DOCUMENT_ROOT'] . '/.git') ||
+                !file_exists ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'))
+                return 'null';
 
-        $revision = substr (file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'), 0, 7);
-        if (strlen ($revision) != 7)
-            return 'null';
+            $revision = substr (file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'), 0, 7);
+            if (strlen ($revision) != 7)
+                return 'null';
 
-        @apc_store ($cache, $revision, 5400); // store the version for 1.5 hours
-        return $revision;
+            return $revision;
+        }, 5400);
     }
 
     public static function toJsonResponse($status, $message)

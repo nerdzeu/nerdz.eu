@@ -37,38 +37,22 @@ class System
     public static function getAvailableLanguages($long = null)
     {
         $cache = 'AvailableLanguages'.Config\SITE_HOST;
-        if(apc_exists($cache))
-        {
-            $ret = unserialize(apc_fetch($cache));
-            if($long)
+        if(!($ret = Utils::apc_get($cache)))
+            $ret = Utils::apc_set($cache, function() {
+                //on error return en
+                if(!($fp = fopen($_SERVER['DOCUMENT_ROOT'].'/data/languages.csv','r')))
+                    return [ 'en' => 'English' ];
+
+                $ret = [];
+                while(false !== ($row = fgetcsv($fp)))
+                    $ret[$row[0]] = htmlspecialchars($row[1],ENT_QUOTES,'UTF-8');
+                
+                fclose($fp);
+                ksort($ret);
                 return $ret;
-            else
-            {
-                $short = [];
-                foreach($ret as $id => $val)
-                    $short[] = $id;
-                sort($short);
-                return $short;
-            }
-        }
-        else
-        {
-            //on error return en
-            if(!($fp = fopen($_SERVER['DOCUMENT_ROOT'].'/data/languages.csv','r')))
-                return $long ? 'English' : 'en';
+            }, 3600);
 
-            $a = $b = [];
-            while(false !== ($row = fgetcsv($fp)))
-            {
-                $a[] = $row[0]; //encoding sarebbe inutile, sono due caratteri e sono ascii
-                $b[$row[0]] = htmlspecialchars($row[1],ENT_QUOTES,'UTF-8');
-            }
-            fclose($fp);
-            ksort($b);
-            @apc_store($cache,serialize($b),3600);
-
-            return $long ? $b : $a;
-        }
+        return $long ? $ret : array_keys($ret);
     }
 
     private static function getAcceptLanguagePreference()

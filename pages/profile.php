@@ -8,6 +8,7 @@ use NERDZ\Core\Db;
 use NERDZ\Core\Gravatar;
 use NERDZ\Core\Messages;
 use NERDZ\Core\Stuff;
+use NERDZ\Core\Utils;
 
 $vals = [];
 $vals['logged_b'] = $user->isLogged();
@@ -66,7 +67,7 @@ if($enter)
 
     $vals['registrationtime_n'] = $user->getDateTime($o->registration_time);
     $vals['username_n'] = $info->username;
-    $vals['username4link_n'] = \NERDZ\Core\Utils::userLink($info->username);
+    $vals['username4link_n'] = Utils::userLink($info->username);
     $vals['lang_n'] = $user->getLanguage($info->counter);
     $vals['online_b'] = $user->isOnline($info->counter);
 
@@ -76,43 +77,38 @@ if($enter)
     list($year, $month, $day) = explode('-',$info->birth_date);
     $vals['birthdate_n'] = $day.'/'.$month.'/'.$year;
 
-    $apc_name = 'count_comments_'.$info->counter.Config\SITE_HOST;
+    $apc_name = 'userstuff'.$info->counter.Config\SITE_HOST;
+    if(!($stuff = Utils::apc_get($apc_name))) {
+        $stuff = Utils::apc_set($apc_name, function() use($user, $ida) {
+            if(!($o = Db::query(
+                [
+                    'SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',
+                        $ida
+                    ],Db::FETCH_OBJ)
+                ))
+                die($user->lang('ERROR'));
 
-    if(!apc_exists($apc_name))
-    {
+            $n = $o->cc;
 
-        if(!($o = Db::query(
-            [
-                'SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',
-                    $ida
-                ],Db::FETCH_OBJ)
-            ))
-            die($user->lang('ERROR'));
+            if(!($o = Db::query(
+                [
+                    'SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',
+                        $ida
+                    ],Db::FETCH_OBJ)
+                ))
+                die($user->lang('ERROR'));
 
-        $n = $o->cc;
-
-        if(!($o = Db::query(
-            [
-                'SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',
-                    $ida
-                ],Db::FETCH_OBJ)
-            ))
-            die($user->lang('ERROR'));
-
-        $n += $o->cc;
-        $a = Stuff::stupid($n);
-        $a['n'] = $n;
-
-        @apc_store($apc_name,serialize($a),300);
+            $n += $o->cc;
+            $a = Stuff::stupid($n);
+            $a['n'] = $n;
+            return $a;
+        }, 300);
     }
-    else
-        $a = unserialize(apc_fetch($apc_name));
 
-    $vals['stupidstuffnow_n'] = $a['now'];
-    $vals['stupidstuffnext_n'] = $a['next'];
-    $vals['stupidstuffless_n'] = $a['less'];
-
-    $vals['totalcomments_n'] = $a['n'];
+    $vals['stupidstuffnow_n']  = $stuff['now'];
+    $vals['stupidstuffnext_n'] = $stuff['next'];
+    $vals['stupidstuffless_n'] = $stuff['less'];
+    $vals['totalcomments_n']   = $stuff['n'];
 
     if(!($o = Db::query(
         [
@@ -178,7 +174,7 @@ if($enter)
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['ownerof_a'][$i]['name_n'] = $o->name;
-        $vals['ownerof_a'][$i]['name4link_n'] = \NERDZ\Core\Utils::projectLink($o->name);
+        $vals['ownerof_a'][$i]['name4link_n'] = Utils::projectLink($o->name);
         ++$i;
     }
 
@@ -195,7 +191,7 @@ if($enter)
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['memberof_a'][$i]['name_n'] = $o->name;
-        $vals['memberof_a'][$i]['name4link_n'] = \NERDZ\Core\Utils::projectLink($o->name);
+        $vals['memberof_a'][$i]['name4link_n'] = Utils::projectLink($o->name);
         ++$i;
     }
 
@@ -212,7 +208,7 @@ if($enter)
     while(($o =$r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['userof_a'][$i]['name_n'] = $o->name;
-        $vals['userof_a'][$i]['name4link_n'] = \NERDZ\Core\Utils::projectLink($o->name);
+        $vals['userof_a'][$i]['name4link_n'] = Utils::projectLink($o->name);
         ++$i;
     }
 

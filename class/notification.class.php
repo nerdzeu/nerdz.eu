@@ -558,24 +558,21 @@ class Notification
 
     public function story()
     {
-        if(apc_exists($this->cachekey))
-            return unserialize(apc_fetch($this->cachekey));
-        else
-        {
-            if(!($o = Db::query(
-                [
-                    'SELECT "notify_story" FROM "users" WHERE "counter" = :id',
+        if(!($ret = Utils::apc_get($this->cachekey)))
+            return Utils::apc_set($this->cachekey, function() {
+                if(!($o = Db::query(
                     [
-                        ':id' => $_SESSION['id']
-                    ]
-                ],Db::FETCH_OBJ))
-            )
-            return [];
+                        'SELECT "notify_story" FROM "users" WHERE "counter" = :id',
+                        [
+                            ':id' => $_SESSION['id']
+                        ]
+                    ],Db::FETCH_OBJ))
+                )
+                return [];
 
-            $ret = json_decode($o->notify_story,true);
-            @apc_store($this->cachekey,serialize($ret),300);
-            return $ret;
-        }
+                return json_decode($o->notify_story,true);
+            }, 300);
+        return $ret;
     }
 
     public function updateStory($new)

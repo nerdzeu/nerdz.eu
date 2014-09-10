@@ -32,39 +32,32 @@ final class TemplateConfig
 
         $control = false;
 
-        if(apc_exists($cachevaluestime))
-        {
-            $valuestime = unserialize(apc_fetch($cachevaluestime));
-            $control = true;
-        }
-        else
-        {
-            $valuestime = filemtime($templatepath);
-            @apc_store($cachevaluestime,serialize($valuestime),3600);
-        }
+        if(!($valuestime = Utils::apc_get($cachevaluestime)))
+            $valuestime = Utils::apc_set($cachevaluestime, function() use (&$control, $templatepath) {
+                $control = true;
+                return filemtime($templatepath);
+            }, 3600);
 
         if($control)
         {
             $newtime = filemtime($templatepath);
             if($newtime != $valuestime)
-            {
-                apc_delete($cachename);
-                @apc_store($cachevaluestime,serialize($newtime),3600);
-            }
+                Utils::apc_set($cachename, function() use($newtime) {
+                    return $newtime;
+                }, 3600);   
         }
 
-        if(apc_exists($cachename))
-            $ret = unserialize(apc_fetch($cachename));
-        else
-        {
-            if(!($txt = file_get_contents($templatepath)))
-                return [];
-            // thanks for the following regexp to 1franck (http://it2.php.net/manual/en/function.json-decode.php#111551)
-            $ret = json_decode (preg_replace ('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);
-            if (!is_array ($ret))
-                $ret = array ( 'js' => [], 'css' => [] , 'langs' => []);
-            @apc_store($cachename,serialize($ret),3600); //1h
-        }
+        if(!($ret = Utils::apc_get($cachename)))
+            $ret = Utils::apc_set($cachename, function() use($templatepath) {
+                if(!($txt = file_get_contents($templatepath)))
+                    return [];
+                // thanks for the following regexp to 1franck (http://it2.php.net/manual/en/function.json-decode.php#111551)
+                $ret = json_decode (preg_replace ('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);
+                if (!is_array ($ret))
+                    $ret = array ( 'js' => [], 'css' => [] , 'langs' => []);
+
+                return $ret;
+            }, 3600);
 
         if($page != null)
             foreach($ret as $pid => &$ff)

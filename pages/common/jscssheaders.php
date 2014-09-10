@@ -69,12 +69,13 @@ extensions: ["tex2jax.js"],
     <script type="application/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
     <script type="application/javascript">
 <?php
-if(!apc_exists('tracking_js'))
-{
-    $trjs = $_SERVER['DOCUMENT_ROOT'].'/data/tracking.js';           
-    @apc_store('tracking_js', serialize(file_exists($trjs) ? file_get_contents($trjs) : ''));
-}
-echo unserialize(apc_fetch('tracking_js'));
+$trackingCacheKey = 'tracking_js'.NERDZ\Core\Config\SITE_HOST;
+if(!($tracking = Utils::apc_get($trackingCacheKey)))
+    $tracking = Utils::apc_set($trackingCacheKey, function() {
+        $trjs = $_SERVER['DOCUMENT_ROOT'].'/data/tracking.js';
+        return is_readable($trjs) ? file_get_contents($trjs) : '';
+    }, 3600);
+echo $tracking;
 
 /* BEGIN SSL_VARIABLES (used by the JS API) */
 ?>
