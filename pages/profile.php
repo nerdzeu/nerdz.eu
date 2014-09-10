@@ -163,7 +163,10 @@ if($enter)
 
     if(!($r = Db::query(
         [
-            'SELECT "name" FROM "groups" WHERE "owner" = :id',
+            'SELECT "name"
+            FROM "groups" g INNER JOIN "groups_owners" go
+            ON go."to" = g.counter
+            WHERE go."from" = :id',
             $ida
         ],Db::FETCH_STMT)
     ))

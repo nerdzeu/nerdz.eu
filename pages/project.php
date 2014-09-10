@@ -8,7 +8,7 @@ use NERDZ\Core\User;
 use NERDZ\Core\Config;
 use NERDZ\Core\Messages;
 
-$project  = new Project();
+$project  = new Project($gid);
 $messages = new Messages();
 $user     = new User();
 
@@ -38,7 +38,7 @@ else
     $mem = $project->getMembers($info->counter);
     $icansee = true;
     if($vals['logged_b'] && !$info->visible)
-        $icansee = $_SESSION['id'] == $info->owner || in_array($_SESSION['id'],$mem);
+        $icansee = $_SESSION['id'] == $project->getOwner() || in_array($_SESSION['id'],$mem);
 
     if(!$icansee)
     {
@@ -92,7 +92,7 @@ else
         }
         usort($vals['users_a'],'NERDZ\\Core\\Utils::sortByUsername');
 
-        $vals['owner_n'] = User::getUsername($info->owner);
+        $vals['owner_n'] = User::getUsername($project->getOwner());
         $vals['owner4link_n'] =  \NERDZ\Core\Utils::userLink($vals['owner_n']);
 
         $vals['description_n'] = $messages->bbcode($info->description);
@@ -111,14 +111,14 @@ else
 
         $vals['canifollow_b'] = $vals['logged_b'] && !in_array($_SESSION['id'],array_merge($mem,$fol));
 
-        $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $info->owner);
+        $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $project->getOwner());
 
         if(!$vals['singlepost_b'] && !$vals['followers_b'] && !$vals['interactions_b'] && ! $vals['members_b'])
         {
-            $vals['canwrite_b']      = $vals['logged_b'] && ($project->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
+            $vals['canwrite_b']      = $vals['logged_b'] && ($project->isOpen($gid) || in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $project->getOwner()));
             $vals['canwriteissue_b'] = $vals['logged_b'] && ($info->counter == Config\ISSUE_BOARD);
 
-            $vals['canwritenews_b']  = !$vals['canwriteissue_b'] && $vals['logged_b'] && (in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $info->owner));
+            $vals['canwritenews_b']  = !$vals['canwriteissue_b'] && $vals['logged_b'] && (in_array($_SESSION['id'],$mem) || ($_SESSION['id'] == $project->getOwner()));
 
         }
         else

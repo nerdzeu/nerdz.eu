@@ -74,7 +74,7 @@ class Project
         $this->checkId($id);
         if(!($o = Db::query(
             [
-                'SELECT "owner" FROM "groups" WHERE "counter" = :id',
+                'SELECT "from" as owner FROM "groups_owners" WHERE "to" = :id',
                 [
                     ':id' => $id
                 ]

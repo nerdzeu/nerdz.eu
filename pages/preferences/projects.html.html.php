@@ -11,7 +11,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 
 $id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
 
-if(!$user->isLogged() || !$id || !($info = $project->getObject($id)) || $info->owner != $_SESSION['id'] )
+if(!$user->isLogged() || !$id || !($info = $project->getObject($id)) || $project->getOwner($id) != $_SESSION['id'])
     die($user->lang('ERROR'));
 
 $vals = [];

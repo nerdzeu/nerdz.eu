@@ -20,18 +20,40 @@ if(!$cptcka->check($captcha))
 
 $create = true; //required by validateproject.php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateproject.php';
-
-if(Db::NO_ERRNO != Db::query(
-    [
-        'INSERT INTO groups ("description","owner","name") VALUES (:description,:owner,:name)',
+try
+{
+    Db::getDb()->beginTransaction();
+    Db::query(
+        [
+            'INSERT INTO groups ("description","name") VALUES (:description,:name)',
             [
                 ':description' => $projectData['description'],
-                ':owner'       => $projectData['owner'],
                 ':name'        => $projectData['name']
             ]
-        ],Db::FETCH_ERRNO)
-    )
+        ],Db::NO_RETURN);
+
+    $o = Db::query(
+        [
+            'SELECT counter FROM groups WHERE name = :name',
+            [
+                ':name' => $projectData['name']
+            ]
+         ], Db::FETCH_OBJ);
+
+    Db::query(
+        [
+            'INSERT INTO groups_owners("from", "to")  VALUES(:owner, :group)',
+            [
+                ':owner'  => $projectData['owner'],
+                ':group'  => $o->counter
+            ]
+        ], Db::NO_RETURN);
+        
+    Db::getDb()->commit();
+} catch(\PDOException $e) {
+    Db::getDb()->rollBack();
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+}
 
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 ?>

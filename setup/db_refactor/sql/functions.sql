@@ -62,15 +62,15 @@ create function handle_groups_on_user_delete(userCounter int8) returns void as $
 declare r RECORD;
 newOwner int8;
 begin
-    FOR r IN SELECT "counter" FROM "groups" WHERE "owner" = userCounter LOOP
-        IF EXISTS (select "from" FROM groups_members where "to" = r.counter) THEN
+    FOR r IN SELECT "to" FROM "groups_owners" WHERE "from" = userCounter LOOP
+        IF EXISTS (select "from" FROM groups_members where "to" = r."to") THEN
             SELECT gm."from" INTO newowner FROM groups_members gm
-            WHERE "to" = r.counter AND "time" = (
-                SELECT min(time) FROM groups_members WHERE "to" = r.counter
+            WHERE "to" = r."to" AND "time" = (
+                SELECT min(time) FROM groups_members WHERE "to" = r."to"
             );
             
-            UPDATE "groups" SET owner = newOwner WHERE counter = r.counter;
-            DELETE FROM groups_members WHERE "to" = newOwner;
+            UPDATE "groups_owners" SET "from" = newOwner, to_notify = TRUE WHERE "to" = r."to";
+            DELETE FROM groups_members WHERE "from" = newOwner;
         END IF;
         -- else, the foreing key remains and the group will be dropped
     END LOOP;

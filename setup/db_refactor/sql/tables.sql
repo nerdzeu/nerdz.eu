@@ -234,6 +234,20 @@ ALTER TABLE groups ADD COLUMN "creation_time" timestamp(0) WITH TIME ZONE NOT NU
 
 UPDATE groups SET creation_time = p.time FROM groups_posts p WHERE counter = p."to" AND hpid = (select min(hpid) from groups_posts where "to" = p."to");
 
+-- create table groups_owners and set the users as owner since creation date
+CREATE TABLE groups_owners(
+    "to" int8 not null references groups(counter) on delete cascade,
+    "from" int8 not null references users(counter) on delete cascade,
+    time timestamp(0) with time zone not null default now(),
+    to_notify boolean not null default false,
+    primary key("to","from")
+);
+
+insert into groups_owners("to", "from", time)
+select counter, owner, creation_time from groups;
+
+alter table groups drop column owner cascade;
+
 ALTER TABLE posts ADD CONSTRAINT uniquePostPidHpid UNIQUE(hpid, pid);
 ALTER TABLE groups_posts ADD CONSTRAINT uniqueGroupsPostPidHpid UNIQUE(hpid, pid);
 
@@ -311,11 +325,6 @@ ALTER TABLE "groups_comments_no_notify"
 ALTER TABLE "blacklist"
     DROP CONSTRAINT "fktousers",
     ADD CONSTRAINT "fktousers" FOREIGN KEY ("to")
-    REFERENCES users(counter) ON DELETE CASCADE;
-
-ALTER TABLE "groups"
-    DROP CONSTRAINT "fkowner",
-    ADD CONSTRAINT "fkowner" FOREIGN KEY ("owner")
     REFERENCES users(counter) ON DELETE CASCADE;
 
 ALTER TABLE "whitelist"

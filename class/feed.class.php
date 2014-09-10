@@ -154,14 +154,14 @@ class Feed extends Messages
 
         if(!($p = Db::query(
             [
-                'SELECT "private","owner" FROM "groups" WHERE "counter" = :id',
+                'SELECT "private" FROM "groups" WHERE "counter" = :id',
                 [
                     ':id' => $id
                 ]
             ],Db::FETCH_OBJ)))
             return $this->error('Undefined error');
 
-        if($p->private && (!$this->user->isLogged() || (!in_array($_SESSION['id'], $this->project->getMembers($id)) && $_SESSION['id'] != $p->owner)))
+        if($p->private && (!$this->user->isLogged() || (!in_array($_SESSION['id'], $this->project->getMembers($id)) && $_SESSION['id'] != $this->project->getOwner())))
             return $this->error('Closed project');
 
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>

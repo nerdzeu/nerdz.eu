@@ -453,7 +453,7 @@ class Messages
 
         $table = ($project ? 'groups_' : '').'posts';
 
-        $glue = $id ? ' "to" = :id ' : 'TRUE';
+        $glue = $id ? ' p."to" = :id ' : 'TRUE';
 
         if($onlyfollowed) {
             $followed = array_merge($this->user->getFollowing($_SESSION['id']), (array)$_SESSION['id']);
@@ -496,13 +496,15 @@ class Messages
 
         $join .= $vote ? ' INNER JOIN "'.($project ?  'groups_' : '').'thumbs" t ON p.hpid = t.hpid ' : '';
         if($project) {
-            $join .= ' INNER JOIN "groups" g ON p.to = g.counter INNER JOIN "users" u ON p."from" = u.counter ';
+            $join .= ' INNER JOIN "groups" g ON p.to = g.counter
+                       INNER JOIN "users" u ON p."from" = u.counter
+                       INNER JOIN "groups_owners" gu ON gu."to" = p.to';
             $glue .= ' AND (g."visible" IS TRUE ';
 
             if($this->user->isLogged())
                 $glue .= ' OR (\''.$_SESSION['id'].'\' IN (
-                    SELECT "from" FROM groups_members WHERE "to" = p."to"
-                )) OR \''.$_SESSION['id'].'\' = g.owner';
+                    SELECT "from" FROM groups_members gm WHERE gm."to" = p."to"
+                )) OR \''.$_SESSION['id'].'\' = gu.from';
             $glue .= ') ';
         }
 

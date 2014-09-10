@@ -16,7 +16,15 @@ if(!$user->isLogged())
 $vals = [];
 $vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('edit');
 
-if(!($r = Db::query(array('SELECT "name","counter" FROM "groups" WHERE "owner" = ?',array($_SESSION['id'])),Db::FETCH_STMT)))
+if(!($r = Db::query(
+    [
+        'SELECT "name", counter FROM "groups" g INNER JOIN "groups_owners" go
+        ON go."to" = g.counter
+        WHERE go."from" = :id',
+        [
+            ':id' => $_SESSION['id']
+        ]
+    ],Db::FETCH_STMT)))
     $vals['myprojects_a'] = [];
 else
 {

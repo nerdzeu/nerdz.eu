@@ -63,7 +63,15 @@ else
 $vals['followedtot_n'] = $tot;
 $vals['followedonlinetot_n'] = $c;
 
-if(!($r = Db::query(array('SELECT "name" FROM "groups" WHERE "owner" = :id',array(':id' => $_SESSION['id'])),Db::FETCH_STMT)))
+if(!($r = Db::query(
+    [
+        'SELECT "name" FROM "groups" g INNER JOIN "groups_owners" go
+        ON go."to" = g.counter
+        WHERE go."from" = :id',
+        [
+            ':id' => $_SESSION['id']
+        ]
+    ],Db::FETCH_STMT)))
     die($user->lang('ERROR'));
 
 $vals['ownerof_a'] = [];

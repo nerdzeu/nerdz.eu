@@ -54,7 +54,7 @@ CREATE FUNCTION before_insert_groups_follower() RETURNS TRIGGER AS $$
 DECLARE group_owner int8;
 BEGIN
     PERFORM flood_control('"groups_followers"', NEW."from");
-    SELECT "owner" INTO group_owner FROM "groups" WHERE "counter" = NEW."to";
+    SELECT "from" INTO group_owner FROM "groups_owners" WHERE "to" = NEW."to";
     PERFORM blacklist_control(group_owner, NEW."from");
     RETURN NEW;
 END $$ LANGUAGE plpgsql;
@@ -62,7 +62,7 @@ END $$ LANGUAGE plpgsql;
 CREATE FUNCTION before_insert_groups_member() RETURNS TRIGGER AS $$
 DECLARE group_owner int8;
 BEGIN
-    SELECT "owner" INTO group_owner FROM "groups" WHERE "counter" = NEW."to";
+    SELECT "from" INTO group_owner FROM "groups_owners" WHERE "to" = NEW."to";
     PERFORM blacklist_control(group_owner, NEW."from");
     RETURN NEW;
 END $$ LANGUAGE plpgsql;
@@ -292,7 +292,7 @@ BEGIN
     );
     
 
-    FOR r IN (SELECT "counter" FROM "groups" WHERE "owner" = NEW."from")
+    FOR r IN (SELECT "to" FROM "groups_owner" WHERE "from" = NEW."from")
     LOOP
         -- remove from my groups members
         DELETE FROM "groups_members" WHERE "from" = NEW."to" AND "to" = r."counter";
@@ -557,7 +557,7 @@ BEGIN
         PERFORM flood_control('"groups_posts"', NEW."from", NEW.message);
     END IF;
 
-    SELECT "owner" INTO group_owner FROM groups WHERE "counter" = NEW."to";
+    SELECT "from" INTO group_owner FROM "groups_owners" WHERE "to" = NEW."to";
     SELECT "open" INTO open_group FROM groups WHERE "counter" = NEW."to";
 
     IF group_owner <> NEW."from" AND
@@ -672,7 +672,7 @@ BEGIN
             --followers
             SELECT "from" FROM "groups_followers" WHERE "to" = NEW."to"
                 UNION DISTINCT
-            SELECT "owner" FROM "groups" WHERE "counter" = NEW."to"
+            SELECT "from"  FROM "groups_owners" WHERE "to" = NEW."to"
         )
         EXCEPT
         (
@@ -765,7 +765,9 @@ CREATE TRIGGER after_insert_blacklist AFTER INSERT ON blacklist FOR EACH ROW EXE
  -- before insert
 CREATE TRIGGER before_insert_comment BEFORE INSERT ON comments FOR EACH ROW EXECUTE PROCEDURE before_insert_comment();
   -- before update
-CREATE TRIGGER before_update_comment_message BEFORE UPDATE ON comments FOR EACH ROW EXECUTE PROCEDURE user_comment_edit_control();
+CREATE TRIGGER before_update_comment_message BEFORE UPDATE ON comments FOR EACH ROW
+WHEN (NEW.message <> OLD.message)
+EXECUTE PROCEDURE user_comment_edit_control();
 
   -- after insert
 CREATE TRIGGER after_insert_comment AFTER INSERT ON comments FOR EACH ROW EXECUTE PROCEDURE user_comment();
@@ -779,7 +781,9 @@ EXECUTE PROCEDURE user_comment();
   -- before insert
 CREATE TRIGGER before_insert_groups_comment BEFORE INSERT ON groups_comments FOR EACH ROW EXECUTE PROCEDURE before_insert_groups_comment();
   -- before update
-CREATE TRIGGER before_update_group_comment_message BEFORE UPDATE ON groups_comments FOR EACH ROW EXECUTE PROCEDURE group_comment_edit_control();
+CREATE TRIGGER before_update_group_comment_message BEFORE UPDATE ON groups_comments FOR EACH ROW
+WHEN (NEW.message <> OLD.message)
+EXECUTE PROCEDURE group_comment_edit_control();
 
   -- after insert
 CREATE TRIGGER after_insert_group_comment AFTER INSERT ON groups_comments FOR EACH ROW EXECUTE PROCEDURE group_comment();
