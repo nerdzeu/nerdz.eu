@@ -73,6 +73,7 @@ begin
         insert into posts_notify("from", "to", "hpid", "time") values(NEW."from", NEW."to", NEW."hpid", NEW."time");
     END IF;
     PERFORM hashtag(NEW.message, NEW.hpid, false);
+    PERFORM mention(NEW."from", NEW.message, NEW.hpid, false);
     return null;
 end $$ language plpgsql;
 
@@ -347,6 +348,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     PERFORM hashtag(NEW.message, NEW.hpid, false);
+    PERFORM mention(NEW."from", NEW.message, NEW.hpid, false);
     -- edit support
     IF TG_OP = 'UPDATE' THEN
         INSERT INTO comments_revisions(hcid, time, message, rev_no)
@@ -411,6 +413,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     PERFORM hashtag(NEW.message, NEW.hpid, true);
+    PERFORM mention(NEW."from", NEW.message, NEW.hpid, true);
     -- edit support
     IF TG_OP = 'UPDATE' THEN
         INSERT INTO groups_comments_revisions(hcid, time, message, rev_no)
@@ -475,6 +478,7 @@ BEGIN
         (SELECT COUNT(hpid) +1 FROM posts_revisions WHERE hpid = OLD.hpid));
 
     PERFORM hashtag(NEW.message, NEW.hpid, false);
+    PERFORM mention(NEW."from", NEW.message, NEW.hpid, false);
     RETURN NULL;
 END $$ LANGUAGE plpgsql;
 
@@ -484,6 +488,7 @@ BEGIN
         (SELECT COUNT(hpid) +1 FROM groups_posts_revisions WHERE hpid = OLD.hpid));
 
     PERFORM hashtag(NEW.message, NEW.hpid, true);
+    PERFORM mention(NEW."from", NEW.message, NEW.hpid, true);
     RETURN NULL;
 END $$ LANGUAGE plpgsql;
 
@@ -690,6 +695,7 @@ BEGIN
     );
 
     PERFORM hashtag(NEW.message, NEW.hpid, true);
+    PERFORM mention(NEW."from", NEW.message, NEW.hpid, true);
     RETURN NULL;
 END $$;
 

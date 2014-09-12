@@ -204,20 +204,76 @@ END $$;
 -- TODO: this function is broken yet
 CREATE FUNCTION mention(me int8, message text, hpid int8, grp boolean) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE field text;
+    posts_notify_tbl text;
+    comments_notify_tbl text;
+    posts_no_notify_tbl text;
+    comments_no_notify_tbl text;
     project record;
     owner int8;
     other int8;
     matches text[];
     username text;
+    found boolean;
 BEGIN
+    -- prepare tables
+    IF grp THEN
+        EXECUTE 'SELECT closed FROM groups_posts WHERE hpid = ' || hpid INTO found;
+        IF found THEN
+            RETURN;
+        END IF;
+        posts_notify_tbl = 'groups_notify';
+        posts_no_notify_tbl = 'groups_posts_no_notify';
+
+        comments_notify_tbl = 'groups_comments_notify';
+        comments_no_notify_tbl = 'groups_comments_no_notify';
+    ELSE
+        EXECUTE 'SELECT closed FROM posts WHERE hpid = ' || hpid INTO found;
+        IF found THEN
+            RETURN;
+        END IF;
+        posts_notify_tbl = 'posts_notify';
+        posts_no_notify_tbl = 'posts_no_notify';
+
+        comments_notify_tbl = 'comments_notify';
+        comments_no_notify_tbl = 'comments_no_notify';           
+    END IF;
+
+    -- extract [user]username[/user]
     message = quote_literal(message);
+    FOR matches IN EXECUTE '
+        select regexp_matches(' || message || ',
+            ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi''
+        )' LOOP
 
-    EXECUTE 'select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi'')' INTO matches;
+        username = matches[1];
+        -- if username exists
+        EXECUTE 'SELECT counter FROM users WHERE LOWER(username) = LOWER(' || quote_literal(username) || ');' INTO other;
+        IF other IS NULL OR other = me THEN
+            CONTINUE;
+        END IF;
 
-    FOREACH username IN ARRAY matches LOOP
-        --username exists
-        EXECUTE 'SELECT counter FROM users WHERE username = ' || quote_literal(username) || ';' INTO other;
-        IF other IS NULL THEN
+        -- check if 'other' is in notfy list.
+        -- if it is, continue, since he will receive notification about this post anyway
+        EXECUTE 'SELECT ' || other || ' IN (
+            (SELECT "to" FROM "' || posts_notify_tbl || '" WHERE hpid = ' || hpid || ')
+                UNION
+           (SELECT "to" FROM "' || comments_notify_tbl || '" WHERE hpid = ' || hpid || ')
+        )' INTO found;
+
+        IF found THEN
+            CONTINUE;
+        END IF;
+
+        -- check if 'ohter' disabled notification from post hpid, if yes -> skip
+        EXECUTE 'SELECT ' || other || ' IN (SELECT "user" FROM "' || posts_no_notify_tbl || '" WHERE hpid = ' || hpid || ')' INTO found;
+        IF found THEN
+            CONTINUE;
+        END IF;
+
+        --check if 'other' disabled notification from 'me' in post hpid, if yes -> skip
+        EXECUTE 'SELECT ' || other || ' IN (SELECT "to" FROM "' || comments_no_notify_tbl || '" WHERE hpid = ' || hpid || ' AND "from" = ' || me || ')' INTO found;
+
+        IF found THEN
             CONTINUE;
         END IF;
 
@@ -226,7 +282,6 @@ BEGIN
             PERFORM blacklist_control(me, other);
 
             IF grp THEN
-
                 SELECT counter, visible INTO project
                 FROM groups WHERE "counter" = (SELECT "to" FROM groups_posts p WHERE p.hpid = hpid);
                 select "from" INTO owner FROM groups_owners WHERE "to" = project.counter;
@@ -242,6 +297,7 @@ BEGIN
                     RETURN;
                 END IF;
             END IF;
+
         EXCEPTION
             WHEN OTHERS THEN
                 CONTINUE;
@@ -253,8 +309,14 @@ BEGIN
             field := 'u_hpid';
         END IF;
 
-        -- if here, add record
-        EXECUTE 'INSERT INTO mentions(' || field ' , "from", "to) VALUES(' || hpid || ', ' || me || ', '|| other ||')';
+        -- if here and mentions does not exists, insert
+        EXECUTE 'INSERT INTO mentions(' || field || ' , "from", "to")
+        SELECT ' || hpid || ', ' || me || ', '|| other ||'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM mentions
+            WHERE "' || field || '" = ' || hpid || ' AND "to" = ' || other || '
+        )';
+
     END LOOP;
 
 END $$;
