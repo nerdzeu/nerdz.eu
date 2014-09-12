@@ -242,7 +242,7 @@ BEGIN
     message = quote_literal(message);
     FOR matches IN EXECUTE '
         select regexp_matches(' || message || ',
-            ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi''
+            ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi''
         )' LOOP
 
         username = matches[1];
