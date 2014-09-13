@@ -240,8 +240,8 @@ BEGIN
 
     -- extract [user]username[/user]
     message = quote_literal(message);
-    FOR matches IN EXECUTE '
-        select regexp_matches(' || message || ',
+    FOR matches IN
+        EXECUTE 'select regexp_matches(' || message || ',
             ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi''
         )' LOOP
 
@@ -282,13 +282,18 @@ BEGIN
             PERFORM blacklist_control(me, other);
 
             IF grp THEN
-                SELECT counter, visible INTO project
-                FROM groups WHERE "counter" = (SELECT "to" FROM groups_posts p WHERE p.hpid = hpid);
+                EXECUTE 'SELECT counter, visible
+                FROM groups WHERE "counter" = (
+                    SELECT "to" FROM groups_posts p WHERE p.hpid = ' || hpid || ');'
+                INTO project;
+
+                RAISE NOTICE 'PROJECT: %', project;
+
                 select "from" INTO owner FROM groups_owners WHERE "to" = project.counter;
                 -- other can't access groups if the owner blacklisted him
                 PERFORM blacklist_control(owner, other);
 
-                -- if the project is invisible and the other is not the owner or a member
+                -- if the project is NOT visible and other is not the owner or a member
                 IF project.visible IS FALSE AND other NOT IN (
                     SELECT "from" FROM groups_members WHERE "to" = project.counter
                         UNION

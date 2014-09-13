@@ -293,10 +293,10 @@ BEGIN
     );
     
 
-    FOR r IN (SELECT "to" FROM "groups_owner" WHERE "from" = NEW."from")
+    FOR r IN (SELECT "to" FROM "groups_owners" WHERE "from" = NEW."from")
     LOOP
         -- remove from my groups members
-        DELETE FROM "groups_members" WHERE "from" = NEW."to" AND "to" = r."counter";
+        DELETE FROM "groups_members" WHERE "from" = NEW."to" AND "to" = r."to";
     END LOOP;
     
     -- remove from followers
@@ -304,6 +304,9 @@ BEGIN
 
     -- remove pms
     DELETE FROM "pms" WHERE ("from" = NEW."from" AND "to" = NEW."to") OR ("to" = NEW."from" AND "from" = NEW."to");
+
+    -- remove from mentions
+    DELETE FROM "mentions" WHERE ("from"= NEW."from" AND "to" = NEW."to") OR ("to" = NEW."from" AND "from" = NEW."to");
 
     RETURN NULL;
 END $$;
