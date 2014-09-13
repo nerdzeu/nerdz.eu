@@ -287,8 +287,6 @@ BEGIN
                     SELECT "to" FROM groups_posts p WHERE p.hpid = ' || hpid || ');'
                 INTO project;
 
-                RAISE NOTICE 'PROJECT: %', project;
-
                 select "from" INTO owner FROM groups_owners WHERE "to" = project.counter;
                 -- other can't access groups if the owner blacklisted him
                 PERFORM blacklist_control(owner, other);
