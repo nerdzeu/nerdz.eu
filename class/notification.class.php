@@ -11,12 +11,14 @@ class Notification
     const USER_COMMENT = 'profile_comments';
     const USER_POST    = 'new_post_on_profile';
     const USER_FOLLOW  = 'new_follower';
+    const USER_MENTION = 'new_mention_on_profile_post';
 
     const PROJECT_COMMENT = 'project_comments';
     const PROJECT_POST    = 'news_project';
     const PROJECT_FOLLOW  = 'new_project_follower';
     const PROJECT_MEMBER  = 'new_project_member';
     const PROJECT_OWNER   = 'you_are_the_new_project_owner';
+    const PROJECT_MENTION = 'new_mention_on_project_post';
 
     public function __construct($group = true)
     {
@@ -74,6 +76,9 @@ class Notification
         case 'projects_owner':
             $c = $this->countProjectOwner();
             break;
+        case 'mentions':
+            $c = $this->countMentions();
+            break;
         case 'all':
             $c = $this->countUserComments()   +
                 $this->countUserPosts()       +
@@ -82,7 +87,8 @@ class Notification
                 $this->countFollow()          +
                 $this->countProjectFollow()   +
                 $this->countProjectMember()   +
-                $this->countProjectOwner();
+                $this->countProjectOwner()    +
+                $this->countMentions();
             break;
         }
         return $c;
@@ -209,6 +215,20 @@ class Notification
         return $o->cc;
     }
 
+    private function countMentions()
+    {
+        if(!($o = Db::query(
+            [
+                'SELECT COUNT("to") AS cc FROM "mentions" WHERE "to" = :id AND "to_notify" = TRUE',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_OBJ)))
+            return 0;
+
+        return $o->cc;
+    }
+
     public function show($what = null,$del = true)
     {
         $ret = [];
@@ -241,6 +261,9 @@ class Notification
         case 'projects_owner':
             $ret = $this->getProjectOwner($del);
             break;
+        case 'mentions':
+            $ret = $this->getMentions();
+            break;
         case 'all':
             $ret = array_merge(
                 $this->getUserComments($del),
@@ -250,7 +273,8 @@ class Notification
                     $this->getUserFollowers($del),
                     $this->getProjectFollowers($del),
                     $this->getProjectMember($del),
-                    $this->getProjectOwner($del)
+                    $this->getProjectOwner($del),
+                    $this->getMentions($del)
                 );
             break;
         }
@@ -609,6 +633,60 @@ class Notification
         return $ret;
     }
 
+    private function getMentions($del)
+    {
+        $ret = [];
+        $i = 0;
+        $result = Db::query(
+            [
+                'SELECT "from", "to", "g_hpid", "u_hpid", EXTRACT(EPOCH FROM "time") AS time FROM "mentions" WHERE "to" = :id AND "to_notify" = TRUE',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ],Db::FETCH_STMT);
+
+        while($o = $result->fetch(PDO::FETCH_OBJ))
+        {
+            if(empty($o->g_hpid)) {
+                $table = 'posts';
+                $field = 'u_hpid';
+                $type = static::USER_MENTION;
+            } else {
+                $table = 'groups_posts';
+                $field = 'g_hpid';
+                $type = static::PROJECT_MENTION;
+            }
+
+            if(($p = Db::query(
+                [
+                    'SELECT "from","to","pid" FROM "'.$table.'" WHERE "hpid" = :hpid',
+                    [
+                        ':hpid' => $o->$field
+                    ]
+                ],Db::FETCH_OBJ))) {
+
+                $o->hpid = $o->$field;
+            
+                $ret[$i++] = $this->get(
+                    [
+                        'row' => $o,
+                        'post' => $p
+                    ], $type);
+            }
+        }
+
+        if($del) {
+            Db::query(
+                [
+                    'UPDATE "mentions" SET "to_notify" = FALSE WHERE "to" = :id',
+                    [
+                        ':id' => $_SESSION['id']
+                    ]
+                ],Db::NO_RETURN);
+        }
+        return $ret;
+    }
+
     public function story()
     {
         if(!($ret = Utils::apc_get($this->cachekey)))
@@ -638,10 +716,9 @@ class Notification
                     'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
                         ':story' => json_encode($new,JSON_FORCE_OBJECT),
-                            ':id'    => $_SESSION['id']
-                        ]
-                    ],Db::FETCH_ERRNO)
-                )
+                        ':id'    => $_SESSION['id']
+                    ]
+                ],Db::FETCH_ERRNO))
                 return false;
         }
         else
@@ -663,10 +740,9 @@ class Notification
                     'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
                         ':story' => json_encode($old,JSON_FORCE_OBJECT),
-                            ':id'    => $_SESSION['id']
-                        ]
-                    ],Db::FETCH_ERRNO)
-                )
+                        ':id'    => $_SESSION['id']
+                    ]
+                ],Db::FETCH_ERRNO))
                 return false;
         }
         apc_delete($this->cachekey);

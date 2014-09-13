@@ -1568,7 +1568,7 @@ N.html.search = function()
      * hpid: hidden post id
      * return n <= limit posts matching q on project id with id < hpid
     */
-    this.specificPrjectPostsBeforeHpid = function(num, q, id, hpid, done)
+    this.specificProjectPostsBeforeHpid = function(num, q, id, hpid, done)
     {
         this.post('posts.html.php?action=project&specific=1',{q: q, hpid: hpid, limit: num, id:id},function(d) {
             done(d);
