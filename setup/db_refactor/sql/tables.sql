@@ -71,7 +71,7 @@ create index on posts_classification((lower(tag))); --efficient case-insensitive
 
 -- populate posts_classfications with old "tagging" method use by the users
 -- 1: find the hastag if present and tag the post (search for:
---    /(?!\[(?:url|code)[^\]]*?\].*)(#[a-z][a-z0-9]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])/gi
+--    /(?!\[(?:url|code)[^\]]*?\].*)(#\w[\w\d]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])/gi
 --    hashtag not in a [url] or [code] tag, max lenght 34 characters + # and followed by blank-character or eol
 -- )
 -- 2: search for [spoiler=something] and if "#" + something matches the previous regex tag the post
@@ -85,16 +85,16 @@ create index on posts_classification((lower(tag))); --efficient case-insensitive
 insert into posts_classification(u_hpid, tag)
 select distinct tmp.hpid, tmp.matchedTag[1] from (
     -- 1: existing hashtags
-    select hpid, regexp_matches(message,'(?!\[(?:url|code)[^\]]*?\].*)(#[a-z][a-z0-9]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])' , 'gi') as matchedTag
+    select hpid, regexp_matches(message,'(?!\[(?:url|code)[^\]]*?\].*)(#\w[\w\d]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])' , 'gi') as matchedTag
     from posts
         union distinct -- 2: spoiler
     select a.hpid, concat('{#', a.matchedTag[1], '}')::text[] from (
-        select hpid, regexp_matches(message, '\[spoiler=([a-z][a-z0-9]{0,34})\]', 'gi')
+        select hpid, regexp_matches(message, '\[spoiler=(\w[\w\d]{0,33})\]', 'gi')
         as matchedTag from posts
     ) as a
         union distinct -- 3: languages
      select b.hpid, concat('{#', b.matchedTag[1], '}')::text[] from (
-         select hpid, regexp_matches(message, '\[code=([a-z][a-z0-9]{0,34})\]', 'gi')
+         select hpid, regexp_matches(message, '\[code=(\w[\w\d]{0,33})\]', 'gi')
         as matchedTag from posts
     ) as b
 ) tmp;
@@ -103,16 +103,16 @@ select distinct tmp.hpid, tmp.matchedTag[1] from (
 insert into posts_classification(u_hpid, tag)
 select distinct tmp.hpid, tmp.matchedTag[1] from (
     -- 1: existing hashtags
-    select hpid, regexp_matches(message, '(?!\[(?:url|code)[^\]]*?\].*)(#[a-z][a-z0-9]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])', 'gi') as matchedTag
+    select hpid, regexp_matches(message, '(?!\[(?:url|code)[^\]]*?\].*)(#\w[\w\d]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])', 'gi') as matchedTag
     from comments
         union distinct -- 2: spoiler
     select a.hpid, concat('{#', a.matchedTag[1], '}')::text[] from (
-        select hpid, regexp_matches(message, '\[spoiler=([a-z][a-z0-9]{0,34})\]', 'gi')
+        select hpid, regexp_matches(message, '\[spoiler=(\w[\w\d]{0,33})\]', 'gi')
         as matchedTag from comments
     ) as a
         union distinct -- 3: languages
      select b.hpid, concat('{#', b.matchedTag[1], '}')::text[] from (
-         select hpid, regexp_matches(message, '\[code=([a-z][a-z0-9]{0,34})\]', 'gi')
+         select hpid, regexp_matches(message, '\[code=(\w[\w\d]{0,33})\]', 'gi')
         as matchedTag from comments
     ) as b
 ) tmp;
@@ -121,16 +121,16 @@ select distinct tmp.hpid, tmp.matchedTag[1] from (
 insert into posts_classification(g_hpid, tag)
 select distinct tmp.hpid, tmp.matchedTag[1] from (
     -- 1: existing hashtags
-    select hpid, regexp_matches(message, '(?!\[(?:url|code)[^\]]*?\].*)(#[a-z][a-z0-9]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])', 'gi') as matchedTag
+    select hpid, regexp_matches(message, '(?!\[(?:url|code)[^\]]*?\].*)(#\w[\w\d]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])', 'gi') as matchedTag
     from groups_posts
         union distinct -- 2: spoiler
     select a.hpid, concat('{#', a.matchedTag[1], '}')::text[] from (
-        select hpid, regexp_matches(message, '\[spoiler=([a-z][a-z0-9]{0,34})\]', 'gi')
+        select hpid, regexp_matches(message, '\[spoiler=(\w[\w\d]{0,33})\]', 'gi')
         as matchedTag from groups_posts
     ) as a
         union distinct -- 3: languages
      select b.hpid, concat('{#', b.matchedTag[1], '}')::text[] from (
-         select hpid, regexp_matches(message, '\[code=([a-z][a-z0-9]{0,34})\]', 'gi')
+         select hpid, regexp_matches(message, '\[code=(\w[\w\d]{0,33})\]', 'gi')
         as matchedTag from groups_posts
     ) as b
 ) tmp;
@@ -139,16 +139,16 @@ select distinct tmp.hpid, tmp.matchedTag[1] from (
 insert into posts_classification(g_hpid, tag)
 select distinct tmp.hpid, tmp.matchedTag[1] from (
     -- 1: existing hashtags
-    select hpid, regexp_matches(message, '(?!\[(?:url|code)[^\]]*?\].*)(#[a-z][a-z0-9]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])', 'gi') as matchedTag
+    select hpid, regexp_matches(message, '(?!\[(?:url|code)[^\]]*?\].*)(#\w[\w\d]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])', 'gi') as matchedTag
     from groups_comments
         union distinct -- 2: spoiler
     select a.hpid, concat('{#', a.matchedTag[1], '}')::text[] from (
-        select hpid, regexp_matches(message, '\[spoiler=([a-z][a-z0-9]{0,34})\]', 'gi')
+        select hpid, regexp_matches(message, '\[spoiler=(\w[\w\d]{0,33})\]', 'gi')
         as matchedTag from groups_comments
     ) as a
         union distinct -- 3: languages
      select b.hpid, concat('{#', b.matchedTag[1], '}')::text[] from (
-         select hpid, regexp_matches(message, '\[code=([a-z][a-z0-9]{0,34})\]', 'gi')
+         select hpid, regexp_matches(message, '\[code=(\w[\w\d]{0,33})\]', 'gi')
         as matchedTag from groups_comments
     ) as b
 ) tmp;
