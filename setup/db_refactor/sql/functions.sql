@@ -181,16 +181,16 @@ BEGIN
     insert into posts_classification(' || field || ' , tag)
     select distinct ' || hpid ||', tmp.matchedTag[1] from (
         -- 1: existing hashtags
-        select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\].*)(#\w[\w\d]{0,33})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi'')
+        select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\].*)(#[\w]{1,34})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi'')
         as matchedTag
             union distinct -- 2: spoiler
         select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
-            select regexp_matches(' || message || ', ''\[spoiler=(\w[\w\d]{0,33})\]'', ''gi'')
+            select regexp_matches(' || message || ', ''\[spoiler=([\w]{1,34})\]'', ''gi'')
             as matchedTag
         ) as a
             union distinct -- 3: languages
          select concat(''{#'', b.matchedTag[1], ''}'')::text[] from (
-             select regexp_matches(' || message || ', ''\[code=(\w[\w\d]{0,33})\]'', ''gi'')
+             select regexp_matches(' || message || ', ''\[code=([\w]{1,34})\]'', ''gi'')
             as matchedTag
         ) as b
     ) tmp

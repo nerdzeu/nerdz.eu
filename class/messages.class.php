@@ -103,7 +103,7 @@ class Messages
         },$str);
 
         //hashtag
-        $str = preg_replace_callback('/(?!\[(?:url|code)[^\]]*?\].*)#(\w[\w\d]{0,33})(\s|<br \/>|$)(?!.*[^\[]*?\[\/(?:url|ode)\])/i',function($m) {
+        $str = preg_replace_callback('/(?!\[(?:url|code)[^\]]*?\].*)#([\w]{1,34})(\s|<br \/>|$)(?!.*[^\[]*?\[\/(?:url|ode)\])/iu',function($m) {
             return '<a href="/search.php?q=%23'.$m[1].'">#'.$m[1].'</a>'.$m[2];
         }, $str);
 
@@ -473,7 +473,7 @@ class Messages
         $join = '';
 
         if($search) {
-            if(preg_match('/^#[a-z][a-z0-9]{0,33}$/i',$search)) {
+            if(preg_match('/^#[\w]{1,34}$/iu',$search)) {
                 return $this->tagSearch($search, $limit, $hpid);
             }
             else {
