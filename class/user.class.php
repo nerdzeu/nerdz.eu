@@ -74,7 +74,7 @@ class User
 
     public static function isOnMobileHost()
     {
-        return isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] == Config\MOBILE_HOST;
+        return isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == Config\MOBILE_HOST;
     }
 
     public function getTPL()
