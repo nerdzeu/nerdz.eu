@@ -57,6 +57,41 @@ create table mentions(
 
 create index on mentions("to", to_notify); -- efficient searches (where to = me and to_notify = true)
 
+-- history of deleted users
+
+create table deleted_users(
+    counter int8 not null,
+    username varchar(90) not null,
+    "time" timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    motivation text,
+    primary key(counter, username, time)
+);
+
+-- comments revisions
+
+CREATE TABLE comments_revisions(
+    hcid int8 not null references comments(hcid) on delete cascade,
+    message text not null,
+    time timestamp(0) WITH TIME ZONE NOT NULL,
+    rev_no int4 not null default 0,
+    primary key(hcid, rev_no)
+);
+
+CREATE TABLE groups_comments_revisions(
+    hcid int8 not null references groups_comments(hcid) on delete cascade,
+    message text not null,
+    time timestamp(0) WITH TIME ZONE NOT NULL,
+    rev_no int4 not null default 0,
+    primary key(hcid, rev_no)
+);
+
+-- comments fixes. Set editable to false if message contains html
+alter table comments add column editable boolean not null default true;
+alter table groups_comments add column editable boolean not null default true;
+
+update comments set editable = false where message like '%<%' or message like '%>%';
+update groups_comments set editable = false where message like '%<%' or message like '%>%';
+
 -- post classification
 create table posts_classification(
     id bigserial primary key, -- required for better indexing
@@ -104,16 +139,16 @@ insert into posts_classification(u_hpid, tag)
 select distinct tmp.hpid, tmp.matchedTag[1] from (
     -- 1: existing hashtags
     select hpid, regexp_matches(message, '(?!\[(?:url|code)[^\]]*?\].*)(#[\w]{1,34})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])', 'gi') as matchedTag
-    from comments
+    from comments where editable is true
         union distinct -- 2: spoiler
     select a.hpid, concat('{#', a.matchedTag[1], '}')::text[] from (
         select hpid, regexp_matches(message, '\[spoiler=([\w]{1,34})\]', 'gi')
-        as matchedTag from comments
+        as matchedTag from comments where editable is true
     ) as a
         union distinct -- 3: languages
      select b.hpid, concat('{#', b.matchedTag[1], '}')::text[] from (
          select hpid, regexp_matches(message, '\[code=([\w]{1,34})\]', 'gi')
-        as matchedTag from comments
+        as matchedTag from comments where editable is true
     ) as b
 ) tmp;
 
@@ -140,53 +175,18 @@ insert into posts_classification(g_hpid, tag)
 select distinct tmp.hpid, tmp.matchedTag[1] from (
     -- 1: existing hashtags
     select hpid, regexp_matches(message, '(?!\[(?:url|code)[^\]]*?\].*)(#[\w]{1,34})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])', 'gi') as matchedTag
-    from groups_comments
+    from groups_comments where editable is true
         union distinct -- 2: spoiler
     select a.hpid, concat('{#', a.matchedTag[1], '}')::text[] from (
         select hpid, regexp_matches(message, '\[spoiler=([\w]{1,34})\]', 'gi')
-        as matchedTag from groups_comments
+        as matchedTag from groups_comments where editable is true
     ) as a
         union distinct -- 3: languages
      select b.hpid, concat('{#', b.matchedTag[1], '}')::text[] from (
          select hpid, regexp_matches(message, '\[code=([\w]{1,34})\]', 'gi')
-        as matchedTag from groups_comments
+        as matchedTag from groups_comments where editable is true
     ) as b
 ) tmp;
-
--- history of deleted users
-
-create table deleted_users(
-    counter int8 not null,
-    username varchar(90) not null,
-    "time" timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    motivation text,
-    primary key(counter, username, time)
-);
-
--- comments revisions
-
-CREATE TABLE comments_revisions(
-    hcid int8 not null references comments(hcid) on delete cascade,
-    message text not null,
-    time timestamp(0) WITH TIME ZONE NOT NULL,
-    rev_no int4 not null default 0,
-    primary key(hcid, rev_no)
-);
-
-CREATE TABLE groups_comments_revisions(
-    hcid int8 not null references groups_comments(hcid) on delete cascade,
-    message text not null,
-    time timestamp(0) WITH TIME ZONE NOT NULL,
-    rev_no int4 not null default 0,
-    primary key(hcid, rev_no)
-);
-
--- comments fixes. Set editable to false if message contains html
-alter table comments add column editable boolean not null default true;
-alter table groups_comments add column editable boolean not null default true;
-
-update comments set editable = false where message like '%<%' or message like '%>%';
-update groups_comments set editable = false where message like '%<%' or message like '%>%';
 
 -- add the ability to close a post
 alter table posts add column closed boolean not null default false;
