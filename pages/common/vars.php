@@ -30,5 +30,4 @@ $func = function() use ($user) {
 };
 
 $func();
-
 ?>

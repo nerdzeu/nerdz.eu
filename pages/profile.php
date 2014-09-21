@@ -14,7 +14,6 @@ $vals = [];
 $vals['logged_b'] = $user->isLogged();
 $vals['id_n'] = $info->counter;
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 $vals['canwriteissue_b'] = false;
 $vals['canwritenews_b']  = $user->isLogged() && $info->counter == $_SESSION['id'];
 
@@ -255,9 +254,6 @@ if($enter)
             $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/singlepost.html.php';
             $found = true;
         }
-    //TODO: place follow{ing|ers}, friends and interactions handling here
-    // followers and interactions -> common to project
-    // following and friends only users
     } elseif($vals['friends_b']) {
         $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/friends.html.php';
     } elseif($vals['following_b']) {
@@ -271,6 +267,7 @@ if($enter)
     if(($vals['singlepost_b'] && $found) || !$vals['singlepost_b'])
     {
         $user->getTPL()->assign($vals);
+        require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
         $user->getTPL()->draw('profile/layout');
     }
 }
@@ -280,6 +277,7 @@ else
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
     $vals['presentation_n'] = ''; // delete the presentation
     $user->getTPL()->assign($vals);
+    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
     $user->getTPL()->draw('profile/closed');
 }
 ?>
