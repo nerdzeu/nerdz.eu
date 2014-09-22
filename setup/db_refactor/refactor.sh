@@ -5,9 +5,9 @@ db="nerdz"
 user="nerdz"
 owner="nerdz"
 
-deleted="14"
-users_news="1"
-issue="6"
+deleted="1644"
+users_news="1643"
+issue="106"
 groups_news="1"
 
 # end configuration
