@@ -92,6 +92,11 @@ class Messages
             return isset($m[2]) ? '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
         };
 
+        //hashtag
+        $str = preg_replace_callback('/(?!\[(?:url|code)[^\]]*?\].*)#([\w]{1,34})(\s|<br \/>|$)(?!.*[^\[]*?\[\/(?:url|ode)\])/iu',function($m) {
+            return '<a href="/search.php?q=%23'.$m[1].'">#'.$m[1].'</a>'.$m[2];
+        }, $str);
+
         $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#i',function($m) use ($validURL) {
             return $validURL($m);
         },$str);
@@ -101,11 +106,6 @@ class Messages
         $str = preg_replace_callback('#\[url\](.+?)\[/url\]#i',function($m) use ($validURL) {
             return $validURL($m);
         },$str);
-
-        //hashtag
-        $str = preg_replace_callback('/(?!\[(?:url|code)[^\]]*?\].*)#([\w]{1,34})(\s|<br \/>|$)(?!.*[^\[]*?\[\/(?:url|ode)\])/iu',function($m) {
-            return '<a href="/search.php?q=%23'.$m[1].'">#'.$m[1].'</a>'.$m[2];
-        }, $str);
 
         $str = preg_replace('#\[i\](.+?)\[/i\]#i','<span style="font-style:italic">$1</span>',$str);
         $str = preg_replace('#\[cur\](.+?)\[/cur\]#i','<span style="font-style:italic">$1</span>',$str);

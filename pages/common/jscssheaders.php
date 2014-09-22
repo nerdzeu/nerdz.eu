@@ -89,7 +89,7 @@ echo $tracking;
 if (isset ($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true) {
     unset($headers['js']['staticData']['outputVersion']);
 ?>
-    var Nversion = '<?=Utils::getVersion()?>';
+    var Nversion = '<?=System::getVersion()?>';
 <?php
 } /* END NERDZ_VERSION */
 /* BEGIN NERDZ_STATIC_DATA */

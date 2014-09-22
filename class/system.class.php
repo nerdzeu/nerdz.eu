@@ -110,6 +110,26 @@ class System
         return $ret;
     }
 
+    public static function getVersion()
+    {
+        $cache = 'NERDZVersion'.Config\SITE_HOST;
+
+        if(($version = Utils::apc_get($cache)))
+            return $version;
+
+        return Utils::apc_set($cache, function() {
+            if (!is_dir ($_SERVER['DOCUMENT_ROOT'] . '/.git') ||
+                !file_exists ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'))
+                return 'null';
+
+            $revision = substr (file_get_contents ($_SERVER['DOCUMENT_ROOT'] . '/.git/refs/heads/master'), 0, 7);
+            if (strlen ($revision) != 7)
+                return 'null';
+
+            return $revision;
+        }, 5400);
+    }
+
     public static function dumpError($string)
     {
         $path = $_SERVER['DOCUMENT_ROOT'].'/data/error.log';
