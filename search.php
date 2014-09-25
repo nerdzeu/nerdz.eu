@@ -13,7 +13,6 @@ $q = !empty($_GET['q']) ? trim(htmlspecialchars($_GET['q'], ENT_QUOTES,'UTF-8'))
     <html lang="en">
     <head>
     <meta name="author" content="Paolo Galeone" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title><?=NERDZ\Core\Utils::getSiteName(); ?> - Search <?php
     if(!empty($q)) echo '⇒ ', $q;?></title>
 <?php

@@ -12,7 +12,6 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     <html lang="en">
     <head>
     <meta name="author" content="Paolo Galeone" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title><?=NERDZ\Core\Utils::getSiteName(); ?> - <?=$user->lang('DELETED'); ?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('deleted');

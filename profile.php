@@ -78,7 +78,6 @@ if($action)
     echo ' - ', $action;
 ?>" />
     <meta name="robots" content="index,follow" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>
 <?php
 if(!empty($title))

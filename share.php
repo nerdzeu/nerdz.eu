@@ -14,7 +14,6 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     <meta name="keywords" content="nerdz, share system" />
     <meta name="description" content="nerdz share system, tha share web pages from other sites" />
     <meta name="robots" content="index,follow" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title><?= NERDZ\Core\Utils::getSiteName(), ' - ', $user->lang('SHARE');?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('share');
