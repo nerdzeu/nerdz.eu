@@ -1,6 +1,6 @@
 <?php
 namespace NERDZ\Core;
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 use PDO;
 
 class Project
@@ -184,7 +184,6 @@ class Project
             ],Db::FETCH_OBJ, true)))
             return [];
 
-        //TODO: fix this
         $ret = [];
         for($i=0, $count = count($objs); $i<$count; ++$i) {
             $ret[$i]['type_n']      = $objs[$i]->type;

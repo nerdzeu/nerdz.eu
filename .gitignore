@@ -5,13 +5,13 @@ ssltmp/*
 data/error.log
 data/tracking.js
 data/banner.list
+data/sitemap.xml
 class/config/index.php
 utils/*
 google*
 mobile/*
 BingSiteAuth.xml
 NerdzMessenger.apk
-smapxml
 .DS_Store
 y_key_85b60785628865ce.html
 *.swp

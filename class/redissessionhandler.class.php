@@ -1,7 +1,8 @@
 <?php
 namespace NERDZ\Core;
 //First we load the Predis autoloader
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
 use Predis;
 
 Predis\Autoloader::register();
