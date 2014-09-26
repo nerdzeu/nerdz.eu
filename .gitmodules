@@ -1,9 +1,9 @@
 [submodule "tpl/3"]
 	path = tpl/3
-	url = https://github.com/Twentyone/nerdz-template-stillblack
+	url = https://github.com/nerdzeu/nerdz-template-stillblack
 [submodule "tpl/2"]
     path = tpl/2
-    url = https://github.com/DrJest/nerdz-template-metro
+    url = https://github.com/nerdzeu/nerdz-template-metro
 [submodule "tpl/1"]
     path = tpl/1
     url = https://github.com/nerdzeu/nerdz-template-black-mobile
@@ -12,4 +12,4 @@
     url = https://github.com/nerdzeu/nerdz-template-black
 [submodule "tpl/4"]
 	path = tpl/4
-	url = https://github.com/Robertof/nerdz-template-pro-theme
+	url = https://github.com/nerdzeu/nerdz-template-pro-theme

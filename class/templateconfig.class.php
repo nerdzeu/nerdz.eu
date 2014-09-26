@@ -80,6 +80,7 @@ final class TemplateConfig
             if($id != 'langs')
             {
                 $workArr = $arr;
+
                 foreach($workArr as $nestedID => &$path)
                 {
                     if(is_array ($path)) //Now is possible to use array to include more than 1 file (eg "default": ["js/default.js", "http://cdn.jslibrary", "js/otherdefile.js"]
@@ -132,6 +133,21 @@ final class TemplateConfig
             else //id == langs
                 foreach($arr as &$langFile)
                     $langFile = str_replace('%lang%',$this->lang,$langFile);
+
+
+        // move 'default' (numeric) keys in the top of the array
+        $sortFunc = function($a, $b) {
+            if(is_string($a) && is_string($b)) return 0;
+            if(is_int($a) && is_string($b))    return -1;
+            if(is_string($a) && is_int($b))    return 1;
+            return $a > $b;
+        };
+
+        uksort($ret['js'],$sortFunc);
+        var_dump($ret['css']);
+        uksort($ret['css'],$sortFunc);
+        var_dump($ret['css']);
+
         return $ret;
     }
 
@@ -165,7 +181,6 @@ final class TemplateConfig
 
             $path.=$ext."?$updateTime"; // append min.ext to file path, and add ?time, to force cache refresh if file is changed
         }
-
     }
 }
 

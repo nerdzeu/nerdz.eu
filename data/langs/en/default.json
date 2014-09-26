@@ -15,6 +15,7 @@
     "BLACKLIST" : "Blacklist",
     "BOOKMARKS" : "Bookmarks",
     "BUG_TITLE" : "Report a bug",
+    "CANCEL" : "Cancel",
     "CANT_FOLLOW_YOURSELF" : "You can't follow yourself",
     "CANT_LURK_IF_POSTED" : "You can't observe the thread if you are already part of the conversation",
     "CANT_PM_YOURSELF" : "You can't send PM to yourself",
