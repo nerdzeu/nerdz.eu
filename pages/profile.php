@@ -64,6 +64,18 @@ if($enter)
             ],Db::FETCH_OBJ)))
             die($user->lang('ERROR'));
 
+    $userTpl = $user->getTemplate($info->counter);
+    $templates = System::getAvailableTemplates();
+    $vals['template_n'] = '';
+
+    foreach($templates as $pair) {
+        if($pair['number'] == $userTpl) {
+            $vals['template_n'] = $pair['name'];
+            break;
+        }
+    }
+
+
     $vals['registrationtime_n'] = $user->getDateTime($o->registration_time);
     $vals['username_n'] = $info->username;
     $vals['username4link_n'] = Utils::userLink($info->username);

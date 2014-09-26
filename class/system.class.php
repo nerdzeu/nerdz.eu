@@ -98,16 +98,23 @@ class System
 
     public static function getAvailableTemplates()
     {
-        $root = $_SERVER['DOCUMENT_ROOT'].'/tpl/';
-        $templates = array_diff(scandir($root), [ '.','..','index.html' ]);
-        $ret = [];
-        $i = 0;
-        foreach($templates as $val) {
-            $ret[$i]['number'] = $val;
-            $ret[$i]['name'] = file_get_contents($root.$val.'/NAME');
-            ++$i;
-        }
-        return $ret;
+        $tplListK = Config\SITE_HOST.'tpl-list';
+
+        if(($ret = Utils::apc_get($tplListK)))
+            return $ret;
+
+        return Utils::apc_set($tplListK, function() {
+            $root = $_SERVER['DOCUMENT_ROOT'].'/tpl/';
+            $templates = array_diff(scandir($root), [ '.','..','index.html' ]);
+            $ret = [];
+            $i = 0;
+            foreach($templates as $val) {
+                $ret[$i]['number'] = $val;
+                $ret[$i]['name'] = file_get_contents($root.$val.'/NAME');
+                ++$i;
+            }
+            return $ret;
+        }, 5400);
     }
 
     public static function getVersion()

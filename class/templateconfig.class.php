@@ -144,9 +144,7 @@ final class TemplateConfig
         };
 
         uksort($ret['js'],$sortFunc);
-        var_dump($ret['css']);
         uksort($ret['css'],$sortFunc);
-        var_dump($ret['css']);
 
         return $ret;
     }
