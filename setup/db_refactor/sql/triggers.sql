@@ -379,6 +379,8 @@ BEGIN
             SELECT "user" FROM "posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
             SELECT "to" FROM "comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
+        UNION -- users mentioned in this post (already notified, with the mention)
+            SELECT "to" FROM "mentions" WHERE "u_hpid" = NEW.hpid AND to_notify IS TRUE
         UNION
             SELECT NEW."from"
     ),
@@ -445,6 +447,8 @@ BEGIN
             SELECT "user" FROM "groups_posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
             SELECT "to" FROM "groups_comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
+        UNION -- users mentioned in this post (already notified, with the mention)
+            SELECT "to" FROM "mentions" WHERE "g_hpid" = NEW.hpid AND to_notify IS TRUE
         UNION
             SELECT NEW."from"
     ),
