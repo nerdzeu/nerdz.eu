@@ -702,6 +702,21 @@ BEGIN
     RETURN NULL;
 END $$;
 
+CREATE FUNCTION after_update_userame() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+    -- create news
+    insert into posts("from","to","message")
+    SELECT counter, counter,
+    OLD.username || ' %%12now is34%% [user]' || NEW.username || '[/user]' FROM special_users WHERE "role" = 'GLOBAL_NEWS';
+
+    RETURN NULL;
+END $$;
+
+-- username update --
+CREATE TRIGGER after_update_userame AFTER UPDATE ON users FOR EACH ROW
+WHEN (OLD.username <> NEW.username)
+EXECUTE PROCEDURE after_update_userame();
+
 -- pms --
 CREATE TRIGGER before_insert_pm  BEFORE INSERT ON pms FOR EACH ROW EXECUTE PROCEDURE before_insert_pm();
 

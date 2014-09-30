@@ -17,8 +17,6 @@ $enter = true;
 
 $vals['logged_b'] = $user->isLogged();
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
-
 $vals['singlepost_b']    = isset($pid) && isset($gid) && is_numeric($pid);
 $vals['followers_b']     = isset($action) && $action == 'followers';
 $vals['members_b']       = isset($action) && $action == 'members';
@@ -31,6 +29,7 @@ if( ($info->private && !$vals['logged_b']) ||
     $included = true;
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
     $user->getTPL()->assign($vals);
+    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
     $user->getTPL()->draw('project/private');
 }
 else
@@ -43,6 +42,7 @@ else
     if(!$icansee)
     {
         $user->getTPL()->assign($vals);
+        require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
         $user->getTPL()->draw('project/invisible');
     }
     else
@@ -143,6 +143,7 @@ else
             )
             {
                 $user->getTPL()->assign('banners_a',$vals['banners_a']);
+                require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
                 $user->getTPL()->draw('project/postnotfound');
             }
             else
@@ -164,6 +165,7 @@ else
         if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
         {
             $user->getTPL()->assign($vals);
+            require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
             $user->getTPL()->draw('project/layout');
         }
     }
