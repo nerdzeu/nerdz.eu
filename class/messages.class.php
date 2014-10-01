@@ -93,7 +93,7 @@ class Messages
         };
 
         //hashtag
-        $str = preg_replace_callback('/(?!\[(?:url|code)[^\]]*?\].*)#([\w]{1,34})(\s|<br \/>|$)(?!.*[^\[]*?\[\/(?:url|ode)\])/iu',function($m) {
+        $str = preg_replace_callback('/(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)#([\w]{1,34})(\s|<br \/>|$|\.|,|:|\?|!)(?!.*[^\[]*?\[\/(?:url|ode)\])/iu',function($m) {
             return '<a href="/search.php?q=%23'.$m[1].'">#'.$m[1].'</a>'.$m[2];
         }, $str);
 

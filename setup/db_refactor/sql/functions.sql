@@ -181,7 +181,7 @@ BEGIN
     insert into posts_classification(' || field || ' , tag)
     select distinct ' || hpid ||', tmp.matchedTag[1] from (
         -- 1: existing hashtags
-        select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\].*)(#[\w]{1,34})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi'')
+        select regexp_matches(' || message || ', ''(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)(#[\w]{1,34})(?:\s|$|\.|,|:|\?|!)(?!.*[^\[]*?\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])'', ''gi'')
         as matchedTag
             union distinct -- 2: spoiler
         select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
@@ -242,7 +242,7 @@ BEGIN
     message = quote_literal(message);
     FOR matches IN
         EXECUTE 'select regexp_matches(' || message || ',
-            ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi''
+            ''(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)\[user\](.+?)\[/user\](?!.*[^\[]*?\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])'', ''gi''
         )' LOOP
 
         username = matches[1];
