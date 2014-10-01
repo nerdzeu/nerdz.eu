@@ -27,11 +27,14 @@ if ($uagdata['platform'] == 'Windows' && (float)$uagdata['version'] >= 10) {
 } /* END WINDOWS_META_TAGS */
 /* BEGIN FAVICON */
 if (User::isOnMobileHost()) { ?>
-    <link rel="shortcut icon" sizes="196x196" href="<?php echo $static_domain;?>/static/images/droidico.png">
+    <link rel="shortcut icon" sizes="196x196" href="<?php echo $static_domain;?>/static/images/droidico.png" />
     <?php } else { ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $static_domain;?>/static/images/favicon.ico" />
 <?php
 } /* END FAVICON */
+?>
+<link rel="image_src" href="<?php echo $static_domain;?>/static/images/N.png">
+<?php
 /* BEGIN STYLESHEETS */
 foreach ($headers['css'] as $var) {
     if (filter_var ($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
