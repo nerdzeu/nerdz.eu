@@ -205,6 +205,23 @@ end $$;
 
 
 --
+-- Name: after_update_userame(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION after_update_userame() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    -- create news
+    insert into posts("from","to","message")
+    SELECT counter, counter,
+    OLD.username || ' %%12now is34%% [user]' || NEW.username || '[/user]' FROM special_users WHERE "role" = 'GLOBAL_NEWS';
+
+    RETURN NULL;
+END $$;
+
+
+--
 -- Name: before_delete_user(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -710,6 +727,8 @@ BEGIN
             SELECT "user" FROM "groups_posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
             SELECT "to" FROM "groups_comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
+        UNION -- users mentioned in this post (already notified, with the mention)
+            SELECT "to" FROM "mentions" WHERE "g_hpid" = NEW.hpid AND to_notify IS TRUE
         UNION
             SELECT NEW."from"
     ),
@@ -910,7 +929,7 @@ BEGIN
     insert into posts_classification(' || field || ' , tag)
     select distinct ' || hpid ||', tmp.matchedTag[1] from (
         -- 1: existing hashtags
-        select regexp_matches(' || message || ', ''(?!\[(?:url|code)[^\]]*?\].*)(#[\w]{1,34})(?:\s|$)(?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi'')
+        select regexp_matches(' || message || ', ''(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)(#[\w]{1,34})(?:\s|$|\.|,|:|\?|!)(?!.*[^\[]*?\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])'', ''gi'')
         as matchedTag
             union distinct -- 2: spoiler
         select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
@@ -1037,7 +1056,7 @@ BEGIN
     message = quote_literal(message);
     FOR matches IN
         EXECUTE 'select regexp_matches(' || message || ',
-            ''(?!\[(?:url|code)[^\]]*?\].*)\[user\](.+?)\[/user\](?!.*[^\[]*?\[\/(?:url|code)\])'', ''gi''
+            ''(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)\[user\](.+?)\[/user\](?!.*[^\[]*?\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])'', ''gi''
         )' LOOP
 
         username = matches[1];
@@ -1240,6 +1259,8 @@ BEGIN
             SELECT "user" FROM "posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
             SELECT "to" FROM "comments_no_notify" WHERE "from" = NEW."from" AND "hpid" = NEW."hpid"
+        UNION -- users mentioned in this post (already notified, with the mention)
+            SELECT "to" FROM "mentions" WHERE "u_hpid" = NEW.hpid AND to_notify IS TRUE
         UNION
             SELECT NEW."from"
     ),
@@ -2611,6 +2632,13 @@ CREATE TRIGGER after_update_groups_post_message AFTER UPDATE ON groups_posts FOR
 --
 
 CREATE TRIGGER after_update_post_message AFTER UPDATE ON posts FOR EACH ROW WHEN ((new.message <> old.message)) EXECUTE PROCEDURE post_update();
+
+
+--
+-- Name: after_update_userame; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER after_update_userame AFTER UPDATE ON users FOR EACH ROW WHEN (((old.username)::text <> (new.username)::text)) EXECUTE PROCEDURE after_update_userame();
 
 
 --
