@@ -1631,7 +1631,11 @@ $(document).ready(function() {
     var $pmCounter = $('#pmcounter'), $notifyCounter = $('#notifycounter');
 
     // If the browser supports SSE
-    if(false && typeof(EventSource) !== "undefined") { //disabled. php-fpm locks everything. I really need to enable this thing only when an API will be ready, and a server will be created for this purpose
+    /* disabled. php-fpm locks everything.
+     * I really need to enable this thing only when an API will be ready
+     * and a server will be created for this purpose
+     *
+    if(typeof(EventSource) !== "undefined") { /
         var notificationSource = new EventSource("/pages/profile/notifyEvent.json.php");
         notificationSource.addEventListener("pm", function(e) {
             var obj = JSON.parse(e.data);
@@ -1649,7 +1653,7 @@ $(document).ready(function() {
         });
 
     } else { // use old legacy polling
-
+    */
         // runs every 60 seconds, sets the user online
         var updateOnlineStatus = function() {
             N.json.post ('/pages/profile/online.json.php', {}, function(){});
@@ -1677,5 +1681,5 @@ $(document).ready(function() {
             };
         updateNotifyCounter();
         setInterval (updateNotifyCounter, 12000);
-    }
+    //} // else of if SSE
 });
