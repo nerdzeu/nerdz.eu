@@ -35,18 +35,11 @@ Setup
 
   Nginx:
 
-  ```nginx
-  location / {
-      index index.html index.htm index.php;
-      try_files $uri $uri/ @rewriterules;
-  }
-  location @rewriterules {
-      rewrite ^/(.+?)\.$ /profile.php?id=$1 last;
-      rewrite ^/(.+?):$ /project.php?gid=$1 last;
-      rewrite ^/(.+?)\.(\d+)$ /profile.php?id=$1&pid=$2 last;
-      rewrite ^/(.+?):(\d+)$ /project.php?gid=$1&pid=$2 last;
-  }
-  ```
+  Please go to `servers/nginx` to see a full working virtual host configuration.
+
+  Apache:
+
+  Please go to `servers/apache` to see a full working virtual host configuration.
 
 - Move to the document root and install dependencies using composer.
   ```sh
@@ -55,6 +48,9 @@ Setup
 - Setup your tracking script if you need it by writing your js tracking code to `/data/tracking.js` **without the script HTML tag**.
 - Setup your ads, if you need them. Create the file `/data/banner.list` using the syntax explained in `/setup/banner.list`.
 - Start everything and load your local NERDZ, then create your account (by registering).
+- Create two other users: one for the global news and the other for deleted users.
+- Create two project: one is the issue board, the other is the global news for project.
+- Insert the id and the roles in the db, running the script `setup/specialIds.sh`
 - It works? Yay! It doesn't work? See the next section.
 
 Troubleshooting
