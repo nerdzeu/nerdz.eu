@@ -10,17 +10,20 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 final class FastFetch {
 
     private $mPm;
+    private $user;
 
     public function __construct() {
         $this->mPm = new Pms();
+        $this->user = new User();
     }
+
 
     /**
      * Returns true if current session is associated with a logged user.
      * @return boolean 
      */
     public function isLogged() {
-        return $this->mPm->isLogged();
+        return $this->user->isLogged();
     }
 
     /**
@@ -31,7 +34,7 @@ final class FastFetch {
      */
     public function fetchConversations() {
 
-        $ret = new stdClass();
+        $ret = new \stdClass();
 
         $list = $this->mPm->getList();
 
@@ -53,7 +56,7 @@ final class FastFetch {
                             'id' => $conversation['fromid_n'],
                             'last_message' => $result->message,
                             'last_sender' => $result->last_sender,
-                            'new_Messages' => ($result->read) && ((int)$result->last_sender !== (int)$_SESSION['id'])
+                            'new_Messages' => ($result->to_read) && ((int)$result->last_sender !== (int)$_SESSION['id'])
                         ];
                 $ret[] = $element;
             }
@@ -202,7 +205,7 @@ final class FFErrCode {
 /**
  * Exception returned from FastFetch.
  */
-final class FFException extends Exception {
+final class FFException extends \Exception {
 
     /**
      * A FFErrCode.
