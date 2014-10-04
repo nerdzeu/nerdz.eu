@@ -64,6 +64,12 @@ class Messages
         return $ret;
     }
 
+    private static function hashtag(&$str) {
+        return preg_replace_callback('/(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)#([\w]{1,34})(\s|<br \/>|$|\.|,|:|\?|!)(?!.*[^\[]*?\[\/(?:url|ode)\])/iu',function($m) {
+            return '<a href="/search.php?q=%23'.urlencode($m[1]).'">#'.$m[1].'</a>'.$m[2];
+        }, $str);
+    }
+
     public function bbcode($str,$truncate = null, $type = NULL,$pid = NULL,$id = NULL)
     {
         $str = str_replace("\n",'<br />',$str);
@@ -92,10 +98,7 @@ class Messages
             return isset($m[2]) ? '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
         };
 
-        //hashtag
-        $str = preg_replace_callback('/(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)#([\w]{1,34})(\s|<br \/>|$|\.|,|:|\?|!)(?!.*[^\[]*?\[\/(?:url|ode)\])/iu',function($m) {
-            return '<a href="/search.php?q=%23'.$m[1].'">#'.$m[1].'</a>'.$m[2];
-        }, $str);
+        $str = static::hashtag($str);
 
         $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#i',function($m) use ($validURL) {
             return $validURL($m);
@@ -202,7 +205,7 @@ class Messages
         // Quote in comments, new version
         while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#i', $str))
             $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', function($m) {
-                return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
+                return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.static::hashtag($m[2]).'</div>';
             }, $str, 1);
 
         while(preg_match('#\[quote=(.+?)\](.+?)\[/quote\]#i',$str))
