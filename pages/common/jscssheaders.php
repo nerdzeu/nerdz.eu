@@ -51,9 +51,9 @@ foreach ($headers['css'] as $var) {
 foreach($headers['js'] as $var) {
     if (is_array ($var)) continue;
     if (filter_var ($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
-        echo '<script type="application/javascript" src="',$var,'"></script>';
+        echo '<script type="application/javascript" src="',$var,'" async></script>';
     else
-        echo '<script type="application/javascript" src="',$static_domain,'/tpl/',$tno,'/',$var,'"></script>';
+        echo '<script type="application/javascript" src="',$static_domain,'/tpl/',$tno,'/',$var,'" async></script>';
 }
 ?>
     <script type="application/javascript" src="<?php echo $static_domain;?>/static/js/api.php"></script>
@@ -69,7 +69,7 @@ extensions: ["tex2jax.js"],
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
     </script>
-    <script type="application/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+    <script type="application/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js" async></script>
     <script type="application/javascript">
 <?php
 $trackingCacheKey = 'tracking_js'.NERDZ\Core\Config\SITE_HOST;
