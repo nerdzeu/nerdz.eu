@@ -546,7 +546,7 @@ class Notification
         $result = Db::query(
             [
                 'SELECT "from", "to", EXTRACT(EPOCH FROM "time") AS time FROM "groups_followers" WHERE "to" IN (
-                    SELECT "from" FROM "groups_owners" WHERE "to" = :id
+                    SELECT "to" FROM "groups_owners" WHERE "from" = :id
                 ) AND "to_notify" = TRUE',
                 [
                     ':id' => $_SESSION['id']
@@ -563,7 +563,7 @@ class Notification
             Db::query(
                 [
                     'UPDATE "groups_followers" SET "to_notify" = FALSE WHERE "to" IN (
-                        SELECT "from" FROM "groups_owners" WHERE "to" = :id
+                        SELECT "to" FROM "groups_owners" WHERE "from" = :id
                     )',
                     [
                         ':id' => $_SESSION['id']
