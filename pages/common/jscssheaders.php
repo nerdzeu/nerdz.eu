@@ -51,9 +51,9 @@ foreach ($headers['css'] as $var) {
 foreach($headers['js'] as $var) {
     if (is_array ($var)) continue;
     if (filter_var ($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
-        echo '<script type="application/javascript" src="',$var,'" async></script>';
+        echo '<script type="application/javascript" src="',$var,'"></script>';
     else
-        echo '<script type="application/javascript" src="',$static_domain,'/tpl/',$tno,'/',$var,'" async></script>';
+        echo '<script type="application/javascript" src="',$static_domain,'/tpl/',$tno,'/',$var,'"></script>';
 }
 ?>
     <script type="application/javascript" src="<?php echo $static_domain;?>/static/js/api.php"></script>
