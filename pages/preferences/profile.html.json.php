@@ -28,8 +28,13 @@ $userData['skype']      = isset($_POST['skype'])      ? trim($_POST['skype'])   
 $userData['github']     = isset($_POST['github'])     ? trim($_POST['github'])                  : '';
 $userData['userscript'] = isset($_POST['userscript']) ? strip_tags(trim($_POST['userscript']))  : '';
 $userData['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])              : '';
+
+foreach($userData as $key => $val)
+    $userData[$key] = trim(htmlspecialchars($val,ENT_QUOTES,'UTF-8'));
+
 $closed                 = isset($_POST['closed']);
 $flag = true;
+
 
 if(!empty($userData['website']) && !Utils::isValidURL($userData['website']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WEBSITE').': '.$user->lang('INVALID_URL')));
