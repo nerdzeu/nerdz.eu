@@ -67,7 +67,7 @@ $title = implode(' ',$a);
 
 ?>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="<?php echo $user->getBoardLanguage();?>">
     <head>
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming, projects, group" />
     <meta name="description" content="

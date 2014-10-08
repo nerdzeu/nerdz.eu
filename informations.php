@@ -8,7 +8,7 @@ $tplcfg = $user->getTemplateCfg();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 ?>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="<?php echo $user->getBoardLanguage();?>">
     <head>
     <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
     <title><?= NERDZ\Core\Utils::getSiteName(), ' - ', $user->lang('INFORMATIONS');?></title>

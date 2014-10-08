@@ -10,7 +10,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 $q = !empty($_GET['q']) ? trim(htmlspecialchars($_GET['q'], ENT_QUOTES,'UTF-8')) : '';
 ?>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="<?php echo $user->getBoardLanguage();?>">
     <head>
     <meta name="author" content="Paolo Galeone" />
     <title><?=NERDZ\Core\Utils::getSiteName(); ?> - Search <?php

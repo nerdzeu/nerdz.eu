@@ -12,7 +12,7 @@ $tplcfg = $user->getTemplateCfg();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
 ?>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="<?php echo $user->getBoardLanguage();?>">
     <head>
     <meta name="author" content="Paolo Galeone" />
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />

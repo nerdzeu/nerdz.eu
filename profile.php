@@ -63,7 +63,7 @@ $title = implode(' ',$a);
 
 ?>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="<?php echo $user->getBoardLanguage();?>">
     <head>
     <meta name="author" content="Paolo Galeone" />
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
