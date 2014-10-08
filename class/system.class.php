@@ -30,7 +30,7 @@ class System
     public static function getResourceDomain()
     {
         return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
-            ? 'https://'.Config\SITE_HOST
+            ? 'https://'.Config\HTTPS_DOMAIN
             : Config\STATIC_DOMAIN;
     }
 
