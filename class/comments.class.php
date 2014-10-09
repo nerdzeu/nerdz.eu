@@ -438,6 +438,9 @@ class Comments extends Messages
 
     private function append($oldMsgObj,$parsedMessage, $project = false)
     {
+        if(empty($parsedMessage))
+            return 'error: NO_EMPTY_MESSAGE';
+
         return Db::query(
             [
                 'UPDATE "'.($project ? 'groups_' : '').'comments" SET message = :message WHERE "hcid" = :hcid',
