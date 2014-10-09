@@ -181,7 +181,7 @@ BEGIN
     insert into posts_classification(' || field || ' , tag)
     select distinct ' || hpid ||', tmp.matchedTag[1] from (
         -- 1: existing hashtags
-        select regexp_matches(' || message || ', ''(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)(#[\w]{1,34})(?:\s|$|\.|,|:|\?|!)(?!.*[^\[]*?\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])'', ''gi'')
+        select regexp_matches(' || message || ', ''(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*\])(#[\w]{1,34})(?:\s|$|\.|,|:|\?|!|\[|\])(?![^\[]*\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])'', ''gi'')
         as matchedTag
             union distinct -- 2: spoiler
         select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
@@ -201,7 +201,6 @@ BEGIN
 END $$;
 
 -- if 'me' can mention 'other' add record, otherwise skip (catch blacklist expcetion and ignore them)
--- TODO: this function is broken yet
 CREATE FUNCTION mention(me int8, message text, hpid int8, grp boolean) RETURNS VOID LANGUAGE plpgsql AS $$
 DECLARE field text;
     posts_notify_tbl text;
@@ -242,7 +241,7 @@ BEGIN
     message = quote_literal(message);
     FOR matches IN
         EXECUTE 'select regexp_matches(' || message || ',
-            ''(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*?\].*)\[user\](.+?)\[/user\](?!.*[^\[]*?\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])'', ''gi''
+            ''(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*\])\[user\](.+?)\[/user\](?![^\[]*\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])'', ''gi''
         )' LOOP
 
         username = matches[1];
