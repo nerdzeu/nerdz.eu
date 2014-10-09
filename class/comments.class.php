@@ -242,7 +242,7 @@ class Comments extends Messages
                 ||
                 !($stmt = Db::query(
                     [
-                        'SELECT "hpid","from","hcid","message" FROM "'.$comments.'" WHERE "hpid" = :hpid AND "hcid" = (SELECT MAX("hcid") FROM "'.$comments.'" WHERE "hpid" = :hpid)',
+                        'SELECT "hpid","from","hcid","message", "editable" FROM "'.$comments.'" WHERE "hpid" = :hpid AND "hcid" = (SELECT MAX("hcid") FROM "'.$comments.'" WHERE "hpid" = :hpid)',
                             [
                                 ':hpid' => $hpid
                             ],
@@ -260,7 +260,7 @@ class Comments extends Messages
             if(trim($lastAppendedMessage) == $message)
                 return 'error: FLOOD'; //simulate Db response
 
-            if($user->from == $_SESSION['id'])
+            if($user->from == $_SESSION['id'] && $user->editable)
                 return $this->append($user,$message, $project);
         }
 
