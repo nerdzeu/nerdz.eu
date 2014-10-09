@@ -56,7 +56,7 @@ final class FastFetch {
                             'id' => $conversation['fromid_n'],
                             'last_message' => $result->message,
                             'last_sender' => $result->last_sender,
-                            'new_Messages' => ($result->to_read) && ((int)$result->last_sender !== (int)$_SESSION['id'])
+                            'new_messages' => ($result->to_read) && ((int)$result->last_sender !== (int)$_SESSION['id'])
                         ];
                 $ret[] = $element;
             }
