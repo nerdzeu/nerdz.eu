@@ -53,7 +53,7 @@ final class Pms extends Messages
             [
                 'SELECT DISTINCT EXTRACT(EPOCH FROM MAX(times)) as lasttime, otherid as "from", to_read
                 FROM (
-                    (SELECT MAX("time") AS times, "from" as otherid, to_read FROM pms WHERE "to" = :id AND to_read GROUP BY "from", to_read)
+                    (SELECT MAX("time") AS times, "from" as otherid, to_read FROM pms WHERE "to" = :id GROUP BY "from", to_read)
                     UNION
                     (SELECT MAX("time") AS times, "to" as otherid, FALSE AS to_read FROM pms WHERE "from" = :id GROUP BY "to", to_read)
                 ) AS tmp GROUP BY otherid, to_read ORDER BY to_read DESC, "lasttime" DESC',

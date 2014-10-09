@@ -51,8 +51,8 @@ final class FastFetch {
                 }
 
                 $element = [
-                    'name' => html_entity_decode($conversation['from_n'], ENT_QUOTES, 'UTF-8'),
-                        'last_timestamp' => intval($conversation['timestamp_n']),
+                            'name' => html_entity_decode($conversation['from_n'], ENT_QUOTES, 'UTF-8'),
+                            'last_timestamp' => intval($conversation['timestamp_n']),
                             'id' => $conversation['fromid_n'],
                             'last_message' => $result->message,
                             'last_sender' => $result->last_sender,
@@ -118,9 +118,8 @@ final class FastFetch {
                 Db::FETCH_ERRNO
             )
         ) {
-        throw new FFException(FFErrCode::SERVER_FAILURE);
+            throw new FFException(FFErrCode::SERVER_FAILURE);
         }
-
 
         return $list;
 
