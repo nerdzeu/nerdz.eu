@@ -109,7 +109,7 @@ final class FastFetch {
         if(Db::NO_ERRNO != 
             Db::query(
                 [
-                    'UPDATE "pms" SET "read" = FALSE WHERE "from" = :from AND "to" = :id',
+                    'UPDATE "pms" SET "to_read" = FALSE WHERE "from" = :from AND "to" = :id',
                     [
                         ':from' => $otherId, 
                         ':id' => $me
