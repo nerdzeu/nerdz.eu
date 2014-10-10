@@ -19,7 +19,7 @@ if(!($ret = Utils::apc_get($path)))
         $res = Db::query(
             'SELECT COUNT("hcid") AS cc,"from"
             FROM "comments"
-            WHERE "from" <> '.Config\DELETED_USERS.(!$mo ? $un_ti : '').
+            WHERE "from" <> (SELECT counter FROM special_users WHERE role = \'DELETED\')'.(!$mo ? $un_ti : '').
             ' GROUP BY "from"
             ORDER BY cc DESC LIMIT 100',Db::FETCH_STMT);
 
