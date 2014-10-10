@@ -190,8 +190,9 @@ class User
         $ret['canshowfollow_b'] = $this->isLogged() && $id !== $_SESSION['id'];
         $ret['canifollow_b']    = !$this->isFollowing($id);
         $ret['birthdate_n']     = $this->getDateTime(strtotime($o->birth_date));
+        $ret['birthday_b']      = date('d-m',strtotime($o->birth_date)) == date('d-m',time());
         $ret['since_n']         = $this->getDateTime(strtotime($o->registration_time));
-
+        $ret['online_b']        = $this->isOnline($id);
         return $ret;
     }
 
