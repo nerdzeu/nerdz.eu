@@ -7,10 +7,11 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 class Messages
 {
     // regular expressions used to parse the [video] bbcode
-    const YOUTUBE_REGEXP  = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
-    const VIMEO_REGEXP    = '#^https?://(?:www\.)?vimeo\.com.+?(\d+)$#i';
-    const DMOTION_REGEXP  = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
-    const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/(?:photo|video)\.php(?:\?v=|\?.+?&v=)(\d+)#i';
+    const YOUTUBE_REGEXP    = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
+    const VIMEO_REGEXP      = '#^https?://(?:www\.)?vimeo\.com.+?(\d+)$#i';
+    const DMOTION_REGEXP    = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
+    const FACEBOOK_REGEXP   = '#^https?://(?:www\.)?facebook\.com/(?:photo|video)\.php(?:\?v=|\?.+?&v=)(\d+)#i';
+    const INSTAGRAM_REGEXP  = '#\[instagram\]\s*http://(?:instagr\.am|instagram.com)/p/(.*)/?\s*\[/instagram\]#i';
 
     protected $project;
     protected $user;
@@ -287,6 +288,10 @@ class Messages
             // with a fixed height (220px - when truncate is true - js trimmer can handle post size
             return '<img data-id="'.$m[1].'" data-uuid="'.mt_rand().'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)"'.($truncate ? ' height="220"' : '').'>';
         },$str,10);
+
+        $str = preg_replace_callback(static::INSTAGRAM_REGEXP, function($m) use ($truncate) {
+          return '<iframe src="http://instagram.com/p/' . $m[1] . '/embed" width="612" height="692" frameborder="0" scrolling="no" allowtransparency="true"></iframe>';
+        }, $str, 10);
 
         if($truncate)
         {
@@ -569,7 +574,7 @@ class Messages
         } else {
             $language = $this->user->getLanguage();
         }
-        
+
         $table = ($project ? 'groups_' : '').'posts';
 
         $retStr = Db::query(
@@ -713,7 +718,7 @@ class Messages
     public function canEdit($post, $project = false)
     {
         return $this->user->isLogged() && (
-            $project ? 
+            $project ?
             in_array($_SESSION['id'],array_merge((array)$this->project->getMembers($post['to']),(array)$this->project->getOwner($post['to']),(array)$post['from']))
             : $_SESSION['id'] == $post['from']
         );
