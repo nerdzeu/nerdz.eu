@@ -11,7 +11,7 @@ $notification = new Notification(); // group notification by default
 if($user->isLogged())
 {
     $vals = [];
-    $vals['list_a'] = $notification->show(null, !isset ($_POST['doNotDelete']));
+    $vals['list_a'] = $notification->show('all', !isset ($_POST['doNotDelete']));
 
     if(!count($vals['list_a']))
         $vals['list_a'] = $notification->story();

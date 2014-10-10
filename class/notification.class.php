@@ -715,7 +715,7 @@ class Notification
                 [
                     'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
-                        ':story' => json_encode($new,JSON_FORCE_OBJECT),
+                        ':story' => json_encode($new),
                         ':id'    => $_SESSION['id']
                     ]
                 ],Db::FETCH_ERRNO))
@@ -723,6 +723,7 @@ class Notification
         }
         else
         {
+            $new = array_reverse($new);
             if(($c = count($old))>15)
             {
                 for($i=15;$i<$c;++$i)
@@ -739,7 +740,7 @@ class Notification
                 [
                     'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
-                        ':story' => json_encode($old,JSON_FORCE_OBJECT),
+                        ':story' => json_encode($old),
                         ':id'    => $_SESSION['id']
                     ]
                 ],Db::FETCH_ERRNO))
