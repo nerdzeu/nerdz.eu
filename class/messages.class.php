@@ -259,7 +259,7 @@ class Messages
             $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
             if (stripos ($uri, 'spotify') !== false) // TODO: use a single regexp
             {
-                if (preg_match ('#^spotify:track:[\d\w]+$#i', $uri))
+                if (preg_match ('#^(?:spotify:track:[\d\w]+)|(?:spotify:user:[\w\d]+:playlist:[\w\d]+)$#i', $uri))
                     $ID = $uri;
                 else if (preg_match('#^https?://(?:open|play)\.spotify\.com/track/[\w\d]+$#i',$uri))
                     $ID = 'spotify:track:' . basename ($uri);
