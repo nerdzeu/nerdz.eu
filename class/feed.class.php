@@ -10,7 +10,7 @@ class Feed extends Messages
     public function __construct()
     {
         parent::__construct();
-        $this->baseurl = 'http'.(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 's' : '').'://'.Config\SITE_HOST.'/';
+        $this->baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://'.Config\HTTPS_DOMAIN : 'http://'.Config\SITE_HOST).'/';
     }
 
     public function error($desc)
@@ -76,7 +76,7 @@ class Feed extends Messages
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-            <atom:link href="http'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
+            <atom:link href="'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
             <title>Homepage [Users] - '.Config\SITE_NAME.' RSS</title>
             <description>Homepage [Users] - '.Config\SITE_NAME.' RSS</description>
             <link>'.$this->baseurl.'/home.php</link>';
@@ -98,7 +98,7 @@ class Feed extends Messages
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-            <atom:link href="http'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
+            <atom:link href="'.$this->baseurl.'feed.php" rel="self" type="application/rss+xml" />
             <title>Homepage [Projects] - '.Config\SITE_NAME.' RSS</title>
             <description>Homepage [Projects] - '.Config\SITE_NAME.' RSS</description>
             <link>'.$this->baseurl.'/home.php?project=1</link>';
@@ -131,7 +131,7 @@ class Feed extends Messages
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-            <atom:link href="http'.$this->baseurl.'feed.php?id='.$id.'" rel="self" type="application/rss+xml" />
+            <atom:link href="'.$this->baseurl.'feed.php?id='.$id.'" rel="self" type="application/rss+xml" />
             <title>'.$us.'</title>
             <description>'.$us.' '.Config\SITE_NAME.' RSS</description>
             <link>'.$this->baseurl.$urluser.'</link>';
@@ -167,7 +167,7 @@ class Feed extends Messages
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>
             <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-            <atom:link href="http'.$this->baseurl.'feed.php?id='.$id.'&amp;project=1" rel="self" type="application/rss+xml" />
+            <atom:link href="'.$this->baseurl.'feed.php?id='.$id.'&amp;project=1" rel="self" type="application/rss+xml" />
             <title>'.$us.'</title>
             <description>'.$us.' '.Config\SITE_NAME.' RSS</description>
             <link>'.$this->baseurl.$urlprj.'</link>';
