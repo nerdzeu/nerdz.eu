@@ -29,13 +29,13 @@ class Trend
                     on pc.g_hpid = p.hpid group by pc.tag, p.time
                 )
             )
-            select lower(t.tag) as tag, extract(epoch from t.time) as time
+            select distinct lower(t.tag) as tag, extract(epoch from t.time) as time
             from all_tag_time t inner join (
                 select lower(tag) as tag, max(time) as maxtime
                 from all_tag_time group by lower(tag)
             ) as tbl
             on lower(tbl.tag) = lower(t.tag) and tbl.maxtime = t.time
-            order by t.time desc limit 10', Db::FETCH_OBJ, true)))
+            order by time desc limit 10', Db::FETCH_OBJ, true)))
             return $ret;
 
         $c = 0;
