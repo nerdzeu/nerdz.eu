@@ -5,6 +5,7 @@ use NERDZ\Core\Config;
 use NERDZ\Core\Utils;
 use NERDZ\Core\Project;
 use NERDZ\Core\User;
+use NERDZ\Core\Messages;
 
 $user    = new User();
 $project = new Project();
@@ -55,6 +56,9 @@ if(isset($create))
 
     if(mb_strlen($projectData['name'],'UTF-8') < Config\MIN_LENGTH_USER)
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('USERNAME_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_USER));
+
+    if($projectData['name'] !== Messages::stripTags($projectData['name']))
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': BBCode');
 }
 
 foreach($projectData as &$value)

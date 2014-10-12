@@ -3,6 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 use NERDZ\Core\Config;
 use NERDZ\Core\User;
+use NERDZ\Core\Messages;
 
 $user = new User();
 
@@ -42,7 +43,7 @@ else
     $userData['username'] = isset($_POST['username']) ? trim($_POST['username'],$l) : false;
 }
 
-$userData['gender']       = isset($_POST['gender']) && is_numeric($_POST['gender']) && $_POST['gender'] >0 && $_POST['gender'] <= 2      ? $_POST['gender'] : false;
+$userData['gender']   = isset($_POST['gender']) && is_numeric($_POST['gender']) && $_POST['gender'] >0 && $_POST['gender'] <= 2      ? $_POST['gender'] : false;
 $birth['birth_day']   = isset($_POST['birth_day'])    && is_numeric($_POST['birth_day'])   && $_POST['birth_day']  >0 ? $_POST['birth_day']             : false;
 $birth['birth_month'] = isset($_POST['birth_month'])  && is_numeric($_POST['birth_month']) && $_POST['birth_month']>0 ? $_POST['birth_month']           : false;
 $birth['birth_year']  = isset($_POST['birth_year'])   && is_numeric($_POST['birth_year'])  && $_POST['birth_year'] >0 ? $_POST['birth_year']            : false;
@@ -124,7 +125,7 @@ if(!$user->isLogged()) //username field
     if(is_numeric(strpos($userData['username'],'+')))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': +'));
 
-    if(is_numeric(strpos($userData['username'],'&amp;')))
+    if(is_numeric(strpos($userData['username'],'&')))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': &'));
 
     if(is_numeric(strpos($userData['username'],'%')))
@@ -132,6 +133,9 @@ if(!$user->isLogged()) //username field
 
     if(filter_var($userData['username'], FILTER_VALIDATE_EMAIL))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('USERNAME_CANT_BE_EMAIL')));
+
+    if($userData['username'] !== Messages::stripTags($userData['username']))
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': BBCode'));
 }
 
 if(mb_strlen($userData['password'],'UTF-8') < Config\MIN_LENGTH_PASS)
