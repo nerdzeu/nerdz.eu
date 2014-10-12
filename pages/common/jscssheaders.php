@@ -101,7 +101,6 @@ var Nstatic = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js'
 <?php
 /* END NERDZ_STATIC_DATA */
 /* BEGIN BLACKLIST_STUFF */
-// this also closes the main <script> tag opened before.
 if ($logged) {
     $jsonIdiots = [];
     $jsonFollowing = [];
@@ -115,11 +114,12 @@ if ($logged) {
    }
 ?>
     N.idiots=<?=json_encode($jsonObj)?>,N.following=<?=json_encode($user->getFollowingUsername($_SESSION['id']))?>;
-    </script>
-    <?=substr ($blistcss, 0, -1)?>{border:1px solid #FF0000}</style>
 <?php
 }
-else { ?> </script> <?php }
+?>
+</script>
+<?php
+if($logged && isset($blistcss)) echo substr ($blistcss, 0, -1), '{border:1px solid #FF0000}</style>';
 /* END BLACKLIST_STUFF */
 if ($logged && (($o = Db::query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ))) && !empty($o->userscript))
     echo '<script type="application/javascript" src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
