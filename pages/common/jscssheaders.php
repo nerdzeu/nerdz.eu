@@ -102,16 +102,19 @@ var Nstatic = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js'
 /* END NERDZ_STATIC_DATA */
 /* BEGIN BLACKLIST_STUFF */
 // this also closes the main <script> tag opened before.
-if ($logged && ($blist = $user->getBlacklist()))
-{
-    $jsonObj = [];
-    $blistcss = '<style type="text/css">';
-    foreach ($blist as $b_id) {
-        $blistcss .= ".bluser{$b_id},";
-        $jsonObj[] = User::getUsername($b_id);
-    }
+if ($logged) {
+    $jsonIdiots = [];
+    $jsonFollowing = [];
+    if(($blist = $user->getBlacklist()))
+    {
+        $blistcss = '<style type="text/css">';
+        foreach ($blist as $b_id) {
+            $blistcss .= ".bluser{$b_id},";
+            $jsonObj[] = User::getUsername($b_id);
+        }
+   }
 ?>
-        var idiots = <?=json_encode($jsonObj)?>;
+    N.idiots=<?=json_encode($jsonObj)?>,N.following=<?=json_encode($user->getFollowingUsername($_SESSION['id']))?>;
     </script>
     <?=substr ($blistcss, 0, -1)?>{border:1px solid #FF0000}</style>
 <?php

@@ -339,6 +339,22 @@ class User
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    public function getFollowingUsername($id, $limit = 0) {
+        if($limit)
+            $limit = Security::limitControl($limit, 20);
+
+        if(!($stmt = Db::query(
+            [
+                'SELECT "username" FROM "followers" f JOIN "users" u ON f.to = u.counter WHERE "from" = :id ORDER BY u.username'.($limit !== 0 ? " LIMIT {$limit}" : ''),
+                [
+                    ':id' => $id
+                ]
+            ],Db::FETCH_STMT)))
+            return [];
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     public function getFollowingCount($id)
     {
         if(!($o = Db::query(
