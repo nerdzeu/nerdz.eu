@@ -135,7 +135,7 @@ if(!$user->isLogged()) //username field
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('USERNAME_CANT_BE_EMAIL')));
 
     if($userData['username'] !== Messages::stripTags($userData['username']))
-        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': BBCode'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': BBCode or [ ]'));
 }
 
 if(mb_strlen($userData['password'],'UTF-8') < Config\MIN_LENGTH_PASS)
