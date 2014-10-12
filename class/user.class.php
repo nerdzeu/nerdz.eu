@@ -184,8 +184,8 @@ class User
         $ret['username_n']      = $o->username;
         $ret['username4link_n'] = Utils::userLink($o->username);
         $ret['id_n']            = $id;
-        $ret['name_n']          = $o->name;
-        $ret['surname_n']       = $o->surname;
+        $ret['name_n']          = ucfirst($o->name);
+        $ret['surname_n']       = ucfirst($o->surname);
         $ret['gravatarurl_n']   = $this->getGravatar($id);
         $ret['canshowfollow_b'] = $this->isLogged() && $id !== $_SESSION['id'];
         $ret['canifollow_b']    = !$this->isFollowing($id);
