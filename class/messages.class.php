@@ -548,6 +548,9 @@ class Messages
                 $ret[$c]['news_b'] = $project
                     ? $row->to == Config\PROJECTS_NEWS
                     : $row->to == Config\USERS_NEWS;
+
+                if($ret[$c]['news_b'])
+                    $ret[$c]['message_n'] = $this->parseNews($ret[$c]['message_n']);
             }
             ++$c;
         }
