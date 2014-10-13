@@ -548,9 +548,6 @@ class Messages
                 $ret[$c]['news_b'] = $project
                     ? $row->to == Config\PROJECTS_NEWS
                     : $row->to == Config\USERS_NEWS;
-
-                if($ret[$c]['news_b'])
-                    $ret[$c]['message_n'] = $this->parseNews($ret[$c]['message_n']);
             }
             ++$c;
         }
@@ -1014,6 +1011,8 @@ class Messages
         $ret['bookmark_b']        = $this->user->hasBookmarked($dbPost, $project);
 
         $ret['message_n']         = $this->bbcode($dbPost['message'], $truncate, $project ? 'g' : 'u' ,$ret['pid_n'],$ret['toid_n']);
+        if(!$project && $dbPost['to'] == Config\USERS_NEWS)
+            $ret['message_n'] = $this->parseNews($ret['message_n']);
         $ret['postcomments_n']    = $this->countComments($dbPost['hpid'], $project);
         $ret['hpid_n']            = $dbPost['hpid'];
 
