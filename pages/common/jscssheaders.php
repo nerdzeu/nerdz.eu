@@ -103,17 +103,16 @@ var Nstatic = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js'
 /* BEGIN BLACKLIST_STUFF */
 if ($logged) {
     $jsonIdiots = [];
-    $jsonFollowing = [];
     if(($blist = $user->getBlacklist()))
     {
         $blistcss = '<style type="text/css">';
         foreach ($blist as $b_id) {
             $blistcss .= ".bluser{$b_id},";
-            $jsonObj[] = User::getUsername($b_id);
+            $jsonIdiots[] = User::getUsername($b_id);
         }
    }
 ?>
-    N.idiots=<?=json_encode($jsonObj)?>,N.following=<?=json_encode($user->getFollowingUsername($_SESSION['id']))?>;
+    N.idiots=<?=json_encode($jsonIdiots)?>,N.following=<?=json_encode($user->getFollowingUsername($_SESSION['id']))?>;
 <?php
 }
 ?>

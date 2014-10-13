@@ -799,7 +799,7 @@ class User
 
     public function getGravatar($id)
     {
-        return 'https://www.gravatar.com/avatar/'.md5(strtolower($this->getEmail($id)));
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower($this->getEmail($id))).'?d=mm';
     }
 
     public function getId($username = null)

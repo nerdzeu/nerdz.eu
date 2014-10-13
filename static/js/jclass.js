@@ -50,6 +50,14 @@ function N() /* THE FATHER of God (class/object/function)*/
             }
         });
     };
+
+    this.facebookThumbnail = function(img) {
+        var video_id = $(img).parent().data ("vid");
+        $.get ("https://cors-anywhere.herokuapp.com/www.facebook.com/video/embed?video_id=" + video_id, function (data) {
+            img.src = JSON.parse (unescape (JSON.parse ((/"params",("[^"]+")/.exec (data))[1]))).video_data[0].thumbnail_src;
+            img.onload = null;
+        });
+    };
     
     this.loadTweet = function (img) {
         var $img = $(img);

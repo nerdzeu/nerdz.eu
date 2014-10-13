@@ -300,7 +300,7 @@ class Messages
                 else if (preg_match (static::DMOTION_REGEXP,  $v_url, $match))
                     $output = [ 'dailymotion', $match[1], 'https://www.dailymotion.com/thumbnail/video/' . $match[1], 100 ];
                 else if (preg_match (static::FACEBOOK_REGEXP, $v_url, $match))
-                    $output = [ 'facebook', $match[1], 'https://graph.facebook.com/' . $match[1] . '/picture', 100 ];
+                    $output = [ 'facebook', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 100, 'N.facebookThumbnail(this)' ];
                 else
                     return $m[0];
                 return '<a class="yt_frame" data-vid="' . $output[1] . '" data-host="' . $output[0] . '">' .
