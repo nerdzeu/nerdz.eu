@@ -65,8 +65,8 @@ class Messages
     }
 
     private static function hashtag(&$str) {
-        return preg_replace_callback('/(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*\])#([\w]{1,34})(\s|<br \/>|$|\.|,|:|\?|!|\(|\)|)(?![^\[]*\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])/iu',function($m) {
-            return '<a href="/search.php?q=%23'.urlencode($m[1]).'">#'.$m[1].'</a>'.$m[2];
+        return preg_replace_callback('/(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*\])#((?!039;)[\w]{1,34})(?![^\[]*\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])/iu',function($m) {
+            return '<a href="/search.php?q=%23'.urlencode($m[1]).'">#'.$m[1].'</a>';
         }, $str);
     }
 
