@@ -87,11 +87,14 @@ function N() /* THE FATHER of God (class/object/function)*/
         if (!/^\d+$/.test (id))
             return failHandler ("Invalid ID");
 
-        if (!window.__twttrlr)
+        if (!window.__twttrlr) {
             document.body.appendChild ($(document.createElement ("script")).attr ({
                 type: "application/javascript",
-                src:  "https://platform.twitter.com/widgets.js"
+                src:  "https://platform.twitter.com/widgets.js",
+                async: true
             })[0]);
+            window.__twttrlr = 1;
+        }
 
         $.ajax ({
             type:     "POST",
