@@ -61,13 +61,6 @@ if(isset($create))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': BBCode or [ ]'));
 }
 
-foreach($projectData as &$value)
-    $value = htmlspecialchars($value,ENT_QUOTES,'UTF-8');
-
-//htmlspecialchars empty return values FIX
-if(count(array_filter($projectData)) != count($projectData))
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': INVALID UTF-8'));
-
 if(isset($create)) {
     if(mb_strlen($projectData['name'],'UTF-8') >= 30)
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('USERNAME_LONG')));
@@ -96,9 +89,17 @@ if(!empty($_POST['photo']))
 else
     $_POST['photo'] = '';
 
-$projectData['photo']   = $_POST['photo'];
-$projectData['website'] = $_POST['website'];
-$projectData['goal']    = $_POST['goal'];
+foreach($projectData as &$value)
+    $value = htmlspecialchars($value,ENT_QUOTES,'UTF-8');
+
+//htmlspecialchars empty return values FIX
+if(count(array_filter($projectData)) != count($projectData))
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': INVALID UTF-8'));
+
+$projectData['photo']   = htmlspecialchars($_POST['photo'], ENT_QUOTES,'UTF-8');
+$projectData['website'] = htmlspecialchars($_POST['website'], ENT_QUOTES,'UTF-8');
+$projectData['goal']    = htmlspecialchars($_POST['goal'], ENT_QUOTES,'UTF-8');
+
 $projectData['visible'] = isset($_POST['visible']) && $_POST['visible'] == 1 ? '1' : '0';
 $projectData['open']    = isset($_POST['open'])    && $_POST['open']    == 1 ? '1' : '0';
 $projectData['private'] = isset($_POST['private']) && $_POST['private'] == 1 ? '1' : '0';
