@@ -48,6 +48,7 @@ else
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/trends.html.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('search/layout');
