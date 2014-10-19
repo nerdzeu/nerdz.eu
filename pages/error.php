@@ -12,7 +12,6 @@ if($code)
 {
     if(isset($errmsg[$code])) {
         $vals['error_n'] = $errmsg[$code];
-        http_response_code($code);
     }
     else
         $vals['error_n'] = 'Undefined error';
