@@ -15,4 +15,7 @@ if test "$#" -eq 1 -o "$#" -eq 2; then
   fi
 fi
 
+echo "HOST:PORT -> $HOST:$PORT"
+echo "ROOTPATH  -> $ROOTPATH"
+
 php -S "$HOST":"$PORT" -t "$ROOTPATH" "$ROOTPATH"/www/routing.php

@@ -35,11 +35,17 @@ Setup
 
   Nginx:
 
-  Please go to `servers/nginx` to see a full working virtual host configuration.
+  Please go to `servers/nginx` to see a full working server block configuration.
 
   Apache:
 
   Please go to `servers/apache` to see a full working virtual host configuration.
+
+  PHP:
+
+  If you want to test NERDZ or do some quick modification without setting up a webserver you can use the built php webserver.
+
+  Please go to `servers/php`.
 
 - Move to the document root and install dependencies using composer.
   ```sh
