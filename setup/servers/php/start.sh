@@ -3,7 +3,7 @@
 HOST="127.0.0.1"
 PORT="1337"
 ROOTPATH="`dirname \"$0\"`"
-ROOTPATH="`readlink -f \"$ROOTPATH/..\"`"
+ROOTPATH="`readlink -f \"$ROOTPATH/../../..\"`"
 
 if test "$#" -eq 1 -o "$#" -eq 2; then
   if ! test "x$1" = x; then
@@ -18,4 +18,4 @@ fi
 echo "HOST:PORT -> $HOST:$PORT"
 echo "ROOTPATH  -> $ROOTPATH"
 
-php -S "$HOST":"$PORT" -t "$ROOTPATH" "$ROOTPATH"/www/routing.php
+php -S "$HOST":"$PORT" -t "$ROOTPATH" "$ROOTPATH"/setup/servers/php/routing.php

@@ -675,7 +675,7 @@ BEGIN
     END IF;
 
     -- duplicate messagee
-    IF message IS NOT NULL AND tbl IN ('comments', 'groups_comments', 'posts', 'groups_posts', 'pms') THEN
+    IF message IS NOT NULL AND tbl IN ('comments', 'groups_comments', 'posts', 'groups_posts') THEN
         
         SELECT CASE
            WHEN tbl IN ('comments', 'groups_comments') THEN 'hcid'
