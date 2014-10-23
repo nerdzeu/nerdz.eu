@@ -251,14 +251,17 @@ CREATE FUNCTION before_insert_comment() RETURNS trigger
     AS $$
 DECLARE closedPost boolean;
 BEGIN
+    PERFORM flood_control('"comments"', NEW."from", NEW.message);
     SELECT closed FROM posts INTO closedPost WHERE hpid = NEW.hpid;
     IF closedPost THEN
         RAISE EXCEPTION 'CLOSED_POST';
     END IF;
 
-    NEW.message = message_control(NEW.message);
-    PERFORM flood_control('"comments"', NEW."from", NEW.message);
+    SELECT p."to" INTO NEW."to" FROM "posts" p WHERE p.hpid = NEW.hpid;
     PERFORM blacklist_control(NEW."from", NEW."to");
+
+    NEW.message = message_control(NEW.message);
+
     RETURN NEW;
 END $$;
 
@@ -353,8 +356,6 @@ BEGIN
 
     PERFORM blacklist_control(NEW."from", tmp."from"); --blacklisted post creator
 
-    SELECT tmp."to" INTO NEW."to";
-
     IF NEW."from" IN ( SELECT "from" FROM "groups_comments" WHERE hpid = NEW.hpid ) THEN
         RAISE EXCEPTION 'CANT_LURK_IF_POSTED';
     END IF;
@@ -373,13 +374,16 @@ CREATE FUNCTION before_insert_groups_comment() RETURNS trigger
 DECLARE postFrom int8;
         closedPost boolean;
 BEGIN
+    PERFORM flood_control('"groups_comments"', NEW."from", NEW.message);
+
     SELECT closed FROM groups_posts INTO closedPost WHERE hpid = NEW.hpid;
     IF closedPost THEN
         RAISE EXCEPTION 'CLOSED_POST';
     END IF;
 
+    SELECT p."to" INTO NEW."to" FROM "groups_posts" p WHERE p.hpid = NEW.hpid;
+
     NEW.message = message_control(NEW.message);
-    PERFORM flood_control('"groups_comments"', NEW."from", NEW.message);
 
     SELECT T."from" INTO postFrom FROM (SELECT "from" FROM "groups_posts" WHERE hpid = NEW.hpid) AS T;
     PERFORM blacklist_control(NEW."from", postFrom); --blacklisted post creator

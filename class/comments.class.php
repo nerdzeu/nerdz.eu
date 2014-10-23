@@ -227,28 +227,17 @@ class Comments extends Messages
 
     public function add($hpid,$message, $project = false)
     {
-
         $posts    = ($project ? 'groups_' : '').'posts';
         $comments = ($project ? 'groups_' : '').'comments';
 
-        if(
-            !($obj = Db::query(
-                [
-                    'SELECT "to" FROM "'.$posts.'" WHERE "hpid" = :hpid',
+        if(!($stmt = Db::query(
+            [
+                'SELECT "hpid","from","hcid","message", "editable" FROM "'.$comments.'" WHERE "hpid" = :hpid AND "hcid" = (SELECT MAX("hcid") FROM "'.$comments.'" WHERE "hpid" = :hpid)',
                     [
                         ':hpid' => $hpid
-                    ]
-                ],Db::FETCH_OBJ))
-                ||
-                !($stmt = Db::query(
-                    [
-                        'SELECT "hpid","from","hcid","message", "editable" FROM "'.$comments.'" WHERE "hpid" = :hpid AND "hcid" = (SELECT MAX("hcid") FROM "'.$comments.'" WHERE "hpid" = :hpid)',
-                            [
-                                ':hpid' => $hpid
-                            ],
-                        ],Db::FETCH_STMT))
-                    )
-                    return 'ERROR';
+                    ],
+            ],Db::FETCH_STMT)))
+            return 'ERROR';
 
         $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
@@ -266,10 +255,9 @@ class Comments extends Messages
 
         return Db::query(
             [
-                'INSERT INTO "'.$comments.'" ("from","to","hpid","message") VALUES (:from,:to,:hpid,:message)',
+                'INSERT INTO "'.$comments.'" ("from","hpid","message") VALUES (:from,:hpid,:message)',
                     [
                         ':from'    => $_SESSION['id'],
-                        ':to'      => $obj->to,
                         ':hpid'    => $hpid,
                         ':message' => $message
                     ]
