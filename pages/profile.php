@@ -188,9 +188,11 @@ if($enter)
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['ownerof_a'][$i]['name_n'] = $o->name;
+        $vals['ownerof_a'][$i]['username_n'] = $o->name;
         $vals['ownerof_a'][$i]['name4link_n'] = Utils::projectLink($o->name);
         ++$i;
     }
+    usort($vals['ownerof_a'],'\\NERDZ\\Core\\Utils::sortByUsername');
 
     if(!($r = Db::query(
         [
@@ -205,9 +207,12 @@ if($enter)
     while(($o = $r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['memberof_a'][$i]['name_n'] = $o->name;
+        $vals['memberof_a'][$i]['username_n'] = $o->name;
         $vals['memberof_a'][$i]['name4link_n'] = Utils::projectLink($o->name);
         ++$i;
     }
+
+    usort($vals['memberof_a'],'\\NERDZ\\Core\\Utils::sortByUsername');
 
     if(!($r = Db::query(
         [
@@ -222,10 +227,12 @@ if($enter)
     while(($o =$r->fetch(PDO::FETCH_OBJ)))
     {
         $vals['userof_a'][$i]['name_n'] = $o->name;
+        $vals['userof_a'][$i]['username_n'] = $o->name;
         $vals['userof_a'][$i]['name4link_n'] = Utils::projectLink($o->name);
         ++$i;
     }
 
+    usort($vals['userof_a'],'\\NERDZ\\Core\\Utils::sortByUsername');
 
     $vals['github_n']   = $info->github;
     $vals['yahoo_n']    = $vals['logged_b'] ? $info->yahoo    : '';
