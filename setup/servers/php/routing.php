@@ -11,15 +11,15 @@ foreach($pages as $separator => $elements)
 
     if (preg_match("#^/(.+?){$separator}$#", $_SERVER['SCRIPT_NAME'], $matches)) {
         $_GET = array( $id => $matches[1] );
-        include $page;
+        return include $page;
     }
     else if (preg_match("#^/(.+?){$separator}(\d+)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
         $_GET = array( $id => $matches[1], 'pid' => $matches[2] );
-        include $page;
+        return include $page;
     }
     else if (preg_match("#^/(.+?){$separator}(friends|members|followers|following|interactions)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
         $_GET = array( $id => $matches[1], 'action' => $matches[2] );
-        include $page;
+        return include $page;
     }
     else if (preg_match("#^/(.+?){$separator}(friends|members|followers|following|interactions)\?(.*)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
         $_GET = array( $id => $matches[1], 'action' => $matches[2] );
@@ -28,7 +28,7 @@ foreach($pages as $separator => $elements)
             $parameter = explode('=',$parameter);
             $_GET[$parameter[0]] = $parameter[1];
         }
-        include $page;
+        return include $page;
     }
 }
 
