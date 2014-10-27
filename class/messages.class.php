@@ -94,7 +94,7 @@ class Messages
                 if(!Utils::isValidURL($m[1]))
                     return '<b>'.$this->user->lang('INVALID_URL').'</b>';
             }
-            $url = preg_match('#^(http(s)?:\/\/)|(ftp:\/\/)#im',$m[1]) ? $m[1] : 'http://'.$m[1];
+            $url = preg_match('#^(?:https?|ftp):\/\/#i',$m[1]) ? $m[1] : 'http://'.$m[1];
             return isset($m[2]) ? '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
         };
 
@@ -204,12 +204,12 @@ class Messages
 
         // Quote in comments, new version
         while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#i', $str))
-            $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#im', function($m) {
+            $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#i', function($m) {
                 return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.static::hashtag($m[2]).'</div>';
             }, $str, 1);
 
         while(preg_match('#\[quote=(.+?)\](.+?)\[/quote\]#i',$str))
-            $str = preg_replace_callback('#\[quote=(.+?)\](.+?)\[/quote\]#im',function($m) use($domain) {
+            $str = preg_replace_callback('#\[quote=(.+?)\](.+?)\[/quote\]#i',function($m) use($domain) {
                 return '<div class="quote">
                     <div style="font-weight: bold">'.$m[1].':</div>
                     <span style="float: left; margin-top: 5px">
@@ -225,7 +225,7 @@ class Messages
             },$str,1);
 
         while(preg_match('#\[quote\](.+?)\[/quote\]#i',$str))
-            $str = preg_replace_callback('#\[quote\](.+?)\[/quote\]#im',function($m) use($domain) {
+            $str = preg_replace_callback('#\[quote\](.+?)\[/quote\]#i',function($m) use($domain) {
                 return '<div class="quote">
                     <span style="float: left; margin-top: 5px">
                     <img src="'.$domain.'/static/images/oquotes.gif" alt="quote" width="20" height="11" />
@@ -240,7 +240,7 @@ class Messages
             },$str,1);
 
         while(preg_match('#\[spoiler\](.+?)\[/spoiler\]#i',$str))
-            $str = preg_replace('#\[spoiler\](.+?)\[/spoiler]#im',
+            $str = preg_replace('#\[spoiler\](.+?)\[/spoiler]#i',
                 '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">SPOILER:</span>
                 <div style="display:none"><hr /></div>
@@ -248,7 +248,7 @@ class Messages
                 </div>',$str,1);
 
         while(preg_match('#\[spoiler=(.+?)\](.+?)\[/spoiler\]#i',$str))
-            $str = preg_replace('#\[spoiler=(.+?)\](.+?)\[/spoiler]#im',
+            $str = preg_replace('#\[spoiler=(.+?)\](.+?)\[/spoiler]#i',
                 '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">$1:</span>
                 <div style="display:none"><hr /></div>
@@ -308,12 +308,12 @@ class Messages
                     '<img src="' . $output[2] . '" alt="" width="130" height="' . $output[3] . '" style="float:left;margin-right:4px"' . (isset ($output[4]) ? 'onload="' . $output[4] . '"' : '') . ' />' .
                     '</a>';
             };
-            $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#i',$videoCallback,$str,10);
             // don't break older posts and preserve the [yt] and [youtube] tags.
-            $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
-            $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#i',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#i',$videoCallback,$str,10);
 
-            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) {
+            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#i',function($m) {
                 $url = Utils::getValidImageURL($m[1]);
                 return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
                     <span>
@@ -341,11 +341,11 @@ class Messages
                 return '<div style="width:100%; text-align:center"><br />' . $iframe_code . '</div>';
             };
 
-            $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#im',$videoCallback,$str,10);
-            $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#im',$videoCallback,$str,10);
-            $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#im',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[video\]\s*(https?:\/\/[\S]+)\s*\[\/video\]#i',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[yt\]\s*(https?:\/\/[\S]+)\s*\[\/yt\]#i',$videoCallback,$str,10);
+            $str = preg_replace_callback('#\[youtube\]\s*(https?:\/\/[\S]+)\s*\[\/youtube\]#i',$videoCallback,$str,10);
 
-            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#im',function($m) {
+            $str = preg_replace_callback('#\[img\](.+?)\[/img\]#i',function($m) {
                 return '<img src="'.Utils::getValidImageURL($m[1]).'" alt="" style="max-width: 79%; max-height: 89%" onerror="N.imgErr(this)" />';
             },$str);
         }
