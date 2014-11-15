@@ -15,10 +15,10 @@ class Utils
 
         foreach($cache['cache_list'] as $entry)
         {
-            if($entry['key'] != $key)
+            if($entry['info'] != $key)
                 continue;
 
-            return $entry['ctime'];
+            return $entry['creation_time'];
         }
     }
 
