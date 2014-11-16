@@ -14,6 +14,7 @@ $tno = $user->getTemplate();
 if (User::isOnMobileHost()) { ?>
     <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="mobile-web-app-capable" content="yes">
+	<meta name="theme-color" content="#1D1B1B">
 <?php
 } /* END MOBILE_META_TAGS */
 $static_domain = System::getResourceDomain();
