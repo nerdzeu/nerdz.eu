@@ -205,7 +205,7 @@ class Messages
         // Quote in comments, new version
         while(preg_match('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#i', $str))
             $str = preg_replace_callback('#\[commentquote=(.+?)\](.+?)\[/commentquote\]#i', function($m) {
-                return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.static::hashtag($m[2]).'</div>';
+                return '<div class="qu_main"><div class="qu_user">'.$m[1].'</div>'.$m[2].'</div>';
             }, $str, 1);
 
         while(preg_match('#\[quote=(.+?)\](.+?)\[/quote\]#i',$str))
