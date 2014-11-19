@@ -65,8 +65,8 @@ class Messages
     }
 
     private static function hashtag(&$str) {
-        return preg_replace_callback('/(?!\[(?:url|code|video|yt|youtube|music|img|twitter)[^\]]*\])#((?!039;)[\w]{1,34})(?![^\[]*\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])/iu',function($m) {
-            return '<a href="/search.php?q=%23'.urlencode($m[1]).'">#'.$m[1].'</a>';
+        return preg_replace_callback('/(?!\[(?:url(?:=)|code=|video|yt|youtube|music|img|twitter)[^\]]*\])(#(?!039;)[\w]{1,34})(?![^\[]*\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])/iu',function($m) {
+            return '<a href="/search.php?q='.urlencode($m[1]).'">'.$m[1].'</a>';
         }, $str);
     }
 
@@ -357,9 +357,8 @@ class Messages
             $totalcode = $codes[$index]['code'];
             $str = str_ireplace(">>>{$index}<<<","[code={$lang}]{$totalcode}[/code]",$str);
         }
-        $str = $this->parseCode($str,$type,$pid,$id);
 
-        return $str;
+        return $this->parseCode($str,$type,$pid,$id);
     }
 
     public function parseNews($message)
