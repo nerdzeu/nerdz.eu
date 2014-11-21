@@ -113,7 +113,9 @@ if ($logged) {
         }
    }
 ?>
-    N.idiots=<?=json_encode($jsonIdiots)?>,N.following=<?=json_encode($user->getFollowingUsername($_SESSION['id']))?>;
+    N.idiots=<?=json_encode($jsonIdiots)?>,
+    N.following=<?=json_encode($user->getFollowingUsername($_SESSION['id']))?>,
+    N.tplVars=<?=$user->getTemplateVariables()?>;
 <?php
 }
 ?>

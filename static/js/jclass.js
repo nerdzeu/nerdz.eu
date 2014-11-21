@@ -160,6 +160,14 @@ function N() /* THE FATHER of God (class/object/function)*/
     this.isLoggedIn = function() {
         return $("#pmcounter").length > 0;
     };
+
+    /**
+     * getTemplateVars
+     * Description: returns the template variables
+     */
+    this.getTemplateVars = function() {
+        return N.tplVars["variables"];
+    };
 }
 
 N = new N();
@@ -237,6 +245,17 @@ N.json = function()
     this.createProject = function(jObj,done)
     {
         N.json.post('/pages/project/create.json.php',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * Set template variables
+     * @parameters: {vars: designer defined object, tok}
+     */
+    this.setTemplateVars = function(jObj, done)
+    {
+        N.json.post('/pages/preferences/themes.html.json.php?action=vars',{"vars": jObj["vars"], "tok": jObj["tok"]},function(d) {
             done(d);
         });
     };

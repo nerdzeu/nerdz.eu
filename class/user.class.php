@@ -42,6 +42,43 @@ class User
             $this->logout();
     }
 
+    public function getTemplateVariables() {
+        if(!$this->isLogged()) return false;
+
+        $tpl = $this->getTemplate();
+        $variables = Db::query(
+            [
+                "SELECT template_variables->'{$tpl}' as variables FROM profiles WHERE counter = :id",
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ], Db::FETCH_OBJ)->variables;
+        return $variables == '' ? '{}' : $variables;
+    }
+
+    public function setTemplateVariables(array $obj) {
+        if(!$this->isLogged()) return false;
+
+        $fullVariables = json_decode(Db::query(
+            [
+                'SELECT template_variables as o FROM profiles WHERE counter = :id',
+                [
+                    ':id' => $_SESSION['id']
+                ]
+            ], Db::FETCH_OBJ)->o);
+
+        $field =  $this->getTemplate();
+        $fullVariables->$field = $obj;
+        return Db::query(
+            [
+                'UPDATE profiles SET template_variables = :variables WHERE counter = :id',
+                [
+                    ':id'        => $_SESSION['id'],
+                    ':variables' => json_encode($fullVariables,JSON_FORCE_OBJECT)
+                ]
+            ], Db::FETCH_ERRNO);
+    }
+
     public function getTemplateCfg() {
         return $this->templateConfig;
     }

@@ -1704,6 +1704,7 @@ CREATE TABLE groups_posts (
     "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
     news boolean DEFAULT false NOT NULL,
     lang character varying(2) DEFAULT 'en'::character varying NOT NULL,
+    template_variables json NOT NULL DEFAULT '{}',
     closed boolean DEFAULT false NOT NULL
 );
 
