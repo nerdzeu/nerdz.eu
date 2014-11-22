@@ -166,7 +166,7 @@ function N() /* THE FATHER of God (class/object/function)*/
      * Description: returns the template variables
      */
     this.getTemplateVars = function() {
-        return N.tplVars["variables"];
+        return N.tplVars;
     };
 }
 
@@ -256,6 +256,7 @@ N.json = function()
     this.setTemplateVars = function(jObj, done)
     {
         N.json.post('/pages/preferences/themes.html.json.php?action=vars',{"vars": jObj["vars"], "tok": jObj["tok"]},function(d) {
+            N.tplVars = jObj["vars"];
             done(d);
         });
     };
