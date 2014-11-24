@@ -787,6 +787,7 @@ class Messages
             str_ireplace('[project]','',
             str_ireplace('[/project]','',
             str_ireplace('[spoiler]','',
+            str_ireplace('[spoiler=','',
             str_ireplace('[/spoiler]','',
             str_ireplace('[small]','',
             str_ireplace('[/small]','',
@@ -802,7 +803,7 @@ class Messages
             str_ireplace('[/big]','',
             str_ireplace('[hr]','',
             str_ireplace('[wat]','',
-            str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))));
+            str_ireplace('[quote=','',$message)))))))))))))))))))))))))))))))))))))))))))))))))));
     }
 
     public function getThumbs($hpid, $project = false) {
