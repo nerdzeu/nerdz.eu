@@ -1,5 +1,5 @@
 <?php
-$code = isset($_GET['code']) ? $_GET['code'] : false;
+$code = isset($_GET['code']) ? htmlspecialchars($_GET['code'], ENT_QUOTES, 'UTF-8') : false;
 $errmsg[400] = 'Bad Request';
 $errmsg[401] = 'Authorization required';
 $errmsg[403] = 'Forbidden';
