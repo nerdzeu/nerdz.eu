@@ -74,7 +74,7 @@ try {
     }
 
     default:
-        die(Utils::jsonResponse(['ERROR' => "Unknown request: '".$_GET['action']."'"]));
+        die(Utils::jsonResponse(['ERROR' => "Unknown request: '".addslashes($_GET['action'])."'"]));
 
     }
 } catch (PushedException $e) {
