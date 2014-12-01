@@ -132,18 +132,18 @@ class User
         }
     }
 
-    public function login($username, $pass, $cookie = null, $setOffline = null, $hashPassword = null)
+    public function login($username, $pass, $cookie = null, $setOffline = null, $autologinPassword = false)
     {
-        $shaPass = $hashPassword ? $pass : sha1($pass);
         if(!($o = Db::query(
             [
-                'SELECT "counter", "username" FROM "users" WHERE LOWER("username") = LOWER(:user) AND "password" = :pass',
+                'SELECT login(:user, :pass) AS logged_in, counter, username, encode(digest(password,\'MD5\'), \'HEX\') as auto_login_pwd
+				FROM users
+				WHERE LOWER(username) = LOWER(:user)',
                     [
                         ':user' => $username,
-                        ':pass' => $shaPass
+                        ':pass' => $pass
                     ]
-                ],Db::FETCH_OBJ))
-            )
+                ],Db::FETCH_OBJ)) || ($autologinPassword ? $pass !== $o->auto_login_pwd : !$o->logged_in))
             return false;
 
         if($cookie)
@@ -151,7 +151,7 @@ class User
             $exp_time = time() + 2592000;
             $chost    = System::getSafeCookieDomainName();
             setcookie ('nerdz_id', $o->counter , $exp_time, '/', $chost, false, true);
-            setcookie ('nerdz_u',  md5($shaPass), $exp_time, '/', $chost, false, true);
+            setcookie ('nerdz_u',  $o->auto_login_pwd, $exp_time, '/', $chost, false, true);
         }
 
         $_SESSION['logged']       = true;
@@ -1032,13 +1032,13 @@ class User
 
         if(($obj = Db::query(
             [
-                'SELECT "username","password" FROM "users" WHERE "counter" = :id',
+                'SELECT "username", encode(digest(password,\'MD5\'), \'HEX\') as auto_login_pwd FROM "users" WHERE "counter" = :id',
                 [
                     ':id' => $_COOKIE['nerdz_id']
                 ]
-            ],Db::FETCH_OBJ)) && md5($obj->password) === $_COOKIE['nerdz_u']
+            ],Db::FETCH_OBJ)) && $obj->auto_login_pwd === $_COOKIE['nerdz_u']
         )
-        return $this->login($obj->username, $obj->password, true, false, true);
+        return $this->login($obj->username, $obj->auto_login_pwd, true, false, $autologinPassword = true);
 
         return false;
     }
