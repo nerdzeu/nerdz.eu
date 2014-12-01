@@ -27,7 +27,7 @@ $pass = Captcha::randomString(Config\MIN_LENGTH_PASS);
 
 if(Db::NO_ERRNO != Db::query(
     [
-        'UPDATE "users" SET "password" = crypt(:pass, gen_satl(\'bf\', 7)) WHERE "counter" = :id',
+        'UPDATE "users" SET "password" = crypt(:pass, gen_salt(\'bf\', 7)) WHERE "counter" = :id',
         [
             ':pass' => $pass,
             ':id'   => $obj->counter
