@@ -692,6 +692,29 @@ BEGIN
     END IF;
 END $$;
 
+--
+-- Name: login(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+create function login(_username text, _pass text, out ret boolean)
+	returns boolean
+	language plpgsql
+	security definer
+	as $$
+begin
+	-- begin legacy migration
+	if (select length(password) = 40
+			from users
+			where lower(username) = lower(_username) and password = encode(digest(_pass, 'SHA1'), 'HEX')
+	) then
+		update users set password = crypt(_pass, gen_salt('bf', 7)) where lower(username) = lower(_username);
+	end if;
+	-- end legacy migration
+	select password = crypt(_pass, users.password) into ret
+	from users
+	where lower(username) = lower(_username);
+end $$;
+
 
 --
 -- Name: group_comment(); Type: FUNCTION; Schema: public; Owner: -
@@ -2020,7 +2043,7 @@ CREATE TABLE users (
     private boolean DEFAULT false NOT NULL,
     lang character varying(2) DEFAULT 'en'::character varying NOT NULL,
     username character varying(90) NOT NULL,
-    password character varying(40) NOT NULL,
+    password character varying(60) NOT NULL,
     name character varying(60) NOT NULL,
     surname character varying(60) NOT NULL,
     email character varying(350) NOT NULL,
