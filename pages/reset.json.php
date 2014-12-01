@@ -25,7 +25,14 @@ if(!($obj = Db::query(array('SELECT "username","counter" FROM "users" WHERE "ema
 
 $pass = Captcha::randomString(Config\MIN_LENGTH_PASS);
 
-if(Db::NO_ERRNO != Db::query(array('UPDATE "users" SET "password" = ENCODE(DIGEST(:pass, \'SHA1\'), \'HEX\') WHERE "counter" = :id',array(':pass' => $pass, ':id' => $obj->counter)),Db::FETCH_ERRNO))
+if(Db::NO_ERRNO != Db::query(
+    [
+        'UPDATE "users" SET "password" = crypt(:pass, gen_satl(\'bf\', 7)) WHERE "counter" = :id',
+        [
+            ':pass' => $pass,
+            ':id'   => $obj->counter
+        ]
+    ],Db::FETCH_ERRNO))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': retry'));
 
 $subject = Config\SITE_NAME.' Password';
