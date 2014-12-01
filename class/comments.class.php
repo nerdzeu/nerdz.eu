@@ -268,7 +268,7 @@ class Comments extends Messages
     {
         $table = ($project ? 'groups_' : '').'comments';
 
-        if(!($o = Db::query(
+        if(!is_numeric($hcid) || !($o = Db::query(
             [
                 'SELECT "message" FROM "'.$table.'" WHERE "hcid" = :hcid',
                 [

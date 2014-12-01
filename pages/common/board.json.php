@@ -41,20 +41,20 @@ case 'add':
 
 case 'del':
 
-    if(!isset($_SESSION['delpost']) || empty($_POST['hpid']) || ($_SESSION['delpost'] != $_POST['hpid']) || !$messages->delete($_POST['hpid'], $prj))
+    if(!isset($_SESSION['delpost']) || empty($_POST['hpid']) || !is_numeric($_POST['hpid']) || ($_SESSION['delpost'] != $_POST['hpid']) || !$messages->delete($_POST['hpid'], $prj))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
     unset($_SESSION['delpost']);
     break;
 
 case 'delconfirm':
 
-    $_SESSION['delpost'] = isset($_POST['hpid']) ? $_POST['hpid'] : -1;
+    $_SESSION['delpost'] = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : -1;
     die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('ARE_YOU_SURE')));
     break;
 
 case 'get':
 
-    if( empty($_POST['hpid']) || !($message = Messages::getMessage($_POST['hpid'], $prj)) )
+    if( empty($_POST['hpid']) || !is_numeric($_POST['hpid']) || !($message = Messages::getMessage($_POST['hpid'], $prj)) )
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'2'));
 
     die(NERDZ\Core\Utils::jsonResponse('ok', $message));
@@ -62,7 +62,7 @@ case 'get':
 
 case 'edit':
 
-    if(empty($_POST['hpid']))
+    if(empty($_POST['hpid']) || !is_numeric($_POST['hpid']))
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
     die(NERDZ\Core\Utils::jsonDbResponse(

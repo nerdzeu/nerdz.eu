@@ -370,7 +370,7 @@ class Messages
     {
         $table = ($project ? 'groups_' : '').'posts';
 
-        if(!($o = Db::query(
+        if(!is_numeric($hpid) || !($o = Db::query(
             [
                 'SELECT message FROM "'.$table.'" p WHERE p."hpid" = :hpid',
                 [
