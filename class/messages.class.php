@@ -8,7 +8,7 @@ class Messages
 {
     // regular expressions used to parse the [video] bbcode
     const YOUTUBE_REGEXP  = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
-    const VIMEO_REGEXP    = '#^https?://(?:www\.)?vimeo\.com.+?(\d+)$#i';
+    const VIMEO_REGEXP    = '#^https?://(?:www\.)?vimeo\.com.+?(\d+).*$#i';
     const DMOTION_REGEXP  = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
     const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/(?:photo|video)\.php(?:\?v=|\?.+?&v=)(\d+)#i';
 
