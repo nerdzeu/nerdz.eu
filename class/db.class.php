@@ -22,43 +22,42 @@ class Db
     private function __construct()
     {
         $this->dbh = new PDO(
-            'pgsql:host='.Config\POSTGRESQL_HOST.
-';dbname='.Config\POSTGRESQL_DATA_NAME.
-';port='.Config\POSTGRESQL_PORT,
-Config\POSTGRESQL_USER,
-Config\POSTGRESQL_PASS
-        );
+            'pgsql:host='.Config\POSTGRESQL_HOST.';dbname='.Config\POSTGRESQL_DATA_NAME.';port='.Config\POSTGRESQL_PORT,
+            Config\POSTGRESQL_USER,
+            Config\POSTGRESQL_PASS);
 
         $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
         $this->dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
         // Fetch the IDs for special profiles/projects
-        $specialIds = null;
-        try
-        {
-            $stmt = $this->dbh->query('SELECT * FROM special_users');
-            $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        }
-        catch(PDOException $e) {
-            static::dumpException($e);
-            die($e->getTraceAsString());
+        $cache = Config\SITE_HOST.'special-ids';
+        if(!($specialIds = Utils::apc_get($cache))) {
+            $me = $this;
+            $specialIds = Utils::apc_set($cache, function() use ($me) {
+                try
+                {
+                    $stmt = $this->dbh->query('SELECT * FROM special_users');
+                    $userIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+                    $stmt = $this->dbh->query('SELECT * FROM special_groups');
+                    $projectsIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+                    return [
+                        'USER'    => $userIds,
+                        'PROJECT' =>$projectsIds
+                    ];
+                }
+                catch(PDOException $e) {
+                    static::dumpException($e);
+                    die($e->getTraceAsString());
+                }
+            }, 86400);
         }
 
-        Config::add('USERS_NEWS',    $specialIds['GLOBAL_NEWS']);
-        Config::add('DELETED_USERS', $specialIds['DELETED']);
-
-        try
-        {
-            $stmt = $this->dbh->query('SELECT * FROM special_groups');
-            $specialIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        }
-        catch(PDOException $e) {
-            static::dumpException($e);
-            die($e->getTraceAsString());
-        }
-
-        Config::add('ISSUE_BOARD',   $specialIds['ISSUE']);
-        Config::add('PROJECTS_NEWS', $specialIds['GLOBAL_NEWS']);
+        Config::add('USERS_NEWS',    $specialIds['USER']['GLOBAL_NEWS']);
+        Config::add('DELETED_USERS', $specialIds['USER']['DELETED']);
+        Config::add('ISSUE_BOARD',   $specialIds['PROJECT']['ISSUE']);
+        Config::add('PROJECTS_NEWS', $specialIds['PROJECT']['GLOBAL_NEWS']);
     }
 
     private static function getInstance()
