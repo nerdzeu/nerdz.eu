@@ -4,6 +4,7 @@ use NERDZ\Core\Db;
 use NERDZ\Core\Config;
 use NERDZ\Core\User;
 use NERDZ\Core\Messages;
+use NERDZ\Core\Security;
 
 $user = new User();
 
@@ -138,8 +139,13 @@ if(!$user->isLogged()) //username field
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USERNAME')."\n".$user->lang('CHAR_NOT_ALLOWED').': BBCode or [ ]'));
 }
 
-if(mb_strlen($userData['password'],'UTF-8') < Config\MIN_LENGTH_PASS)
+switch( Security::passwordControl($userData['password']) ) {
+case 'PASSWORD_SHORT':
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('PASSWORD_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_PASS));
+case 'PASSWORD_LONG':
+    if(!$user->isLogged() || $updatedPassword)
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('PASSWORD_LONG')));
+}
 
 if(mb_strlen($userData['name'],'UTF-8') < Config\MIN_LENGTH_NAME)
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('NAME_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_NAME));
@@ -169,9 +175,6 @@ if(isset($userData['name'][60]))
 
 if(isset($userData['surname'][60]))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('SURNAME_LONG')));
-
-if((!$user->isLogged() || $updatedPassword) && isset($userData['password'][40]))
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('PASSWORD_LONG')));
 
 if(!in_array($userData['timezone'],DateTimeZone::listIdentifiers()))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Time zone'));

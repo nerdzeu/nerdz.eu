@@ -49,6 +49,16 @@ class Security
         return $default;
     }
 
+    public static function passwordControl($password) {
+        if(mb_strlen($password, 'UTF-8') < Config\MIN_LENGTH_PASS) {
+            return 'PASSWORD_SHORT';
+        }
+        if(isset($password[40])) {
+            return 'PASSWORD_LONG';
+        }
+        return '';
+    }
+
     public static function setNextAndPrevURLs(array &$vals, $limit, array $options = null)
     {
         extract((array)$options);
