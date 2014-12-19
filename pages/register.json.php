@@ -15,6 +15,9 @@ if(!$captcha)
 if(!$cptcka->check($captcha))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_CAPTCHA')));
 
+if($user->isLogged())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ALREADY_LOGGED')));
+
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php';
 
 $ret = Db::query(
