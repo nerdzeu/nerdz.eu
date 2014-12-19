@@ -63,7 +63,7 @@ if($email !== false && $captcha !== false) { // 1st step
         ],Db::FETCH_OBJ)))
             die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').'(4): '.$user->lang('TRY_LATER')));
 
-    $vals['reseturl_n'] = 'http://'.Config\SITE_HOST.'/reset.php?tok='.$token.'&amp?id='.$key->counter;
+    $vals['reseturl_n'] = 'http://'.Config\SITE_HOST.'/reset.php?tok='.$token.'&amp;id='.$key->counter;
 
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
     try

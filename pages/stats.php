@@ -42,12 +42,11 @@ if(!($ret = Utils::apc_get($cache)))
         $ret[9] = 0;
         $ret[10] = [];
         if(( $uas = Db::query('SELECT http_user_agent FROM guests WHERE last > (NOW() - INTERVAL \'4 MINUTES\')', DB::FETCH_OBJ, true))) {
-            $i = 0;
             foreach($uas as $ua) {
                 foreach($bots as $bot) {
                     if(preg_match('#'.$bot['regex'].'#',$ua->http_user_agent)) {
-                        $ret[10][$i]['name_n'] = $bot['name'];
-                        ++$i;
+                        $ret[10][$ret[9]]['name_n'] = $bot['name'];
+                        ++$ret[9];
                         break;
                     }
                 }
