@@ -162,6 +162,15 @@ class User
         $_SESSION['template']     = $this->getTemplate($o->counter);
         $_SESSION['mark_offline'] = $setOffline;
 
+        // Delete user address from guests table
+        Db::query(
+            [
+                'DELETE FROM guests WHERE remote_addr = :ip',
+                [
+                    ':ip' => $_SERVER['REMOTE_ADDR']
+                ]
+            ], Db::NO_RETURN);
+
         return true;
     }
 

@@ -383,6 +383,21 @@ class Messages
         return $o->message;
     }
 
+    public static function getTags($hpid, $project = false) {
+        $field = ($project ? 'g' : 'u').'_hpid';
+        if(!is_numeric($hpid) || !($all = Db::query(
+            [
+                "SELECT tag FROM posts_classification WHERE {$field} = :hpid",
+                [
+                    ':hpid' => $hpid
+                ]
+            ],Db::FETCH_OBJ, $all = true)
+        ))
+        return [];
+
+        return $all;
+    }
+
     private function tagSearch($tag, $limit, $hpid = 0) {
         $imp_blist = implode(',',$this->user->getBlacklist());
 

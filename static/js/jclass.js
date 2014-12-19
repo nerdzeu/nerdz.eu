@@ -218,7 +218,7 @@ N.json = function()
     
     /**
      * Reset userpassword
-     * @parameters: {captcha, email}
+     * @parameters: {captcha, email} or {reset-token, new-password}
      */
     this.resetPassword = function(jObj,done)
     {

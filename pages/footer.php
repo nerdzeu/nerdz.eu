@@ -3,6 +3,10 @@ use NERDZ\Core\System;
 $vals = [];
 $vals['logged_b'] = $user->isLogged();
 
+if(!$vals['logged_b']) {
+    System::upsertGuest();
+}
+
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/footer');
 
