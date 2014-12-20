@@ -18,7 +18,7 @@ $vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('edit');
 
 if(!($r = Db::query(
     [
-        'SELECT "name", counter FROM "groups" g INNER JOIN "groups_owners" go
+        'SELECT g."name", g.counter FROM "groups" g INNER JOIN "groups_owners" go
         ON go."to" = g.counter
         WHERE go."from" = :id',
         [
