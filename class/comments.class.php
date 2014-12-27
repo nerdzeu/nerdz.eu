@@ -243,7 +243,7 @@ class Comments extends Messages
 
         if(($user = $stmt->fetch(PDO::FETCH_OBJ)))
         {
-            $expl = explode("\n",$user->message);
+            $expl = explode("\n\n",$user->message);
             $lastAppendedMessage = $expl[count($expl) - 1];
 
             if(trim($lastAppendedMessage) == $message)
@@ -433,7 +433,7 @@ class Comments extends Messages
             [
                 'UPDATE "'.($project ? 'groups_' : '').'comments" SET message = :message WHERE "hcid" = :hcid',
                 [
-                    ':message' => $oldMsgObj->message."\n".$parsedMessage,
+                    ':message' => $oldMsgObj->message."\n\n".$parsedMessage,
                     ':hcid'    => $oldMsgObj->hcid
                 ]
             ],Db::FETCH_ERRSTR);
