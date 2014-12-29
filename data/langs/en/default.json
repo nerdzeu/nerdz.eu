@@ -117,6 +117,7 @@
     "MEMBER_SINCE" : "Member since",
     "MENTIONED_YOU_ON" : "mentioned you on",
     "MESSAGE" : "Message",
+    "MESSAGE_NOT_SENT" : "You were writing a message. Do you really want to exit?",
     "MESSAGE_PUBLIC" : "This message will be public",
     "MIN_LENGTH" : "Minimum lenght",
     "MISSING" : "Missed",

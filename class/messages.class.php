@@ -7,10 +7,11 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
 class Messages
 {
     // regular expressions used to parse the [video] bbcode
-    const YOUTUBE_REGEXP  = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
-    const VIMEO_REGEXP    = '#^https?://(?:www\.)?vimeo\.com.+?(\d+).*$#i';
-    const DMOTION_REGEXP  = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
-    const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/(?:photo|video)\.php(?:\?v=|\?.+?&v=)(\d+)#i';
+    const YOUTUBE_REGEXP    = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
+    const VIMEO_REGEXP      = '#^https?://(?:www\.)?vimeo\.com.+?(\d+).*$#i';
+    const DMOTION_REGEXP    = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
+    const FACEBOOK_REGEXP   = '#^https?://(?:www\.)?facebook\.com/(?:photo|video)\.php(?:\?v=|\?.+?&v=)(\d+)#i';
+    const MEDIACRUSH_REGEXP = '#^https://(?:cdn\.)?mediacru\.sh/([a-z0-9_-]{12})(?:|\.[a-z0-9]{2,4})#i';
 
     protected $project;
     protected $user;
@@ -293,14 +294,16 @@ class Messages
             $videoCallback = function($m) {
                 $v_url  = html_entity_decode ($m[1],ENT_QUOTES,'UTF-8');
                 $output = [];
-                if      (preg_match (static::YOUTUBE_REGEXP,  $v_url, $match))
+                if      (preg_match (static::YOUTUBE_REGEXP,   $v_url, $match))
                     $output = [ 'youtube', $match[1], '//i1.ytimg.com/vi/' . $match[1] . '/hqdefault.jpg', 130 ];
-                else if (preg_match (static::VIMEO_REGEXP,    $v_url, $match))
+                else if (preg_match (static::VIMEO_REGEXP,     $v_url, $match))
                     $output = [ 'vimeo', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 130, 'N.vimeoThumbnail(this)' ];
-                else if (preg_match (static::DMOTION_REGEXP,  $v_url, $match))
+                else if (preg_match (static::DMOTION_REGEXP,   $v_url, $match))
                     $output = [ 'dailymotion', $match[1], 'https://www.dailymotion.com/thumbnail/video/' . $match[1], 100 ];
-                else if (preg_match (static::FACEBOOK_REGEXP, $v_url, $match))
+                else if (preg_match (static::FACEBOOK_REGEXP,  $v_url, $match))
                     $output = [ 'facebook', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 100, 'N.facebookThumbnail(this)' ];
+                else if (preg_match(static::MEDIACRUSH_REGEXP, $v_url, $match))
+                    $output = [ 'mediacrush', $match[1], 'https://mediacru.sh/'. $match[1] . '.jpg', 130 ];
                 else
                     return $m[0];
                 return '<a class="yt_frame" data-vid="' . $output[1] . '" data-host="' . $output[0] . '">' .
@@ -315,7 +318,7 @@ class Messages
 
             $str = preg_replace_callback('#\[img\](.+?)\[/img\]#i',function($m) {
                 $url = Utils::getValidImageURL($m[1]);
-                return     '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
+                return '<a href="'.$url.'" target="_blank" class="img_frame" onclick="$(this).toggleClass(\'img_frame-extended\'); return false;">
                     <span>
                     '.$this->user->lang('IMAGES').'
                     </span>
@@ -328,14 +331,16 @@ class Messages
             $videoCallback = function($m) {
                 $v_url       = html_entity_decode ($m[1], ENT_QUOTES, 'UTF-8');
                 $iframe_code = '';
-                if      (preg_match (static::YOUTUBE_REGEXP,  $v_url, $match))
+                if      (preg_match (static::YOUTUBE_REGEXP,    $v_url, $match))
                     $iframe_code = '<iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="//www.youtube.com/embed/'.$match[1].'?wmode=opaque"></iframe>';
-                else if (preg_match (static::VIMEO_REGEXP,    $v_url, $match))
+                else if (preg_match (static::VIMEO_REGEXP,      $v_url, $match))
                     $iframe_code = '<iframe src="//player.vimeo.com/video/'.$match[1].'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-                else if (preg_match (static::DMOTION_REGEXP,  $v_url, $match))
+                else if (preg_match (static::DMOTION_REGEXP,    $v_url, $match))
                     $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
-                else if (preg_match (static::FACEBOOK_REGEXP, $v_url, $match))
+                else if (preg_match (static::FACEBOOK_REGEXP,   $v_url, $match))
                     $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" width="540" height="420" frameborder="0"></iframe>';
+                else if (preg_match (static::MEDIACRUSH_REGEXP, $v_url, $match))
+                    $iframe_code = '<div class="mediacrush" data-media="'.$match[1].'#noautoplay,noloop"></div>';
                 else
                     return $m[0];
                 return '<div style="width:100%; text-align:center"><br />' . $iframe_code . '</div>';
