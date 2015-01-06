@@ -773,9 +773,9 @@ class Messages
 
     public static function stripTags($message)
     {
-        return  str_ireplace('[url="','',
+        return str_ireplace('[url=&quot;','',
             str_ireplace('[url=','',
-            str_replace('"]',' ',
+            str_replace('&quot;]',' ',
             str_replace(']',' ',
             str_ireplace('[url]','',
             str_ireplace('[twitter]','',
