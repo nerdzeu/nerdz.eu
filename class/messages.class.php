@@ -338,7 +338,7 @@ class Messages
                 else if (preg_match (static::DMOTION_REGEXP,    $v_url, $match))
                     $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
                 else if (preg_match (static::FACEBOOK_REGEXP,   $v_url, $match))
-                    $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" width="540" height="420" frameborder="0"></iframe>';
+                    $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" frameborder="0"></iframe>';
                 else if (preg_match (static::MEDIACRUSH_REGEXP, $v_url, $match))
                     $iframe_code = '<div class="mediacrush" data-media="'.$match[1].'#noautoplay,noloop"></div>';
                 else
