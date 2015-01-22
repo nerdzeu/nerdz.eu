@@ -82,11 +82,7 @@ class Utils
 
     public static function minifyHTML($str)
     {
-        $str = explode("\n",$str);
-        foreach($str as &$val)
-            $val = trim(str_replace("\t",'',$val));
-
-        return implode('',$str);
+        return preg_replace('#>\s+<#','><',preg_replace('#^\s+|\s+$|\n#m','',$str));
     }
 
     public static function toJsonResponse($status, $message)
