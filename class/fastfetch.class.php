@@ -221,4 +221,3 @@ final class FFException extends \Exception {
 
 }
 
-?>

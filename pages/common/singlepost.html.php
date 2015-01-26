@@ -16,4 +16,3 @@ if(isset($draw))
     $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post');
 else
     return $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post', true);
-?>

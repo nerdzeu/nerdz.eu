@@ -22,4 +22,3 @@ if($pms->deleteConversation($_POST['from'],$_POST['to']))
     die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 
 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-?>

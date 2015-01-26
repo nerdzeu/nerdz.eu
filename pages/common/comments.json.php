@@ -48,4 +48,3 @@ default:
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 }
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
-?>

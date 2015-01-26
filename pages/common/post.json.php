@@ -27,4 +27,3 @@ case 'close':
 default:
     die(NERDZ\Core\Utils::jsonResponse('error',$messages->lang('ERROR')));
 }
-?>

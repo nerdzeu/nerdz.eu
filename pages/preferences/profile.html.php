@@ -45,4 +45,3 @@ $vals['dateformat_n'] = $obj->dateformat;
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('preferences/profile');
-?>

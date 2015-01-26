@@ -12,4 +12,3 @@ $vals = [];
 $vals['message_n'] = $message->bbcode($message->parseQuote(htmlspecialchars($_GET['message'],ENT_QUOTES,'UTF-8')));
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/preview');
-?>

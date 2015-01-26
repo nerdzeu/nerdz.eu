@@ -36,4 +36,3 @@ if($motivation)
 $user->logout();
 
 die(NERDZ\Core\Utils::jsonResponse('ok','Bye :('));
-?>

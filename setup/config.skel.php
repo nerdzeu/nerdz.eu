@@ -131,4 +131,3 @@ class Variables
         header ('Access-Control-Allow-Credentials: true');
     }
      */
-?>

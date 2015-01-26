@@ -1076,4 +1076,3 @@ class Messages
     }
 
 }
-?>

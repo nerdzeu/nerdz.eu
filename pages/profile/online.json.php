@@ -31,4 +31,3 @@ if(empty($o->http_user_agent) || empty($_SESSION['http_user_agent']) || ($o->htt
     $_SESSION['http_user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 }
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
-?>

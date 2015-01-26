@@ -104,4 +104,3 @@ $projectData['visible'] = isset($_POST['visible']) && $_POST['visible'] == 1 ? '
 $projectData['open']    = isset($_POST['open'])    && $_POST['open']    == 1 ? '1' : '0';
 $projectData['private'] = isset($_POST['private']) && $_POST['private'] == 1 ? '1' : '0';
 
-?>

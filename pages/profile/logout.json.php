@@ -15,4 +15,3 @@ if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
 
 $user->logout();
 die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('LOGOUT_OK')));
-?>

@@ -31,4 +31,3 @@ $dateExtractor = function($friendId) use ($id,$user) {
 };
 
 return require $_SERVER['DOCUMENT_ROOT'].'/pages/common/userslist.html.php';
-?>

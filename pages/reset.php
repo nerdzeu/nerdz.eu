@@ -25,4 +25,3 @@ if(!$token || !$id) {
         $user->getTPL()->draw('base/reset-token');
     }
 }
-?>

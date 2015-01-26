@@ -35,4 +35,3 @@ foreach($pages as $separator => $elements)
 
 return false;
 
-?>

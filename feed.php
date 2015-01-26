@@ -20,4 +20,3 @@ elseif(!isset($_GET['id']) && isset($_GET['project']))
     echo $feed->getHomeProjectFeed();
 else
     echo $feed->error('Wrong GET parameters');
-?>

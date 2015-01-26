@@ -1120,4 +1120,3 @@ class User
         return $o->username;
     }
 }
-?>

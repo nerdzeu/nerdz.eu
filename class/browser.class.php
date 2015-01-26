@@ -1323,4 +1323,3 @@ final class Browser
             return count($elems) > 1 ? $elems[0].(($elems[1] !== '0') ? '.'.$elems[1] : '') : $string;
         }
 }
-?>

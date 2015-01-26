@@ -185,4 +185,3 @@ if(isset($_POST['whitelist']))
 }
 
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
-?>

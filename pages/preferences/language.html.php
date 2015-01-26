@@ -27,4 +27,3 @@ $vals['myboardlang_n'] = $user->getBoardLanguage($_SESSION['id']);
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('preferences/language');
-?>

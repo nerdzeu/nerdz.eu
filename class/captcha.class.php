@@ -59,4 +59,3 @@ final class Captcha
         return trim($ret);
     }
 }
-?>

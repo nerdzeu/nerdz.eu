@@ -36,4 +36,3 @@ die(is_object($rev) ?
                 'message'  => $message->bbcode($rev->message)
             ]) :
             NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-?>

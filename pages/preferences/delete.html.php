@@ -8,4 +8,3 @@ if(!$user->isLogged())
     die($user->lang('REGISTER'));
 
 $user->getTPL()->draw('preferences/delete');
-?>

@@ -39,4 +39,3 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/stats.php';
 $total =  $vals['totusers_n'];
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/userslist.html.php';
 $user->getTPL()->draw('base/userslist');
-?>

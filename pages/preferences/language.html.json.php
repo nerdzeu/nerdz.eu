@@ -42,4 +42,3 @@ default:
 }
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 
-?>

@@ -10,4 +10,3 @@ $truncate = true;
 $path     = 'home';
 
 require $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.html.php';
-?>

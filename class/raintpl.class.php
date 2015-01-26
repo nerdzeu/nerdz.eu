@@ -934,4 +934,3 @@ class RainTpl_SyntaxException extends RainTpl_Exception
         return $this;
     }
 }
-?>

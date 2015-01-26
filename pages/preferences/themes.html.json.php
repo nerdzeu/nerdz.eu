@@ -50,4 +50,3 @@ if(isset($_GET['action']) && $_GET['action'] == 'vars') {
 
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 
-?>

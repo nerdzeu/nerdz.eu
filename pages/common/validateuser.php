@@ -187,4 +187,3 @@ $birth['date'] = $birth['birth_year'].'/'.$birth['birth_month'].'/'.$birth['birt
 $userData['gender'] = intval($userData['gender']) == 1 ? 'true' : 'false'; //true = male, false = woman
 
 // if here, user fields are ok
-?>

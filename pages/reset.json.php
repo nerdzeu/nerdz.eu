@@ -135,4 +135,3 @@ if($email !== false && $captcha !== false) { // 1st step
 
     die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 }
-?>

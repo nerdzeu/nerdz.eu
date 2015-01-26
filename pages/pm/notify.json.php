@@ -11,4 +11,3 @@ if($user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('ok',$notification->countPms()));
 
 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-?>

@@ -75,4 +75,3 @@ if ( isset($codes[$ncode]['code']) && isset($codes[$ncode]['lang']) ) {
 }
 header('Content-Type: text/plain; charset=utf-8');
 die('Wrong GET parameters');
-?>

@@ -76,4 +76,3 @@ class Config
         define(__NAMESPACE__.'\\Config\\'.$key, $value);
     }
 }
-?>

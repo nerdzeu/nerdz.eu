@@ -215,4 +215,3 @@ class Project
 if(isset($_GET['gid']) && !is_numeric($_GET['gid']) && is_string($_GET['gid']))
     $_GET['gid'] = (new Project(trim($_GET['gid'])))->getId();
 
-?>

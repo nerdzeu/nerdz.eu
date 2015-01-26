@@ -50,4 +50,3 @@ function generate_error ($msg, $code)
         ]
     ]);
 }
-?>

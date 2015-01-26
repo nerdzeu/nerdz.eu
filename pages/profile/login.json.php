@@ -23,4 +23,3 @@ if($user->login($username, $pass, isset($_POST['setcookie']), isset($_POST['offl
     die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('LOGIN_OK')));
 
 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_USER_OR_PASSWORD')));
-?>

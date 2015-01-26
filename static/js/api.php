@@ -12,4 +12,3 @@ header('Vary: Accept-Encoding');
 header('Etag: '.md5_file($filename));
 
 die(Config\MINIFICATION_ENABLED ? Minification::minifyJs($filename) : file_get_contents($filename));
-?>

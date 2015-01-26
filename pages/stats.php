@@ -75,4 +75,3 @@ $user->getTPL()->assign($vals);
 
 if(isset($draw))
     $user->getTPL()->draw('base/stats');
-?>

@@ -83,5 +83,3 @@ try {
 
 die(Utils::jsonResponse($resp));
 
-?>
-

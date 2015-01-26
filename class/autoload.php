@@ -38,4 +38,3 @@ if(Config\REDIS_ENABLED)
     new RedisSessionHandler();
 else
     session_start();
-?>

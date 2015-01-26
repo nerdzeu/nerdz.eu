@@ -27,4 +27,3 @@ case 'del':
 default:
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 }
-?>

@@ -68,4 +68,3 @@ $vals['count_n'] = count($vals['list_a']);
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw($path.'/postlist');
-?>

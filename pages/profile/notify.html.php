@@ -23,4 +23,3 @@ if($user->isLogged())
 }
 else
     echo $user->lang('REGISTER');
-?>

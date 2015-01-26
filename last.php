@@ -7,4 +7,3 @@ if(!($o = Db::query('SELECT "username" FROM "users" ORDER BY "counter" DESC',Db:
     die('Db error');
 
 die(header('Location: /'.Utils::userLink($o->username)));
-?>

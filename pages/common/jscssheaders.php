@@ -130,4 +130,3 @@ if($logged && isset($blistcss)) echo substr ($blistcss, 0, -1), '{border:1px sol
 /* END BLACKLIST_STUFF */
 if ($logged && (($o = Db::query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ))) && !empty($o->userscript))
     echo '<script type="application/javascript" src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
-?>

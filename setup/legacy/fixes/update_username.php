@@ -58,4 +58,3 @@ foreach($projects as $user) {
 
 echo "\nProjects Fixed\n";
 
-?>

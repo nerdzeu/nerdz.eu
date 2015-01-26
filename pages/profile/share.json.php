@@ -90,4 +90,3 @@ if($share($to,$url,$comment))
     die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
 
 die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
-?>

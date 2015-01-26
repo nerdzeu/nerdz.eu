@@ -77,5 +77,3 @@ default:
 
 jsonResponse($response);
 
-?>
-

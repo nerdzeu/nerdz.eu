@@ -18,4 +18,3 @@ $vals['list_a'] = $pms->getList();
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('pm/inbox');
-?>

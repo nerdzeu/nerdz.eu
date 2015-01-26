@@ -125,4 +125,3 @@ class Utils
         return in_array(strtolower($needle), array_map('strtolower', $haystack));
     }
 }
-?>

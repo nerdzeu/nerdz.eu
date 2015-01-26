@@ -11,4 +11,3 @@ $vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('pm');
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('pm/form');
 
-?>

@@ -90,4 +90,3 @@ foreach($profilesToFix as $profile) {
 
 echo "\nFixed\n";
 
-?>

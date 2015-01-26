@@ -16,4 +16,3 @@ die(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
           : $sitemap
       )
 );
-?>

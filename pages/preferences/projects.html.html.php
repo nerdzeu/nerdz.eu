@@ -54,4 +54,3 @@ $vals['privateproject_b'] = $info->private;
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('preferences/projects/manage');
-?>

@@ -38,4 +38,3 @@ else {
 
 die(NERDZ\Core\Utils::jsonResponse('thumbs', $message->getThumbs($id, isset($prj))));
 
-?>

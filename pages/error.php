@@ -25,4 +25,3 @@ else
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/error');
-?>

@@ -40,4 +40,3 @@ final class Minification
         chmod ($mTimeFile, 0775);
     }
 }
-?>

@@ -20,4 +20,3 @@ else
     $user->getTPL()->assign('list_a', $ret);
     $user->getTPL()->draw('base/banned');
 }
-?>

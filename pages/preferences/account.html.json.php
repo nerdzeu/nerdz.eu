@@ -46,4 +46,3 @@ if($updatedPassword && ($cookie = isset($_COOKIE['nerdz_u']))) {
 }
 
 die(NERDZ\Core\Utils::jsonResponse('error','OK'));
-?>

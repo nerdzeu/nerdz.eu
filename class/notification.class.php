@@ -755,4 +755,3 @@ class Notification
         return $a['timestamp_n'] == $b['timestamp_n'] ? 0 : $a['timestamp_n'] > $b['timestamp_n'] ? -1 : 1;
     }
 }
-?>

@@ -23,4 +23,3 @@ foreach($_POST as &$val)
     $val = htmlspecialchars(trim($val),ENT_QUOTES,'UTF-8');
 
 die(NERDZ\Core\Utils::jsonDbResponse($pms->send($toid,$_POST['message'])));
-?>

@@ -29,4 +29,3 @@ $vals['mobile_b'] = $_SERVER['HTTP_HOST'] == Config\MOBILE_HOST;
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('preferences/themes');
-?>

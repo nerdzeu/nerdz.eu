@@ -35,4 +35,3 @@ NERDZ\Core\Security::setNextAndPrevURLs($myvals, $limit,
 $user->getTPL()->assign($myvals);
 return $user->getTPL()->draw(($prj ? 'project' : 'profile').'/interactions', true);
 
-?>

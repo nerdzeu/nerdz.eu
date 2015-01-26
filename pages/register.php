@@ -22,4 +22,3 @@ if(!isset($included))
     $user->getTPL()->assign($vals);
     $user->getTPL()->draw('base/register');
 }
-?>

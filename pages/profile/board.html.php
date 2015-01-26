@@ -26,4 +26,3 @@ default:
     die($user->lang('ERROR'));
     break;
 }
-?>

@@ -48,4 +48,3 @@ default:
     break;
 }
 die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
-?>

@@ -569,4 +569,3 @@ class Comments extends Messages
 		return $message;
     }
 }
-?>

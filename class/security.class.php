@@ -127,4 +127,3 @@ class Security
         return $o->valid;
     }
 }
-?>
