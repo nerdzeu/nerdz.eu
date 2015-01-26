@@ -46,4 +46,3 @@ if(!$user->login($userData['username'], $userData['password'], $setCookie = true
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': Login'));
 
 die(NERDZ\Core\Utils::jsonResponse('ok',$user->lang('LOGIN_OK')));
-
