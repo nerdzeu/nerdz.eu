@@ -7,6 +7,10 @@ use NERDZ\Core\Utils;
 use NERDZ\Core\System;
 use NERDZ\Core\User;
 // Displays the stuff contained in the <head> tag.
+// Disable DNS prefetching to avoid tracking issues
+?>
+<meta http-equiv="x-dns-prefetch-control" content="off">
+<?php
 $logged = $user->isLogged();
 $uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
 $tno = $user->getTemplate();
