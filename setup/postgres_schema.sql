@@ -723,11 +723,7 @@ BEGIN
 
     WITH no_notify("user") AS (
         -- blacklist
-        (
             SELECT "from" FROM "blacklist" WHERE "to" = NEW."from"
-                UNION
-            SELECT "to" FROM "blacklist" WHERE "from" = NEW."from"
-        )
         UNION -- users that locked the notifications for all the thread
             SELECT "user" FROM "groups_posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
@@ -1290,11 +1286,7 @@ BEGIN
 
     WITH no_notify("user") AS (
         -- blacklist
-        (
             SELECT "from" FROM "blacklist" WHERE "to" = NEW."from"
-                UNION
-            SELECT "to" FROM "blacklist" WHERE "from" = NEW."from"
-        )
         UNION -- users that locked the notifications for all the thread
             SELECT "user" FROM "posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
