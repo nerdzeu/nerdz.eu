@@ -32,7 +32,7 @@ class Project
         }
     }
 
-    public function getObject($id = null)
+    public function getObject(&$id = null)
     {
         $this->checkId($id);
         return Db::query(
