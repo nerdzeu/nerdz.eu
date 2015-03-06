@@ -27,6 +27,8 @@ class Project
                 die(__CLASS__.' invalid project ID');
             }
             else $id = $this->id;
+        } else if(!is_numeric($id)) {
+            $id = $this->getId($id);
         }
     }
 
@@ -40,6 +42,17 @@ class Project
                     ':id' => $id
                 ]
             ],Db::FETCH_OBJ);
+    }
+
+    public function getBasicInfo($id = null) {
+        $o = $this->getObject($id);
+        $ret = [];
+        $ret['name_n']       = $o->name;
+        $ret['name4link_n']  = Utils::projectLink($o->name);
+        $ret['id_n']         = $id;
+        $ret['canifollow_b'] = !$this->user->isFollowing($id, true);
+        $ret['since_n']      = $this->user->getDateTime(strtotime($o->creation_time));
+        return $ret;
     }
 
     public function getMembersAndOwnerFromHpid($hpid)

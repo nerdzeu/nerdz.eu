@@ -82,13 +82,13 @@ class Utils
 
     public static function minifyHTML($str)
     {
-        return preg_replace('#>\s+<#','><',preg_replace('#^\s+|\s+$|\n#m','',$str));
+        return preg_replace('#>\s+<#','> <',preg_replace('#^\s+|\s+$|\n#m','',$str));
     }
 
     public static function toJsonResponse($status, $message)
     {
         $ret = is_array($status) ? $status : ['status' => $status, 'message' => $message];
-        return json_encode($ret,JSON_FORCE_OBJECT);
+        return json_encode($ret);
     }
 
     public static function jsonResponse($status, $message = '')

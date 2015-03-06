@@ -50,7 +50,7 @@ foreach ($headers['css'] as $var) {
 /* END STYLESHEETS */
 /* BEGIN JQUERY */
 ?>
-    <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <?php
 /* END JQUERY */
 foreach($headers['js'] as $var) {
@@ -61,8 +61,8 @@ foreach($headers['js'] as $var) {
         echo '<script type="application/javascript" src="',$static_domain,'/tpl/',$tno,'/',$var,'"></script>';
 }
 ?>
-    <script type="application/javascript" src="<?php echo $static_domain;?>/static/js/api.php"></script>
-    <script type="application/javascript" src="<?php echo $static_domain;?>/static/js/mediacrush.min.js" async></script>
+<script type="application/javascript" src="<?php echo $static_domain;?>/static/js/api.php"></script>
+<script type="application/javascript" src="<?php echo $static_domain;?>/static/js/mediacrush.min.js" async></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 extensions: ["tex2jax.js"],
@@ -119,7 +119,6 @@ if ($logged) {
    }
 ?>
     N.idiots=<?=json_encode($jsonIdiots)?>,
-    N.following=<?=json_encode($user->getFollowingUsername($_SESSION['id']))?>,
     N.tplVars=<?=$user->getTemplateVariables()?>;
 <?php
 }

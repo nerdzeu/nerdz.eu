@@ -16,7 +16,7 @@ if(!NERDZ\Core\Security::refererControl())
 if(empty($_POST['to']))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('SOMETHING_MISS')));
 
-if(!($toid = $user->getId($_POST['to']))) //getId DON'T what htmlspecialchars in parameter
+if(!($toid = $user->getId(trim($_POST['to'])))) //getId DON'T what htmlspecialchars in parameter
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('USER_NOT_FOUND')));
 
 foreach($_POST as &$val)

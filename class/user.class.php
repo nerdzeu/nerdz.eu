@@ -219,8 +219,11 @@ class User
 
     public function getBasicInfo($id = null)
     {
-        if($this->isLogged() && !$id)
+        if($this->isLogged() && $id === null)
             $id = $_SESSION['id'];
+
+        if(is_string($id) && mb_strlen($id) >= Config\MIN_LENGTH_USER) //id = username
+            $id = $this->getId($id);
 
         if(empty($id))
             return [];
@@ -385,16 +388,19 @@ class User
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getFollowingUsername($id, $limit = 0) {
+    public function getFollowingUsername($id, $limit = 0, $startsWith = '') {
         if($limit)
             $limit = Security::limitControl($limit, 20);
 
         if(!($stmt = Db::query(
             [
-                'SELECT "username" FROM "followers" f JOIN "users" u ON f.to = u.counter WHERE "from" = :id ORDER BY u.username'.($limit !== 0 ? " LIMIT {$limit}" : ''),
-                [
-                    ':id' => $id
-                ]
+                'SELECT "username" FROM "followers" f JOIN "users" u ON f.to = u.counter WHERE "from" = :id '.($startsWith !== '' ?  ' AND u.username ILIKE :startsWith ' : '').'ORDER BY u.username'.($limit !== 0 ? " LIMIT {$limit}" : ''),
+                array_merge(
+                    $startsWith !== '' ? [ ':startsWith' => "{$startsWith}%" ] : [],
+                    [
+                        ':id' => $id
+                    ]
+                )
             ],Db::FETCH_STMT)))
             return [];
 
