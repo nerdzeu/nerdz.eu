@@ -71,7 +71,7 @@ if($email !== false && $captcha !== false) { // 1st step
         $mail = new PHPMailer();
         $mail->IsSMTP();
         $mail->SMTPAuth = true;
-        $mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for GMail
+        $mail->SMTPSecure = 'tls';
         $mail->Host = Config\SMTP_SERVER;
         $mail->Port = Config\SMTP_PORT;
         $mail->Username = Config\SMTP_USER;
@@ -83,6 +83,7 @@ if($email !== false && $captcha !== false) { // 1st step
         $mail->AddAddress($email);
         if($mail->Send())
             die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
+        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': '.$mail->ErrorInfo));
     }
     catch(phpmailerException $e) {
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': '.$e->errorMessage()."\n contact support@nerdz.eu or retry"));
