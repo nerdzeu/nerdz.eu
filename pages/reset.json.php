@@ -71,9 +71,7 @@ if($email !== false && $captcha !== false) { // 1st step
         $mail = new PHPMailer();
         $mail->IsSMTP();
         $mail->SMTPAuth = true;
-        $mail->SMTPSecure = 'tls';
-        $mail->Host = Config\SMTP_SERVER;
-        $mail->Port = Config\SMTP_PORT;
+        $mail->Host = 'tls://'.trim(Config\SMTP_SERVER).':'.trim(Config\SMTP_PORT);
         $mail->Username = Config\SMTP_USER;
         $mail->Password = Config\SMTP_PASS;
         $mail->SetFrom(Config\SMTP_USER, Config\SITE_NAME);
