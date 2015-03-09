@@ -149,6 +149,9 @@ if($enter)
 
     $vals['gender_n'] = $user->lang($info->gender == 1 ? 'MALE' : 'FEMALE');
 
+    $vals['karmaposts_n']    = $user->getKarma('post', $info->counter);
+    $vals['karmacomments_n'] = $user->getKarma('comment', $info->counter);
+
     $vals['biography_n'] = (new Messages())->bbcode($info->biography,1);
     $vals['quotes_a'] = explode("\n",trim($info->quotes));
     if(count($vals['quotes_a']) == 1 && empty($vals['quotes_a'][0]))

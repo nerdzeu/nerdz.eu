@@ -137,14 +137,14 @@ class User
         if(!($o = Db::query(
             [
                 'SELECT login(:user, :pass) AS logged_in, counter, username, encode(digest(password,\'MD5\'), \'HEX\') as auto_login_pwd
-				FROM users
-				WHERE LOWER(username) = LOWER(:user)',
-                    [
-                        ':user' => $username,
-                        ':pass' => $pass
-                    ]
-                ],Db::FETCH_OBJ)) || ($autologinPassword ? $pass !== $o->auto_login_pwd : !$o->logged_in))
-            return false;
+                FROM users
+                WHERE LOWER(username) = LOWER(:user)',
+                [
+                    ':user' => $username,
+                    ':pass' => $pass
+                ]
+            ],Db::FETCH_OBJ)) || ($autologinPassword ? $pass !== $o->auto_login_pwd : !$o->logged_in))
+                return false;
 
         if($cookie)
         {
@@ -462,11 +462,11 @@ class User
                     (select "from" from followers where "to" = :id) as e
                     on f.to = e.from
                     inner join users u on u.counter = f.to order by username'.($limit != 0 ? ' LIMIT '.$limit : ''),
-                [
-                    ':id' => $id
-                ]
-            ], Db::FETCH_STMT)))
-            return [];
+                    [
+                        ':id' => $id
+                    ]
+                ], Db::FETCH_STMT)))
+                return [];
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -485,7 +485,7 @@ class User
             ], Db::FETCH_OBJ)))
             return 0;
 
-        return $o->cc;
+return $o->cc;
     }
 
     public function follow($id, $prj = false)
@@ -517,13 +517,13 @@ class User
             $project = new Project($id);
             if(in_array($_SESSION['id'], $project->getMembers()))
                 return Db::query(
-                [
-                    'DELETE FROM "groups_members" WHERE "to" = :id AND "from" = :me',
                     [
-                        ':id' => $id,
-                        ':me' => $_SESSION['id']
-                    ]
-                ],Db::FETCH_ERRSTR);   
+                        'DELETE FROM "groups_members" WHERE "to" = :id AND "from" = :me',
+                        [
+                            ':id' => $id,
+                            ':me' => $_SESSION['id']
+                        ]
+                    ],Db::FETCH_ERRSTR);   
         }
 
         $table = ($prj ? 'groups_' : '').'followers';
@@ -548,11 +548,11 @@ class User
                 'INSERT INTO "'.$table.'"("from","hpid")
                 SELECT :from, :hpid
                 WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "hpid" = :hpid)',
-                [
-                    ':from' => $_SESSION['id'],
-                    ':hpid' => $hpid
-                ]
-            ], Db::FETCH_ERRSTR);
+                    [
+                        ':from' => $_SESSION['id'],
+                        ':hpid' => $hpid
+                    ]
+                ], Db::FETCH_ERRSTR);
     }
 
     public function unbookmark($hpid, $prj = false)
@@ -588,7 +588,7 @@ class User
         {
             $table .= 'comments_no_notify';
             return Db::query(
-                    [
+                [
                     'INSERT INTO "'.$table.'"("from", "to", "hpid")
                     SELECT :from, :to, :hpid
                     WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid)',
@@ -603,14 +603,14 @@ class User
         $table .= 'posts_no_notify';
         return Db::query(
             [
-               'INSERT INTO "'.$table.'"("user", "hpid")
+                'INSERT INTO "'.$table.'"("user", "hpid")
                 SELECT :user, :hpid
                 WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid)',
-                [
-                    ':user' => $_SESSION['id'],
-                    ':hpid' => $hpid
-                ]
-            ], Db::FETCH_ERRSTR);
+                    [
+                        ':user' => $_SESSION['id'],
+                        ':hpid' => $hpid
+                    ]
+                ], Db::FETCH_ERRSTR);
     }
 
     public function reNotify($options = [], $prj = false)
@@ -621,7 +621,7 @@ class User
         extract($options);
         $hpid = !empty($hpid) ? $hpid : 0;
         if($hpid == 0)
-             return Utils::$ERROR_DB_MESSAGE;
+            return Utils::$ERROR_DB_MESSAGE;
 
         $from = isset($from) ? $from : 0;
 
@@ -630,25 +630,25 @@ class User
         {
             $table .= 'comments_no_notify';
             return Db::query(
+                [
+                    'DELETE FROM "'.$table.'" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid',
                     [
-                       'DELETE FROM "'.$table.'" WHERE "from" = :from AND "to" = :to AND "hpid" = :hpid',
-                        [
-                            ':from' => $from,
-                            ':to'   => $_SESSION['id'],
-                            ':hpid' => $hpid
-                        ]
-                    ],Db::FETCH_ERRSTR);
+                        ':from' => $from,
+                        ':to'   => $_SESSION['id'],
+                        ':hpid' => $hpid
+                    ]
+                ],Db::FETCH_ERRSTR);
         }
 
         $table .= 'posts_no_notify';
         return Db::query(
+            [
+                'DELETE FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid',
                 [
-                    'DELETE FROM "'.$table.'" WHERE "user" = :user AND "hpid" = :hpid',
-                    [
-                        ':hpid' => $hpid,
-                        ':user' => $_SESSION['id']
-                    ]
-                ],Db::FETCH_ERRSTR);
+                    ':hpid' => $hpid,
+                    ':user' => $_SESSION['id']
+                ]
+            ],Db::FETCH_ERRSTR);
     }
 
     public function lurk($hpid, $prj = false)
@@ -662,11 +662,11 @@ class User
                 'INSERT INTO "'.$table.'"("from","hpid")
                 SELECT :from, :hpid
                 WHERE NOT EXISTS (SELECT 1 FROM "'.$table.'" WHERE "from" = :from AND "hpid" = :hpid)',
-                [
-                    ':from' => $_SESSION['id'],
-                    ':hpid' => $hpid
-                ]
-            ], Db::FETCH_ERRSTR);
+                    [
+                        ':from' => $_SESSION['id'],
+                        ':hpid' => $hpid
+                    ]
+                ], Db::FETCH_ERRSTR);
     }
 
     public function unlurk($hpid, $prj = false)
@@ -862,13 +862,33 @@ class User
         if(!($id = Db::query(
             [
                 'SELECT "counter" FROM "users" WHERE LOWER("username") = LOWER(:username)',
+                [
+                    ':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8')
+                ]
+            ],Db::FETCH_OBJ)))
+            return 0;
+
+        return $id->counter;
+    }
+
+    public function getKarma($type, $id = null) {
+        if($this->isLogged() && !$id)
+            $id = $_SESSION['id'];
+
+        $prefix = $type == 'comment' ? $type.'_' : '';
+
+        if(!($sum = Db::query(
+            [
+                "SELECT
+                    (SELECT COALESCE(SUM(vote), 0) FROM {$prefix}thumbs WHERE \"to\" = :id) +
+                    (SELECT COALESCE(SUM(vote), 0) FROM groups_{$prefix}thumbs WHERE \"to\" = :id)
+                 AS c",
                     [
-                        ':username' => htmlspecialchars($username,ENT_QUOTES,'UTF-8')
+                        ':id' => $id
                     ]
                 ],Db::FETCH_OBJ)))
                 return 0;
-
-        return $id->counter;
+        return $sum->c;
     }
 
     public function getMobileTemplate($id = null)
