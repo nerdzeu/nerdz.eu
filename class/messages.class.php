@@ -424,8 +424,11 @@ class Messages
 
         if(!empty($imp_blist))
             $query .= ' WHERE gp."from" NOT IN ('.$imp_blist.')';
+        else {
+            $query .= ' WHERE 1';
+        }
 
-        $query.= ')) AS t ';
+        $query.= ' AND gp.to NOT IN (SELECT counter FROM groups WHERE private IS TRUE) )) AS t ';
 
         if($hpid) {
             $query .= ' WHERE t.hpid < :hpid ';
