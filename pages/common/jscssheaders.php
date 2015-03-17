@@ -39,6 +39,7 @@ if (User::isOnMobileHost()) { ?>
 } /* END FAVICON */
 ?>
 <link rel="image_src" href="<?php echo $static_domain;?>/static/images/N.png">
+<link rel="stylesheet" type="text/css" href="<?php echo $static_domain;?>/static/css/pgwmodal.min.css" />
 <?php
 /* BEGIN STYLESHEETS */
 foreach ($headers['css'] as $var) {
@@ -51,6 +52,7 @@ foreach ($headers['css'] as $var) {
 /* BEGIN JQUERY */
 ?>
 <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="application/javascript" src="<?php echo $static_domain;?>/static/js/pgwmodal.min.js"></script>
 <?php
 /* END JQUERY */
 foreach($headers['js'] as $var) {
