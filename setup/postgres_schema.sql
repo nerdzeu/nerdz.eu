@@ -798,7 +798,7 @@ DECLARE tbl text;
         ret record;
         query text;
 BEGIN
-    FOR tbl IN (select table_name from information_schema.columns where column_name = 'to' and table_name like 'groups_%' and table_name not like '%notify') LOOP
+    FOR tbl IN (SELECT unnest(array['groups_members', 'groups_followers','groups_comments', 'groups_comment_thumbs', 'groups_lurkers', 'groups_owners', 'groups_thumbs', 'groups_posts'])) LOOP
         query := interactions_query_builder(tbl, me, grp, true);
         FOR ret IN EXECUTE query LOOP
             RETURN NEXT ret;
@@ -1000,7 +1000,7 @@ begin
             END IF;
 
             ret = ret || 'comments" c INNER JOIN "' || tbl || '" t
-                ON t.hcid = c.hpid
+                ON t.hcid = c.hcid
             INNER JOIN "';
 
             IF grp THEN
@@ -1360,7 +1360,7 @@ DECLARE tbl text;
         ret record;
         query text;
 begin
-    FOR tbl IN (select table_name from information_schema.columns where column_name = 'to' and table_name not like 'groups_%' and table_name not like '%notify') LOOP
+    FOR tbl IN (SELECT unnest(array['blacklist', 'comment_thumbs', 'comments', 'followers', 'lurkers', 'mentions', 'pms', 'posts', 'whitelist'])) LOOP
         query := interactions_query_builder(tbl, me, other, false);
         FOR ret IN EXECUTE query LOOP
             RETURN NEXT ret;
