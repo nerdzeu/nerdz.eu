@@ -425,7 +425,7 @@ class Messages
         if(!empty($imp_blist))
             $query .= ' WHERE gp."from" NOT IN ('.$imp_blist.')';
         else {
-            $query .= ' WHERE 1';
+            $query .= ' WHERE TRUE';
         }
 
         $query.= ' AND gp.to NOT IN (SELECT counter FROM groups WHERE private IS TRUE) )) AS t ';
