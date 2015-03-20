@@ -31,9 +31,8 @@ if ($uagdata['platform'] == 'Windows' && (float)$uagdata['version'] >= 10) {
 } /* END WINDOWS_META_TAGS */
 /* BEGIN FAVICON */
 if (User::isOnMobileHost()) { ?>
-    <link rel="shortcut icon" sizes="196x196" href="<?php echo $static_domain;?>/static/images/droidico.png" />
-    <?php } else { ?>
     <link rel="manifest" href="<?php echo $static_domain;?>/static/webapp/manifest.json" />
+    <?php } else { ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $static_domain;?>/static/images/favicon.ico" />
 <?php
 } /* END FAVICON */
