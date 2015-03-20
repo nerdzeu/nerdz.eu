@@ -17,7 +17,6 @@ $tno = $user->getTemplate();
 /* BEGIN MOBILE_META_TAGS */
 if (User::isOnMobileHost()) { ?>
     <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    <meta name="mobile-web-app-capable" content="yes">
 	<meta name="theme-color" content="#1D1B1B">
 <?php
 } /* END MOBILE_META_TAGS */
@@ -34,6 +33,7 @@ if ($uagdata['platform'] == 'Windows' && (float)$uagdata['version'] >= 10) {
 if (User::isOnMobileHost()) { ?>
     <link rel="shortcut icon" sizes="196x196" href="<?php echo $static_domain;?>/static/images/droidico.png" />
     <?php } else { ?>
+    <link rel="manifest" href="<?php echo $static_domain;?>/static/webapp/manifest.json" />
     <link rel="icon" type="image/x-icon" href="<?php echo $static_domain;?>/static/images/favicon.ico" />
 <?php
 } /* END FAVICON */
