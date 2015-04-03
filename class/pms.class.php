@@ -41,7 +41,9 @@ final class Pms extends Messages
 
                 $pushed->push($to, $msg);
 
-            } catch (PushedException $e) {}
+            } catch (PushedException $e) {
+                Db::dumpException($e);
+            }
         }
 
         return $retVal;
