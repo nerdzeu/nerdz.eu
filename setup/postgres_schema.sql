@@ -278,8 +278,8 @@ DECLARE postFrom int8;
 BEGIN
     PERFORM flood_control('"comment_thumbs"', NEW."from");
 
-    SELECT T."to", T."hpid" INTO tmp FROM (SELECT "to", "hpid" FROM "comments" WHERE "hcid" = NEW.hcid) AS T;
-    SELECT tmp."to" INTO NEW."to";
+    SELECT T."to", T."from", T."hpid" INTO tmp FROM (SELECT "from", "to", "hpid" FROM "comments" WHERE "hcid" = NEW.hcid) AS T;
+    SELECT tmp."from" INTO NEW."to";
 
     PERFORM blacklist_control(NEW."from", NEW."to"); --blacklisted commenter
 
@@ -406,11 +406,9 @@ BEGIN
     PERFORM flood_control('"groups_comment_thumbs"', NEW."from");
 
     SELECT T."hpid", T."from", T."to" INTO tmp FROM (SELECT "hpid", "from","to" FROM "groups_comments" WHERE "hcid" = NEW.hcid) AS T;
+    SELECT tmp."from" INTO NEW."to";
 
-    -- insert "to" project
-    SELECT tmp."to" INTO NEW."to";
-
-    PERFORM blacklist_control(NEW."from", tmp."from"); --blacklisted commenter
+    PERFORM blacklist_control(NEW."from", NEW."to"); --blacklisted commenter
 
     SELECT T."from" INTO postFrom FROM (SELECT p."from" FROM "groups_posts" p WHERE p.hpid = tmp.hpid) AS T;
 
@@ -443,7 +441,6 @@ BEGIN
     IF NEW."vote" IS NULL THEN -- updated previous vote
         RETURN NULL; --no need to insert new value
     END IF;
-
     
     RETURN NEW;
 END $$;
@@ -487,18 +484,16 @@ END $$;
 CREATE FUNCTION before_insert_groups_thumb() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-DECLARE postFrom int8;
-        tmp record;
+DECLARE  tmp record;
 BEGIN
     PERFORM flood_control('"groups_thumbs"', NEW."from");
 
     SELECT T."to", T."from" INTO tmp
     FROM (SELECT "to", "from" FROM "groups_posts" WHERE "hpid" = NEW.hpid) AS T;
 
-    SELECT tmp."from" INTO postFrom;
-    SELECT tmp."to" INTO NEW."to";
+    SELECT tmp."from" INTO NEW."to";
 
-    PERFORM blacklist_control(NEW."from", postFrom); -- blacklisted post creator
+    PERFORM blacklist_control(NEW."from", NEW."to"); -- blacklisted post creator
 
     IF NEW."vote" = 0 THEN
         DELETE FROM "groups_thumbs" WHERE hpid = NEW.hpid AND "from" = NEW."from";
@@ -723,7 +718,11 @@ BEGIN
 
     WITH no_notify("user") AS (
         -- blacklist
+        (
             SELECT "from" FROM "blacklist" WHERE "to" = NEW."from"
+                UNION
+            SELECT "to" FROM "blacklist" WHERE "from" = NEW."from"
+        )
         UNION -- users that locked the notifications for all the thread
             SELECT "user" FROM "groups_posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
@@ -798,7 +797,7 @@ DECLARE tbl text;
         ret record;
         query text;
 BEGIN
-    FOR tbl IN (SELECT unnest(array['groups_members', 'groups_followers','groups_comments', 'groups_comment_thumbs', 'groups_lurkers', 'groups_owners', 'groups_thumbs', 'groups_posts'])) LOOP
+    FOR tbl IN (SELECT unnest(array['groups_members', 'groups_followers', 'groups_comments', 'groups_comment_thumbs', 'groups_lurkers', 'groups_owners', 'groups_thumbs', 'groups_posts'])) LOOP
         query := interactions_query_builder(tbl, me, grp, true);
         FOR ret IN EXECUTE query LOOP
             RETURN NEXT ret;
@@ -1286,7 +1285,11 @@ BEGIN
 
     WITH no_notify("user") AS (
         -- blacklist
+        (
             SELECT "from" FROM "blacklist" WHERE "to" = NEW."from"
+                UNION
+            SELECT "to" FROM "blacklist" WHERE "from" = NEW."from"
+        )
         UNION -- users that locked the notifications for all the thread
             SELECT "user" FROM "posts_no_notify" WHERE "hpid" = NEW."hpid"
         UNION -- users that locked notifications from me in this thread
@@ -4364,7 +4367,7 @@ ALTER TABLE ONLY comment_thumbs
 --
 
 ALTER TABLE ONLY groups_comment_thumbs
-    ADD CONSTRAINT "toGCommentThumbFk" FOREIGN KEY ("to") REFERENCES groups(counter) ON DELETE CASCADE;
+    ADD CONSTRAINT "toGCommentThumbFk" FOREIGN KEY ("to") REFERENCES users(counter) ON DELETE CASCADE;
 
 
 --
@@ -4380,7 +4383,7 @@ ALTER TABLE ONLY groups_lurkers
 --
 
 ALTER TABLE ONLY groups_thumbs
-    ADD CONSTRAINT "toGThumbFk" FOREIGN KEY ("to") REFERENCES groups(counter) ON DELETE CASCADE;
+    ADD CONSTRAINT "toGThumbFk" FOREIGN KEY ("to") REFERENCES users(counter) ON DELETE CASCADE;
 
 
 --
