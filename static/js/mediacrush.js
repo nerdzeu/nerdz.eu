@@ -3,11 +3,12 @@
  * https://mediacru.sh
  * https://github.com/MediaCrush/MediaCrush
  * MIT License http://opensource.org/licenses/MIT
+ * Modified by: Paolo Galeone for https://media.nerdz.eu
  */
 window.MediaCrush = (function() {
     var self = this;
     self.version = 1;
-    self.domain = 'https://mediacru.sh/';
+    self.domain = 'https://media.nerdz.eu/';
     self.maxMediaWidth = -1;
     self.maxMediaHeight = -1;
     self.preserveAspectRatio = true;

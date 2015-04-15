@@ -303,7 +303,7 @@ class Messages
                 else if (preg_match (static::FACEBOOK_REGEXP,  $v_url, $match))
                     $output = [ 'facebook', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 100, 'N.facebookThumbnail(this)' ];
                 else if (preg_match(static::MEDIACRUSH_REGEXP, $v_url, $match))
-                    $output = [ 'mediacrush', $match[1], 'https://mediacru.sh/'. $match[1] . '.jpg', 130 ];
+                    $output = [ 'mediacrush', $match[1], 'https://media.nerdz.eu/'. $match[1] . '.jpg', 130 ];
                 else
                     return $m[0];
                 return '<a class="yt_frame" data-vid="' . $output[1] . '" data-host="' . $output[0] . '">' .
