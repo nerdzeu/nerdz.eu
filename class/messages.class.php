@@ -11,7 +11,7 @@ class Messages
     const VIMEO_REGEXP      = '#^https?://(?:www\.)?vimeo\.com.+?(\d+).*$#i';
     const DMOTION_REGEXP    = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
     const FACEBOOK_REGEXP   = '#^https?://(?:www\.)?facebook\.com/(?:photo|video)\.php(?:\?v=|\?.+?&v=)(\d+)#i';
-    const MEDIACRUSH_REGEXP = '#^https://(?:cdn\.)?mediacru\.sh/([a-z0-9_-]{12})(?:|\.[a-z0-9]{2,4})#i';
+    const MEDIACRUSH_REGEXP = '#^https?://(?:cdn\.)?media\.nerdz\.eu/([a-z0-9_-]{12})(?:|\.[a-z0-9]{2,4})#i';
 
     protected $project;
     protected $user;
