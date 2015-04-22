@@ -303,7 +303,7 @@ class Messages
                 else if (preg_match (static::FACEBOOK_REGEXP,  $v_url, $match))
                     $output = [ 'facebook', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 100, 'N.facebookThumbnail(this)' ];
                 else if (preg_match(static::MEDIACRUSH_REGEXP, $v_url, $match))
-                    $output = [ 'mediacrush', $match[1], 'https://media.nerdz.eu/'. $match[1] . '.jpg', 130 ];
+                    $output = [ 'nerdzcrush', $match[1], 'https://media.nerdz.eu/'. $match[1] . '.jpg', 130 ];
                 else
                     return $m[0];
                 return '<a class="yt_frame" data-vid="' . $output[1] . '" data-host="' . $output[0] . '">' .
@@ -340,7 +340,7 @@ class Messages
                 else if (preg_match (static::FACEBOOK_REGEXP,   $v_url, $match))
                     $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" frameborder="0"></iframe>';
                 else if (preg_match (static::MEDIACRUSH_REGEXP, $v_url, $match))
-                    $iframe_code = '<div class="mediacrush" data-media="'.$match[1].'#noautoplay,noloop"></div>';
+                    $iframe_code = '<div class="nerdzcrush" data-media="'.$match[1].'#noautoplay,noloop"></div>';
                 else
                     return $m[0];
                 return '<div style="width:100%; text-align:center"><br />' . $iframe_code . '</div>';

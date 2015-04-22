@@ -32,14 +32,14 @@ function N() /* THE FATHER of God (class/object/function)*/
             case "facebook":
                 iframe = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='+vid+'" frameborder="0"></iframe>';
             break;
-            case "mediacrush":
-                iframe = '<div class="mediacrush" data-media="'+vid+'#noautoplay,noloop"></div>';
+            case "nerdzcrush":
+                iframe = '<div class="nerdzcrush" data-media="'+vid+'#noautoplay,noloop"></div>';
             break;
         }
         a.html ('<div style="width:100%; text-align:center"><br />'+iframe+'</div>');
         a.css ('cursor','default');
-        if(a.data ("host") == "mediacrush") {
-            MediaCrush.renderAll();
+        if(a.data ("host") == "nerdzcrush") {
+            NERDZCrush.renderAll();
         }
     };
     

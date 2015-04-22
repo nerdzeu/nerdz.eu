@@ -63,7 +63,7 @@ foreach($headers['js'] as $var) {
 }
 ?>
 <script type="application/javascript" src="<?php echo $static_domain;?>/static/js/api.php"></script>
-<script type="application/javascript" src="<?php echo $static_domain;?>/static/js/mediacrush.min.js" async></script>
+<script type="application/javascript" src="<?php echo $static_domain;?>/static/js/nerdzcrush.min.js" async></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 extensions: ["tex2jax.js"],

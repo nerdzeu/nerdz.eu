@@ -1,4 +1,4 @@
-window.MediaCrush = function() {
+window.NERDZCrush = function() {
     var self = this;
     self.version = 1;
     self.domain = "https://media.nerdz.eu/";
@@ -59,8 +59,8 @@ window.MediaCrush = function() {
             image.style.maxHeight = self.maxMediaHeight;
         }
         target.appendChild(image);
-        target.classList.remove("mediacrush");
-        target.classList.add("mediacrush-processed");
+        target.classList.remove("nerdzcrush");
+        target.classList.add("nerdzcrush-processed");
         if (callback) {
             callback(target, media);
         }
@@ -82,8 +82,8 @@ window.MediaCrush = function() {
             callback: callback
         };
         target.appendChild(iframe);
-        target.classList.remove("mediacrush");
-        target.classList.add("mediacrush-processed");
+        target.classList.remove("nerdzcrush");
+        target.classList.add("nerdzcrush-processed");
     };
     window.addEventListener("message", function(e) {
         var frame = iframes[e.data.media];
@@ -244,7 +244,7 @@ window.MediaCrush = function() {
         });
     };
     self.renderAll = function() {
-        var elements = document.querySelectorAll("div.mediacrush");
+        var elements = document.querySelectorAll("div.nerdzcrush");
         var hashes = [];
         for (var i = 0; i < elements.length; i++) {
             var hash = elements[i].getAttribute("data-media");
@@ -296,11 +296,11 @@ window.MediaCrush = function() {
 }();
 
 window.addEventListener("load", function() {
-    if (window.preventMediaCrushAutoload) {
+    if (window.preventNERDZCrushAutoload) {
         return;
     }
-    if (window.beforeMediaCrushLoad) {
-        window.beforeMediaCrushLoad();
+    if (window.beforeNERDZCrushLoad) {
+        window.beforeNERDZCrushLoad();
     }
-    MediaCrush.renderAll();
+    NERDZCrush.renderAll();
 }, false);
