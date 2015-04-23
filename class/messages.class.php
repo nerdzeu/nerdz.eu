@@ -10,8 +10,8 @@ class Messages
     const YOUTUBE_REGEXP    = '#^https?://(?:(?:www|m)\.)?(?:youtube\.com/watch(?:\?v=|\?.+?&v=)|youtu\.be/)([a-z0-9_-]+)#i';
     const VIMEO_REGEXP      = '#^https?://(?:www\.)?vimeo\.com.+?(\d+).*$#i';
     const DMOTION_REGEXP    = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
-    const FACEBOOK_REGEXP   = '#^https?://(?:www\.)?facebook\.com/(?:(?:photo|video)\.php(?:\?v=|\?.+?&v=)|[a-z]+/videos/)(\d+)/?#i';
-    const MEDIACRUSH_REGEXP = '#^https?://(?:cdn\.)?media\.nerdz\.eu/([a-z0-9_-]{12})(?:|\.[a-z0-9]{2,4})#i';
+    const FACEBOOK_REGEXP   = '#^https?://(?:www\.)?facebook\.com/(?:(?:photo|video)\.php(?:\?v=|\?.+?&v=)|[a-z0-9._-]+/videos/)(\d+)/?#i';
+    const NERDZCRUSH_REGEXP = '#^https?://(?:cdn\.)?media\.nerdz\.eu/([a-z0-9_-]{12})(?:|\.[a-z0-9]{2,4})#i';
 
     protected $project;
     protected $user;
@@ -302,7 +302,7 @@ class Messages
                     $output = [ 'dailymotion', $match[1], 'https://www.dailymotion.com/thumbnail/video/' . $match[1], 100 ];
                 else if (preg_match (static::FACEBOOK_REGEXP,  $v_url, $match))
                     $output = [ 'facebook', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 100, 'N.facebookThumbnail(this)' ];
-                else if (preg_match(static::MEDIACRUSH_REGEXP, $v_url, $match))
+                else if (preg_match(static::NERDZCRUSH_REGEXP, $v_url, $match))
                     $output = [ 'nerdzcrush', $match[1], 'https://media.nerdz.eu/'. $match[1] . '.jpg', 130 ];
                 else
                     return $m[0];
@@ -339,7 +339,7 @@ class Messages
                     $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
                 else if (preg_match (static::FACEBOOK_REGEXP,   $v_url, $match))
                     $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" frameborder="0"></iframe>';
-                else if (preg_match (static::MEDIACRUSH_REGEXP, $v_url, $match))
+                else if (preg_match (static::NERDZCRUSH_REGEXP, $v_url, $match))
                     $iframe_code = '<div class="nerdzcrush" data-media="'.$match[1].'#noautoplay,noloop"></div>';
                 else
                     return $m[0];
