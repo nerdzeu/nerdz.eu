@@ -15,7 +15,7 @@ class Project
             if(!is_numeric($id)) {
                 $this->id = $this->getId($id);
             } else {
-                $this->id = $id;
+                $this->id = intval($id);
             }
         }
     }
@@ -30,6 +30,7 @@ class Project
         } else if(!is_numeric($id)) {
             $id = $this->getId($id);
         }
+        $id = intval($id);
     }
 
     public function getObject(&$id = null)

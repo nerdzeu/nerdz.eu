@@ -23,8 +23,13 @@ class Security
 
     public static function limitControl($limit,$n)
     {
-        if(is_numeric($limit) && $limit < $n && $limit > 0)
-            return $limit;
+        if(is_numeric($limit)) {
+            $limit = intval($limit);
+            if($limit < $n && $limit > 0) {
+                return $limit;
+            }
+            return $n;
+        }
 
         if(!is_string($limit))
             return $n;

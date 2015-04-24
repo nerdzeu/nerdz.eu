@@ -827,6 +827,13 @@ return $o->cc;
 
     public function getObject($id)
     {
+        if(!is_numeric($id)) {
+            return false;
+        }
+        $id = intval($id);
+        if(!$id) {
+            return false;
+        }
         return Db::query(
             [
                 'SELECT * FROM "users" u JOIN "profiles" p ON u.counter = p.counter WHERE p.counter = :id',

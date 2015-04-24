@@ -286,7 +286,10 @@ class Messages
         $str = preg_replace_callback('#\[twitter\]\s*(.+?)\s*\[/twitter\]#i',function($m) use($truncate) {
             // The reason for the 'data-uuid' attribute is in the jclass.js file, in the loadTweet function.
             // with a fixed height (220px - when truncate is true - js trimmer can handle post size
-            return '<img data-id="'.$m[1].'" data-uuid="'.mt_rand().'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)"'.($truncate ? ' height="220"' : '').'>';
+            if(!(is_numeric($m[1]) || Utils::isValidURL($m[1])))
+                return $m[0];
+
+            return '<img data-id="'.htmlspecialchars($m[1], ENT_QUOTES, 'UTF-8').'" data-uuid="'.mt_rand().'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)"'.($truncate ? ' height="220"' : '').'>';
         },$str,10);
 
         if($truncate)

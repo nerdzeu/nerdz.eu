@@ -7,7 +7,7 @@ use NERDZ\Core\User;
 $user = new NERDZ\Core\User();
 $tplcfg = $user->getTemplateCfg();
 ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
-$q = !empty($_GET['q']) ? trim(htmlspecialchars($_GET['q'], ENT_QUOTES,'UTF-8')) : '';
+$q = !empty($_GET['q']) && is_string($_GET['q']) ? htmlspecialchars(trim($_GET['q']), ENT_QUOTES,'UTF-8') : '';
 ?>
     <!DOCTYPE html>
     <html lang="<?php echo $user->getBoardLanguage();?>">
