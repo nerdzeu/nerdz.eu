@@ -33,7 +33,7 @@ else
             )
         ) : 'home';
 
-    $vals['toid_n'] = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : false;
+    $vals['toid_n'] = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : false;
     if($vals['toid_n']) {
         if($prj) {
             $vals['to_n'] = Project::getName($vals['toid_n']);

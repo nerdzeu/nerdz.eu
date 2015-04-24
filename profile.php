@@ -10,13 +10,14 @@ $messages = new Messages();
 $user     = new User();
 $tplcfg   = $user->getTemplateCfg();
 
-$id     = isset($_GET['id'])      && is_numeric($_GET['id'])     ? intval($_GET['id'])     : false;
+$id     = isset($_GET['id'])      && is_numeric($_GET['id'])     ? $_GET['id']     : false; // intval below
 $pid    = isset($_GET['pid'])     && is_numeric($_GET['pid'])    ? intval($_GET['pid'])    : false;
 $action = NERDZ\Core\Utils::actionValidator(!empty($_GET['action']) && is_string ($_GET['action']) ? $_GET['action'] : false);
 
 $found  = true;
 if($id)
 {
+    $id = intval($id); //intval here, so we can display the user not found message
     if(false === ($info = $user->getObject($id))) /* false se l'id richiesto non esiste*/
     {
         $username = $user->lang('USER_NOT_FOUND');

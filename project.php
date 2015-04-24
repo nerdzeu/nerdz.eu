@@ -12,7 +12,7 @@ $project = new Project();
 $messages = new Messages();
 $tplcfg = $user->getTemplateCfg();
 
-$gid = isset($_GET['gid']) && is_numeric($_GET['gid']) ? intval($_GET['gid']) : false;
+$gid = isset($_GET['gid']) && is_numeric($_GET['gid']) ? $_GET['gid'] : false; //intval below
 $pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? intval($_GET['pid']) : false;
 $action = NERDZ\Core\Utils::actionValidator(!empty($_GET['action']) && is_string ($_GET['action']) ? $_GET['action'] : false);
 
@@ -22,6 +22,7 @@ $post = new stdClass();
 $post->message = '';
 if($gid)
 {
+    $gid = intval($gid);
     if(false === ($info = $project->getObject($gid)))
         $name = $user->lang('PROJECT_NOT_FOUND');
     else
