@@ -9,5 +9,21 @@
     {
         "regex": "#^(www\\.)?(i\\.)?imgur\\.com$#i",
         "name": "imgur"
+    },
+    {
+        "regex": "#^[ab]\\pomf\\se$#i",
+        "name": "Pomf.se"
+    },
+    {
+        "regex": "#^imgrush\\.com$#i",
+        "name": "imgrush"
+    },
+    {
+        "regex": "#fbcdn\\.net$#i",
+        "name": "Facebook"
+    },
+    {
+        "regex": "#^i\\.ytimg\\.com$/#i",
+        "name": "YouTube"
     }
 ]
