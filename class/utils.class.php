@@ -44,7 +44,6 @@ class Utils
     public static function getValidImageURL($url)
     {
         $url        = strip_tags(trim($url));
-        $sslEnabled = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
         $domain     = System::getResourceDomain();
 
         if (!static::isValidURL($url))
@@ -62,8 +61,9 @@ class Utils
         $urlInfo = parse_url($url);
         foreach($trusted_hosts as $host) {
             if(preg_match($host['regex'], $urlInfo['host'])) {
-                if($sslEnabled && $urlInfo['scheme'] !== 'https') {
-                    return preg_replace('^http', 'https', $url);
+                if($urlInfo['scheme'] !== 'https') {
+                    $count = 1; // str_replace wants the count parameter passed by referece (mfw)
+                    return str_replace('http', 'https', $url, $count);
                 }
                 return $url;
             }
