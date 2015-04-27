@@ -34,7 +34,7 @@ spl_autoload_register(__NAMESPACE__ . '\\Autoloader::load');
 // Define NERDZ constants
 Config::init();
 // Start session
-if(Config\REDIS_ENABLED)
-    new RedisSessionHandler();
+if(Config\REDIS_HOST !== '' && Config\REDIS_PORT !== '')
+    new RedisSessionHandler(Config\REDIS_HOST, Config\REDIS_PORT);
 else
     session_start();

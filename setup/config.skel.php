@@ -45,7 +45,7 @@ class Variables
 
         // General configuration
         // Your website name
-        'SITE_NAME'              => 'NERDZ',
+        'SITE_NAME'              => 'NERDZ TEST',
 
         // Domain configuration. The protocol should not be included.
         // Your NERDZ hostname. If you are running NERDZ on your
@@ -67,9 +67,9 @@ class Variables
         // NERDZ uses an automatic template minification system, this
         // means that every static file of a template is automagically
         // minified. This could lead to problems if you haven't a
-        // proper installation of uglifyjs and csstidy. Disable the
+        // proper installation of uglifyjs. Disable the
         // minification if you don't need it or don't want to install
-        // uglifyjs and csstidy. Enabled by default.
+        // uglifyjs and csstidy.
         'MINIFICATION_ENABLED'   => false,
         // Specify the command used to minify JS files.
         // %path% will be replaced with the file to be minified.
@@ -77,27 +77,33 @@ class Variables
         //'MINIFICATION_JS_CMD'  => 'something-js  %path%',
 
         // Misc configuration
-        // True if you want to enable Redis session sharing. Disable it
-        // if you don't have predis or a Redis server. Enabled by default.
-        'REDIS_ENABLED'          => true,
+        // Set host and port if you want to enable Redis session sharing. Disable it
+        // if you don't have predis or a Redis server.
+        // 'REDIS_HOST'          => 'redis.somewhere.com',
+        // 'REDIS_PORT'          => 4545,
+ 
         // The key used to post issues to GitHub. Get it from your GitHub account.
-        'ISSUE_GIT_KEY'          => '...',
+        // 'ISSUE_GIT_KEY'          => '...',
+
         // True if you want to connect to pushed (http://git.io/hJ9-rg)
         // to serve push notifications to client apps like NerdzMessenger
         // (http://git.io/29fYbg)
-        'PUSHED_ENABLED'         => true,
+        //'PUSHED_ENABLED'         => false,
         // PHP client supports only local pushed instances on IP.
         // This parameter specifies the IP version to use to connect to pushed.
-        'PUSHED_IP6'             => true,
-        'PUSHED_PORT'            => '5667',
+        // Default false
+        //'PUSHED_IP6'             => true, // if listen on local ipv6
+        //'PUSHED_PORT'            => 5667,
+
         // SSL configuration
         // If you have configured a Camo SSL proxy server (http://git.io/YuvCpQ)
-        // and set up your webserver to proxy requests from
-        // https://SITE_HOST/secure/image/HASH?url=ENCODED_URL to Camo,
-        // then you must put your Camo private key here.
+        // then you must put your Camo private key here, follwed by the host.
+        // Requests will be routed to:
+        // https://CAMO_HOST/HASH?url=ENCODED_URL to Camo,
         // By default it is set to an empty string and your images will be
         // routed to our trusted public SSL proxy.
         //'CAMO_KEY'               => "THAT-CAMO-KEY",
+        //'CAMO_HOST'              => 'camo.somewhere.com'
         // True if every login request should be sent via HTTPS.
         // This works via some CORS magic. You need to enable CORS on the HTTP
         // and mobile domains, and also you need to send the

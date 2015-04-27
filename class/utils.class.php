@@ -50,24 +50,28 @@ class Utils
         if (!static::isValidURL($url))
             return $domain.'/static/images/invalidImgUrl.php';
 
-        if($sslEnabled) {
-            // valid ssl url
-            if(preg_match('#^https://#i',$url))
+        // Proxy every image that's not in data\trusted-host.json
+        $cache = 'nerdz_trusted'.Config\SITE_HOST;
+        if(!($trusted_hosts = Utils::apc_get($cache)))
+            $trusted_hosts = Utils::apc_set($cache, function() {
+                $txt = file_get_contents($_SERVER['DOCUMENT_ROOT'] .'/data/trusted-hosts.json');
+                return json_decode (preg_replace ('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);
+            }, 86400);
+
+        // Avoid IP address (and other user info) spoofing
+        $urlInfo = parse_url($url);
+        foreach($trusted_hosts as $host) {
+            if(preg_match($host['regex'], $urlInfo['host'])) {
+                if($sslEnabled && $urlInfo['scheme'] !== 'https') {
+                    return preg_replace('^http', 'https', $url);
+                }
                 return $url;
-
-            // imgur without ssl
-            if(preg_match("#^http://(www\.)?(i\.)?imgur\.com/[a-z0-9]+\..{3}$#i",$url)) {
-                return preg_replace_callback("#^http://(?:www\.)?(?:i\.)?imgur\.com/([a-z0-9]+\..{3})$#i", function($matches) {
-                    return 'https://i.imgur.com/'.$matches[1];
-                },$url);
             }
-
-            // url hosted on a non ssl host - use camo or our trusted proxy
-            return Config\CAMO_KEY == ''
-                ? 'https://i0.wp.com/' . preg_replace ('#^http://|^ftp://#i', '', $url)
-                : $domain.'/secure/image/'.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
         }
-        return $url;
+        // If here, host is not a trusted host
+        return Config\CAMO_KEY === '' || Config\CAMO_HOST === ''
+            ? 'https://i0.wp.com/' . preg_replace ('#^https?://|^ftp://#i', '', $url)
+            : 'https://'.Config\CAMO_HOST.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
     }
 
     public static function userLink($user)
@@ -82,7 +86,9 @@ class Utils
 
     public static function minifyHTML($str)
     {
-        return preg_replace('#>\s+<#','> <',preg_replace('#^\s+|\s+$|\n#m','',$str));
+        return Config\MINIFICATION_ENABLED
+            ? preg_replace('#>\s+<#','> <',preg_replace('#^\s+|\s+$|\n#m','',$str))
+            : $str;
     }
 
     public static function toJsonResponse($status, $message)

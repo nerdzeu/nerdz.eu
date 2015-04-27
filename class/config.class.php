@@ -16,20 +16,28 @@ class Config
             trigger_error ('Invalid configuration: missing Config\\Variables::$data variable', E_USER_ERROR);
 
         $CONSTANTS = [
-            'MINIFICATION_ENABLED' => true,
-            'REDIS_ENABLED'        => true,
-            'PUSHED_ENABLED'       => true,
+            'MINIFICATION_ENABLED' => false,
+            'REDIS_HOST'           => '',
+            'REDIS_PORT'           => '',
+
+            'PUSHED_ENABLED'       => false,
             'PUSHED_IP6'           => true,
             'PUSHED_PORT'          => 5667,
+
             'MIN_LENGTH_USER'      => 2,
             'MIN_LENGTH_PASS'      => 6,
             'MIN_LENGTH_NAME'      => 2,
             'MIN_LENGTH_SURNAME'   => 2,
             'CAPTCHA_LEVEL'        => 5,
+
             'CAMO_KEY'             => '',
+            'CAMO_HOST'            => '',
+
             'HTTPS_DOMAIN'         => '',
+            'STATIC_DOMAIN'        => '',
             'LOGIN_SSL_ONLY'       => false,
             'MINIFICATION_JS_CMD'  => 'uglifyjs %path% -c unused=false',
+
             'POSTGRESQL_HOST'      => -1, // null does not work since isset() is a faget
             'POSTGRESQL_DATA_NAME' => -1,
             'POSTGRESQL_USER'      => -1,
@@ -38,8 +46,7 @@ class Config
             'SITE_HOST'            => -1,
             'SITE_NAME'            => -1,
             'MOBILE_HOST'          => -1,
-            'STATIC_DOMAIN'        => -1,
-            'ISSUE_GIT_KEY'        => -1,
+            'ISSUE_GIT_KEY'        => '',
             'SMTP_SERVER'          => -1,
             'SMTP_PORT'            => -1,
             'SMTP_USER'            => -1,

@@ -1,0 +1,13 @@
+/*
+ * List of trusted hosts. Do not proxy content from these sources
+*/
+[
+    {
+        "regex": "#^media\\.nerdz\\.eu$#i",
+        "name": "NERDZCrush"
+    },
+    {
+        "regex": "#^(www\\.)?(i\\.)?imgur\\.com$#i",
+        "name": "imgur"
+    }
+]

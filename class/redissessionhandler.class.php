@@ -31,8 +31,14 @@ class RedisSessionHandler implements \SessionHandlerInterface
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct($host = null, $port = null)
     {
+        if($host !== null) {
+            $this->host = $host;
+        }
+        if($post !== null) {
+            $this->port = $port;
+        }
         $this->redis = new Predis\Client(array(
             'scheme' => 'tcp',
             'host' => $this->host,
