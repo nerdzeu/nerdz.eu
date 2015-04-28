@@ -23,7 +23,11 @@
         "name": "Facebook"
     },
     {
-        "regex": "#^i\\.ytimg\\.com$/#i",
+        "regex": "#^i\\.ytimg\\.com$#i",
         "name": "YouTube"
+    },
+    {
+        "regex": "#twimg\\.com$#i",
+        "name": "Twitter"
     }
 ]
