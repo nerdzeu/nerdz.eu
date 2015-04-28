@@ -11,7 +11,7 @@
         "name": "imgur"
     },
     {
-        "regex": "#^[ab]\\pomf\\se$#i",
+        "regex": "#^[ab]\\.pomf\\.se$#i",
         "name": "Pomf.se"
     },
     {
