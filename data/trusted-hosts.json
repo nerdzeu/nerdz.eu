@@ -19,7 +19,7 @@
         "name": "imgrush"
     },
     {
-        "regex": "#fbcdn\\.net$#i",
+        "regex": "#^fbcdn.+?akamaihd\\.net$#i",
         "name": "Facebook"
     },
     {
