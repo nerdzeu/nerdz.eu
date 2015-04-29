@@ -253,6 +253,7 @@ if($enter)
         if($user->hasInBlacklist($id)) //fake post not found [ same trick in the header ]
         {
             $user->getTPL()->assign('banners_a',$vals['banners_a']);
+            require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
             $user->getTPL()->draw('profile/postnotfound');
         }
         elseif(!($post = Db::query(
@@ -267,6 +268,7 @@ if($enter)
         ))
         {
             $user->getTPL()->assign('banners_a',$vals['banners_a']);
+            require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
             $user->getTPL()->draw('profile/postnotfound');
         }
         else
