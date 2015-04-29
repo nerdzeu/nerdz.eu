@@ -16,23 +16,10 @@ class Trend
     {
         $ret = [];
         if(!($trends = Db::query(
-            'with all_tag_time(tag, time) as (
-                (
-                    select pc.tag, p.time
-                    from posts p inner join posts_classification pc
-                    on pc.u_hpid = p.hpid group by pc.tag, p.time order by p.time desc
-                )
-                union
-                (
-                    select pc.tag, p.time
-                    from groups_posts p inner join posts_classification pc
-                    on pc.g_hpid = p.hpid group by pc.tag, p.time
-                )
-            )
-            select distinct lower(t.tag) as tag, extract(epoch from t.time) as time
-            from all_tag_time t inner join (
+            'select distinct t.tag, extract(epoch from t.time) as time
+            from posts_classification t inner join (
                 select lower(tag) as tag, max(time) as maxtime
-                from all_tag_time group by lower(tag)
+                from posts_classification group by lower(tag)
             ) as tbl
             on lower(tbl.tag) = lower(t.tag) and tbl.maxtime = t.time
             order by time desc limit 10', Db::FETCH_OBJ, true)))
