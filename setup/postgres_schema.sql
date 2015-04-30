@@ -142,36 +142,36 @@ END $$;
 CREATE FUNCTION after_insert_group_post() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
- BEGIN
-     WITH to_notify("user") AS (
-         (
-             -- members
-             SELECT "from" FROM "groups_members" WHERE "to" = NEW."to"
-                 UNION DISTINCT
-             --followers
-             SELECT "from" FROM "groups_followers" WHERE "to" = NEW."to"
-                 UNION DISTINCT
-             SELECT "from"  FROM "groups_owners" WHERE "to" = NEW."to"
-         )
-         EXCEPT
-         (
-             -- blacklist
-             SELECT "from" AS "user" FROM "blacklist" WHERE "to" = NEW."from"
-                 UNION DISTINCT
-             SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
-                 UNION DISTINCT
-             SELECT NEW."from" -- I shouldn't be notified about my new post
-         )
-     )
+      BEGIN
+      WITH to_notify("user") AS (
+          (
+              -- members
+              SELECT "from" FROM "groups_members" WHERE "to" = NEW."to"
+                  UNION DISTINCT
+              --followers
+              SELECT "from" FROM "groups_followers" WHERE "to" = NEW."to"
+                  UNION DISTINCT
+              SELECT "from"  FROM "groups_owners" WHERE "to" = NEW."to"
+          )
+          EXCEPT
+          (
+              -- blacklist
+              SELECT "from" AS "user" FROM "blacklist" WHERE "to" = NEW."from"
+                  UNION DISTINCT
+              SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
+                  UNION DISTINCT
+              SELECT NEW."from" -- I shouldn't be notified about my new post
+          )
+      )
 
-     INSERT INTO "groups_notify"("from", "to", "time", "hpid") (
-         SELECT NEW."to", "user", NEW."time", NEW."hpid" FROM to_notify
-     );
+      INSERT INTO "groups_notify"("from", "to", "time", "hpid") (
+          SELECT NEW."to", "user", NEW."time", NEW."hpid" FROM to_notify
+      );
 
-     PERFORM hashtag(NEW.message, NEW.hpid, true, NEW.from, NEW.time);
-     PERFORM mention(NEW."from", NEW.message, NEW.hpid, true, NEW.from, NEW.time);
-     RETURN NULL;
- END $$;
+      PERFORM hashtag(NEW.message, NEW.hpid, true, NEW.from, NEW.time);
+      PERFORM mention(NEW."from", NEW.message, NEW.hpid, true);
+      RETURN NULL;
+     END $$;
 
 
 --
@@ -384,7 +384,6 @@ BEGIN
     SELECT p."to" INTO NEW."to" FROM "groups_posts" p WHERE p.hpid = NEW.hpid;
 
     NEW.message = message_control(NEW.message);
-
 
     SELECT T."from" INTO postFrom FROM (SELECT "from" FROM "groups_posts" WHERE hpid = NEW.hpid) AS T;
     PERFORM blacklist_control(NEW."from", postFrom); --blacklisted post creator
@@ -2553,13 +2552,13 @@ CREATE TABLE profiles (
     yahoo character varying(350) DEFAULT ''::character varying NOT NULL,
     userscript character varying(128) DEFAULT ''::character varying NOT NULL,
     template smallint DEFAULT 0 NOT NULL,
-    mobile_template smallint DEFAULT 1 NOT NULL,
     dateformat character varying(25) DEFAULT 'd/m/Y, H:i'::character varying NOT NULL,
     facebook character varying(350) DEFAULT ''::character varying NOT NULL,
     twitter character varying(350) DEFAULT ''::character varying NOT NULL,
     steam character varying(350) DEFAULT ''::character varying NOT NULL,
     push boolean DEFAULT false NOT NULL,
     pushregtime timestamp(0) with time zone DEFAULT now() NOT NULL,
+    mobile_template smallint DEFAULT 1 NOT NULL,
     closed boolean DEFAULT false NOT NULL,
     template_variables json DEFAULT '{}'::json NOT NULL
 );
@@ -3044,11 +3043,11 @@ ALTER TABLE ONLY comments_no_notify
 
 
 --
--- Name: comments_no_notify_unique_from_to; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: comments_no_notify_unique_from_to_hpid; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY comments_no_notify
-    ADD CONSTRAINT comments_no_notify_unique_from_to UNIQUE ("from", "to");
+    ADD CONSTRAINT comments_no_notify_unique_from_to_hpid UNIQUE ("from", "to", hpid);
 
 
 --
@@ -3268,11 +3267,11 @@ ALTER TABLE ONLY groups_notify
 
 
 --
--- Name: groups_notify_unique_from_to; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: groups_notify_unique_from_to_hpid; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY groups_notify
-    ADD CONSTRAINT groups_notify_unique_from_to UNIQUE ("from", "to");
+    ADD CONSTRAINT groups_notify_unique_from_to_hpid UNIQUE ("from", "to", hpid);
 
 
 --
