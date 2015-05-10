@@ -7,6 +7,9 @@ $user = new User();
 if($user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ALREADY_LOGGED')));
 
+if(!NERDZ\Core\Security::refererControl())
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
+
 $username = isset($_POST['username']) ? htmlspecialchars(trim($_POST['username']),ENT_QUOTES,'UTF-8') : false;
 $pass     = isset($_POST['password']) ? $_POST['password'] : false;
 
