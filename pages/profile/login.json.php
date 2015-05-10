@@ -10,6 +10,9 @@ if($user->isLogged())
 if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
 
+if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
+    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
+
 $username = isset($_POST['username']) ? htmlspecialchars(trim($_POST['username']),ENT_QUOTES,'UTF-8') : false;
 $pass     = isset($_POST['password']) ? $_POST['password'] : false;
 
