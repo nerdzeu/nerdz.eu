@@ -26,6 +26,12 @@ $func = function() use ($user) {
     $commonvars['mylang_n']  = $user->getLanguage();
     $commonvars['flagdir_n'] = NERDZ\Core\System::getResourceDomain().'/static/images/flags/';
 
+    $banners = (new NERDZ\Core\Banners())->getBanners();
+    $commonvars['banners_a'] = [];
+    shuffle($banners);
+    foreach($banners as $ban)
+        $commonvars['banners_a'][$ban[1]] = $ban[2];
+
     $user->getTPL()->assign($commonvars);
 };
 

@@ -2,17 +2,10 @@
 if(!$user->isLogged())
     die(header('Location: /'));
 
-use NERDZ\Core\Banners;
 use NERDZ\Core\Db;
 use NERDZ\Core\User;
 use NERDZ\Core\System;
 $vals = [];
-
-$banners = (new Banners())->getBanners();
-$vals['banners_a'] = [];
-shuffle($banners);
-foreach($banners as $ban)
-    $vals['banners_a'][$ban[1]] = $ban[2];
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 $vals['canwriteissue_b'] = $vals['canwritenews_b'] = false;

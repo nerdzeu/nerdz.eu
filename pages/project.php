@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-use NERDZ\Core\Banners;
+
 use NERDZ\Core\Db;
 use NERDZ\Core\Project;
 use NERDZ\Core\Utils;
@@ -103,12 +103,6 @@ else
 
         $vals['openproject_b'] = $project->isOpen($info->counter);
 
-        $banners = (new Banners())->getBanners();
-        $vals['banners_a'] = [];
-        shuffle($banners);
-        foreach($banners as $ban)
-            $vals['banners_a'][$ban[1]] = $ban[2];
-
         $vals['canifollow_b'] = $vals['logged_b'] && !in_array($_SESSION['id'],array_merge($mem,$fol));
 
         $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $project->getOwner());
@@ -142,7 +136,6 @@ else
                 || $user->hasInBlacklist($post->from) // fake post not found
             )
             {
-                $user->getTPL()->assign('banners_a',$vals['banners_a']);
                 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
                 $user->getTPL()->draw('project/postnotfound');
             }

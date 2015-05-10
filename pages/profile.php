@@ -1,6 +1,5 @@
 <?php
 
-use NERDZ\Core\Banners;
 use NERDZ\Core\Browser;
 use NERDZ\Core\Config;
 use NERDZ\Core\System;
@@ -16,12 +15,6 @@ $vals['id_n'] = $info->counter;
 
 $vals['canwriteissue_b'] = false;
 $vals['canwritenews_b']  = $user->isLogged() && $info->counter == $_SESSION['id'];
-
-$banners = (new Banners())->getBanners();
-$vals['banners_a'] = [];
-shuffle($banners);
-foreach($banners as $ban)
-    $vals['banners_a'][$ban[1]] = $ban[2];
 
 $vals['canshowmenu_b'] = $vals['logged_b'] && ($_SESSION['id'] != $info->counter);
 
@@ -252,7 +245,6 @@ if($enter)
     {
         if($user->hasInBlacklist($id)) //fake post not found [ same trick in the header ]
         {
-            $user->getTPL()->assign('banners_a',$vals['banners_a']);
             require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
             $user->getTPL()->draw('profile/postnotfound');
         }
@@ -267,7 +259,6 @@ if($enter)
             ,Db::FETCH_OBJ)
         ))
         {
-            $user->getTPL()->assign('banners_a',$vals['banners_a']);
             require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
             $user->getTPL()->draw('profile/postnotfound');
         }
