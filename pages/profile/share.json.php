@@ -5,7 +5,8 @@ use NERDZ\Core\Messages;
 use NERDZ\Core\Utils;
 use NERDZ\Core\User;
 
-$user = new Messages();
+$user = new User();
+$messages = new Messages();
 
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
@@ -34,7 +35,7 @@ if($_SESSION['id'] != $to)
         die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('CLOSED_PROFILE_DESCR')));
 }
 
-$share = function($to,$url,$message = NULL) use($user)
+$share = function($to,$url,$message = NULL) use($user, $messages)
 {
     if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$url))
         $url = "http://{$url}";
@@ -42,14 +43,14 @@ $share = function($to,$url,$message = NULL) use($user)
     if(preg_match('#(.*)youtube.com\/watch\?v=(.{11})#Usim',$url)|| preg_match('#http:\/\/youtu.be\/(.{11})#Usim',$url))
     {
         $message = "[youtube]{$url}[/youtube] ".$message;
-        return $user->add($to,$message);
+        return $messages->add($to,$message);
     }
 
     if(preg_match('#http://sprunge.us/([a-z0-9\.]+)\?(.+?)#i',$url,$res))
     {
         $file = file_get_contents('http://sprunge.us/'.$res[1]);
         $message = "[code={$res[2]}]{$file}[/code]".$message;
-        return $user->add($to,$message);
+        return $messages->add($to,$message);
     }
 
     $h = @get_headers($url,Db::FETCH_OBJ);
@@ -61,7 +62,7 @@ $share = function($to,$url,$message = NULL) use($user)
         if(preg_match('#(image)#i',$ct))
         {
             $message = "[img]{$url}[/img]".$message;
-            return $user->add($to,$message);
+            return $messages->add($to,$message);
         }
 
         if(preg_match('#(htm)#i',$ct))
@@ -81,7 +82,7 @@ $share = function($to,$url,$message = NULL) use($user)
                     }
                 }
             $message = $flag ? "[url={$url}][img]{$img}[/img][/url]".$message : "[url]{$url}[/url] ".$message;
-            return $user->add($to,$message);
+            return $messages->add($to,$message);
         }
     }
 };
