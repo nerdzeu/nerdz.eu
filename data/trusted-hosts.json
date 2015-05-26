@@ -29,5 +29,9 @@
     {
         "regex": "#twimg\\.com$#i",
         "name": "Twitter"
+    },
+    {
+        "regex": "#^upload\\.wikimedia\\.org$#i",
+        "name": "Wikimedia"
     }
 ]
