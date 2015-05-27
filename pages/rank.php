@@ -5,7 +5,6 @@ use NERDZ\Core\Utils;
 use NERDZ\Core\Stuff;
 use NERDZ\Core\Db;
 use NERDZ\Core\User;
-use \PDO;
 
 $mo = empty($_GET['top']);
 

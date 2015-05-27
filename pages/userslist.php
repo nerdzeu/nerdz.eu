@@ -1,7 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
-use \PDO;
 
 $validFields = [ 'username', 'name', 'surname', 'birth_date', 'last', 'counter', 'registration_time' ];
 

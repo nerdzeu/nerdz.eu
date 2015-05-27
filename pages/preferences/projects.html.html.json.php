@@ -6,7 +6,6 @@ use NERDZ\Core\Project;
 use NERDZ\Core\User;
 use NERDZ\Core\Captcha;
 use NERDZ\Core\Db;
-use \PDO;
 
 $user    = new User();
 $project = new Project();

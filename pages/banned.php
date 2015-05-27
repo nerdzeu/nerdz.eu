@@ -1,6 +1,5 @@
 <?php
 use NERDZ\Core\Db;
-use \PDO;
 
 if(!($stmt = Db::query('SELECT u.username, b.user, b.motivation ,EXTRACT(EPOCH FROM "time") AS time FROM "ban" b JOIN "users" u ON u.counter = b.user ORDER BY "time" DESC', Db::FETCH_STMT)))
     echo $user->lang('ERROR');

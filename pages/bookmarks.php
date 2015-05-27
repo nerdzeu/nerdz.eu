@@ -4,7 +4,6 @@ use NERDZ\Core\Db;
 use NERDZ\Core\Project;
 use NERDZ\Core\Utils;
 use NERDZ\Core\Messages;
-use \PDO;
 
 $messages = new Messages();
 
