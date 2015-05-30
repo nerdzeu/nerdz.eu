@@ -50,20 +50,20 @@ foreach ($headers['css'] as $var) {
 /* END STYLESHEETS */
 /* BEGIN JQUERY */
 ?>
-<script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script type="application/javascript" src="<?php echo $static_domain;?>/static/js/pgwmodal.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="<?php echo $static_domain;?>/static/js/pgwmodal.min.js"></script>
 <?php
 /* END JQUERY */
 foreach($headers['js'] as $var) {
     if (is_array ($var)) continue;
     if (filter_var ($var,FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED))
-        echo '<script type="application/javascript" src="',$var,'"></script>';
+        echo '<script src="',$var,'"></script>';
     else
-        echo '<script type="application/javascript" src="',$static_domain,'/tpl/',$tno,'/',$var,'"></script>';
+        echo '<script src="',$static_domain,'/tpl/',$tno,'/',$var,'"></script>';
 }
 ?>
-<script type="application/javascript" src="<?php echo $static_domain;?>/static/js/api.php"></script>
-<script type="application/javascript" src="<?php echo $static_domain;?>/static/js/nerdzcrush.min.js" async></script>
+<script src="<?php echo $static_domain;?>/static/js/api.php"></script>
+<script src="<?php echo $static_domain;?>/static/js/nerdzcrush.min.js" async></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 extensions: ["tex2jax.js"],
@@ -76,8 +76,8 @@ extensions: ["tex2jax.js"],
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
     </script>
-    <script type="application/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js" async></script>
-    <script type="application/javascript">
+    <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js" async></script>
+    <script>
 <?php
 $trackingCacheKey = 'tracking_js'.NERDZ\Core\Config\SITE_HOST;
 if(!($tracking = Utils::apc_get($trackingCacheKey)))
@@ -129,4 +129,4 @@ if ($logged) {
 if($logged && isset($blistcss)) echo substr ($blistcss, 0, -1), '{border:1px solid #FF0000}</style>';
 /* END BLACKLIST_STUFF */
 if ($logged && (($o = Db::query(array('SELECT "userscript" FROM "profiles" WHERE "counter" = ?',array($_SESSION['id'])),Db::FETCH_OBJ))) && !empty($o->userscript))
-    echo '<script type="application/javascript" src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
+    echo '<script src="',html_entity_decode($o->userscript,ENT_QUOTES,'UTF-8'),'"></script>';
