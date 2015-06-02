@@ -71,7 +71,7 @@ class Utils
         // If here, host is not a trusted host
         return Config\CAMO_KEY === '' || Config\CAMO_HOST === ''
             ? 'https://i0.wp.com/' . preg_replace ('#^https?://|^ftp://#i', '', $url)
-            : 'https://'.Config\CAMO_HOST.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
+            : 'https://'.Config\CAMO_HOST.'/'.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
     }
 
     public static function userLink($user)
