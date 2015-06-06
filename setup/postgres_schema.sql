@@ -2597,6 +2597,37 @@ ALTER SEQUENCE reset_requests_counter_seq OWNED BY reset_requests.counter;
 
 
 --
+-- Name: searches; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE searches (
+    id bigint NOT NULL,
+    "from" bigint NOT NULL,
+    value character varying(90) NOT NULL,
+    "time" timestamp(0) without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: searches_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE searches_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: searches_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE searches_id_seq OWNED BY searches.id;
+
+
+--
 -- Name: special_groups; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2955,6 +2986,13 @@ ALTER TABLE ONLY posts_revisions ALTER COLUMN counter SET DEFAULT nextval('posts
 --
 
 ALTER TABLE ONLY reset_requests ALTER COLUMN counter SET DEFAULT nextval('reset_requests_counter_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY searches ALTER COLUMN id SET DEFAULT nextval('searches_id_seq'::regclass);
 
 
 --
@@ -4412,6 +4450,14 @@ ALTER TABLE ONLY lurkers
 
 ALTER TABLE ONLY reset_requests
     ADD CONSTRAINT reset_requests_to_fkey FOREIGN KEY ("to") REFERENCES users(counter);
+
+
+--
+-- Name: searches_from_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY searches
+    ADD CONSTRAINT searches_from_fkey FOREIGN KEY ("from") REFERENCES users(counter) ON DELETE CASCADE;
 
 
 --
