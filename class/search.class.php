@@ -107,7 +107,20 @@ class Search {
                 ]);
             ++$c;
         }
+        $this->log($tag);
         return $ret;
+    }
+
+    private function log($tag) {
+        if($this->user->isLogged()) {
+            Db::query([
+                'INSERT INTO searches("from", "value") VALUES(:id, :search)',
+                [
+                    ':id'     => $this->user->getId(),
+                    ':search' => $tag
+                ]
+            ],Db::NO_RETURN);
+        }
     }
 
 }
