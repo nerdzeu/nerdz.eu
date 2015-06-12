@@ -907,7 +907,7 @@ class Messages
                     ? ''
                     : '<a href="'.$codeurl.'" onclick="window.open(this.href); return false" class="nerdz-code-text-version">'.
                     $this->user->lang('TEXT_VERSION').'</a>'
-                ).'</div><pre class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</pre></div>',
+                ).'</div><code class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</code></div>',
                 $str);
             ++$i;
         }
