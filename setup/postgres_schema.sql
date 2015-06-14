@@ -941,7 +941,7 @@ BEGIN
             '\[music\].+?\[/music\]',' ','gi'),
             '\[img\].+?\[/img\]',' ','gi'),
             '\[twitter\].+?\[/twitter\]',' ','gi')
-         || ', ''(#(?!\d+[\W])[\w]{1,34})'', ''gi'')
+         || ', ''#((?![\d]+[^\w])[\w]{1,34})'', ''gi'')
         as matchedTag
             union distinct -- 2: spoiler
         select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
