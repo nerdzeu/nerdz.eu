@@ -73,7 +73,6 @@ class Messages
 
     public function bbcode($str,$truncate = null, $type = NULL,$pid = NULL,$id = NULL)
     {
-        $str = str_replace("\n",'<br />',$str);
         //evitare il parsing del bbcode nel tag code
         $codes = $this->getCodes($str);
         $index = 0;
@@ -86,6 +85,8 @@ class Messages
         }
 
         $domain = System::getResourceDomain();
+        $str = static::hashtag($str);
+        $str = str_replace("\n",'<br />',$str);
 
         $validURL = function($m) {
             $m[1] = trim($m[1]);
@@ -98,8 +99,6 @@ class Messages
             $url = preg_match('#^(?:https?|ftp):\/\/#i',$m[1]) ? $m[1] : 'http://'.$m[1];
             return isset($m[2]) ? '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
         };
-
-        $str = static::hashtag($str);
 
         $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#i',function($m) use ($validURL) {
             return $validURL($m);
@@ -362,7 +361,7 @@ class Messages
         {
             --$index;
             $lang = $codes[$index]['lang'];
-            $totalcode = $codes[$index]['code'];
+            $totalcode = str_replace("\n", '<br />', $codes[$index]['code']);
             $str = str_ireplace(">>>{$index}<<<","[code={$lang}]{$totalcode}[/code]",$str);
         }
 
