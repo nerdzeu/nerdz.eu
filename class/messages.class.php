@@ -361,7 +361,7 @@ class Messages
         {
             --$index;
             $lang = $codes[$index]['lang'];
-            $totalcode = str_replace("\n", '<br />', $codes[$index]['code']);
+            $totalcode = $codes[$index]['code'];
             $str = str_ireplace(">>>{$index}<<<","[code={$lang}]{$totalcode}[/code]",$str);
         }
 
@@ -906,7 +906,7 @@ class Messages
                     ? ''
                     : '<a href="'.$codeurl.'" onclick="window.open(this.href); return false" class="nerdz-code-text-version">'.
                     $this->user->lang('TEXT_VERSION').'</a>'
-                ).'</div><code class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\t",'&#09;',$totalcode).'</code></div>',
+                ).'</div><code class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\n",'<br />',str_replace(' ','&nbsp',str_replace("\t",'&#09;',$totalcode))).'</code></div>',
                 $str);
             ++$i;
         }
