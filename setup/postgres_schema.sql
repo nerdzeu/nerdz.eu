@@ -560,7 +560,7 @@ BEGIN
 
     SELECT T."to", T."from" INTO tmp FROM (SELECT "to", "from" FROM "posts" WHERE "hpid" = NEW.hpid) AS T;
 
-    SELECT tmp."to" INTO NEW."to";
+    SELECT tmp."from" INTO NEW."to";
 
     PERFORM blacklist_control(NEW."from", NEW."to"); -- can't thumb on blacklisted board
     IF tmp."from" <> tmp."to" THEN
