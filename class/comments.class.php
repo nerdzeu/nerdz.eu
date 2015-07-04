@@ -45,7 +45,7 @@ class Comments extends Messages
 
     public function edit($hcid, $message, $project = false)
     {
-        $message = trim(htmlspecialchars(static::parseQuote($message,ENT_QUOTES,'UTF-8')));
+        $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
         $table = ($project ? 'groups_' : '').'comments';
 
         if(!($obj = Db::query(
@@ -239,7 +239,7 @@ class Comments extends Messages
             ],Db::FETCH_STMT)))
             return 'ERROR';
 
-        $message = trim(htmlspecialchars(static::parseQuote($message,ENT_QUOTES,'UTF-8')));
+        $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
 
         if(($user = $stmt->fetch(PDO::FETCH_OBJ)))
         {
@@ -558,7 +558,7 @@ class Comments extends Messages
             $message = preg_replace_callback($pattern,function($m) {
                 $username = comments::getUsernameFromCid($m[1], true);
                 return $username
-                    ? '[commentquote=[user]'.$username.'[/user] [small][url="'.comments::getURLFromCid($m[1], true).'"]→ c'.$m[1].'[/url][/small]]'.comments::getMessage($m[1], true).'[/commentquote]'
+                    ? '[commentquote=[user]'.$username.'[/user] [small][url=&quot;'.comments::getURLFromCid($m[1], true).'&quot;]→ c'.$m[1].'[/url][/small]]'.comments::getMessage($m[1], true).'[/commentquote]'
                     : '';
                     },$message,1);
 
@@ -571,7 +571,7 @@ class Comments extends Messages
             $message = preg_replace_callback($pattern,function($m) {
                 $username = comments::getUsernameFromCid($m[1]);
                 return $username
-                    ? '[commentquote=[user]'.$username.'[/user] [small][url="'.comments::getURLFromCid($m[1]).'"]→ c'.$m[1].'[/url][/small]]'.comments::getMessage($m[1]).'[/commentquote]'
+                    ? '[commentquote=[user]'.$username.'[/user] [small][url=&quot;'.comments::getURLFromCid($m[1]).'&quot;]→ c'.$m[1].'[/url][/small]]'.comments::getMessage($m[1]).'[/commentquote]'
                     : '';
                     },$message,1);
 
