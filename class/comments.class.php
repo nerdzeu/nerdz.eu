@@ -45,7 +45,7 @@ class Comments extends Messages
 
     public function edit($hcid, $message, $project = false)
     {
-        $message = static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8'));
+        $message = trim(htmlspecialchars(static::parseQuote($message,ENT_QUOTES,'UTF-8')));
         $table = ($project ? 'groups_' : '').'comments';
 
         if(!($obj = Db::query(
@@ -239,7 +239,7 @@ class Comments extends Messages
             ],Db::FETCH_STMT)))
             return 'ERROR';
 
-        $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
+        $message = trim(htmlspecialchars(static::parseQuote($message,ENT_QUOTES,'UTF-8')));
 
         if(($user = $stmt->fetch(PDO::FETCH_OBJ)))
         {
@@ -286,6 +286,19 @@ class Comments extends Messages
         if(!($o = Db::query(array('SELECT "from" FROM "'.$table.'" WHERE "hcid" = :hcid',array(':hcid' => $hcid)),Db::FETCH_OBJ)))
             return '';
         return User::getUsername($o->from);
+    }
+
+    private static function getURLFromCid($hcid, $project = false) {
+        $prefix = $project ? 'groups_' : '';
+
+        if(!($o = Db::query([
+            'SELECT p.to, p.pid FROM "'.$prefix.'posts" p INNER JOIN "'.$prefix.'comments" c ON c."hcid" = :hcid AND c.hpid = p.hpid',
+            [
+                ':hcid' => $hcid
+            ]
+        ],Db::FETCH_OBJ)))
+            return System::getCurrentHostAddress();
+        return System::getCurrentHostAddress().($project ? Utils::projectLink(Project::getName($o->to)) : Utils::userLink(User::getUsername($o->to))).$o->pid.'#c'.$hcid;
     }
 
     public function getCommentsAfterHcid($hpid,$hcid, $project = false)
@@ -545,7 +558,7 @@ class Comments extends Messages
             $message = preg_replace_callback($pattern,function($m) {
                 $username = comments::getUsernameFromCid($m[1], true);
                 return $username
-                    ? '[commentquote=[user]'.$username.'[/user]]'.comments::getMessage($m[1], true).'[/commentquote]'
+                    ? '[commentquote=[user]'.$username.'[/user] [small][url="'.comments::getURLFromCid($m[1], true).'"]→ c'.$m[1].'[/url][/small]]'.comments::getMessage($m[1], true).'[/commentquote]'
                     : '';
                     },$message,1);
 
@@ -558,7 +571,7 @@ class Comments extends Messages
             $message = preg_replace_callback($pattern,function($m) {
                 $username = comments::getUsernameFromCid($m[1]);
                 return $username
-                    ? '[commentquote=[user]'.$username.'[/user]]'.comments::getMessage($m[1]).'[/commentquote]'
+                    ? '[commentquote=[user]'.$username.'[/user] [small][url="'.comments::getURLFromCid($m[1]).'"]→ c'.$m[1].'[/url][/small]]'.comments::getMessage($m[1]).'[/commentquote]'
                     : '';
                     },$message,1);
 

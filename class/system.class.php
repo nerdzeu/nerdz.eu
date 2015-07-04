@@ -28,9 +28,17 @@ class System
         return count ($chost) > 1 ? implode ('.', $chost) : null;
     }
 
+    public static function isOnHTTPS() {
+        return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+    }
+
+    public static function getCurrentHostAddress() {
+        return 'http'.(System::isOnHTTPS() ? 's' : '').'://'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] == '80' ? '' : ':'.$_SERVER['SERVER_PORT']).'/';
+    }
+
     public static function getResourceDomain()
     {
-        return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
+        return System::isOnHTTPS()
             ? 'https://'.Config\HTTPS_DOMAIN
             : Config\STATIC_DOMAIN;
     }

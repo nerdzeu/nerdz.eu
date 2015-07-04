@@ -211,7 +211,7 @@ class Project
     }
 
 
-    public static function getName($id = null)
+    public static function getName($id)
     {
         if(!($o = Db::query(
             [
@@ -220,7 +220,7 @@ class Project
                     ':id' => $id
                 ]
             ],Db::FETCH_OBJ)))
-            return '';
+            return 'WTF: '.$id;
 
         return $o->name;
     }

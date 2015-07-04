@@ -74,14 +74,18 @@ class Utils
             : 'https://'.Config\CAMO_HOST.'/'.hash_hmac('sha1', $url, Config\CAMO_KEY).'?url='.urlencode($url);
     }
 
+    private static function getLink($name) {
+        return str_replace(' ','+',urlencode(html_entity_decode($name,ENT_QUOTES,'UTF-8')));
+    }
+
     public static function userLink($user)
     {
-        return str_replace(' ','+',urlencode(html_entity_decode($user,ENT_QUOTES,'UTF-8'))).'.';
+        return Utils::getLink($user).'.';
     }
 
     public static function projectLink($name)
     {
-        return str_replace(' ','+',urlencode(html_entity_decode($name,ENT_QUOTES,'UTF-8'))).':';
+        return Utils::getLink($name).':';
     }
 
     public static function minifyHTML($str)
