@@ -45,7 +45,7 @@ class Comments extends Messages
 
     public function edit($hcid, $message, $project = false)
     {
-        $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
+        $message = static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8'));
         $table = ($project ? 'groups_' : '').'comments';
 
         if(!($obj = Db::query(
@@ -239,7 +239,7 @@ class Comments extends Messages
             ],Db::FETCH_STMT)))
             return 'ERROR';
 
-        $message = trim(static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')));
+        $message = static::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8'));
 
         if(($user = $stmt->fetch(PDO::FETCH_OBJ)))
         {
@@ -579,6 +579,6 @@ class Comments extends Messages
             $message = preg_replace('#\[quote=([0-9]+)\|u\]#i','',$message);
 
 		//Brought back quotes
-		return $message;
+		return trim($message);
     }
 }
