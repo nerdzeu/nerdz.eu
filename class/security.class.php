@@ -10,7 +10,7 @@ class Security
 
     public static function getCsrfToken($n = '')
     {
-        $_SESSION['tok_'.$n] = isset($_SESSION['tok_'.$n]) ? $_SESSION['tok_'.$n] : md5(uniqid(rand(7,21)));
+        $_SESSION['tok_'.$n] = isset($_SESSION['tok_'.$n]) ? $_SESSION['tok_'.$n] : md5(openssl_random_pseudo_bytes(rand(7,21)));
         return $_SESSION['tok_'.$n];
     }
 

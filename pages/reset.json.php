@@ -40,7 +40,7 @@ if($email !== false && $captcha !== false) { // 1st step
     $vals['usernamelink_n'] = 'http://'.Config\SITE_HOST.'/'.\NERDZ\Core\Utils::userLink($obj->username);
     $vals['account_n'] = "{$obj->username} - ID: {$obj->counter}";
     $vals['ip_n'] = $_SERVER['REMOTE_ADDR'];
-    $token = md5(uniqid(rand(7,21)));
+    $token = md5(openssl_random_pseudo_bytes(rand(7,21)));
     if(Db::NO_ERRNO != Db::query(
         [
             'INSERT INTO reset_requests(remote_addr,token,"to") VALUES(:remote_addr,:token,:to)',
