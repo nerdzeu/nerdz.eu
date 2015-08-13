@@ -111,7 +111,11 @@ class User
 
     public static function isOnMobileHost()
     {
-        return isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == Config\MOBILE_HOST;
+        return isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] === Config\MOBILE_HOST;
+    }
+
+    public static function comeFromMobileHost() {
+        return isset($_SERVER['HTTP_REFERER']) && parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) === Config\MOBILE_HOST;
     }
 
     public function getTPL()
@@ -939,7 +943,7 @@ return $o->cc;
 
     public function getTemplate($id = null)
     {
-        if(static::isOnMobileHost()) {
+        if(static::isOnMobileHost() || static::comeFromMobileHost()) {
             return $this->getMobileTemplate($id);
         }
 

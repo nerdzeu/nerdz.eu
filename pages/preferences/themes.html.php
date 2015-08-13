@@ -25,7 +25,7 @@ foreach($templates as $val)
     ++$i;
 }
 $vals['mytplno_n'] = $user->getTemplate($_SESSION['id']);
-$vals['mobile_b'] = $_SERVER['HTTP_HOST'] == Config\MOBILE_HOST;
+$vals['mobile_b'] = User::isOnMobileHost();
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('preferences/themes');
