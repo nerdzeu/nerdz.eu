@@ -33,6 +33,8 @@ spl_autoload_register(__NAMESPACE__ . '\\Autoloader::load');
 
 // Define NERDZ constants
 Config::init();
+// Set session.cookie_domain to .Config\SITE_HOST
+ini_set('session.cookie_domain', '.'.Config\SITE_HOST);
 // Start session
 if(Config\REDIS_HOST !== '' && Config\REDIS_PORT !== '')
     new RedisSessionHandler(Config\REDIS_HOST, Config\REDIS_PORT);
