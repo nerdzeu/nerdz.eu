@@ -38,7 +38,7 @@ if(!isset($_COOKIE['stupid_and_useless_cookielaw'])) { ?>
     $("#cookieChoiceDismiss").on('click',function(e) {
         e.preventDefault();
         $("#cookieChoiceInfo").remove();
-        document.cookie = "stupid_and_useless_cookielaw=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
+        document.cookie = "stupid_and_useless_cookielaw=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=<?php echo System::getSafeCookieDomainName() ?>";
     });
     </script>
 <?php } ?>
