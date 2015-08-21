@@ -721,7 +721,7 @@ class Messages
 
     public static function stripTags($message)
     {
-        return str_ireplace('[url=&quot;','',
+        return str_replace('[','', str_ireplace('[url=&quot;','',
             str_ireplace('[url=','',
             str_replace('&quot;]',' ',
             str_replace(']',' ',
@@ -773,7 +773,7 @@ class Messages
             str_ireplace('[/big]','',
             str_ireplace('[hr]','',
             str_ireplace('[wat]','',
-            str_ireplace('[quote=','',$message)))))))))))))))))))))))))))))))))))))))))))))))))))));
+            str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))))))));
     }
 
     public function getThumbs($hpid, $project = false) {
