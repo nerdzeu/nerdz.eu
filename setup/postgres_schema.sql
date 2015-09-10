@@ -911,45 +911,48 @@ END $$;
 --
 
 CREATE FUNCTION hashtag(message text, hpid bigint, grp boolean, from_u bigint, m_time timestamp with time zone) RETURNS void
-    LANGUAGE plpgsql
+LANGUAGE plpgsql
     AS $$
      declare field text;
-     BEGIN
-         IF grp THEN
-             field := 'g_hpid';
-         ELSE
-             field := 'u_hpid';
-         END IF;
+             regex text;
+BEGIN
+     IF grp THEN
+         field := 'g_hpid';
+     ELSE
+         field := 'u_hpid';
+     END IF;
 
-         message = quote_literal(message);
+     regex = '((?![\d]+[[^\w]+|])[\w]{1,44})';
 
-         EXECUTE '
-         insert into posts_classification(' || field || ' , "from", time, tag)
-         select distinct ' || hpid ||', ' || from_u || ', ''' || m_time || '''::timestamptz, tmp.matchedTag[1] from (
-             -- 1: existing hashtags
-            select regexp_matches(' || strip_tags(message) || ', ''(#(?!039;)[\w]{1,44})'', ''gi'')
+     message = quote_literal(message);
+
+     EXECUTE '
+     insert into posts_classification(' || field || ' , "from", time, tag)
+     select distinct ' || hpid ||', ' || from_u || ', ''' || m_time || '''::timestamptz, tmp.matchedTag[1] from (
+         -- 1: existing hashtags
+        select concat(''{#'', c.matchedTag[1], ''}'')::text[] as matchedTag from (
+            select regexp_matches(' || strip_tags(message) || ', ''(?:[\s]|^)#' || regex || ''', ''gi'')
+            as matchedTag
+        ) as c
+             union distinct -- 2: spoiler
+         select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
+             select regexp_matches(' || message || ', ''\[spoiler=' || regex || '\]'', ''gi'')
              as matchedTag
-                 union distinct -- 2: spoiler
-             select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
-                 select regexp_matches(' || message || ', ''\[spoiler=([\w]{1,44})\]'', ''gi'')
-                 as matchedTag
-             ) as a
-                 union distinct -- 3: languages
-              select concat(''{#'', b.matchedTag[1], ''}'')::text[] from (
-                  select regexp_matches(' || message || ', ''\[code=([\w]{1,44})\]'', ''gi'')
-                 as matchedTag
-             ) as b
-         ) tmp
-         where not exists (
-            select 1
-            from posts_classification p
-            where ' || field ||'  = ' || hpid || ' and
-                p.tag = tmp.matchedTag[1] and
-                p.from = ' || from_u || ' -- store user association with tag even if tag already exists
-         )';
-    END $$;
-
-
+         ) as a
+             union distinct -- 3: languages
+          select concat(''{#'', b.matchedTag[1], ''}'')::text[] from (
+              select regexp_matches(' || message || ', ''\[code=' || regex || '\]'', ''gi'')
+             as matchedTag
+         ) as b
+     ) tmp
+     where not exists (
+        select 1
+        from posts_classification p
+        where ' || field ||'  = ' || hpid || ' and
+            p.tag = tmp.matchedTag[1] and
+            p.from = ' || from_u || ' -- store user association with tag even if tag already exists
+     )';
+END $$;
 --
 -- Name: interactions_query_builder(text, bigint, bigint, boolean); Type: FUNCTION; Schema: public; Owner: -
 --
