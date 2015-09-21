@@ -931,7 +931,7 @@ BEGIN
      select distinct ' || hpid ||', ' || from_u || ', ''' || m_time || '''::timestamptz, tmp.matchedTag[1] from (
          -- 1: existing hashtags
         select concat(''{#'', c.matchedTag[1], ''}'')::text[] as matchedTag from (
-            select regexp_matches(' || strip_tags(message) || ', ''(?:[\s]|^)#' || regex || ''', ''gi'')
+            select regexp_matches(' || strip_tags(message) || ', ''(?:\s|^|\W)#' || regex || ''', ''gi'')
             as matchedTag
         ) as c
              union distinct -- 2: spoiler
