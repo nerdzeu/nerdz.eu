@@ -927,7 +927,7 @@ class Messages
 
             if($tag == 'c') { // short
                 $str = str_ireplace("[c={$lang}]{$totalcode}[/c]",
-                    '<span class="nerdz-code-wrapper"><code class="prettyprint lang-'.$lang.'" style="border:0px; word-wrap: break-word">'.
+                    '<span class="nerdz-code-wrapper" title="'.$lang.'"><code class="prettyprint lang-'.$lang.'" style="border:0px; word-wrap: break-word">'.
                     str_replace("\n",'<br />',
                         str_replace(' ','&nbsp',
                         str_replace("\t",'&#09;',$totalcode))).'</code></span>', $str);
