@@ -6,19 +6,19 @@ function N() /* THE FATHER of God (class/object/function)*/
     this.json = function(){}; /*namespace json */
     this.html = function(){}; /*namespace html */
     this.tmp = "";
-    
+
     this.reloadCaptcha = function()
     {
         var v = $("#captcha");
         if(v.length)
             v.attr("src","/static/images/captcha.php?a"+Math.random()+'b');
     };
-    
+
     this.yt = function(a, vid)
     {
         a.removeClass ("yt_frame");
         var iframe;
-        switch (a.data ("host"))
+        switch (a.attr ("data-host"))
         {
             case "youtube":
                 iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe>';
@@ -38,13 +38,13 @@ function N() /* THE FATHER of God (class/object/function)*/
         }
         a.html ('<div style="width:100%; text-align:center"><br />'+iframe+'</div>');
         a.css ('cursor','default');
-        if(a.data ("host") == "nerdzcrush") {
+        if(a.attr ("data-host") == "nerdzcrush") {
             NERDZCrush.renderAll();
         }
     };
-    
+
     this.vimeoThumbnail = function(img) {
-        var video_id = $(img).parent().data ("vid");
+        var video_id = $(img).parent().attr ("data-vid");
         $.ajax ({
             type:     "GET",
             url:      "https://vimeo.com/api/v2/video/" + video_id + ".json",
@@ -58,24 +58,24 @@ function N() /* THE FATHER of God (class/object/function)*/
     };
 
     this.facebookThumbnail = function(img) {
-        var video_id = $(img).parent().data ("vid");
+        var video_id = $(img).parent().attr ("data-vid");
         img.src = "https://graph.facebook.com/"+video_id+"/picture";
         img.onload = null;
     };
-    
+
     this.loadTweet = function (img) {
         var $img = $(img);
         if (!("processedTweets" in this)) this.processedTweets = [];
         // FIXME: this UUID stuff is used to circumvent a stupid (and unknown)
         // bug in something which calls the .onload() handler more than once.
-        // Setting a flag like .data ("processed", true) does not work, and for
+        // Setting a flag like .attr ("data-processed", true) does not work, and for
         // some reason the object differs in the second onload call. If someone
         // is able to fix this, then please do it.
         // NOTE: using the twitter ID as a UUID is not a viable choice, because
         // multiple [twitter] tags with the same ID will fail.
-        if ($.inArray ($img.data ("uuid"), this.processedTweets) !== -1) return;
-        this.processedTweets.push ($img.data ("uuid"));
-        var id = $img.data ("id"), failHandler = function (msg) {
+        if ($.inArray ($img.attr ("data-uuid"), this.processedTweets) !== -1) return;
+        this.processedTweets.push ($img.attr ("data-uuid"));
+        var id = $img.attr ("data-id"), failHandler = function (msg) {
             img.onload = null;
             $img.attr ({
                 src:   "/static/images/twitter_fail.png",
@@ -117,11 +117,11 @@ function N() /* THE FATHER of God (class/object/function)*/
             }
         });
     };
-    
+
     this.imgErr = function (obj) {
-        $(obj).attr ("src", "/static/images/onErrorImg.php"); 
+        $(obj).attr ("src", "/static/images/onErrorImg.php");
     };
-    
+
     this.imgLoad = function(obj) {
         var $obj = $(obj);
         if (/onErrorImg\.php/i.test ($obj.attr ("src")))
@@ -181,7 +181,7 @@ N.json = function()
     this.pm = function(){};
     this.project = function(){};
     this.profile = function(){};
-        
+
     this.post = function(path,param,done,_corsCookies)
     {
         $.ajax({
@@ -194,7 +194,7 @@ N.json = function()
             }
         }).done(function(data) { done(data); });
     };
-    
+
     /**
     * User login
     * @parameters: { username, password, setcookie, tok[ ,offline] }
@@ -202,7 +202,7 @@ N.json = function()
     */
     this.login = function(jObj,done)
     {
-        var forceSSL = location.protocol !== 'https:' && 
+        var forceSSL = location.protocol !== 'https:' &&
             typeof Nssl !== 'undefined' && Nssl.login === true;
         this.post ((forceSSL ? 'https://' + (Nssl.domain || document.location.host) : '') + '/pages/profile/login.json.php', jObj, function(d) {
             done (d);
@@ -219,7 +219,7 @@ N.json = function()
             done(d);
         });
     };
-    
+
     /**
      * Reset userpassword
      * @parameters: {captcha, email} or {reset-token, new-password}
@@ -230,7 +230,7 @@ N.json = function()
             done(d);
         });
     };
-    
+
     /**
      * Register to nerdz
      * @parameters: { name, surname, username, password, captcha, birth_day, birth_year, birth_month, email }
@@ -271,12 +271,12 @@ N.json = new N.json();
 N.json.profile = function()
 {
     var pp = "/pages/profile/";
-    
+
     this.post = function(path, jObj,done)
     {
         N.json.post(pp + path,jObj,done);
     };
-    
+
     /**
      * New post in profile
      * @Parameters: { message, to }
@@ -311,13 +311,13 @@ N.json.profile = function()
             done(d);
         });
     };
-    
+
     /** create a nerdz post sharing the content of a url
      * @parameters: {to, comment, url}
      * to: optional, receipt id (default myself)
      * comment: optional, text content to add
      * url: a valid url
-     */    
+     */
     this.share = function(jObj,done)
     {
         this.post('share.json.php',jObj,function(d) {
@@ -347,7 +347,7 @@ N.json.profile = function()
             done(d);
         });
     };
-        
+
     /**
      * edit post in profile
      * @Parameters: { hpid, message }
@@ -375,7 +375,7 @@ N.json.profile = function()
     * Add comment on profile post
     * @Parameters: { hpid, message }
     * hpid: hidden post id (post which comment refer to)
-    */    
+    */
     this.addComment = function(jObj,done)
     {
         this.post('comments.json.php?action=add',jObj,function(d) {
@@ -394,41 +394,41 @@ N.json.profile = function()
             done(d);
         });
     };
-        
+
     /**
      * Follow the user (id)
      * @parameters: { id }
-     */    
+     */
     this.follow = function(jObj,done)
     {
         this.post('follow.json.php?action=add',jObj,function(d) {
             done(d);
         });
     };
-    
+
     /**
      * Unfollow the user (id)
      * @parameters: {id}
-     */    
+     */
     this.unfollow = function(jObj,done)
     {
         this.post('follow.json.php?action=del',jObj,function(d) {
             done(d);
         });
     };
-    
+
     /**
      * Blacklist the user (id)
      * @parameters: { id,motivation }
      * motivation: a valid motivation (not required)
-     */    
+     */
     this.blacklist = function(jObj,done)
     {
         this.post('blacklist.json.php?action=add',jObj,function(d) {
             done(d);
         });
     };
-    
+
     /**
      * Remove from blacklist the user (id)
      * @parameters: { id }
@@ -439,7 +439,7 @@ N.json.profile = function()
             done(d);
         });
     };
-    
+
     /**
      * Don't receive notifications from comments of a user, in that post
      * @parameters: {from, hpid}
@@ -452,7 +452,7 @@ N.json.profile = function()
             done(d);
         });
     };
-    
+
     /**
      * Don't receive notifications from comments of a user, in that post
      * @parameters: {hpid}
@@ -464,7 +464,7 @@ N.json.profile = function()
             done(d);
         });
     };
-    
+
     /**
      * Restart to receive notifications from comments of a user, in that post
      * @parameters: {from, hpid}
@@ -477,7 +477,7 @@ N.json.profile = function()
             done(d);
         });
     };
-    
+
     /**
      * Restart to receive notifications in this post
      * @parameters: {hpid}
@@ -568,20 +568,20 @@ N.json.profile = function()
      * hpid: hidden post id
      * vote: vote (-1,0,1)
      */
-    this.thumbs = function(jObj, done) 
+    this.thumbs = function(jObj, done)
     {
         this.post('thumbs.json.php',jObj, function(d) {
             done(d);
         });
     };
-    
+
     /**
      * set thumbs for comments
      * @parameters;  {hcid, thumb}
      * hcid: hidden comment id
      * vote: vote (-1,0,1)
      */
-    this.cthumbs = function(jObj, done) 
+    this.cthumbs = function(jObj, done)
     {
         this.post('thumbs.json.php',$.extend(jObj,{comment:true}), function(d) {
             done(d);
@@ -644,7 +644,7 @@ N.json.project = function()
     * Get post from project(to put in a textarea, before editing)
     * not parsed
     * @Parameters: { hpid }
-    */    
+    */
     this.getPost = function(jObj,done)
     {
         this.post('board.json.php?action=get',jObj,function(d) {
@@ -663,7 +663,7 @@ N.json.project = function()
             done(d);
         });
     };
-    
+
     /**
     * edit post in project
     * @Parameters: { hpid, message }
@@ -691,7 +691,7 @@ N.json.project = function()
     * Delete post from project
     * *** you MUST call before delPostConfim({hpid: hpid}), to get a "are you sure?" message and make delete of post possible
     * @Parameters: { hpid }
-    */    
+    */
     this.delPost = function(jObj,done)
     {
         this.post('board.json.php?action=del',jObj,function(d) {
@@ -709,7 +709,7 @@ N.json.project = function()
             done(d);
         });
     };
-    
+
     /**
     * Add comment on profile post
     * @Parameters: { hpid, message }
@@ -726,14 +726,14 @@ N.json.project = function()
     * Delete comment in project post
     * @parameters: { hcid }
     * hcid: hidden comment id
-    */    
+    */
     this.delComment = function(jObj,done)
     {
         this.post('comments.json.php?action=del',jObj,function(d) {
             done(d);
         });
     };
-    
+
     /**
      * Follow the project (id)
      * @parameters: {id }
@@ -744,7 +744,7 @@ N.json.project = function()
             done(d);
         });
     };
-    
+
     /**
      * Unfollow the project (id)
      * @parameters: {id}
@@ -755,7 +755,7 @@ N.json.project = function()
             done(d);
         });
     };
-    
+
     /**
      * Don't receive notifications from comments of a user, in that post
      * @parameters: {from, hpid}
@@ -768,7 +768,7 @@ N.json.project = function()
             done(d);
         });
     };
-    
+
     /**
      * Don't receive notifications from comments of a user, in that post
      * @parameters: {hpid}
@@ -780,7 +780,7 @@ N.json.project = function()
             done(d);
         });
     };
-    
+
     /**
      * Restart to receive notifications from comments of a user, in that post
      * @parameters: {from, hpid}
@@ -793,7 +793,7 @@ N.json.project = function()
             done(d);
         });
     };
-    
+
     /**
      * Restart to receive notifications in this post
      * @parameters: {hpid}
@@ -884,7 +884,7 @@ N.json.project = function()
      * hpid: hidden post id
      * vote: vote (-1,0,1)
      */
-    this.thumbs = function(jObj, done) 
+    this.thumbs = function(jObj, done)
     {
         this.post('thumbs.json.php',jObj, function(d) {
             done(d);
@@ -897,7 +897,7 @@ N.json.project = function()
      * hcid: hidden comment id
      * vote: vote (-1,0,1)
      */
-    this.cthumbs = function(jObj, done) 
+    this.cthumbs = function(jObj, done)
     {
         this.post('thumbs.json.php',$.extend(jObj,{comment:true}), function(d) {
             done(d);
@@ -936,12 +936,12 @@ N.json.project = new N.json.project();
 N.json.pm = function()
 {
     var pp = '/pages/pm/';
-    
+
     this.post = function(path, jObj,done)
     {
         N.json.post(pp + path,jObj,done);
     };
-    
+
     /**
      * Send pm to user
      * @parameters: { to, message, subject}
@@ -954,7 +954,7 @@ N.json.pm = function()
             done(d);
         });
     };
-    
+
     /**
      * Delete a conversation
      * @parameters: { to, from}
@@ -970,14 +970,14 @@ N.json.pm = function()
 };
 
 N.json.pm = new N.json.pm();
-    
+
 N.html = function()
 {
     this.pm = function(){};
     this.profile = function(){};
     this.project = function(){};
     this.search = function(){};
-    
+
     this.eval = function(text)
     {
         var p = document.createElement('p');
@@ -991,7 +991,7 @@ N.html = function()
 
         try{ eval(code); } catch(e){}
     };
-        
+
     this.post = function(path,param,done)
     {
         $.ajax({
@@ -999,7 +999,7 @@ N.html = function()
             url: path,
             data: param,
             dataType: 'html'
-        }).done(function(data) { 
+        }).done(function(data) {
                 done(data);
                 N.reloadCaptcha();
                 MathJax.Hub.Queue(['Typeset',MathJax.Hub,'body']);
@@ -1039,20 +1039,20 @@ N.html = new N.html();
 N.html.profile = function()
 {
     var pp = '/pages/profile/';
-    
+
     this.post = function(path, jObj,done)
     {
         N.html.post(path,jObj,done);
     };
-    
+
     /**
     * Get html code of comments (as defined in template)
     * @parameters: { hpid, start, num }
     * hpid: hidden post id
-    */    
+    */
     this.getComments = function(jObj,done)
     {
-        this.post(pp + 'comments.html.php?action=show',jObj,function(d) { 
+        this.post(pp + 'comments.html.php?action=show',jObj,function(d) {
             done(d);
         });
     };
@@ -1062,14 +1062,14 @@ N.html.profile = function()
     * @parameters: { hpid, hcid }
     * hcid: hidden comment id
     * hpid: hidden post id
-    */    
+    */
     this.getCommentsAfterHcid = function(jObj,done)
     {
-        this.post(pp + 'comments.html.php?action=show',jObj,function(d) { 
+        this.post(pp + 'comments.html.php?action=show',jObj,function(d) {
             done(d);
         });
     };
-    
+
     /**
      * Return the homepage post list (10 post), starting from post number: lim
      * @parameters lim
@@ -1157,7 +1157,7 @@ N.html.profile = function()
             done(d);
         });
     };
-    
+
     /**
      * Get lim posts from profile id
      * @parameters: lim, id
@@ -1216,12 +1216,12 @@ N.html.profile = new N.html.profile();
 N.html.project = function()
 {
     var pp = '/pages/project/';
-    
+
     this.post = function(path, jObj,done)
     {
         N.html.post(path,jObj,done);
     };
-    
+
     /**
     * Get html code of comments (as defined in template)
     * @parameters: { hpid, start, num }
@@ -1233,7 +1233,7 @@ N.html.project = function()
             done(d);
         });
     };
-    
+
     /**
     * Get html code of comments (as defined in template), newest after hcid
     * @parameters: { hpid, hcid }
@@ -1394,12 +1394,12 @@ N.html.project = new N.html.project();
 N.html.pm = function()
 {
     var pp = '/pages/pm/';
-    
+
     this.post = function(path, jObj,done)
     {
         N.html.post(pp + path,jObj,done);
     };
-    
+
     /**
      * get conversation from and to ID
      * @parameters: { from, to, start, num }
@@ -1429,7 +1429,7 @@ N.html.pm = function()
             done(d);
         });
     };
-    
+
     /**
      * get the list of new Pmss
      */
@@ -1439,7 +1439,7 @@ N.html.pm = function()
             done(d);
         });
     };
-    
+
     /**
      * get inbox
      */
@@ -1449,7 +1449,7 @@ N.html.pm = function()
             done(d);
         });
     };
-    
+
     /**
      * get send form of pm
      */
@@ -1466,7 +1466,7 @@ N.html.pm = new N.html.pm();
 N.html.search = function()
 {
     var pp = '/pages/search/';
-    
+
     this.post = function(path, jObj,done)
     {
         N.html.post(pp + path,jObj,done);
@@ -1614,14 +1614,14 @@ N.html.search = function()
 N.html.search = new N.html.search();
 
 $(document).ready(function() {
-    N.reloadCaptcha(); 
+    N.reloadCaptcha();
     if (typeof initGist == 'function')
             initGist();
 
     // if we're not logged in, we are done.
     if (!N.isLoggedIn())
         return;
-    
+
     // useful stuff for the notifications and pms
     var lastCounters = { pm: 0, notification: 0 },
         handleUpdate = function (context, value) {
@@ -1706,7 +1706,7 @@ $(document).ready(function() {
             };
         updatePmCounter();
         setInterval (updatePmCounter, 16000);
-        
+
         // runs every 12 seconds, updates the notifications counter
         var updateNotifyCounter = function() {
                 N.json.post ('/pages/profile/notify.json.php', {}, function (obj) {
