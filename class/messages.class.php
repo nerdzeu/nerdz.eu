@@ -12,6 +12,7 @@ class Messages
     const DMOTION_REGEXP    = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
     const FACEBOOK_REGEXP   = '#^https?://(?:www\.)?facebook\.com/(?:(?:photo|video)\.php(?:\?v=|\?.+?&v=)|[a-z0-9._-]+/videos/)(\d+)/?#i';
     const NERDZCRUSH_REGEXP = '#^https?://(?:cdn\.)?media\.nerdz\.eu/([a-z0-9_-]{12})(?:|\.[a-z0-9]{2,4})#i';
+    const HASHTAG_MAXLEN    = 44;
 
     protected $project;
     protected $user;
@@ -24,49 +25,71 @@ class Messages
 
     public function getCodes($str)
     {
-        $epos = $key = $i = $codecounter = 0;
-        $codes = $start = $end = $ret = [];
-        $ncod = 1;
+        $codeTypes = [
+            // tag => attributes
+            'code' => [
+                'start' => '[code=', // start code
+                'end'   => '[/code]',// end code
+                'start_len' => 6,    // start code lenghth
+                'end_len'   => 7     // end code lenght
+            ],
+            'c' => [
+                'start' => '[c=', // start code
+                'end'   => '[/c]',// end code
+                'start_len' => 3, // start code lenghth
+                'end_len'   => 4] // end code lenght
+            ];
 
         $zzz = strtolower($str);
+        $codecounter = 0;
+        $ncod = 1;
+        $ret = [];
+        foreach($codeTypes as $tag => $codeType) {
+            $epos = $key = $i = 0;
+            $codes = $start = $end = [];
+            $start[$key] = strpos($zzz,$codeType['start'],0);
+            $end[$key] = strpos($zzz,$codeType['end'],0);
 
-        $start[$key] = strpos($zzz,'[code=',0);
-        $end[$key] = strpos($zzz,'[/code]',0);
-
-        while((false !== $start[$key]) && (false !== $end[$key]))
-        {
-            ++$key;
-            $start[$key] = strpos($zzz,'[code=',$end[$key-1]+6);
-            $end[$key] = strpos($zzz,'[/code]',$end[$key-1]+7);
-        }
-        while($key-->0)
-        {
-            $codes[] = substr($str,$start[$i]+6,$end[$i]-$start[$i]-6);
-            ++$i;
-        }
-        $epos = $i;
-
-        for($i=0;$i<$epos;++$i)
-        {
-            for($x=0;$x<30;++$x)
-                if(isset($codes[$i][$x]) && $codes[$i][$x] == ']')
-                {
-                    $lang = substr($codes[$i],0,$x);
-                    $code = substr($codes[$i],$x+1);
-                    break;
-                }
-            if($x<30 && isset($code[1]))
+            while((false !== $start[$key]) && (false !== $end[$key]))
             {
-                $ret[$codecounter]['lang'] = $lang;
-                $ret[$codecounter]['code'] = $code;
-                ++$codecounter;
+                ++$key;
+                $start[$key] = strpos($zzz,$codeType['start'],$end[$key-1]+$codeType['start_len']);
+                $end[$key]   = strpos($zzz,$codeType['end'],  $end[$key-1]+$codeType['end_len']);
             }
+
+            while($key > 0)
+            {
+                $codes[] = substr($str, $start[$i]+$codeType['start_len'],
+                    $end[$i]-$start[$i]-$codeType['start_len']);
+                ++$i;
+                --$key;
+            }
+            $epos = $i;
+
+            for($i=0;$i<$epos;++$i)
+            {
+                for($x=0;$x<static::HASHTAG_MAXLEN;++$x)
+                    if(isset($codes[$i][$x]) && $codes[$i][$x] == ']')
+                    {
+                        $lang = substr($codes[$i],0,$x);
+                        $code = substr($codes[$i],$x+1);
+                        break;
+                    }
+                if($x<static::HASHTAG_MAXLEN && isset($code[1]))
+                {
+                    $ret[$codecounter]['lang'] = $lang;
+                    $ret[$codecounter]['code'] = $code;
+                    $ret[$codecounter]['tag']  = $tag;
+                    ++$codecounter;
+                }
+            }
+            //$key = $i = 0;
         }
         return $ret;
     }
 
     private static function hashtag(&$str) {
-        return preg_replace_callback('/(?!\[(?:url(?:=)|code=|video|yt|youtube|music|img|twitter)[^\]]*\])([\W]|^)(#(?!\d+[\W])[\w]{1,44})(?![^\[]*\[\/(?:url|code|video|yt|youtube|music|img|twitter)\])/iu',function($m) {
+        return preg_replace_callback('/(?!\[(?:url(?:=)|c(?:ode)?=|video|yt|youtube|music|img|twitter)[^\]]*\])([\W]|^)(#(?!\d+[\W])[\w]{1,'.static::HASHTAG_MAXLEN.'})(?![^\[]*\[\/(?:url|code|c|video|yt|youtube|music|img|twitter)\])/iu',function($m) {
             return $m[1].'<a href="/search.php?q='.urlencode($m[2]).'">'.$m[2].'</a>';
         }, $str);
     }
@@ -360,12 +383,13 @@ class Messages
         while($index > 0)
         {
             --$index;
-            $lang = $codes[$index]['lang'];
+            $lang      = $codes[$index]['lang'];
             $totalcode = $codes[$index]['code'];
-            $str = str_ireplace(">>>{$index}<<<","[code={$lang}]{$totalcode}[/code]",$str);
+            $tag   = $codes[$index]['tag'];
+            $str = str_ireplace(">>>{$index}<<<","[{$tag}={$lang}]{$totalcode}[/{$tag}]",$str);
         }
 
-        return $this->parseCode($str,$type,$pid,$id);
+        return $this->parseCode($codes, $str, $type, $pid, $id);
     }
 
     public function parseNews($message)
@@ -467,8 +491,8 @@ class Messages
         $join .= $vote ? ' INNER JOIN "'.($project ?  'groups_' : '').'thumbs" t ON p.hpid = t.hpid ' : '';
         if($project) {
             $join .= ' INNER JOIN "groups" g ON p.to = g.counter
-                       INNER JOIN "users" u ON p."from" = u.counter
-                       INNER JOIN "groups_owners" gu ON gu."to" = p.to';
+                INNER JOIN "users" u ON p."from" = u.counter
+                INNER JOIN "groups_owners" gu ON gu."to" = p.to';
             $glue .= ' AND (g."visible" IS TRUE ';
 
             if($this->user->isLogged())
@@ -536,20 +560,20 @@ class Messages
         } else {
             $language = $this->user->getLanguage();
         }
-        
+
         $table = ($project ? 'groups_' : '').'posts';
 
         $retStr = Db::query(
             [
                 'INSERT INTO "'.$table.'" ("from","to","message","news","lang") VALUES (:id,:to,:message, :news, :language)',
-                    [
-                        ':id'       => $_SESSION['id'],
-                        ':to'       => $to,
-                        ':message'  => Comments::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')),
-                        ':news'     => $news ? 'true' : 'false',
-                        ':language' => $language
-                    ]
-                ],Db::FETCH_ERRSTR);
+                [
+                    ':id'       => $_SESSION['id'],
+                    ':to'       => $to,
+                    ':message'  => Comments::parseQuote(htmlspecialchars($message,ENT_QUOTES,'UTF-8')),
+                    ':news'     => $news ? 'true' : 'false',
+                    ':language' => $language
+                ]
+            ],Db::FETCH_ERRSTR);
 
         if($retStr != Db::NO_ERRSTR)
             return $retStr;
@@ -744,6 +768,8 @@ class Messages
             str_ireplace('[b]','',
             str_ireplace('[/b]','',
             str_ireplace('[code=','',
+            str_ireplace('[c=','',
+            str_ireplace('[/c]','',
             str_ireplace('[/code]','',
             str_ireplace('[cur]','',
             str_ireplace('[/cur]','',
@@ -773,7 +799,7 @@ class Messages
             str_ireplace('[/big]','',
             str_ireplace('[hr]','',
             str_ireplace('[wat]','',
-            str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))))))));
+            str_ireplace('[quote=','',$message))))))))))))))))))))))))))))))))))))))))))))))))))))))));
     }
 
     public function getThumbs($hpid, $project = false) {
@@ -782,13 +808,13 @@ class Messages
         $ret = Db::query(
             [
                 'SELECT SUM("vote") AS "sum" FROM "'.$table.'" WHERE "hpid" = :hpid GROUP BY hpid',
-                    [
-                        ':hpid' => $hpid
-                    ]
+                [
+                    ':hpid' => $hpid
+                ]
 
-                ],
-                Db::FETCH_OBJ
-            );
+            ],
+            Db::FETCH_OBJ
+        );
 
         return isset($ret->sum) ? $ret->sum : 0;
     }
@@ -799,13 +825,13 @@ class Messages
         $ret = Db::query(
             [
                 'SELECT COALESCE( MAX("rev_no"), 0 )  AS "rev_no" FROM "'.$table.'" WHERE "hpid" = :hpid',
-                    [
-                        ':hpid' => $hpid
-                    ]
+                [
+                    ':hpid' => $hpid
+                ]
 
-                ],
-                Db::FETCH_OBJ
-            );
+            ],
+            Db::FETCH_OBJ
+        );
 
         return isset($ret->rev_no) ? $ret->rev_no : 0;
     }
@@ -816,15 +842,15 @@ class Messages
         return Db::query(
             [
                 'SELECT message, EXTRACT(EPOCH FROM "time") AS time FROM "'.$table.'" WHERE "hpid" = :hpid AND "rev_no" = :number',
-                    [
+                [
 
-                        ':hpid' => $hpid,
-                        ':number' => $number
-                    ]
+                    ':hpid' => $hpid,
+                    ':number' => $number
+                ]
 
-                ],
-                Db::FETCH_OBJ
-            );
+            ],
+            Db::FETCH_OBJ
+        );
     }
 
     public function getUserThumb($hpid, $project = false) {
@@ -861,25 +887,24 @@ class Messages
         return Db::query(
             [
                 'INSERT INTO '.$table.'(hpid, "from", vote) VALUES(:hpid, :from, :vote)',
-                    [
-                        ':hpid' => (int) $hpid,
-                        ':from' => (int) $_SESSION['id'],
-                        ':vote' => (int) $vote
-                    ]
-                ],
-                Db::FETCH_ERRSTR
-            );
+                [
+                    ':hpid' => (int) $hpid,
+                    ':from' => (int) $_SESSION['id'],
+                    ':vote' => (int) $vote
+                ]
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
-    private function parseCode($str,$type = NULL,$pid = NULL,$id = NULL)
+    private function parseCode(&$codes, $str,$type = NULL,$pid = NULL,$id = NULL)
     {
-        $codes = $this->getCodes($str);
-
         $i = 1;
         foreach($codes as $code)
         {
             $totalcode = $code['code'];
-            $lang = $code['lang'];
+            $lang      = $code['lang'];
+            $tag       = $code['tag'];
             $codeurl = '';
 
             if($pid && $id)
@@ -900,15 +925,27 @@ class Messages
             else
                 $pid = $id = 0;
 
-            $str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
-                '<div class="nerdz-code-wrapper">
-                <div class="nerdz-code-title">'.$lang.':'.( empty($codeurl)
+            if($tag == 'c') { // short
+                $str = str_ireplace("[c={$lang}]{$totalcode}[/c]",
+                    '<code class="prettyprint lang-'.$lang.'" style="border:0px; word-wrap: break-word; background-color:#eee">'.
+                    str_replace("\n",'<br />',
+                        str_replace(' ','&nbsp',
+                        str_replace("\t",'&#09;',$totalcode))).'</code>', $str);
+            } else { // long
+                $str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
+                    '<div class="nerdz-code-wrapper">
+                    <div class="nerdz-code-title">'.$lang.':'.( empty($codeurl)
                     ? ''
                     : '<a href="'.$codeurl.'" onclick="window.open(this.href); return false" class="nerdz-code-text-version">'.
                     $this->user->lang('TEXT_VERSION').'</a>'
-                ).'</div><code class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.str_replace("\n",'<br />',str_replace(' ','&nbsp',str_replace("\t",'&#09;',$totalcode))).'</code></div>',
-                $str);
-            ++$i;
+                ).
+                '</div><code class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.
+                str_replace("\n",'<br />',
+                    str_replace(' ','&nbsp',
+                    str_replace("\t",'&#09;',$totalcode))).'</code></div>', $str);
+                ++$i;
+            }
+
         }
         return $str;
     }
@@ -928,12 +965,12 @@ class Messages
             if(!($o = Db::query(
                 [
                     'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" = :hpid',
-                        [
-                            ':hpid' => $dbPost
-                        ]
-                    ],Db::FETCH_OBJ))
-                )
-                return new \StdClass();
+                    [
+                        ':hpid' => $dbPost
+                    ]
+                ],Db::FETCH_OBJ))
+            )
+            return new \StdClass();
             $dbPost = (array) $o;
         }
 
@@ -1015,12 +1052,12 @@ class Messages
             if(!($o = Db::query(
                 [
                     'SELECT COUNT("hcid") AS cc FROM "'.$table.'" WHERE "hpid" = :hpid',
-                        [
-                            ':hpid' => $hpid
-                        ]
-                    ],Db::FETCH_OBJ))
-                )
-                return 0;
+                    [
+                        ':hpid' => $hpid
+                    ]
+                ],Db::FETCH_OBJ))
+            )
+            return 0;
         }
         return $o->cc;
     }

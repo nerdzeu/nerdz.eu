@@ -930,20 +930,25 @@ BEGIN
      insert into posts_classification(' || field || ' , "from", time, tag)
      select distinct ' || hpid ||', ' || from_u || ', ''' || m_time || '''::timestamptz, tmp.matchedTag[1] from (
          -- 1: existing hashtags
-        select concat(''{#'', c.matchedTag[1], ''}'')::text[] as matchedTag from (
+        select concat(''{#'', a.matchedTag[1], ''}'')::text[] as matchedTag from (
             select regexp_matches(' || strip_tags(message) || ', ''(?:\s|^|\W)#' || regex || ''', ''gi'')
             as matchedTag
-        ) as c
+        ) as a
              union distinct -- 2: spoiler
-         select concat(''{#'', a.matchedTag[1], ''}'')::text[] from (
+         select concat(''{#'', b.matchedTag[1], ''}'')::text[] from (
              select regexp_matches(' || message || ', ''\[spoiler=' || regex || '\]'', ''gi'')
              as matchedTag
-         ) as a
+         ) as b
              union distinct -- 3: languages
-          select concat(''{#'', b.matchedTag[1], ''}'')::text[] from (
+          select concat(''{#'', c.matchedTag[1], ''}'')::text[] from (
               select regexp_matches(' || message || ', ''\[code=' || regex || '\]'', ''gi'')
              as matchedTag
-         ) as b
+         ) as c
+            union distinct -- 4: languages, short tag
+         select concat(''{#'', d.matchedTag[1], ''}'')::text[] from (
+              select regexp_matches(' || message || ', ''\[c=' || regex || '\]'', ''gi'')
+             as matchedTag
+         ) as d
      ) tmp
      where not exists (
         select 1
@@ -1259,9 +1264,11 @@ CREATE FUNCTION strip_tags(message text) RETURNS text
         return regexp_replace(regexp_replace(
           regexp_replace(regexp_replace(
           regexp_replace(regexp_replace(
-          regexp_replace(regexp_replace(message,
+          regexp_replace(regexp_replace(
+          regexp_replace(message,
              '\[url[^\]]*?\](.*)\[/url\]',' ','gi'),
              '\[code=[^\]]+\].+?\[/code\]',' ','gi'),
+             '\aa[c=[^\]]+\].+?\[/c\]',' ','gi'),
              '\[video\].+?\[/video\]',' ','gi'),
              '\[yt\].+?\[/yt\]',' ','gi'),
              '\[youtube\].+?\[/youtube\]',' ','gi'),
@@ -1269,7 +1276,6 @@ CREATE FUNCTION strip_tags(message text) RETURNS text
              '\[img\].+?\[/img\]',' ','gi'),
              '\[twitter\].+?\[/twitter\]',' ','gi');
     end $$;
-
 
 --
 -- Name: user_comment(); Type: FUNCTION; Schema: public; Owner: -
