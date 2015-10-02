@@ -158,7 +158,7 @@ class Messages
         },$str);
 
         $str = preg_replace_callback('#\[list\](.+?)\[\/list\]#i',function($m) {
-            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[1]))));
+            $arr = array_filter(explode('[*]',trim(trim($m[1]),'<br />')));
             if(empty($arr))
                 return $m[0];
 
@@ -171,7 +171,7 @@ class Messages
         },$str,20); //ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i', function($m) {
-            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
+            $arr = array_filter(explode('[*]',trim(trim($m[2]),'<br />')));
             if(empty($arr))
                 return $m[0];
 
@@ -184,7 +184,7 @@ class Messages
         },$str,10); //ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
-            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[2]))));
+            $arr = array_filter(explode('[*]',trim(trim($m[2]),'<br />')));
             if(empty($arr))
                 return $m[0];
 
@@ -198,7 +198,7 @@ class Messages
         },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i',function($m) {
-            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
+            $arr = array_filter(explode('[*]',trim(trim($m[3]),'<br />')));
             if(empty($arr))
                 return $m[0];
 
@@ -212,7 +212,7 @@ class Messages
         },$str,10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i',function($m) {
-            $arr = array_filter(explode('[*]',trim(str_replace('<br />','',$m[3]))));
+            $arr = array_filter(explode('[*]',trim(trim($m[3]),'<br />')));
             if(empty($arr))
                 return $m[0];
 
