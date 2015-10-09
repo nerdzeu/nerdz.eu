@@ -120,7 +120,13 @@ class Messages
                     return '<b>'.$this->user->lang('INVALID_URL').'</b>';
             }
             $url = preg_match('#^(?:https?|ftp):\/\/#i',$m[1]) ? $m[1] : 'http://'.$m[1];
-            return isset($m[2]) ? '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[2].'</a>' : '<a href="'.Messages::stripTags($url).'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
+            $host = parse_url($url)['host'];
+            $local = Utils::endsWith($host, System::getSafeCookieDomainName());
+            $url = ($local ? '' : '/out.php?url=').Messages::stripTags($url);
+
+            return isset($m[2])
+                ? '<a href="'.$url.'" onclick="window.open(this.href); return false">'.$m[2].'</a>'
+                : '<a href="'.$url.'" onclick="window.open(this.href); return false">'.$m[1].'</a>';
         };
 
         $str = preg_replace_callback('#\[url=&quot;(.+?)&quot;\](.+?)\[/url\]#i',function($m) use ($validURL) {
