@@ -134,4 +134,16 @@ class Utils
     public static function in_arrayi($needle, $haystack) {
         return in_array(strtolower($needle), array_map('strtolower', $haystack));
     }
+
+    // for startsWith & endsWith thanks https://stackoverflow.com/a/10473026/2891324
+
+    public static function startsWith($haystack, $needle) {
+        // search backwards starting from haystack length characters from the end
+        return $needle === '' || strrpos($haystack, $needle, -strlen($haystack)) !== false;
+    }
+
+    public static function endsWith($haystack, $needle) {
+        // search forward starting from end minus needle length characters
+        return $needle === '' || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
+    }
 }
