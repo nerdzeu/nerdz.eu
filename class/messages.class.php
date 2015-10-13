@@ -122,7 +122,8 @@ class Messages
             $url = preg_match('#^(?:https?|ftp):\/\/#i',$m[1]) ? $m[1] : 'http://'.$m[1];
             $host = parse_url($url)['host'];
             $local = Utils::endsWith($host, System::getSafeCookieDomainName());
-            $url = ($local ? '' : '/out.php?url=').Messages::stripTags($url);
+            $url = Messages::stripTags($url);
+            $url = ($local ? '' : '/out.php?hmac='.Utils::getHMAC($url, Config\CAMO_KEY).'&url=').urlencode($url);
 
             return isset($m[2])
                 ? '<a href="'.$url.'" onclick="window.open(this.href); return false">'.$m[2].'</a>'
