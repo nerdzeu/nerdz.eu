@@ -18,7 +18,7 @@ if($user->isLogged()) {
     // TODO: collect stats
 }
 
-$url  = trim($_GET['url']);
+$url  = trim(html_entity_decode($_GET['url'],ENT_QUOTES, 'UTF-8'));
 $hmac = !empty($_GET['hmac']) ? Utils::getHMAC($url, Config\CAMO_KEY) === $_GET['hmac'] : false;
 if($hmac) {
     die(header("Location: {$url}"));

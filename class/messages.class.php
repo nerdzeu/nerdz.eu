@@ -123,7 +123,10 @@ class Messages
             $host  = parse_url($url)['host'];
             $local = Utils::endsWith($host, System::getSafeCookieDomainName());
             $url   = Messages::stripTags($url);
-            $url   = $local ? $url : '/out.php?url='.urlencode($url).'&hmac='.Utils::getHMAC($url, Config\CAMO_KEY);
+            if(!$local) {
+                $url = html_entity_decode($url, ENT_QUOTES, 'UTF-8');
+                $url = '/out.php?url='.urlencode($url).'&hmac='.Utils::getHMAC($url, Config\CAMO_KEY);
+            }
 
             return isset($m[2])
                 ? '<a href="'.$url.'" onclick="window.open(this.href); return false">'.$m[2].'</a>'
