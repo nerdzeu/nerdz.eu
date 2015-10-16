@@ -13,7 +13,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     <meta name="author" content="Paolo Galeone" />
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
     <meta name="robots" content="index,follow" />
-    <title><?= NERDZ\Core\Utils::getSiteName(), ' - ', $user->lang('ERROR');?></title>
+    <title><?=$user->lang('ERROR');?> - <?=NERDZ\Core\Utils::getSiteName(); ?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('error');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

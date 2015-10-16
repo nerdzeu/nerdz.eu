@@ -13,7 +13,7 @@ $q = !empty($_GET['q']) && is_string($_GET['q']) ? htmlspecialchars(trim($_GET['
     <html lang="<?php echo $user->getBoardLanguage();?>">
     <head>
     <meta name="author" content="Paolo Galeone" />
-    <title><?=NERDZ\Core\Utils::getSiteName(); ?> - Search <?php
+    <title><?=$user->lang('SEARCH')?> - <?=NERDZ\Core\Utils::getSiteName(); ?> <?php
     if(!empty($q)) echo '⇒ ', $q;?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('search');

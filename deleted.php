@@ -12,7 +12,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     <html lang="<?php echo $user->getBoardLanguage();?>">
     <head>
     <meta name="author" content="Paolo Galeone" />
-    <title><?=NERDZ\Core\Utils::getSiteName(); ?> - <?=$user->lang('DELETED'); ?></title>
+    <title><?=$user->lang('DELETED'); ?> - <?=NERDZ\Core\Utils::getSiteName(); ?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('deleted');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

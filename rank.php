@@ -14,7 +14,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
     <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
     <meta name="robots" content="index,follow" />
-    <title><?= NERDZ\Core\Utils::getSiteName(); ?> - Rank</title>
+    <title>Rank - <?=NERDZ\Core\Utils::getSiteName(); ?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('rank');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

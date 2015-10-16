@@ -11,7 +11,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     <html lang="<?php echo $user->getBoardLanguage();?>">
     <head>
     <meta name="author" content="Paolo Galeone" />
-    <title><?= NERDZ\Core\Utils::getSiteName(), ' - ', $user->lang('PREFERENCES') ?></title>
+    <title><?= $user->lang('PREFERENCES') ?> - <?=NERDZ\Core\Utils::getSiteName(); ?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('preferences');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';

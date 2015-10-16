@@ -14,7 +14,7 @@ ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
     <head>
     <meta name="author" content="Paolo Galeone" />
     <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
-    <title><?= NERDZ\Core\Utils::getSiteName(); ?> - PM</title>
+    <title>PM - <?=NERDZ\Core\Utils::getSiteName(); ?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('pm');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
