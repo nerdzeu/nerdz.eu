@@ -949,7 +949,7 @@ class Messages
                     : '<a href="'.$codeurl.'" onclick="window.open(this.href); return false" class="nerdz-code-text-version">'.
                     $this->user->lang('TEXT_VERSION').'</a>'
                 ).
-                '</div><code class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal">'.
+                '</div><code class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal; display:block">'.
                 str_replace("\n",'<br />',
                     str_replace(' ','&nbsp',
                     str_replace("\t",'&#09;',$totalcode))).'</code></div>', $str);
