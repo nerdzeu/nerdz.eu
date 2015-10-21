@@ -939,8 +939,8 @@ class Messages
                 $str = str_ireplace("[c={$lang}]{$totalcode}[/c]",
                     '<span class="nerdz-code-wrapper" title="'.$lang.'"><code class="prettyprint lang-'.$lang.'" style="border:0px; word-wrap: break-word">'.
                     str_replace("\n",'<br />',
-                        str_replace(' ','&nbsp',
-                        str_replace("\t",'&#09;',$totalcode))).'</code></span>', $str);
+                        str_replace(' ','&nbsp;',
+                        str_replace("\t",'&nbsp;&nbsp;&nbsp;&nbsp;',$totalcode))).'</code></span>', $str);
             } else { // long
                 $str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
                     '<div class="nerdz-code-wrapper">
@@ -951,8 +951,8 @@ class Messages
                 ).
                 '</div><code class="prettyprint lang-' . $lang . '" style="border:0px; overflow-x:auto; word-wrap: normal; display:block">'.
                 str_replace("\n",'<br />',
-                    str_replace(' ','&nbsp',
-                    str_replace("\t",'&#09;',$totalcode))).'</code></div>', $str);
+                    str_replace(' ','&nbsp;',
+                    str_replace("\t",'&nbsp;&nbsp;&nbsp;&nbsp;',$totalcode))).'</code></div>', $str);
                 ++$i;
             }
 
