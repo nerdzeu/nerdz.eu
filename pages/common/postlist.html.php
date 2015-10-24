@@ -47,13 +47,13 @@ if($specific) {
 
 $vals = [];
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
+$method = $id ? 'getPosts' : 'getHome';
 
-$vals['list_a'] = $messages->getPosts($id,
+$vals['list_a'] = $messages->$method(
     array_merge(
+        [ 'id'       => $id  ],
         [ 'project'  => $prj ],
         [ 'truncate' => true ], // always truncate in postlist
-        [ 'inHome'   => !$id ],
-        [ 'vote'     => $vote],
         $limit          ? [ 'limit'        => $limit ]         : [],
         $beforeHpid     ? [ 'hpid'         => $beforeHpid ]    : [],
         $onlyfollowed   ? [ 'onlyfollowed' => $onlyfollowed ]  : [],

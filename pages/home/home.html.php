@@ -5,8 +5,7 @@ $user = new NERDZ\Core\User();
 if(!($logged = $user->isLogged()))
     die($user->lang('REGISTER'));
 
-$prj      = isset($_GET['action']) && $_GET['action'] == 'project';
+$prj      = isset($_GET['action']) && $_GET['action'] == 'project' || isset($_POST['type']) && $_POST['type'] == 'project';
 $truncate = true;
 $path     = 'home';
-
 require $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.html.php';

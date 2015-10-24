@@ -439,17 +439,116 @@ class Messages
         return $all;
     }
 
-    public function getPosts($id, $options = [])
-    {
+    public function getHome($options) {
+        if(!$this->user->isLogged()) {
+            return [];
+        }
         extract($options);
-        $limit        = !empty($limit)  ? $limit  : 10;
+        $limit        = !empty($limit)  ? Security::limitControl($limit,20)  : 10;
         $lang         = !empty($lang)   ? $lang   : false;
         $hpid         = !empty($hpid)   ? $hpid   : false;
         $search       = !empty($search) ? $search : false;
-        $vote         = !empty($vote)   ? $vote   : false;
         $project      = !empty($project);
-        $inHome       = !empty($inHome);
         $onlyfollowed = !empty($onlyfollowed);
+        $truncate     = !empty($truncate);
+
+        $anyone       = $lang === '*';
+        $search4Lang  = false;
+
+        $glue = 'TRUE ';
+
+        if($onlyfollowed) {
+            $glue .= 'AND p.from IN (SELECT '.$_SESSION['id'].' UNION ALL SELECT "to" FROM "followers" WHERE "from" = '.$_SESSION['id'].') ';
+        } elseif($lang && !$anyone) {
+            if(!in_array($lang, System::getAvailableLanguages()))
+                $lang = $this->user->isLogged() ? $this->user->getLanguage($_SESSION['id']) : 'en';
+
+            $glue .= ' AND p.lang = :lang ';
+            $search4Lang = true;
+        }
+        if($search) {
+            if(preg_match('/^#[\w]{1,44}$/iu',$search)) {
+                return (new Search())->topic($search, $limit, $hpid);
+            }
+            else {
+                // TODO: replace with full text search
+                $glue .= ' AND p.message ILIKE :like ';
+            }
+        }
+        
+        $blist = '(SELECT * FROM blist)';
+        $glue .= "AND p.\"from\" NOT IN {$blist} AND
+            CASE p.type
+            WHEN 1 THEN  p.\"to\" NOT IN {$blist}
+            ELSE ( -- groups conditions
+                    TRUE IN (SELECT visible FROM \"groups\" g WHERE g.counter = p.\"to\")
+                    OR
+                    ({$_SESSION['id']} IN (
+                        SELECT \"from\" FROM groups_members gm WHERE gm.\"to\" = p.\"to\"
+                        UNION ALL
+                        SELECT \"from\" FROM groups_owners go  WHERE go.\"to\" = p.\"to\")
+                    )
+                 )
+            END ";
+
+        if($hpid) {
+            $realTable = ($project ? 'groups_' : '').'posts';
+            $glue .= 'AND p.time <= (SELECT time FROM '.$realTable.' WHERE hpid = :hpid) AND p.hpid <> :hpid ';
+        }
+
+        $query = 'with blist as (select "to" from blacklist where "from" = '.$_SESSION['id'].') SELECT '.
+                ' p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "messages" p WHERE '.
+                $glue.
+                ' ORDER BY p.time DESC'.
+                ' LIMIT '.$limit;
+        echo $query;
+
+        if(!($result = Db::query(
+            [
+                $query,
+                array_merge(
+                    $id              ? [ ':id'   => $id ]             : [],
+                    $search4Lang     ? [ ':lang' => $lang]            : [],
+                    $hpid            ? [ ':hpid' => $hpid ]           : [],
+                    $search          ? [ ':like' => '%'.str_replace('%','\%',$search).'%' ] : []
+                )
+
+            ],Db::FETCH_STMT))
+        )
+        return [];
+
+        $c = 0;
+        $ret = [];
+        while(($row = $result->fetch(PDO::FETCH_OBJ)))
+        {
+            $ret[$c] = $this->getPost($row,
+                [
+                    'inHome'   => true,
+                    'project'  => $row->type === 0,
+                    'truncate' => $truncate
+                ]);
+
+            $ret[$c]['news_b'] = $row->type === 0
+                ? $row->to == Config\PROJECTS_NEWS
+                : $row->to == Config\USERS_NEWS;
+            
+            ++$c;
+        }
+
+        return $ret;
+
+
+    }
+
+    public function getPosts($options = [])
+    {
+        extract($options);
+        $id           = !empty($id)     ? $id     : false;
+        $limit        = !empty($limit)  ? Security::limitControl($limit,10)  : 10;
+        $lang         = !empty($lang)   ? $lang   : false;
+        $hpid         = !empty($hpid)   ? $hpid   : false;
+        $search       = !empty($search) ? $search : false;
+        $project      = !empty($project);
         $truncate     = !empty($truncate);
 
         $anyone       = $lang === '*';
@@ -459,10 +558,7 @@ class Messages
 
         $glue = $id ? ' p."to" = :id ' : 'TRUE';
 
-        if($onlyfollowed) {
-            $followed = array_merge($this->user->getFollowing($_SESSION['id']), (array)$_SESSION['id']);
-            $glue    .= ' AND p."from" IN ('.implode(',',$followed).') ';
-        } elseif($lang && !$anyone) {
+        if($lang && !$anyone) {
             $languages = array_merge(System::getAvailableLanguages(), (array)'*');
             if(!in_array($lang,$languages))
                 $lang = $this->user->isLogged() ? $this->user->getLanguage($_SESSION['id']) : 'en';
@@ -471,13 +567,10 @@ class Messages
             $search4Lang = true;
         }
 
-        if($limit > 20 || $limit <= 0) // at most 20 posts
-            $limit = 20;
-
         $join = '';
 
         if($search) {
-            if(preg_match('/^#[\w]{1,34}$/iu',$search)) {
+            if(preg_match('/^#[\w]{1,44}$/iu',$search)) {
                 return (new Search())->topic($search, $limit, $hpid);
             }
             else {
@@ -485,20 +578,16 @@ class Messages
             }
         }
 
-        $blist = $this->user->getBlacklist();
+        $blist = '(select * from blist)';
 
-        if(!empty($blist))
-        {
-            $imp_blist = implode(',',$blist);
-            $glue .= ' AND p."from" NOT IN ('.$imp_blist.') ';
-            if(!$project) {
-                $glue .= ' AND p."to" NOT IN ('.$imp_blist.') ';
-            }
+        $glue .= " AND p.\"from\" NOT IN {$blist}";
+        if(!$project) {
+            $glue .= " AND p.\"to\" NOT IN {$blist}";
         }
+    
 
         $glue .= $hpid ? ' AND p.hpid < :hpid ' : '';
-
-        $join .= $vote ? ' INNER JOIN "'.($project ?  'groups_' : '').'thumbs" t ON p.hpid = t.hpid ' : '';
+        
         if($project) {
             $join .= ' INNER JOIN "groups" g ON p.to = g.counter
                 INNER JOIN "users" u ON p."from" = u.counter
@@ -512,23 +601,21 @@ class Messages
             $glue .= ') ';
         }
 
-        if(!($result = Db::query(
-            [
-                'SELECT '.
-                ($vote ? 'SUM(t.vote) AS cc, ' : '').
-                ' p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.
+        $query = 'with blist as (select "to" from blacklist where "from" = '.$_SESSION['id'].') SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.
                 $table.'" p '.$join.' WHERE '.
                 $glue.
-                ($vote ? ' GROUP BY p."hpid" ' : '').
-                ' ORDER BY '.
-                ($vote ? 'cc '.($vote == '+' ? 'DESC' : 'ASC') .',' : '').
-                'p.hpid DESC'.
-                ' LIMIT '.$limit,
+                ' ORDER BY p.time DESC'.
+                ' LIMIT '.$limit;
+        echo $query;
+
+        if(!($result = Db::query(
+            [
+                $query,
                 array_merge(
                     $id              ? [ ':id'   => $id ]             : [],
                     $search4Lang     ? [ ':lang' => $lang]            : [],
                     $hpid            ? [ ':hpid' => $hpid ]           : [],
-                    $search          ? [ ':like' => '%'.$search.'%' ] : []
+                    $search          ? [ ':like' => '%'.str_replace('%','\%',$search).'%' ] : []
                 )
 
             ],Db::FETCH_STMT))
@@ -544,12 +631,6 @@ class Messages
                     'project'  => $project,
                     'truncate' => $truncate
                 ]);
-
-            if($inHome) {
-                $ret[$c]['news_b'] = $project
-                    ? $row->to == Config\PROJECTS_NEWS
-                    : $row->to == Config\USERS_NEWS;
-            }
             ++$c;
         }
 
@@ -965,16 +1046,21 @@ class Messages
         extract($options);
         $project      = !empty($project);
         $truncate     = !empty($truncate);
+        $inHome       = !empty($inHome);
 
         if(is_object($dbPost))
             $dbPost = (array) $dbPost;
         else if(is_numeric($dbPost)) //hpid
         {
-            $table = ($project ? 'groups_' : '').'posts';
+            if($inHome) {
+                $table = 'messages';
+            } else {
+                $table = ($project ? 'groups_' : '').'posts';
+            }
 
             if(!($o = Db::query(
                 [
-                    'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" = :hpid',
+                    'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.$table.'" p WHERE p."hpid" = :hpid'.($inHome ? ' AND p.type = '.($project ? '0' : '1') : ''),
                     [
                         ':hpid' => $dbPost
                     ]
@@ -1032,6 +1118,7 @@ class Messages
             $ret['message_n'] = $this->parseNews($ret['message_n']);
         $ret['postcomments_n']    = $this->countComments($dbPost['hpid'], $project);
         $ret['hpid_n']            = $dbPost['hpid'];
+        $ret['type_n']            = $inHome ? ($dbPost['type'] == '0' ? 'project' : 'profile') : ($project ? 'project' : 'profile');
 
         return $ret;
     }
