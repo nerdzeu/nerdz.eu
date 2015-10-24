@@ -31,7 +31,7 @@ class Config
             'CAPTCHA_LEVEL'        => 5,
 
             'CAMO_KEY'             => '',
-            'CAMO_HOST'            => '',
+            'MEDIA_HOST'            => '',
 
             'HTTPS_DOMAIN'         => '',
             'STATIC_DOMAIN'        => '',

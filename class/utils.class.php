@@ -69,9 +69,9 @@ class Utils
             }
         }
         // If here, host is not a trusted host
-        return Config\CAMO_KEY === '' || Config\CAMO_HOST === ''
+        return Config\CAMO_KEY === '' || Config\MEDIA_HOST === ''
             ? 'https://i0.wp.com/' . preg_replace ('#^https?://|^ftp://#i', '', $url)
-            : 'https://'.Config\CAMO_HOST.'/'.static::getHMAC($url, Config\CAMO_KEY).'?url='.urlencode($url);
+            : 'https://'.Config\MEDIA_HOST.'/camo/'.static::getHMAC($url, Config\CAMO_KEY).'?url='.urlencode($url);
     }
 
     public static function getHMAC($message, $key) {
