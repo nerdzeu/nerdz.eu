@@ -99,11 +99,11 @@ class Variables
         // If you have configured a Camo SSL proxy server (http://git.io/YuvCpQ)
         // then you must put your Camo private key here, follwed by the host.
         // Requests will be routed to:
-        // https://CAMO_HOST/HASH?url=ENCODED_URL to Camo,
+        // https://MEDIA_HOST/camo/HASH?url=ENCODED_URL to Camo,
         // By default it is set to an empty string and your images will be
         // routed to our trusted public SSL proxy.
-        //'CAMO_KEY'               => "THAT-CAMO-KEY",
-        //'CAMO_HOST'              => 'camo.somewhere.com'
+        //'CAMO_KEY'                => "THAT-CAMO-KEY",
+        //'MEDIA_HOST'              => 'media.somewhere.com'
         // True if every login request should be sent via HTTPS.
         // This works via some CORS magic. You need to enable CORS on the HTTP
         // and mobile domains, and also you need to send the
