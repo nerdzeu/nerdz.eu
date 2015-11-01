@@ -6,8 +6,13 @@ if(!isset($user))
 $func = function() use ($user) {
     $commonvars = [];
     $commonvars['tok_n'] = NERDZ\Core\Security::getCsrfToken();
-    $commonvars['myusername_n'] = NERDZ\Core\User::getUsername();
-    $commonvars['myusername4link_n'] = \NERDZ\Core\Utils::userLink($commonvars['myusername_n']);
+    if($user->isLogged()) {
+        $commonvars['myusername_n'] = NERDZ\Core\User::getUsername();
+        $commonvars['myusername4link_n'] = \NERDZ\Core\Utils::userLink($commonvars['myusername_n']);
+        $commonvars['mygravatarurl_n'] = $user->getGravatar($_SESSION['id']);
+    } else {
+        $commonvars['myusername_n'] = $commonvars['myusername4link_n'] = $commonvars['mygravatarurl_n'] = '';
+    }
     $langKey = 'lang'. NERDZ\Core\Config\SITE_HOST;
     if(!($commonvars['langs_a'] = NERDZ\Core\Utils::apc_get($langKey)))
         $commonvars['langs_a'] = NERDZ\Core\Utils::apc_set($langKey,function() {
