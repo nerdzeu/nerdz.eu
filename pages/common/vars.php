@@ -7,10 +7,12 @@ $func = function() use ($user) {
     $commonvars = [];
     $commonvars['tok_n'] = NERDZ\Core\Security::getCsrfToken();
     if($user->isLogged()) {
+        $commonvars['logged_b'] = true;
         $commonvars['myusername_n'] = NERDZ\Core\User::getUsername();
         $commonvars['myusername4link_n'] = \NERDZ\Core\Utils::userLink($commonvars['myusername_n']);
         $commonvars['mygravatarurl_n'] = $user->getGravatar($_SESSION['id']);
     } else {
+        $commonvars['logged_b'] = false;
         $commonvars['myusername_n'] = $commonvars['myusername4link_n'] = $commonvars['mygravatarurl_n'] = '';
     }
     $langKey = 'lang'. NERDZ\Core\Config\SITE_HOST;
