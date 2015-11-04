@@ -40,8 +40,6 @@ $func = function() use ($user) {
         $commonvars['banners_a'][$ban[1]] = $ban[2];
 
     $user->getTPL()->assign($commonvars);
-
-    echo 'function called2';
 };
 
 $func();
