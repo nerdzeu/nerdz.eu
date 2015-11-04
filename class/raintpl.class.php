@@ -104,6 +104,13 @@ final class RainTPL
 
     const CACHE_EXPIRE_TIME = 1800; // default cache expire time
 
+    // NERDZ common header for every compiled file
+    private static $common_header =  '<?php '.
+                    'require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\';' .
+                    'require $_SERVER[\'DOCUMENT_ROOT\'].\'/pages/common/vars.php\';' .
+                    'if(!isset($user)) die("user not set");' .
+                    'extract($user->getTPL()->var, EXTR_OVERWRITE);';
+
     public function __construct()
     {
         $this->cache_dir = $_SERVER['DOCUMENT_ROOT']. '/'. (
@@ -252,7 +259,7 @@ final class RainTPL
         $template_code = preg_replace_callback ( "/##XML(.*?)XML##/s", array($this, 'xml_reSubstitution'), $template_code ); 
 
         //compile template
-        $template_compiled = "<?php if(!class_exists('".__NAMESPACE__."\\RainTPL')) die('".__NAMESPACE__."\\RainTPL does not exists'); if(!isset(\$user)) die('user not set');?>" . $this->compileTemplate( $template_code, $tpl_basedir );
+        $template_compiled = self::$common_header ."\n?>" . $this->compileTemplate( $template_code, $tpl_basedir );
 
 
         // fix the php-eating-newline-after-closing-tag-problem
@@ -348,23 +355,23 @@ final class RainTPL
                 // if the cache is active
                 if( isset($code[ 2 ]) )
                     //dynamic include
-                    $compiled_code .= '<?php require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\'; $tpl = new '.__NAMESPACE__.'\\RainTPL();' .
-                    'if( $cache = $tpl->cache( $template = basename("'.$include_var.'") ) )' .
+                    $compiled_code .= static::$common_header .
+                    'if( $cache = $user->getTPL()->cache( $template = basename("'.$include_var.'") ) )' .
                     '    echo $cache;' .
                     'else{ ' .
                     '$tpl_dir_temp = static::$tpl_dir;' .
-                    '$tpl->assign( $this->var );' .
-                    ( !$loop_level ? null : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
-                    '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1, 1) != "/" ? "/" : "" ) . $template );'.
+                    '$user->getTPL()->assign( $this->var );' .
+                    ( !$loop_level ? null : '$user->getTPL()->assign( "key", $key'.$loop_level.' ); $user->getTPL()->assign( "value", $value'.$loop_level.' );' ).
+                    '$user->getTPL()->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1, 1) != "/" ? "/" : "" ) . $template );'.
                     '}' .
                     '?>';
                 else
                     //dynamic include
-                    $compiled_code .= '<?php require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/autoload.php\'; $tpl = new '.__NAMESPACE__.'\\RainTPL();' .
+                    $compiled_code .= static::$common_header .
                     '$tpl_dir_temp = static::$tpl_dir;' .
-                    '$tpl->assign( $this->var );' .
-                    ( !$loop_level ? '' : '$tpl->assign( "key", $key'.$loop_level.' ); $tpl->assign( "value", $value'.$loop_level.' );' ).
-                    '$tpl->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,1) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
+                    '$user->getTPL()->assign( $this->var );' .
+                    ( !$loop_level ? '' : '$user->getTPL()->assign( "key", $key'.$loop_level.' ); $user->getTPL()->assign( "value", $value'.$loop_level.' );' ).
+                    '$user->getTPL()->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,1) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
                     '?>';
 
             }

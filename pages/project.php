@@ -29,7 +29,6 @@ if( ($info->private && !$vals['logged_b']) ||
     $included = true;
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
     $user->getTPL()->assign($vals);
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
     $user->getTPL()->draw('project/private');
 }
 else
@@ -42,7 +41,6 @@ else
     if(!$icansee)
     {
         $user->getTPL()->assign($vals);
-        require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
         $user->getTPL()->draw('project/invisible');
     }
     else
@@ -136,12 +134,11 @@ else
                 || $user->hasInBlacklist($post->from) // fake post not found
             )
             {
-                require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
                 $user->getTPL()->draw('project/postnotfound');
             }
             else
             {
-                // requiired by singlepost
+                // required by singlepost
                 $hpid = $post->hpid;
                 $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';
                 $found = true;
@@ -158,7 +155,6 @@ else
         if(($vals['singlepost_b'] && $found) || (!$vals['singlepost_b']))
         {
             $user->getTPL()->assign($vals);
-            require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
             $user->getTPL()->draw('project/layout');
         }
     }

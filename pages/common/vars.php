@@ -1,5 +1,5 @@
 <?php
-//Variables avaiable in every page present in the root of nerdz (/home.php, /profile.php and so on)
+//Variables avaiable in every page compiled by rainTPL
 if(!isset($user))
     die('$user required');
 // use function to create variable scope and avoid conflicts
@@ -40,6 +40,9 @@ $func = function() use ($user) {
         $commonvars['banners_a'][$ban[1]] = $ban[2];
 
     $user->getTPL()->assign($commonvars);
+
+    echo 'function called2';
 };
 
 $func();
+

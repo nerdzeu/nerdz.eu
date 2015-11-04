@@ -245,7 +245,6 @@ if($enter)
     {
         if($user->hasInBlacklist($id)) //fake post not found [ same trick in the header ]
         {
-            require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
             $user->getTPL()->draw('profile/postnotfound');
         }
         elseif(!($post = Db::query(
@@ -259,7 +258,6 @@ if($enter)
             ,Db::FETCH_OBJ)
         ))
         {
-            require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
             $user->getTPL()->draw('profile/postnotfound');
         }
         else
@@ -282,7 +280,6 @@ if($enter)
     if(($vals['singlepost_b'] && $found) || !$vals['singlepost_b'])
     {
         $user->getTPL()->assign($vals);
-        require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
         $user->getTPL()->draw('profile/layout');
     }
 }
@@ -292,6 +289,5 @@ else
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/register.php';
     $vals['presentation_n'] = ''; // delete the presentation
     $user->getTPL()->assign($vals);
-    require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
     $user->getTPL()->draw('profile/closed');
 }

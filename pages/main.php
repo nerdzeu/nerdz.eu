@@ -5,9 +5,8 @@ if(!$user->isLogged())
 use NERDZ\Core\Db;
 use NERDZ\Core\User;
 use NERDZ\Core\System;
-$vals = [];
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
+$vals = [];
 $vals['canwriteissue_b'] = $vals['canwritenews_b'] = false;
 $vals['id_n'] = $_SESSION['id'];
 

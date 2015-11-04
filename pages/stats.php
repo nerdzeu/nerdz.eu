@@ -69,8 +69,6 @@ $vals['totonlinebots_n']        = $ret[9];
 $vals['bots_a']                 = $ret[10];
 $vals['lastupdate_n']           = $user->getDateTime(Utils::apc_getLastModified($cache));
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
-
 $user->getTPL()->assign($vals);
 
 if(isset($draw))

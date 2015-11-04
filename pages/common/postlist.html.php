@@ -46,7 +46,6 @@ if($specific) {
 }
 
 $vals = [];
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
 $method = $id ? 'getPosts' : 'getHome';
 
 $vals['list_a'] = $messages->$method(
