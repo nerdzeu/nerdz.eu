@@ -35,6 +35,9 @@ function N() /* THE FATHER of God (class/object/function)*/
             case "nerdzcrush":
                 iframe = '<div class="nerdzcrush" data-media="'+vid+'#noautoplay,noloop"></div>';
             break;
+            case "imgur":
+                iframe = '<video src="https://i.imgur.com/'+vid+'.webm" controls autoplay></video>';
+            break;
         }
         a.html ('<div style="width:100%; text-align:center"><br />'+iframe+'</div>');
         a.css ('cursor','default');
