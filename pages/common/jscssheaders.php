@@ -50,7 +50,7 @@ foreach ($headers['css'] as $var) {
 /* END STYLESHEETS */
 /* BEGIN JQUERY */
 ?>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="<?php echo $static_domain;?>/static/js/pgwmodal.min.js"></script>
 <?php
 /* END JQUERY */
