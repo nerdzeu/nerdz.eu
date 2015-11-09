@@ -12,7 +12,7 @@ class Messages
     const DMOTION_REGEXP    = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
     const FACEBOOK_REGEXP   = '#^https?://(?:www\.)?facebook\.com/(?:(?:photo|video)\.php(?:\?v=|\?.+?&v=)|[a-z0-9._-]+/videos/)(\d+)/?#i';
     const NERDZCRUSH_REGEXP = '#^https?://(?:cdn\.)?media\.nerdz\.eu/([a-z0-9_-]{12})(?:|\.[a-z0-9]{2,4})#i';
-    const IMGUR_REGEXP      = '#^https?://(?:www\.)?(?:i\.)?imgur\.com/([a-z0-9_-]+)\.(?gifv|webm)$#i';
+    const IMGUR_REGEXP      = '#^https?://(?:www\.)?(?:i\.)?imgur\.com/([a-z0-9_-]+)\.(?:gifv|webm)$#i';
     const HASHTAG_MAXLEN    = 44;
 
     protected $project;
