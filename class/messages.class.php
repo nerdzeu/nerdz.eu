@@ -610,7 +610,6 @@ class Messages
                 $glue.
                 ' ORDER BY p.time DESC'.
                 ' LIMIT '.$limit;
-        echo $query;
 
         if(!($result = Db::query(
             [
