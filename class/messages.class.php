@@ -1098,8 +1098,8 @@ class Messages
         $ret['to4link_n']         = $toFuncLink($to);
         $ret['fromid_n']          = $dbPost['from'];
         $ret['toid_n']            = $dbPost['to'];
-        $ret['fromgravatar_n']    = $this->user->getGravatar($dbPost['from']);
-        $ret['togravatar_n']      = $this->user->getGravatar($dbPost['to']);
+        $ret['fromgravatarurl_n'] = $this->user->getGravatar($dbPost['from']);
+        $ret['togravatarurl_n']   = $this->user->getGravatar($dbPost['to']);
         $ret['from_n']            = $from;
         $ret['to_n']              = $to;
         $ret['datetime_n']        = $this->user->getDateTime($dbPost['time']);
