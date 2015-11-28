@@ -142,36 +142,36 @@ END $$;
 CREATE FUNCTION after_insert_group_post() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-      BEGIN
-      WITH to_notify("user") AS (
-          (
-              -- members
-              SELECT "from" FROM "groups_members" WHERE "to" = NEW."to"
-                  UNION DISTINCT
-              --followers
-              SELECT "from" FROM "groups_followers" WHERE "to" = NEW."to"
-                  UNION DISTINCT
-              SELECT "from"  FROM "groups_owners" WHERE "to" = NEW."to"
-          )
-          EXCEPT
-          (
-              -- blacklist
-              SELECT "from" AS "user" FROM "blacklist" WHERE "to" = NEW."from"
-                  UNION DISTINCT
-              SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
-                  UNION DISTINCT
-              SELECT NEW."from" -- I shouldn't be notified about my new post
-          )
-      )
+ BEGIN
+     WITH to_notify("user") AS (
+         (
+             -- members
+             SELECT "from" FROM "groups_members" WHERE "to" = NEW."to"
+                 UNION DISTINCT
+             --followers
+             SELECT "from" FROM "groups_followers" WHERE "to" = NEW."to"
+                 UNION DISTINCT
+             SELECT "from"  FROM "groups_owners" WHERE "to" = NEW."to"
+         )
+         EXCEPT
+         (
+             -- blacklist
+             SELECT "from" AS "user" FROM "blacklist" WHERE "to" = NEW."from"
+                 UNION DISTINCT
+             SELECT "to" AS "user" FROM "blacklist" WHERE "from" = NEW."from"
+                 UNION DISTINCT
+             SELECT NEW."from" -- I shouldn't be notified about my new post
+         )
+     )
 
-      INSERT INTO "groups_notify"("from", "to", "time", "hpid") (
-          SELECT NEW."to", "user", NEW."time", NEW."hpid" FROM to_notify
-      );
+     INSERT INTO "groups_notify"("from", "to", "time", "hpid") (
+         SELECT NEW."to", "user", NEW."time", NEW."hpid" FROM to_notify
+     );
 
-      PERFORM hashtag(NEW.message, NEW.hpid, true, NEW.from, NEW.time);
-      PERFORM mention(NEW."from", NEW.message, NEW.hpid, true);
-      RETURN NULL;
-     END $$;
+     PERFORM hashtag(NEW.message, NEW.hpid, true, NEW.from, NEW.time);
+     PERFORM mention(NEW."from", NEW.message, NEW.hpid, true);
+     RETURN NULL;
+ END $$;
 
 
 --
@@ -384,6 +384,7 @@ BEGIN
     SELECT p."to" INTO NEW."to" FROM "groups_posts" p WHERE p.hpid = NEW.hpid;
 
     NEW.message = message_control(NEW.message);
+
 
     SELECT T."from" INTO postFrom FROM (SELECT "from" FROM "groups_posts" WHERE hpid = NEW.hpid) AS T;
     PERFORM blacklist_control(NEW."from", postFrom); --blacklisted post creator
@@ -654,14 +655,14 @@ END $$;
 CREATE FUNCTION flood_control(tbl regclass, flooder bigint, message text DEFAULT NULL::text) RETURNS void
     LANGUAGE plpgsql
     AS $$
-DECLARE now timestamp(0) with time zone;
-        lastAction timestamp(0) with time zone;
+DECLARE now timestamp(0) without time zone;
+        lastAction timestamp(0) without time zone;
         interv interval minute to second;
         myLastMessage text;
         postId text;
 BEGIN
     EXECUTE 'SELECT MAX("time") FROM ' || tbl || ' WHERE "from" = ' || flooder || ';' INTO lastAction;
-    now := NOW();
+    now := (now() at time zone 'utc');
 
     SELECT time FROM flood_limits WHERE table_name = tbl INTO interv;
 
@@ -773,7 +774,7 @@ BEGIN
     END IF;
 
     -- update time
-    SELECT NOW() INTO NEW.time;
+    SELECT (now() at time zone 'utc') INTO NEW.time;
 
     NEW.message = message_control(NEW.message);
     PERFORM flood_control('"groups_comments"', NEW."from", NEW.message);
@@ -840,7 +841,7 @@ BEGIN
     END IF;
 
     IF TG_OP = 'UPDATE' THEN
-        SELECT NOW() INTO NEW.time;
+        SELECT (now() at time zone 'utc') INTO NEW.time;
     ELSE
         SELECT "pid" INTO NEW.pid FROM (
             SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "groups_posts"
@@ -906,12 +907,13 @@ begin
     END LOOP;
 END $$;
 
+
 --
--- Name: hashtag(text, bigint, boolean, bigint, timestamp with time zone); Type: FUNCTION; Schema: public; Owner: -
+-- Name: hashtag(text, bigint, boolean, bigint, timestamp without time zone); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION hashtag(message text, hpid bigint, grp boolean, from_u bigint, m_time timestamp with time zone) RETURNS void
-LANGUAGE plpgsql
+CREATE FUNCTION hashtag(message text, hpid bigint, grp boolean, from_u bigint, m_time timestamp without time zone) RETURNS void
+    LANGUAGE plpgsql
     AS $$
      declare field text;
              regex text;
@@ -958,6 +960,62 @@ BEGIN
             p.from = ' || from_u || ' -- store user association with tag even if tag already exists
      )';
 END $$;
+
+
+--
+-- Name: hashtag(text, bigint, boolean, bigint, timestamp with time zone); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION hashtag(message text, hpid bigint, grp boolean, from_u bigint, m_time timestamp with time zone) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+     declare field text;
+             regex text;
+BEGIN
+     IF grp THEN
+         field := 'g_hpid';
+     ELSE
+         field := 'u_hpid';
+     END IF;
+
+     regex = '((?![\d]+[[^\w]+|])[\w]{1,44})';
+
+     message = quote_literal(message);
+
+     EXECUTE '
+     insert into posts_classification(' || field || ' , "from", time, tag)
+     select distinct ' || hpid ||', ' || from_u || ', ''' || m_time || '''::timestamptz, tmp.matchedTag[1] from (
+         -- 1: existing hashtags
+        select concat(''{#'', a.matchedTag[1], ''}'')::text[] as matchedTag from (
+            select regexp_matches(' || strip_tags(message) || ', ''(?:\s|^|\W)#' || regex || ''', ''gi'')
+            as matchedTag
+        ) as a
+             union distinct -- 2: spoiler
+         select concat(''{#'', b.matchedTag[1], ''}'')::text[] from (
+             select regexp_matches(' || message || ', ''\[spoiler=' || regex || '\]'', ''gi'')
+             as matchedTag
+         ) as b
+             union distinct -- 3: languages
+          select concat(''{#'', c.matchedTag[1], ''}'')::text[] from (
+              select regexp_matches(' || message || ', ''\[code=' || regex || '\]'', ''gi'')
+             as matchedTag
+         ) as c
+            union distinct -- 4: languages, short tag
+         select concat(''{#'', d.matchedTag[1], ''}'')::text[] from (
+              select regexp_matches(' || message || ', ''\[c=' || regex || '\]'', ''gi'')
+             as matchedTag
+         ) as d
+     ) tmp
+     where not exists (
+        select 1
+        from posts_classification p
+        where ' || field ||'  = ' || hpid || ' and
+            p.tag = tmp.matchedTag[1] and
+            p.from = ' || from_u || ' -- store user association with tag even if tag already exists
+     )';
+END $$;
+
+
 --
 -- Name: interactions_query_builder(text, bigint, bigint, boolean); Type: FUNCTION; Schema: public; Owner: -
 --
@@ -1213,7 +1271,7 @@ BEGIN
 
 
     IF TG_OP = 'UPDATE' THEN -- no pid increment
-        SELECT NOW() INTO NEW.time;
+        SELECT (now() at time zone 'utc') INTO NEW.time;
     ELSE
         SELECT "pid" INTO NEW.pid FROM (
             SELECT COALESCE( (SELECT "pid" + 1 as "pid" FROM "posts"
@@ -1276,6 +1334,7 @@ CREATE FUNCTION strip_tags(message text) RETURNS text
              '\[img\].+?\[/img\]',' ','gi'),
              '\[twitter\].+?\[/twitter\]',' ','gi');
     end $$;
+
 
 --
 -- Name: user_comment(); Type: FUNCTION; Schema: public; Owner: -
@@ -1362,7 +1421,7 @@ BEGIN
     END IF;
 
     -- update time
-    SELECT NOW() INTO NEW.time;
+    SELECT (now() at time zone 'utc') INTO NEW.time;
 
     NEW.message = message_control(NEW.message);
     PERFORM flood_control('"comments"', NEW."from", NEW.message);
@@ -1404,7 +1463,7 @@ SET default_with_oids = false;
 CREATE TABLE ban (
     "user" bigint NOT NULL,
     motivation text DEFAULT 'No reason given'::text NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 
@@ -1416,7 +1475,7 @@ CREATE TABLE blacklist (
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
     motivation text DEFAULT 'No reason given'::text,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -1447,7 +1506,7 @@ ALTER SEQUENCE blacklist_id_seq OWNED BY blacklist.counter;
 CREATE TABLE bookmarks (
     "from" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -1479,7 +1538,7 @@ CREATE TABLE comment_thumbs (
     hcid bigint NOT NULL,
     "from" bigint NOT NULL,
     vote smallint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     "to" bigint NOT NULL,
     counter bigint NOT NULL,
     CONSTRAINT chkvote CHECK ((vote = ANY (ARRAY[(-1), 0, 1])))
@@ -1514,7 +1573,7 @@ CREATE TABLE comments (
     "to" bigint NOT NULL,
     hpid bigint NOT NULL,
     message text NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     hcid bigint NOT NULL,
     editable boolean DEFAULT true NOT NULL
 );
@@ -1547,7 +1606,7 @@ CREATE TABLE comments_no_notify (
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -1579,7 +1638,7 @@ CREATE TABLE comments_notify (
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -1610,7 +1669,7 @@ ALTER SEQUENCE comments_notify_id_seq OWNED BY comments_notify.counter;
 CREATE TABLE comments_revisions (
     hcid bigint NOT NULL,
     message text NOT NULL,
-    "time" timestamp(0) with time zone NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     rev_no integer DEFAULT 0 NOT NULL,
     counter bigint NOT NULL
 );
@@ -1642,7 +1701,7 @@ ALTER SEQUENCE comments_revisions_id_seq OWNED BY comments_revisions.counter;
 CREATE TABLE deleted_users (
     counter bigint NOT NULL,
     username character varying(90) NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     motivation text
 );
 
@@ -1703,7 +1762,7 @@ CREATE TABLE groups (
     goal text DEFAULT ''::text NOT NULL,
     visible boolean DEFAULT true NOT NULL,
     open boolean DEFAULT false NOT NULL,
-    creation_time timestamp(0) with time zone DEFAULT now() NOT NULL
+    creation_time timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 
@@ -1714,7 +1773,7 @@ CREATE TABLE groups (
 CREATE TABLE groups_bookmarks (
     "from" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -1746,7 +1805,7 @@ CREATE TABLE groups_comment_thumbs (
     hcid bigint NOT NULL,
     "from" bigint NOT NULL,
     vote smallint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     "to" bigint NOT NULL,
     counter bigint NOT NULL,
     CONSTRAINT chkgvote CHECK ((vote = ANY (ARRAY[(-1), 0, 1])))
@@ -1781,7 +1840,7 @@ CREATE TABLE groups_comments (
     "to" bigint NOT NULL,
     hpid bigint NOT NULL,
     message text NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     hcid bigint NOT NULL,
     editable boolean DEFAULT true NOT NULL
 );
@@ -1814,7 +1873,7 @@ CREATE TABLE groups_comments_no_notify (
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -1846,7 +1905,7 @@ CREATE TABLE groups_comments_notify (
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -1877,7 +1936,7 @@ ALTER SEQUENCE groups_comments_notify_id_seq OWNED BY groups_comments_notify.cou
 CREATE TABLE groups_comments_revisions (
     hcid bigint NOT NULL,
     message text NOT NULL,
-    "time" timestamp(0) with time zone NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     rev_no integer DEFAULT 0 NOT NULL,
     counter bigint NOT NULL
 );
@@ -1928,7 +1987,7 @@ ALTER SEQUENCE groups_counter_seq OWNED BY groups.counter;
 CREATE TABLE groups_followers (
     "to" bigint NOT NULL,
     "from" bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     to_notify boolean DEFAULT true NOT NULL,
     counter bigint NOT NULL
 );
@@ -1960,7 +2019,7 @@ ALTER SEQUENCE groups_followers_id_seq OWNED BY groups_followers.counter;
 CREATE TABLE groups_lurkers (
     "from" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     "to" bigint NOT NULL,
     counter bigint NOT NULL
 );
@@ -1992,7 +2051,7 @@ ALTER SEQUENCE groups_lurkers_id_seq OWNED BY groups_lurkers.counter;
 CREATE TABLE groups_members (
     "to" bigint NOT NULL,
     "from" bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     to_notify boolean DEFAULT true NOT NULL,
     counter bigint NOT NULL
 );
@@ -2024,7 +2083,7 @@ ALTER SEQUENCE groups_members_id_seq OWNED BY groups_members.counter;
 CREATE TABLE groups_notify (
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     hpid bigint NOT NULL,
     counter bigint NOT NULL
 );
@@ -2056,7 +2115,7 @@ ALTER SEQUENCE groups_notify_id_seq OWNED BY groups_notify.counter;
 CREATE TABLE groups_owners (
     "to" bigint NOT NULL,
     "from" bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     to_notify boolean DEFAULT false NOT NULL,
     counter bigint NOT NULL
 );
@@ -2091,7 +2150,7 @@ CREATE TABLE groups_posts (
     "to" bigint NOT NULL,
     pid bigint NOT NULL,
     message text NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     news boolean DEFAULT false NOT NULL,
     lang character varying(2) DEFAULT 'en'::character varying NOT NULL,
     closed boolean DEFAULT false NOT NULL
@@ -2124,7 +2183,7 @@ ALTER SEQUENCE groups_posts_hpid_seq OWNED BY groups_posts.hpid;
 CREATE TABLE groups_posts_no_notify (
     "user" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -2155,7 +2214,7 @@ ALTER SEQUENCE groups_posts_no_notify_id_seq OWNED BY groups_posts_no_notify.cou
 CREATE TABLE groups_posts_revisions (
     hpid bigint NOT NULL,
     message text NOT NULL,
-    "time" timestamp(0) with time zone NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     rev_no integer DEFAULT 0 NOT NULL,
     counter bigint NOT NULL
 );
@@ -2188,7 +2247,7 @@ CREATE TABLE groups_thumbs (
     hpid bigint NOT NULL,
     "from" bigint NOT NULL,
     vote smallint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     "to" bigint NOT NULL,
     counter bigint NOT NULL,
     CONSTRAINT chkgvote CHECK ((vote = ANY (ARRAY[(-1), 0, 1])))
@@ -2221,7 +2280,7 @@ ALTER SEQUENCE groups_thumbs_id_seq OWNED BY groups_thumbs.counter;
 CREATE TABLE guests (
     remote_addr inet NOT NULL,
     http_user_agent text NOT NULL,
-    last timestamp with time zone DEFAULT now() NOT NULL
+    last timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 
@@ -2232,7 +2291,7 @@ CREATE TABLE guests (
 CREATE TABLE lurkers (
     "from" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     "to" bigint NOT NULL,
     counter bigint NOT NULL
 );
@@ -2267,7 +2326,7 @@ CREATE TABLE mentions (
     g_hpid bigint,
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     to_notify boolean DEFAULT true NOT NULL,
     CONSTRAINT mentions_check CHECK (((u_hpid IS NOT NULL) OR (g_hpid IS NOT NULL)))
 );
@@ -2290,6 +2349,188 @@ CREATE SEQUENCE mentions_id_seq
 --
 
 ALTER SEQUENCE mentions_id_seq OWNED BY mentions.id;
+
+
+--
+-- Name: posts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE posts (
+    hpid bigint NOT NULL,
+    "from" bigint NOT NULL,
+    "to" bigint NOT NULL,
+    pid bigint NOT NULL,
+    message text NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+    lang character varying(2) DEFAULT 'en'::character varying NOT NULL,
+    news boolean DEFAULT false NOT NULL,
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: messages; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW messages AS
+ SELECT groups_posts.hpid,
+    groups_posts."from",
+    groups_posts."to",
+    groups_posts.pid,
+    groups_posts.message,
+    groups_posts."time",
+    groups_posts.news,
+    groups_posts.lang,
+    groups_posts.closed,
+    0 AS type
+   FROM groups_posts
+UNION ALL
+ SELECT posts.hpid,
+    posts."from",
+    posts."to",
+    posts.pid,
+    posts.message,
+    posts."time",
+    posts.news,
+    posts.lang,
+    posts.closed,
+    1 AS type
+   FROM posts;
+
+
+--
+-- Name: oauth2_access; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE oauth2_access (
+    id bigint NOT NULL,
+    client_id bigint NOT NULL,
+    access_token text NOT NULL,
+    created_at timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+    expires_in bigint NOT NULL,
+    redirect_uri character varying(350) NOT NULL,
+    oauth2_authorize_id bigint,
+    oauth2_access_id bigint,
+    refresh_token_id bigint,
+    scope text NOT NULL,
+    user_id bigint NOT NULL
+);
+
+
+--
+-- Name: oauth2_access_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE oauth2_access_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: oauth2_access_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE oauth2_access_id_seq OWNED BY oauth2_access.id;
+
+
+--
+-- Name: oauth2_authorize; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE oauth2_authorize (
+    id bigint NOT NULL,
+    code text NOT NULL,
+    client_id bigint NOT NULL,
+    created_at timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
+    expires_in bigint NOT NULL,
+    state text NOT NULL,
+    scope text NOT NULL,
+    redirect_uri character varying(350) NOT NULL,
+    user_id bigint NOT NULL
+);
+
+
+--
+-- Name: oauth2_authorize_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE oauth2_authorize_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: oauth2_authorize_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE oauth2_authorize_id_seq OWNED BY oauth2_authorize.id;
+
+
+--
+-- Name: oauth2_clients; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE oauth2_clients (
+    id bigint NOT NULL,
+    name character varying(100) NOT NULL,
+    secret text NOT NULL,
+    redirect_uri character varying(350) NOT NULL,
+    user_id bigint NOT NULL
+);
+
+
+--
+-- Name: oauth2_clients_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE oauth2_clients_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: oauth2_clients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE oauth2_clients_id_seq OWNED BY oauth2_clients.id;
+
+
+--
+-- Name: oauth2_refresh; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE oauth2_refresh (
+    id bigint NOT NULL,
+    token text NOT NULL
+);
+
+
+--
+-- Name: oauth2_refresh_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE oauth2_refresh_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: oauth2_refresh_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE oauth2_refresh_id_seq OWNED BY oauth2_refresh.id;
 
 
 --
@@ -2326,23 +2567,6 @@ ALTER SEQUENCE pms_pmid_seq OWNED BY pms.pmid;
 
 
 --
--- Name: posts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE posts (
-    hpid bigint NOT NULL,
-    "from" bigint NOT NULL,
-    "to" bigint NOT NULL,
-    pid bigint NOT NULL,
-    message text NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
-    lang character varying(2) DEFAULT 'en'::character varying NOT NULL,
-    news boolean DEFAULT false NOT NULL,
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
 -- Name: posts_classification; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2352,7 +2576,7 @@ CREATE TABLE posts_classification (
     g_hpid bigint,
     tag character varying(45) NOT NULL,
     "from" bigint,
-    "time" timestamp(0) with time zone NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     CONSTRAINT posts_classification_check CHECK (((u_hpid IS NOT NULL) OR (g_hpid IS NOT NULL)))
 );
 
@@ -2402,7 +2626,7 @@ ALTER SEQUENCE posts_hpid_seq OWNED BY posts.hpid;
 CREATE TABLE posts_no_notify (
     "user" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -2434,7 +2658,7 @@ CREATE TABLE posts_notify (
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
     hpid bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -2465,7 +2689,7 @@ ALTER SEQUENCE posts_notify_id_seq OWNED BY posts_notify.counter;
 CREATE TABLE posts_revisions (
     hpid bigint NOT NULL,
     message text NOT NULL,
-    "time" timestamp(0) with time zone NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     rev_no integer DEFAULT 0 NOT NULL,
     counter bigint NOT NULL
 );
@@ -2511,7 +2735,7 @@ CREATE TABLE profiles (
     twitter character varying(350) DEFAULT ''::character varying NOT NULL,
     steam character varying(350) DEFAULT ''::character varying NOT NULL,
     push boolean DEFAULT false NOT NULL,
-    pushregtime timestamp(0) with time zone DEFAULT now() NOT NULL,
+    pushregtime timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     mobile_template smallint DEFAULT 1 NOT NULL,
     closed boolean DEFAULT false NOT NULL,
     template_variables json DEFAULT '{}'::json NOT NULL
@@ -2525,7 +2749,7 @@ CREATE TABLE profiles (
 CREATE TABLE reset_requests (
     counter bigint NOT NULL,
     remote_addr inet NOT NULL,
-    "time" timestamp with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     token character varying(32) NOT NULL,
     "to" bigint NOT NULL
 );
@@ -2558,7 +2782,7 @@ CREATE TABLE searches (
     id bigint NOT NULL,
     "from" bigint NOT NULL,
     value character varying(90) NOT NULL,
-    "time" timestamp(0) without time zone DEFAULT now() NOT NULL
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 
@@ -2641,7 +2865,7 @@ ALTER SEQUENCE thumbs_id_seq OWNED BY thumbs.counter;
 
 CREATE TABLE users (
     counter bigint NOT NULL,
-    last timestamp(0) with time zone DEFAULT now() NOT NULL,
+    last timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     notify_story json,
     private boolean DEFAULT false NOT NULL,
     lang character varying(2) DEFAULT 'en'::character varying NOT NULL,
@@ -2687,7 +2911,7 @@ ALTER SEQUENCE users_counter_seq OWNED BY users.counter;
 CREATE TABLE whitelist (
     "from" bigint NOT NULL,
     "to" bigint NOT NULL,
-    "time" timestamp(0) with time zone DEFAULT now() NOT NULL,
+    "time" timestamp without time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     counter bigint NOT NULL
 );
 
@@ -2891,6 +3115,34 @@ ALTER TABLE ONLY lurkers ALTER COLUMN counter SET DEFAULT nextval('lurkers_id_se
 --
 
 ALTER TABLE ONLY mentions ALTER COLUMN id SET DEFAULT nextval('mentions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_access ALTER COLUMN id SET DEFAULT nextval('oauth2_access_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_authorize ALTER COLUMN id SET DEFAULT nextval('oauth2_authorize_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_clients ALTER COLUMN id SET DEFAULT nextval('oauth2_clients_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_refresh ALTER COLUMN id SET DEFAULT nextval('oauth2_refresh_id_seq'::regclass);
 
 
 --
@@ -3379,6 +3631,78 @@ ALTER TABLE ONLY mentions
 
 
 --
+-- Name: oauth2_access_access_token_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_access
+    ADD CONSTRAINT oauth2_access_access_token_key UNIQUE (access_token);
+
+
+--
+-- Name: oauth2_access_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_access
+    ADD CONSTRAINT oauth2_access_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: oauth2_authorize_code_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_authorize
+    ADD CONSTRAINT oauth2_authorize_code_key UNIQUE (code);
+
+
+--
+-- Name: oauth2_authorize_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_authorize
+    ADD CONSTRAINT oauth2_authorize_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: oauth2_clients_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_clients
+    ADD CONSTRAINT oauth2_clients_name_key UNIQUE (name);
+
+
+--
+-- Name: oauth2_clients_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_clients
+    ADD CONSTRAINT oauth2_clients_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: oauth2_clients_secret_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_clients
+    ADD CONSTRAINT oauth2_clients_secret_key UNIQUE (secret);
+
+
+--
+-- Name: oauth2_refresh_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_refresh
+    ADD CONSTRAINT oauth2_refresh_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: oauth2_refresh_token_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY oauth2_refresh
+    ADD CONSTRAINT oauth2_refresh_token_key UNIQUE (token);
+
+
+--
 -- Name: pms_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -3523,14 +3847,6 @@ ALTER TABLE ONLY posts
 
 
 --
--- Name: uniqueusername; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY users
-    ADD CONSTRAINT uniqueusername UNIQUE (username);
-
-
---
 -- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -3629,6 +3945,13 @@ CREATE INDEX pid ON posts USING btree (pid, "to");
 --
 
 CREATE INDEX posts_classification_lower_idx ON posts_classification USING btree (lower((tag)::text));
+
+
+--
+-- Name: uniqueusername; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX uniqueusername ON users USING btree (lower((username)::text));
 
 
 --
@@ -4303,6 +4626,70 @@ ALTER TABLE ONLY mentions
 
 
 --
+-- Name: oauth2_access_client_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_access
+    ADD CONSTRAINT oauth2_access_client_id_fkey FOREIGN KEY (client_id) REFERENCES oauth2_clients(id) ON DELETE CASCADE;
+
+
+--
+-- Name: oauth2_access_oauth2_access_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_access
+    ADD CONSTRAINT oauth2_access_oauth2_access_id_fkey FOREIGN KEY (oauth2_access_id) REFERENCES oauth2_access(id) ON DELETE CASCADE;
+
+
+--
+-- Name: oauth2_access_oauth2_authorize_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_access
+    ADD CONSTRAINT oauth2_access_oauth2_authorize_id_fkey FOREIGN KEY (oauth2_authorize_id) REFERENCES oauth2_authorize(id) ON DELETE CASCADE;
+
+
+--
+-- Name: oauth2_access_refresh_token_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_access
+    ADD CONSTRAINT oauth2_access_refresh_token_id_fkey FOREIGN KEY (refresh_token_id) REFERENCES oauth2_refresh(id) ON DELETE CASCADE;
+
+
+--
+-- Name: oauth2_access_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_access
+    ADD CONSTRAINT oauth2_access_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(counter) ON DELETE CASCADE;
+
+
+--
+-- Name: oauth2_authorize_client_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_authorize
+    ADD CONSTRAINT oauth2_authorize_client_id_fkey FOREIGN KEY (client_id) REFERENCES oauth2_clients(id) ON DELETE CASCADE;
+
+
+--
+-- Name: oauth2_authorize_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_authorize
+    ADD CONSTRAINT oauth2_authorize_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(counter) ON DELETE CASCADE;
+
+
+--
+-- Name: oauth2_clients_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY oauth2_clients
+    ADD CONSTRAINT oauth2_clients_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(counter) ON DELETE CASCADE;
+
+
+--
 -- Name: posts_classification_from_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4411,7 +4798,7 @@ ALTER TABLE ONLY reset_requests
 --
 
 ALTER TABLE ONLY searches
-    ADD CONSTRAINT searches_from_fkey FOREIGN KEY ("from") REFERENCES users(counter) ON DELETE CASCADE;
+    ADD CONSTRAINT searches_from_fkey FOREIGN KEY ("from") REFERENCES users(counter);
 
 
 --
