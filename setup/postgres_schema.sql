@@ -4790,7 +4790,7 @@ ALTER TABLE ONLY lurkers
 --
 
 ALTER TABLE ONLY reset_requests
-    ADD CONSTRAINT reset_requests_to_fkey FOREIGN KEY ("to") REFERENCES users(counter);
+    ADD CONSTRAINT reset_requests_to_fkey FOREIGN KEY ("to") REFERENCES users(counter) ON DELETE CASCADE;
 
 
 --
@@ -4798,7 +4798,7 @@ ALTER TABLE ONLY reset_requests
 --
 
 ALTER TABLE ONLY searches
-    ADD CONSTRAINT searches_from_fkey FOREIGN KEY ("from") REFERENCES users(counter);
+    ADD CONSTRAINT searches_from_fkey FOREIGN KEY ("from") REFERENCES users(counter) ON DELETE CASCADE;
 
 
 --
