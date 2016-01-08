@@ -73,6 +73,7 @@ window.NERDZCrush = function() {
             src += "#" + options;
         }
         iframe.src = src;
+        iframe.setAttribute("style", "position:relative;width:100%;");
         iframe.setAttribute("frameborder", 0);
         iframe.setAttribute("scrolling", "no");
         iframe.setAttribute("allowFullscreen", "true");
