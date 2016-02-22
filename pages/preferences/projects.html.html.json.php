@@ -18,7 +18,7 @@ $id = $_POST['id'] = isset($_POST['id']) && is_numeric($_POST['id']) ? trim($_PO
 if($_SESSION['id'] != $project->getOwner($id) || !NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
 
-if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
+if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
 
 switch(isset($_GET['action']) ? strtolower($_GET['action']) : '')

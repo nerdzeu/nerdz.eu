@@ -9,7 +9,7 @@ $user = new User();
 if(!NERDZ\Core\Security::refererControl())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': referer'));
 
-if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0,'edit'))
+if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR').': token'));
 
 if(!$user->isLogged())

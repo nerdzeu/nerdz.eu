@@ -14,7 +14,6 @@ if(!$user->isLogged())
     die($user->lang('REGISTER'));
 
 $vals = [];
-$vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('edit');
 
 if(!($r = Db::query(
     [

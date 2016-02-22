@@ -37,7 +37,6 @@ $vals['members_a'] = $mem;
 
 usort($vals['members_a'],'sortbyusername');
 
-$vals['tok_n'] = NERDZ\Core\Security::getCsrfToken('edit');
 $vals['id_n']  = $info->counter;
 
 $vals['description_a'] = explode("\n",$info->description);
