@@ -16,7 +16,6 @@ $gid = isset($_GET['gid']) && is_numeric($_GET['gid']) ? $_GET['gid'] : false; /
 $pid = isset($_GET['pid']) && is_numeric($_GET['pid']) ? intval($_GET['pid']) : false;
 $action = NERDZ\Core\Utils::actionValidator(!empty($_GET['action']) && is_string ($_GET['action']) ? $_GET['action'] : false);
 
-$create = !$gid;
 $found = false;
 $post = new stdClass();
 $post->message = '';
@@ -101,13 +100,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
     <div id="body">
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
-if($create)
-{
-    if($user->isLogged())
-        require($_SERVER['DOCUMENT_ROOT'].'/pages/project/create.php');
-    else die(header('Location: /'));
-}
-elseif(!$found)
+if(!$found)
     echo $user->lang('PROJECT_NOT_FOUND');
 else
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project.php';
