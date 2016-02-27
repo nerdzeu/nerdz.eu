@@ -157,16 +157,7 @@ if($enter)
                 unset($vals['quotes_a'][$qid]);
         }
 
-    $vals['interests_a'] = explode("\n",$info->interests);
-    if(count($vals['interests_a']) == 1 && empty($vals['interests_a'][0]))
-        $vals['interests_a'] = [];
-    else
-        foreach($vals['interests_a'] as $qid => $val)
-        {
-            $vals['interests_a'][$qid] = trim($val);
-            if(empty($vals['interests_a'][$qid]))
-                unset($vals['interests_a'][$qid]);
-        }
+    $vals['interests_a'] = $user->getInterests($info->counter);
 
     if(!($r = Db::query(
         [

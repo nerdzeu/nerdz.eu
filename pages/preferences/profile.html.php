@@ -14,10 +14,7 @@ if(!($obj = Db::query(array('SELECT * FROM "profiles" WHERE "counter" = ?',array
     die($user->lang('ERROR'));
 
 $vals = [];
-$vals['interests_a'] = explode("\n",$obj->interests);
-foreach($vals['interests_a'] as &$val)
-    $val = trim($val);
-
+$vals['interests_a'] = $user->getInterests($_SESSION['id']);
 $vals['biography_n'] = $obj->biography;
 
 $vals['quotes_a'] = explode("\n",$obj->quotes);

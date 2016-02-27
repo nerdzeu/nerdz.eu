@@ -142,13 +142,12 @@ class User
             [
                 'SELECT login(:user, :pass) AS logged_in, counter, username, encode(digest(password,\'MD5\'), \'HEX\') as auto_login_pwd
                 FROM users
-                WHERE LOWER(username) = LOWER(:user)',
-                [
+                WHERE LOWER(username) = LOWER(:user)', [
                     ':user' => $username,
                     ':pass' => $pass
                 ]
             ],Db::FETCH_OBJ)) || ($autologinPassword ? $pass !== $o->auto_login_pwd : !$o->logged_in))
-                return false;
+            return false;
 
         if($cookie)
         {
@@ -482,14 +481,30 @@ class User
                     select "to" from followers where "from" = :id) as f
                     inner join 
                     (select "from" from followers where "to" = :id) as e
-                    on f.to = e.from',
-                [
+                    on f.to = e.from', [
+                        ':id' => $id
+                    ]
+                ], Db::FETCH_OBJ)))
+                return 0;
+
+        return $o->cc;
+    }
+
+    public function getInterests($id) {
+        if(!($stmt = Db::query(
+            [
+                'SELECT "value"
+                FROM "interests" i INNER JOIN "users" u
+                ON u.counter = i.from
+                WHERE u.counter = :id
+                ORDER BY value', [
                     ':id' => $id
                 ]
-            ], Db::FETCH_OBJ)))
-            return 0;
+            ], Db::FETCH_STMT)
+        ))
+        return [];
 
-return $o->cc;
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function follow($id, $prj = false)
@@ -571,6 +586,35 @@ return $o->cc;
                 [
                     ':from' => $_SESSION['id'],
                     ':hpid' => $hpid
+                ]
+            ],Db::FETCH_ERRSTR);
+    }
+
+    public function addInterest($interest)
+    {
+        if(!$this->isLogged())
+            return Utils::$REGISTER_DB_MESSAGE;
+
+        return Db::query(
+            [
+                'INSERT INTO interests("from", "value") VALUES(:from, :value)', [
+                    ':from' => $_SESSION['id'],
+                    ':value' => htmlspecialchars($interest,ENT_QUOTES,'UTF-8')
+                ]
+            ], Db::FETCH_ERRSTR);
+    }
+
+    public function deleteInterest($interest)
+    {
+        if(!$this->isLogged())
+            return Utils::$REGISTER_DB_MESSAGE;
+
+        return Db::query(
+            [
+                'DELETE FROM interests WHERE "from" = :from AND LOWER("value") = LOWER(:value)',
+                [
+                    ':from' => $_SESSION['id'],
+                    ':value' => $interest
                 ]
             ],Db::FETCH_ERRSTR);
     }
@@ -891,14 +935,13 @@ return $o->cc;
         if(!($sum = Db::query(
             [
                 "SELECT
-                    (SELECT COALESCE(SUM(vote), 0) FROM {$prefix}thumbs WHERE \"to\" = :id) +
-                    (SELECT COALESCE(SUM(vote), 0) FROM groups_{$prefix}thumbs WHERE \"to\" = :id)
-                 AS c",
-                    [
-                        ':id' => $id
-                    ]
-                ],Db::FETCH_OBJ)))
-                return 0;
+                (SELECT COALESCE(SUM(vote), 0) FROM {$prefix}thumbs WHERE \"to\" = :id) +
+                (SELECT COALESCE(SUM(vote), 0) FROM groups_{$prefix}thumbs WHERE \"to\" = :id)
+                AS c",[
+                    ':id' => $id
+                ]
+            ],Db::FETCH_OBJ)))
+            return 0;
         return $sum->c;
     }
 

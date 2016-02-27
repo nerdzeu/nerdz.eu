@@ -15,7 +15,6 @@ if(!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0))
 if(!$user->isLogged())
     die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
 
-$userData['interests']  = isset($_POST['interests'])  ? trim($_POST['interests'])               : '';
 $userData['biography']  = isset($_POST['biography'])  ? trim($_POST['biography'])               : '';
 $userData['quotes']     = isset($_POST['quotes'])     ? trim($_POST['quotes'])                  : '';
 $userData['website']    = isset($_POST['website'])    ? strip_tags(trim($_POST['website']))     : '';
@@ -73,7 +72,6 @@ foreach($user as &$value)
     $value = htmlspecialchars($value,ENT_QUOTES,'UTF-8');
 
 $par = [
-    ':interests'   => $userData['interests'],
     ':biography'  => $userData['biography'],
     ':quotes'     => $userData['quotes'],
     ':website'    => $userData['website'],
@@ -93,7 +91,6 @@ if(
     Db::NO_ERRNO != Db::query(
         [
             'UPDATE profiles SET 
-            "interests"   = :interests,
             "biography"   = :biography,
             "quotes"      = :quotes,
             "website"     = :website,
