@@ -72,10 +72,11 @@ final class Pms extends Messages
             if(!in_array($o->from, $froms)) {
                 $from = User::getUsername($o->from);
                 $res[$c]['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
+                $res[$c]['fromgravatarurl_n'] = $user->user->getGravatar($o->from);
+                $res[$c]['fromid_n'] = $o->from;
                 $res[$c]['from_n'] = $from;
                 $res[$c]['datetime_n'] = $this->user->getDateTime($o->lasttime);
                 $res[$c]['timestamp_n'] = $o->lasttime;
-                $res[$c]['fromid_n'] = $o->from;
                 $res[$c]['toid_n'] = $_SESSION['id'];
                 $res[$c]['toread_n'] = $o->to_read;
 
