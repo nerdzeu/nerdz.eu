@@ -103,6 +103,7 @@ final class Pms extends Messages
         {
             $from = User::getUsername($fromid);
             $ret['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
+            $ret['fromgravatarurl_n'] = $this->user->getGravatar($fromid);
             $ret['from_n'] = $from;
             $ret['date_n'] = $this->user->getDate($time);
             $ret['time_n'] = $this->user->getTime($time);
