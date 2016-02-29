@@ -25,6 +25,6 @@ $dateExtractor = function($memberId) use ($gid,$user) {
         $since = new StdClass();
         $since->time = 0;
     }
-    return $user->getDateTime($since->time);
+    return $user->getDate($since->time);
 };
 return require $_SERVER['DOCUMENT_ROOT'].'/pages/common/userslist.html.php';

@@ -11,7 +11,8 @@ else
     {
         $ret[$i]['id_n']         = $o->counter;
         $ret[$i]['username_n']   = $o->username;
-        $ret[$i]['datetime_n']   = $user->getDateTime($o->time);
+        $ret[$i]['date_n']       = $user->getDate($o->time);
+        $ret[$i]['time_n']       = $user->getTime($o->time);
         $ret[$i]['motivation_n'] = $o->motivation;
         ++$i;
     }

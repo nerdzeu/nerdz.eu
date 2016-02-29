@@ -29,7 +29,7 @@ class Trend
         foreach($trends as $t) {
             $ret[$c]['trend_n']      = $t->tag;
             $ret[$c]['trend4link_n'] = urlencode($t->tag);
-            $ret[$c]['lastat_n']     = $this->user->getDateTime($t->time);
+            $ret[$c]['lastat_n']     = $this->user->getDate($t->time);
             ++$c;
         }
         return $ret;

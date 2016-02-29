@@ -1102,7 +1102,8 @@ class Messages
         $ret['togravatarurl_n']   = $this->user->getGravatar($dbPost['to']);
         $ret['from_n']            = $from;
         $ret['to_n']              = $to;
-        $ret['datetime_n']        = $this->user->getDateTime($dbPost['time']);
+        $ret['date_n']            = $this->user->getDate($dbPost['time']);
+        $ret['time_n']            = $this->user->getTime($dbPost['time']);
         $ret['timestamp_n']       = $dbPost['time'];
 
         $ret['canclosepost_b']    = $this->canClose($dbPost, $project);

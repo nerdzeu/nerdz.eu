@@ -69,7 +69,7 @@ if($enter)
     }
 
 
-    $vals['registrationtime_n'] = $user->getDateTime($o->registration_time);
+    $vals['registrationtime_n'] = $user->getDate($o->registration_time);
     $vals['username_n'] = $info->username;
     $vals['username4link_n'] = Utils::userLink($info->username);
     $vals['lang_n'] = $user->getLanguage($info->counter);
@@ -126,7 +126,7 @@ if($enter)
     $vals['followers_n'] = $user->getFollowersCount($info->counter);
     $vals['friends_n']   = $user->getFriendsCount($info->counter);
 
-    $vals['lastvisit_n'] = $user->getDateTime($o->last);
+    $vals['lastvisit_n'] = $user->getDate($o->last);
 
     if(!$vals['singlepost_b'] && !$vals['friends_b'] && !$vals['followers_b'] && !$vals['following_b'] && !$vals['interactions_b'])
     {

@@ -75,7 +75,8 @@ final class Pms extends Messages
                 $res[$c]['fromgravatarurl_n'] = $this->user->getGravatar($o->from);
                 $res[$c]['fromid_n'] = $o->from;
                 $res[$c]['from_n'] = $from;
-                $res[$c]['datetime_n'] = $this->user->getDateTime($o->lasttime);
+                $res[$c]['date_n'] = $this->user->getDate($o->lasttime);
+                $res[$c]['time_n'] = $this->user->getTime($o->lasttime);
                 $res[$c]['timestamp_n'] = $o->lasttime;
                 $res[$c]['toid_n'] = $_SESSION['id'];
                 $res[$c]['toread_n'] = $o->to_read;
@@ -103,7 +104,8 @@ final class Pms extends Messages
             $from = User::getUsername($fromid);
             $ret['from4link_n'] = \NERDZ\Core\Utils::userLink($from);
             $ret['from_n'] = $from;
-            $ret['datetime_n'] = $this->user->getDateTime($time);
+            $ret['date_n'] = $this->user->getDate($time);
+            $ret['time_n'] = $this->user->getTime($time);
             $ret['fromid_n'] = $fromid;
             $ret['toid_n'] = $toid;
             $ret['message_n'] = parent::bbcode($o->message);

@@ -325,7 +325,8 @@ class Notification
             }
         }
 
-        $ret['datetime_n']  = $this->user->getDateTime($row->time);
+        $ret['date_n']  = $this->user->getDate($row->time);
+        $ret['time_n']  = $this->user->getTime($row->time);
         $ret['timestamp_n'] = $row->time;
 
         return $ret;

@@ -67,7 +67,7 @@ $vals['tothiddenusers_n']       = $ret[7];
 $vals['totonlineguests_n']      = $ret[8] - $ret[9];
 $vals['totonlinebots_n']        = $ret[9];
 $vals['bots_a']                 = $ret[10];
-$vals['lastupdate_n']           = $user->getDateTime(Utils::apc_getLastModified($cache));
+$vals['lastupdate_n']           = $user->getDate(Utils::apc_getLastModified($cache));
 
 $user->getTPL()->assign($vals);
 

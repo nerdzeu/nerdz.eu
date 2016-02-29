@@ -241,9 +241,9 @@ class User
         $ret['gravatarurl_n']   = $this->getGravatar($id);
         $ret['canshowfollow_b'] = $this->isLogged() && $id !== $_SESSION['id'];
         $ret['canifollow_b']    = !$this->isFollowing($id);
-        $ret['birthdate_n']     = $this->getDateTime(strtotime($o->birth_date));
+        $ret['birthdate_n']     = $this->getDate(strtotime($o->birth_date));
         $ret['birthday_b']      = date('d-m',strtotime($o->birth_date)) == date('d-m',time());
-        $ret['since_n']         = $this->getDateTime(strtotime($o->registration_time));
+        $ret['since_n']         = $this->getDate(strtotime($o->registration_time));
         $ret['online_b']        = $this->isOnline($id);
         return $ret;
     }
@@ -365,7 +365,8 @@ class User
             $ret[$i]['toid_n']      = $objs[$i]->to;
             $ret[$i]['to_n']        = static::getUsername($objs[$i]->to);
             $ret[$i]['to4link_n']   = Utils::userLink($ret[$i]['to_n']);
-            $ret[$i]['datetime_n']  = $this->getDateTime($objs[$i]->time);
+            $ret[$i]['date_n']      = $this->getDate($objs[$i]->time);
+            $ret[$i]['time_n']      = $this->getTime($objs[$i]->time);
             $ret[$i]['pid_n']       = $objs[$i]->pid;
             $ret[$i]['postto_n']    = static::getUsername($objs[$i]->post_to);
             $ret[$i]['link_n']      = Utils::userLink($ret[$i]['postto_n']).$objs[$i]->pid;
@@ -1055,8 +1056,9 @@ class User
 
     private function getDateFormat($id = null)
     {
+        $default = 'Y/m/d';
         if(!$this->isLogged())
-            return  'Y/m/d, H:i';
+            return  $default;
 
         if(!$id && isset($_SESSION['dateformat']))
             return $_SESSION['dateformat'];
@@ -1074,14 +1076,22 @@ class User
                     ':id' => $id
                 ]
             ],Db::FETCH_OBJ)))
-            return 'Y/m/d, H:i';
+            return $default;
 
         $_SESSION['dateformat'] = $o->dateformat;
 
         return $o->dateformat;
     }
 
-    public function getDateTime($timestamp)
+    public function getTime($timestamp) {
+        $timezone = $this->getTimezone($this->isLogged() ? $_SESSION['id'] : 0);
+        $date = new \DateTime();
+        $date->setTimestamp($timestamp);
+        $date->setTimeZone(new \DateTimezone($timezone));
+        return $date->format('H:i');
+    }
+
+    public function getDate($timestamp)
     {
         $timezone = $this->getTimezone($this->isLogged() ? $_SESSION['id'] : 0);
 
@@ -1099,10 +1109,10 @@ class User
         $tmp = $date->format($format4compare);
 
         if($tmp == $today->format($format4compare))
-            return $date->format('H:i');
+            return $this->lang('TODAY');
 
         if($tmp == $yesterday->format($format4compare))
-            return $this->lang('YESTERDAY').' - '.$date->format('H:i');
+            return $this->lang('YESTERDAY');
 
         return $date->format( $this->getDateFormat($this->isLogged() ? $_SESSION['id'] : 0) );
     }

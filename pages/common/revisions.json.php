@@ -32,7 +32,7 @@ $rev = $message->getRevision($id, $revNo, isset($prj));
 die(is_object($rev) ?
     NERDZ\Core\Utils::jsonResponse(
         [
-            'datetime' => $user->getDateTime($rev->time),
-                'message'  => $message->bbcode($rev->message)
-            ]) :
-            NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+            'datetime' => $user->getDate($rev->time).' '.$user->getTime($rev->time),
+            'message'  => $message->bbcode($rev->message)
+        ]) :
+        NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));

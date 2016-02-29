@@ -52,7 +52,7 @@ class Project
         $ret['name4link_n']  = Utils::projectLink($o->name);
         $ret['id_n']         = $id;
         $ret['canifollow_b'] = !$this->user->isFollowing($id, true);
-        $ret['since_n']      = $this->user->getDateTime(strtotime($o->creation_time));
+        $ret['since_n']      = $this->user->getDate(strtotime($o->creation_time));
         return $ret;
     }
 
@@ -201,7 +201,8 @@ class Project
         $ret = [];
         for($i=0, $count = count($objs); $i<$count; ++$i) {
             $ret[$i]['type_n']      = $objs[$i]->type;
-            $ret[$i]['datetime_n']  = $this->user->getDateTime($objs[$i]->time);
+            $ret[$i]['date_n']      = $this->user->getDate($objs[$i]->time);
+            $ret[$i]['time_n']      = $this->user->getTime($objs[$i]->time);
             $ret[$i]['pid_n']       = $objs[$i]->pid;
             $ret[$i]['postto_n']    = static::getName($objs[$i]->post_to);
             $ret[$i]['link_n']      = Utils::projectLink($ret[$i]['postto_n']).$objs[$i]->pid;

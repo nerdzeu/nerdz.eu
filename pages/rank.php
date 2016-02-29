@@ -62,7 +62,7 @@ if(!($ret = Utils::apc_get($path)))
 
 $vals['list_a'] = $ret;
 $vals['monthly_b'] = !$mo;
-$vals['lastupdate_n'] = $user->getDateTime(Utils::apc_getLastModified($path));
+$vals['lastupdate_n'] = $user->getDate(Utils::apc_getLastModified($path));
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/rank');

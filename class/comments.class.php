@@ -86,7 +86,8 @@ class Comments extends Messages
             $ret[$i]['uid_n']            = "c{$o->hcid}";
             $ret[$i]['from4link_n']      = Utils::userLink($users[$o->from]);
             $ret[$i]['message_n']        = parent::bbcode($o->message,1,$cg,1,$o->hcid);
-            $ret[$i]['datetime_n']       = $this->user->getDateTime($o->time);
+            $ret[$i]['date_n']           = $this->user->getDate($o->time);
+            $ret[$i]['time_n']           = $this->user->getTime($o->time);
             $ret[$i]['timestamp_n']      = $o->time;
             $ret[$i]['hcid_n']           = $o->hcid;
             $ret[$i]['hpid_n']           = $hpid;

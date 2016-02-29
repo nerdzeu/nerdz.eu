@@ -61,7 +61,7 @@ else
             ],Db::FETCH_OBJ)))
                 die($user->lang('ERROR'));
 
-        $vals['creationtime_n'] = $user->getDateTime($o->creation_time);
+        $vals['creationtime_n'] = $user->getDate($o->creation_time);
 
         $vals['members_n'] = count($mem);
         $vals['members_a'] = [];
