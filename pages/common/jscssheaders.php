@@ -10,13 +10,14 @@ use NERDZ\Core\User;
 // Disable DNS prefetching to avoid tracking issues
 ?>
 <meta http-equiv="x-dns-prefetch-control" content="off">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <?php
 $logged = $user->isLogged();
 $uagdata = (new Browser(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''))->getArray();
 $tno = $user->getTemplate();
 /* BEGIN MOBILE_META_TAGS */
 if (User::isOnMobileHost()) { ?>
-    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 	<meta name="theme-color" content="#1D1B1B">
 <?php
 } /* END MOBILE_META_TAGS */
