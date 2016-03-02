@@ -79,7 +79,7 @@ final class Pms extends Messages
                 $res[$c]['time_n'] = $this->user->getTime($o->lasttime);
                 $res[$c]['timestamp_n'] = $o->lasttime;
                 $res[$c]['toid_n'] = $_SESSION['id'];
-                $res[$c]['toread_n'] = $o->to_read;
+                $res[$c]['toread_b'] = $o->to_read;
 
                 $froms[] = $o->from;
                 ++$c;
