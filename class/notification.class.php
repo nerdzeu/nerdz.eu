@@ -97,8 +97,8 @@ class Notification
     private function countUserComments()
     {
         $q = $this->rag
-            ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM "comments_notify" WHERE "to" = :id GROUP BY "hpid") AS c'
-            : 'SELECT COUNT("to") AS cc FROM "comments_notify" WHERE "to" = :id';
+            ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM "comments_notify" WHERE "to" = :id AND to_notify = TRUE GROUP BY "hpid") AS c'
+            : 'SELECT COUNT("to") AS cc FROM "comments_notify" WHERE "to" = :id AND to_notify = TRUE';
 
         if(!($o = Db::query(
             [
@@ -116,7 +116,7 @@ class Notification
     {
         if(!($o = Db::query(
             [
-                'SELECT COUNT("hpid") AS cc FROM "posts_notify" WHERE "to" = :id',
+                'SELECT COUNT("hpid") AS cc FROM "posts_notify" WHERE "to" = :id AND to_notify = TRUE',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -129,8 +129,8 @@ class Notification
     private function countProjectComments()
     {
         $q = $this->rag
-            ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM groups_comments_notify WHERE "to" = :id GROUP BY "hpid") AS c'
-            : 'SELECT COUNT("to") AS cc FROM "groups_comments_notify" WHERE "to" = :id';
+            ? 'SELECT COUNT("hpid") AS cc FROM (SELECT DISTINCT "hpid" FROM groups_comments_notify WHERE "to" = :id AND to_notify = TRUE GROUP BY "hpid") AS c'
+            : 'SELECT COUNT("to") AS cc FROM "groups_comments_notify" WHERE "to" = :id AND to_notify = TRUE';
 
         if(!($o = Db::query(
             [
@@ -148,7 +148,7 @@ class Notification
     {
         if(!($o = Db::query(
             [
-                'SELECT COUNT("from") AS cc FROM "groups_notify" WHERE "to" = :id',
+                'SELECT COUNT("from") AS cc FROM "groups_notify" WHERE "to" = :id AND to_notify = TRUE',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -339,9 +339,9 @@ class Notification
         $result = Db::query(
             [
                 'SELECT "from","to", "hpid", EXTRACT(EPOCH FROM "time") AS time
-                FROM "comments_notify" n WHERE n."to" = :id'. (
+                FROM "comments_notify" n WHERE n."to" = :id AND to_notify = TRUE'. (
                     $this->rag
-                    ? ' AND n.time = (SELECT MAX("time") FROM "comments_notify" WHERE hpid = n.hpid AND "to" = n."to")'
+                    ? ' AND n.time = (SELECT MAX("time") FROM "comments_notify" WHERE hpid = n.hpid AND "to" = n."to" AND to_notify = TRUE)'
                     : ''
                 ),
                 [
@@ -368,7 +368,7 @@ class Notification
         if($del) {
             Db::query(
                 [
-                    'DELETE FROM "comments_notify" WHERE "to" = :id',
+                    'UPDATE "comments_notify" SET to_notify = FALSE WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -385,7 +385,7 @@ class Notification
             [
                 'SELECT p."pid",n."hpid", n."from", n."to", EXTRACT(EPOCH FROM n."time") AS time
                 FROM "posts_notify" n JOIN "posts" p
-                ON p.hpid = n.hpid WHERE n."to" = :id',
+                ON p.hpid = n.hpid WHERE n."to" = :id AND to_notify = TRUE',
                 [
                     ':id' => $_SESSION['id']
                 ]
@@ -412,7 +412,7 @@ class Notification
         if($del) {
             Db::query(
                 [
-                    'DELETE FROM "posts_notify" WHERE "to" = :id',
+                    'UPDATE "posts_notify" SET to_notify = FALSE WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -429,9 +429,9 @@ class Notification
         $result = Db::query(
             [
                 'SELECT "from", "to", "hpid",EXTRACT(EPOCH FROM "time") AS time
-                FROM "groups_comments_notify" n WHERE n."to" = :id'.(
+                FROM "groups_comments_notify" n WHERE n."to" = :id AND to_notify = TRUE'.(
                     $this->rag
-                    ? ' AND n.time = (SELECT MAX("time") FROM "groups_comments_notify" WHERE hpid = n.hpid AND "to" = n."to")'
+                    ? ' AND n.time = (SELECT MAX("time") FROM "groups_comments_notify" WHERE hpid = n.hpid AND "to" = n."to"  AND to_notify = TRUE)'
                     : ''
                 ),
                 [
@@ -458,7 +458,7 @@ class Notification
         if($del) {
             Db::query(
                 [
-                    'DELETE FROM "groups_comments_notify" WHERE "to" = :id',
+                    'UPDATE "groups_comments_notify" SET to_notify = FALSE WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]
@@ -475,7 +475,7 @@ class Notification
             [
                 'SELECT p."pid",n."hpid", n."from", n."to", EXTRACT(EPOCH FROM n."time") AS time
                 FROM "groups_notify" n JOIN "groups_posts" p
-                ON p.hpid = n.hpid WHERE n."to" = :id',
+                ON p.hpid = n.hpid WHERE n."to" = :id AND to_notify = TRUE',
                 [
                     ':id' => $_SESSION['id']
                 ]
@@ -500,7 +500,7 @@ class Notification
         if($del) {
             Db::query(
                 [
-                    'DELETE FROM "groups_notify" WHERE "to" = :id',
+                    'UPDATE "groups_notify" SET to_notify = FALSE WHERE "to" = :id',
                     [
                         ':id' => $_SESSION['id']
                     ]
