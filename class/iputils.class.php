@@ -63,7 +63,7 @@ class IpUtils
     {
         foreach(Config\TRUSTED_PROXIES as $proxy) {
             if(self::checkIp($_SERVER['REMOTE_ADDR'], $proxy)) {
-                return getFowrardedIp();
+                return self::getForwardedIp();
             }
         }
         return $_SERVER['REMOTE_ADDR'];
@@ -74,7 +74,7 @@ class IpUtils
      * the IP is just validated (comes from a trusted proxy).
      * @return string the detected forwarted IP, if any. Otherwise returns REMOTE_ADDR
      */
-    private static function getFowrardedIp() {
+    private static function getForwardedIp() {
         foreach ([
             'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED',
             'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR','HTTP_FORWARDED'] as $key){
