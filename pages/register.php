@@ -5,7 +5,6 @@ $presentation = nl2br(htmlspecialchars($presentation,ENT_QUOTES,'UTF-8'));
 
 $vals = [];
 $vals['presentation_n'] = $presentation;
-$vals['captchaurl_n']   = '/static/images/captcha.php';
 
 $now = intval(date('o'));
 

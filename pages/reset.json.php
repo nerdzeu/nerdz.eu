@@ -7,6 +7,7 @@ use NERDZ\Core\Config;
 use NERDZ\Core\Captcha;
 use NERDZ\Core\Db;
 use NERDZ\Core\Security;
+use NERDZ\Core\IpUtils;
 
 $user = new User();
 $cptcka = new Captcha();
@@ -39,13 +40,13 @@ if($email !== false && $captcha !== false) { // 1st step
     $vals['username_n'] = $obj->username;
     $vals['usernamelink_n'] = 'http://'.Config\SITE_HOST.'/'.\NERDZ\Core\Utils::userLink($obj->username);
     $vals['account_n'] = "{$obj->username} - ID: {$obj->counter}";
-    $vals['ip_n'] = $_SERVER['REMOTE_ADDR'];
+    $vals['ip_n'] = IpUtils::getIp();
     $token = md5(openssl_random_pseudo_bytes(rand(7,21)));
     if(Db::NO_ERRNO != Db::query(
         [
             'INSERT INTO reset_requests(remote_addr,token,"to") VALUES(:remote_addr,:token,:to)',
                 [
-                    ':remote_addr' => $_SERVER['REMOTE_ADDR'],
+                    ':remote_addr' => IpUtils::getIp(),
                     ':token'       => $token,
                     ':to'          => $obj->counter
                 ]
@@ -56,7 +57,7 @@ if($email !== false && $captcha !== false) { // 1st step
         [
             'SELECT counter FROM reset_requests WHERE token = :token AND "to" = :to AND remote_addr = :remote_addr',
             [
-                ':remote_addr' => $_SERVER['REMOTE_ADDR'],
+                ':remote_addr' => IpUtils::getIp(),
                 ':token'       => $token,
                 ':to'          => $obj->counter
             ]

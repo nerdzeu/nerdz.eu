@@ -170,7 +170,7 @@ class User
             [
                 'DELETE FROM guests WHERE remote_addr = :ip',
                 [
-                    ':ip' => $_SERVER['REMOTE_ADDR']
+                    ':ip' => IpUtils::getIP()
                 ]
             ], Db::NO_RETURN);
 

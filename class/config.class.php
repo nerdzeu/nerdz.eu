@@ -51,6 +51,7 @@ class Config
             'SMTP_PORT'            => -1,
             'SMTP_USER'            => -1,
             'SMTP_PASS'            => -1,
+            'TRUSTED_PROXIES'      => [],
         ];
 
         foreach (Config\Variables::$data as $const_key => $const_val)

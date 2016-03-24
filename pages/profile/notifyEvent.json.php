@@ -5,6 +5,7 @@ use NERDZ\Core\Db;
 use NERDZ\Core\Config;
 use NERDZ\Core\RedisSessionHandler;
 use NERDZ\Core\Utils;
+use NERDZ\Core\IpUtils;
 
 $user = new Notification();
 
@@ -79,18 +80,18 @@ if(!$user->isLogged()) {
             ], Db::FETCH_OBJ)))
         {
             if(empty($o->remote_addr) || empty($_SESSION['remote_addr']) || 
-                $o->remote_addr != $_SERVER['REMOTE_ADDR']) {
+                $o->remote_addr != IpUtils::getIp()) {
                 Db::query(
                     [
                         'UPDATE "users" SET "remote_addr" = :addr WHERE "counter" = :id',
                         [
-                            ':addr' => $_SERVER['REMOTE_ADDR'],
+                            ':addr' => IpUtils::getIp(),
                             ':id'   => $_SESSION['id']
                         ]
                     ] ,Db::NO_RETURN);
 
                 $dontSendCacheLimiter();
-                $_SESSION['remote_addr'] = $_SERVER['REMOTE_ADDR'];
+                $_SESSION['remote_addr'] = IpUtils::getIp();
                 session_write_close();
             }
 

@@ -16,7 +16,7 @@ if($code)
     else
         $vals['error_n'] = 'Undefined error';
     $vals['errorcode_n']  = $code;
-    $vals['ip_n'] = $_SERVER['REMOTE_ADDR'];
+    $vals['ip_n'] = NERDZ\Core\IpUtils::getIp();
     $vals['useragent_n'] = isset($_SERVER['HTTP_USER_AGENT']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8') : '';
     $vals['referrer_n'] = isset($_SERVER['HTTP_REFERRER']) ? htmlspecialchars($_SERVER['HTTP_REFERRER'],ENT_QUOTES,'UTF-8') : 'Direct';
 }

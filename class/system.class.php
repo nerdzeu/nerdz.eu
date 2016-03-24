@@ -157,7 +157,7 @@ class System
         try {
             Db::getDb()->beginTransaction();
             $stmt = Db::getDb()->prepare('UPDATE guests SET last = NOW() WHERE remote_addr = :ip');
-            $stmt->execute([ ':ip' => $_SERVER['REMOTE_ADDR'] ]);
+            $stmt->execute([ ':ip' => IpUtils::getIp() ]);
 
             $stmt = Db::getDb()->prepare(
                 'INSERT INTO guests(remote_addr, http_user_agent)
@@ -165,8 +165,8 @@ class System
                 WHERE NOT EXISTS (SELECT 1 FROM guests WHERE remote_addr = :ip)');
             $stmt->execute(
                 [
-                    ':ip' => $_SERVER['REMOTE_ADDR'],
-                    ':ua' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
+                    ':ip' => IpUtils::getIp(),
+                    ':ua' => isset($_SERVER['HTTP_USER_AGENT']) ?  htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8') : ''
                 ]);
             Db::getDb()->commit();
         } catch(PDOException $e) {

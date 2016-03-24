@@ -115,7 +115,19 @@ class Variables
         // you should put the only secure domain name here. Otherwise, we
         // will assume that you have a wildcard certificate that will work
         // for every subdomain (*.example.com).
-        //'HTTPS_DOMAIN'           => 'secure.example.com'
+        //'HTTPS_DOMAIN'           => 'secure.example.com',
+        //
+        // Proxy configuration
+        // If you find yourself behind some sort of proxy - like a load balancer - then
+        // certain header information may be sent to you using special X-Forwarded-* headers.
+        // When you're behind a proxy, the true host may be stored in a X-Forwarded-Host header.
+        // Since HTTP headers can be spoofed, we do not trust these proxy headers by default.
+        // If you are behind a proxy, you should manually whitelist your proxy.
+        // NERDZ will trust the request only if the ip address is in that list
+        // and will extract the real IP.
+        // 'TRUSTED_PROXIES'       => []
+        // You can specify a single ip (v4 or v6), you can use CIDR notation, or you can
+        // set more than one proxy in any format (even combine ipv4 and ipv6 ips and subnets)
     ];
 }
 

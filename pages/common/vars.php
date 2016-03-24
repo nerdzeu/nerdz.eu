@@ -6,6 +6,8 @@ if(!isset($user))
 $func = function() use ($user) {
     $commonvars = [];
     $commonvars['tok_n'] = NERDZ\Core\Security::getCsrfToken();
+    $commonvars['captchaurl_n']   = '/static/images/captcha.php';
+
     if($user->isLogged()) {
         $commonvars['logged_b'] = true;
         $commonvars['myusername_n'] = NERDZ\Core\User::getUsername();

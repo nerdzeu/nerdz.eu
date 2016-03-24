@@ -4,6 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
 use NERDZ\Core\Db;
 use NERDZ\Core\User;
 use NERDZ\Core\Captcha;
+use NERDZ\Core\IpUtils;
 
 $user = new User();
 $cptcka = new Captcha();
@@ -34,7 +35,7 @@ $ret = Db::query(
                 ':timezone'        => $userData['timezone'],
                 ':date'            => $birth['date'],
                 ':lang'            => $user->getLanguage(),
-                ':remote_addr'     => $_SERVER['REMOTE_ADDR'],
+                ':remote_addr'     => IpUtils::getIp(),
                 ':http_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8') : ''
           ]
       ], Db::FETCH_ERRSTR);
