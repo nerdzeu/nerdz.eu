@@ -11,6 +11,9 @@
  *
  *  @note NERDZ is too dynamic => cache removed. Added to NERDZ\Core namespace.
  *  Now RainTPL is integrated with the NERDZ language support
+ *
+ *  This file is released under GNU AGPL.
+ *  Copyright Paolo Galeone, 2016. <nessuno@nerdz.eu>
  */
 
 namespace NERDZ\Core;
