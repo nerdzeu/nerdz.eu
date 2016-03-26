@@ -27,49 +27,49 @@ class Variables
     public static $data = [
         // Database configuration
         // PostgreSQL hostname
-        'POSTGRESQL_HOST'        => 'sql.example.com',
+        'POSTGRESQL_HOST' => 'sql.example.com',
         // PostgreSQL port
-        'POSTGRESQL_PORT'        => '5432',
+        'POSTGRESQL_PORT' => '5432',
         // PostgreSQL database/scheme name
-        'POSTGRESQL_DATA_NAME'   => 'example_db',
+        'POSTGRESQL_DATA_NAME' => 'example_db',
         // PostgreSQL username
-        'POSTGRESQL_USER'        => 'example_user',
+        'POSTGRESQL_USER' => 'example_user',
         // PostgreSQL password
-        'POSTGRESQL_PASS'        => 'wow',
+        'POSTGRESQL_PASS' => 'wow',
 
         // Configuration of various requirements
         // Minimum username length (in characters)
-        'MIN_LENGTH_USER'        => 2,
+        'MIN_LENGTH_USER' => 2,
         // Minimum password length (in characters)
-        'MIN_LENGTH_PASS'        => 6,
+        'MIN_LENGTH_PASS' => 6,
         // Minimum realname length (in characters)
-        'MIN_LENGTH_NAME'        => 2,
+        'MIN_LENGTH_NAME' => 2,
         // Minimum surname  length (in characters)
-        'MIN_LENGTH_SURNAME'     => 2,
+        'MIN_LENGTH_SURNAME' => 2,
         // Length of the CAPTCHA string (in characters)
-        'CAPTCHA_LEVEL'          => 5,
+        'CAPTCHA_LEVEL' => 5,
 
         // Mail configuration
         // SMTP server username
-        'SMTP_SERVER'            => 'mail.example.com',
+        'SMTP_SERVER' => 'mail.example.com',
         // SMTP server port
-        'SMTP_PORT'              => '465',
+        'SMTP_PORT' => '465',
         // SMTP server username
-        'SMTP_USER'              => 'bob',
+        'SMTP_USER' => 'bob',
         // SMTP server password
-        'SMTP_PASS'              => 'KFC',
+        'SMTP_PASS' => 'KFC',
 
         // General configuration
         // Your website name
-        'SITE_NAME'              => 'NERDZ TEST',
+        'SITE_NAME' => 'NERDZ TEST',
 
         // Domain configuration. The protocol should not be included.
         // Your NERDZ hostname. If you are running NERDZ on your
         // PC, use 'localhost'.
-        'SITE_HOST'              => 'www.example.com',
+        'SITE_HOST' => 'www.example.com',
         // The domain used to serve static data. If you are running
         // NERDZ on your PC, put an empty string.
-        'STATIC_DOMAIN'          => 'static.example.com',
+        'STATIC_DOMAIN' => 'static.example.com',
         // The domain used to serve the mobile version of NERDZ.
         // It is recommended to set this to a subdomain of the root
         // domain from the SITE_HOST variable. This means that if in
@@ -77,7 +77,7 @@ class Variables
         // example.com), then you should have something like mobile.example.com.
         // Otherwise, your users will need to perform the login again when
         // switching from the desktop version to the mobile one.
-        'MOBILE_HOST'            => 'mobile.example.com',
+        'MOBILE_HOST' => 'mobile.example.com',
 
         // Minification configuration
         // NERDZ uses an automatic template minification system, this
@@ -86,7 +86,7 @@ class Variables
         // proper installation of uglifyjs. Disable the
         // minification if you don't need it or don't want to install
         // uglifyjs and csstidy.
-        'MINIFICATION_ENABLED'   => false,
+        'MINIFICATION_ENABLED' => false,
         // Specify the command used to minify JS files.
         // %path% will be replaced with the file to be minified.
         // Comment these options if the default commands are okay for you.
@@ -97,7 +97,7 @@ class Variables
         // if you don't have predis or a Redis server.
         // 'REDIS_HOST'          => 'redis.somewhere.com',
         // 'REDIS_PORT'          => 4545,
- 
+
         // The key used to post issues to GitHub. Get it from your GitHub account.
         // 'ISSUE_GIT_KEY'          => '...',
 

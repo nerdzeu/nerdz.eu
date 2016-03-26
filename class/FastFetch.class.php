@@ -15,30 +15,32 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 namespace NERDZ\Core;
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once __DIR__.'/Autoload.class.php';
 
-/*
+/**
  * FastFetch is a class for fast pm fetching - and maybe more, someday.
- */
-
-final class FastFetch {
-
+ **/
+final class FastFetch
+{
     private $mPm;
     private $user;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->mPm = new Pms();
         $this->user = new User();
     }
 
-
     /**
      * Returns true if current session is associated with a logged user.
-     * @return boolean 
+     *
+     * @return bool
      */
-    public function isLogged() {
+    public function isLogged()
+    {
         return $this->user->isLogged();
     }
 
@@ -46,20 +48,19 @@ final class FastFetch {
      * Returns all conversations.
      * 
      * @return array an object containing the list of conversations.
+     *
      * @throws FFException if something wrong happens
      */
-    public function fetchConversations() {
-
+    public function fetchConversations()
+    {
         $ret = new \stdClass();
 
         $list = $this->mPm->getList();
 
-        if($list !== NULL) {
-
+        if ($list !== null) {
             $ret = [];
 
-            foreach($list as $conversation) {
-
+            foreach ($list as $conversation) {
                 $result = $this->mPm->getLastMessageForConversation((int) $conversation['fromid_n']);
 
                 if ($result === false) {
@@ -72,7 +73,7 @@ final class FastFetch {
                             'id' => $conversation['fromid_n'],
                             'last_message' => $result->message,
                             'last_sender' => $result->last_sender,
-                            'new_messages' => ($result->to_read) && ((int)$result->last_sender !== (int)$_SESSION['id'])
+                            'new_messages' => ($result->to_read) && ((int) $result->last_sender !== (int) $_SESSION['id']),
                         ];
                 $ret[] = $element;
             }
@@ -81,39 +82,40 @@ final class FastFetch {
         }
 
         return $ret;
-
     }
 
     /**
      * Fetches $limit Messages starting with the $start-th in the conversation with user $otherId.
      * 
-     * @param int $otherId 
+     * @param int $otherId
      * @param int $start
      * @param int $limit
+     *
      * @return array an array of objects representing 
+     *
      * @throws FFException if something wrong happens
      */
-    public function fetchMessages($otherId, $start = 0, $limit = 10) {
-
+    public function fetchMessages($otherId, $start = 0, $limit = 10)
+    {
         if ($limit > 30) {
             throw new FFException(FFErrCode::LIMIT_EXCEEDED);
         }
 
         $me = $this->user->getId();
 
-        $list = Db::query (
+        $list = Db::query(
             [
-                'SELECT ("from" = :me) AS sent, EXTRACT(EPOCH FROM time) AS timestamp, message, to_read AS read FROM "pms" WHERE ("from" = :other AND "to" = :me) OR ("to" = :other AND "from" = :me) ORDER BY TIME DESC LIMIT '.$limit.' OFFSET '.$start, 
+                'SELECT ("from" = :me) AS sent, EXTRACT(EPOCH FROM time) AS timestamp, message, to_read AS read FROM "pms" WHERE ("from" = :other AND "to" = :me) OR ("to" = :other AND "from" = :me) ORDER BY TIME DESC LIMIT '.$limit.' OFFSET '.$start,
                 [
                     ':me' => $me,
-                    ':other' => $otherId
-                ]
+                    ':other' => $otherId,
+                ],
             ],
             Db::FETCH_OBJ,
-            true 
+            true
         );
 
-        if ($list === NULL) {
+        if ($list === null) {
             throw new FFException(FFErrCode::SERVER_FAILURE);
         }
 
@@ -122,14 +124,14 @@ final class FastFetch {
             $row->timestamp = intval($row->timestamp);
         }
 
-        if(Db::NO_ERRNO != 
+        if (Db::NO_ERRNO !=
             Db::query(
                 [
                     'UPDATE "pms" SET "to_read" = FALSE WHERE "from" = :from AND "to" = :id',
                     [
-                        ':from' => $otherId, 
-                        ':id' => $me
-                    ]
+                        ':from' => $otherId,
+                        ':id' => $me,
+                    ],
                 ],
                 Db::FETCH_ERRNO
             )
@@ -138,17 +140,16 @@ final class FastFetch {
         }
 
         return $list;
-
     }
 
-    public function getIdFromUsername($userName) {
-
-        $userName = htmlspecialchars($userName,ENT_QUOTES,'UTF-8');
+    public function getIdFromUsername($userName)
+    {
+        $userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
 
         $idObj = Db::query(
             [
                 'SELECT counter FROM users WHERE LOWER(username) = LOWER(:user)',
-                    [ ':user' => $userName ]
+                    [':user' => $userName],
                 ],
                 Db::FETCH_OBJ
             );
@@ -159,13 +160,13 @@ final class FastFetch {
 
         return ['id' => $idObj->counter];
     }
-
 }
 
 /**
  * Error codes to be returned by FastFetch API.
  */
-final class FFErrCode {    
+final class FFErrCode
+{
     /**
      * Unknown error code.
      */
@@ -220,20 +221,18 @@ final class FFErrCode {
 /**
  * Exception returned from FastFetch.
  */
-final class FFException extends \Exception {
-
+final class FFException extends \Exception
+{
     /**
      * A FFErrCode.
+     *
      * @var int
      */
     public $code;
 
-    public function __construct($code) {
-
-        parent::__construct("FFError with code $code", $code, NULL);
+    public function __construct($code)
+    {
+        parent::__construct("FFError with code $code", $code, null);
         $this->mCode = $code;
-
     }
-
 }
-

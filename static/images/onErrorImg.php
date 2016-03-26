@@ -15,6 +15,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 
-new NERDZ\Core\Error\Image(['ERROR','LOADING']);
+new NERDZ\Core\Error\Image(['ERROR', 'LOADING']);

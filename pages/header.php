@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 $vars = [];
-$positionArray = explode('.',basename($_SERVER['PHP_SELF']));
+$positionArray = explode('.', basename($_SERVER['PHP_SELF']));
 $vars['position_n'] = reset($positionArray);
 $user->getTPL()->assign($vars);
 $user->getTPL()->draw('base/header');

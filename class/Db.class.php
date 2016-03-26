@@ -15,25 +15,31 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace NERDZ\Core;
-use PDO, PDOException;
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
+namespace NERDZ\Core;
+
+// Log PostgreSQL exceptions, even if they're handled
+define('DEBUG', 1);
+
+use PDO;
+use PDOException;
+
+require_once __DIR__.'/Autoload.class.php';
 
 class Db
 {
     private static $instance;
     public $dbh;
 
-    const NO_ERRSTR      = '';
-    const NO_ERRNO       = -1;
+    const NO_ERRSTR = '';
+    const NO_ERRNO = -1;
 
-    const FETCH_OBJ      = 1;
-    const FETCH_STMT     = 2;
-    const FETCH_ERRNO    = 3;
-    const ROW_COUNT      = 4;
-    const NO_RETURN      = 5;
-    const FETCH_ERRSTR   = 6;
+    const FETCH_OBJ = 1;
+    const FETCH_STMT = 2;
+    const FETCH_ERRNO = 3;
+    const ROW_COUNT = 4;
+    const NO_RETURN = 5;
+    const FETCH_ERRSTR = 6;
 
     private function __construct()
     {
@@ -42,16 +48,15 @@ class Db
             Config\POSTGRESQL_USER,
             Config\POSTGRESQL_PASS);
 
-        $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
-        $this->dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+        $this->dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Fetch the IDs for special profiles/projects
         $cache = Config\SITE_HOST.'special-ids';
-        if(!($specialIds = Utils::apc_get($cache))) {
+        if (!($specialIds = Utils::apc_get($cache))) {
             $me = $this;
-            $specialIds = Utils::apc_set($cache, function() use ($me) {
-                try
-                {
+            $specialIds = Utils::apc_set($cache, function () use ($me) {
+                try {
                     $stmt = $this->dbh->query('SELECT * FROM special_users');
                     $userIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
@@ -59,11 +64,10 @@ class Db
                     $projectsIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
                     return [
-                        'USER'    => $userIds,
-                        'PROJECT' =>$projectsIds
+                        'USER' => $userIds,
+                        'PROJECT' => $projectsIds,
                     ];
-                }
-                catch(PDOException $e) {
+                } catch (PDOException $e) {
                     static::dumpException($e);
                     die($e->getTraceAsString());
                 }
@@ -78,8 +82,9 @@ class Db
 
     private static function getInstance()
     {
-        if(empty(static::$instance))
-            static::$instance = new Db();
+        if (empty(static::$instance)) {
+            static::$instance = new self();
+        }
 
         return static::$instance;
     }
@@ -100,43 +105,39 @@ class Db
      * be a constant member of Db.
      *
      * @param string $query
-     * @param int $action
-     * @return null|boolean|object
+     * @param int    $action
      *
+     * @return null|bool|object
      */
-    public static function query($query,$action = Db::NO_RETURN, $all = false)
+    public static function query($query, $action = self::NO_RETURN, $all = false)
     {
         $stmt = null; //PDO statement
 
-        try
-        {
-            if(is_string($query))
+        try {
+            if (is_string($query)) {
                 $stmt = static::getDb()->query($query);
-            else
-            {
+            } else {
                 $stmt = static::getDb()->prepare($query[0]);
                 $stmt->execute($query[1]);
             }
-        }
-        catch(PDOException $e)
-        {
-            if(defined('DEBUG'))
-                static::dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
+        } catch (PDOException $e) {
+            if (defined('DEBUG')) {
+                static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
+            }
 
-            if($action == static::FETCH_ERRNO) {
+            if ($action == static::FETCH_ERRNO) {
                 return $stmt->errorInfo()[1];
             }
-            if($action == static::FETCH_ERRSTR) {
+            if ($action == static::FETCH_ERRSTR) {
                 return $stmt->errorInfo()[2];
             }
 
-            static::dumpException($e,$_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
+            static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
 
-            return null;
+            return;
         }
 
-        switch($action)
-        {
+        switch ($action) {
         case static::FETCH_ERRNO:
             return static::NO_ERRNO;
 
@@ -156,4 +157,3 @@ class Db
         return false;
     }
 }
-

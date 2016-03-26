@@ -15,24 +15,22 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 
 ob_start('ob_gzhandler');
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 header('Content-type: application/rss+xml');
 
 $feed = new NERDZ\Core\Feed();
 
-if(isset($_GET['id']) && is_numeric($_GET['id']) && !isset($_GET['project']))
+if (isset($_GET['id']) && is_numeric($_GET['id']) && !isset($_GET['project'])) {
     echo $feed->getProfileFeed($_GET['id']);
-
-elseif(isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['project']))
+} elseif (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['project'])) {
     echo $feed->getProjectFeed($_GET['id']);
-
-elseif(!isset($_GET['id']) && !isset($_GET['project']))
+} elseif (!isset($_GET['id']) && !isset($_GET['project'])) {
     echo $feed->getHomeProfileFeed();
-
-elseif(!isset($_GET['id']) && isset($_GET['project']))
+} elseif (!isset($_GET['id']) && isset($_GET['project'])) {
     echo $feed->getHomeProjectFeed();
-else
+} else {
     echo $feed->error('Wrong GET parameters');
+}

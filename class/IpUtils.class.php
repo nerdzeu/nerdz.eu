@@ -54,35 +54,39 @@ class IpUtils
     /**
      * Returns the IPv4 or IPv6 address of the current user, handling NERDZ TRUSTED_PROXIES.
      * If the user is behind a trusted proxy, extracts the X-Real-IP header, otherwise uses
-     * the REMOTE_ADDRR
+     * the REMOTE_ADDRR.
      *
      * @return string The IP address
      */
     public static function getIp()
     {
-        foreach(Config\TRUSTED_PROXIES as $proxy) {
-            if(self::checkIp($_SERVER['REMOTE_ADDR'], $proxy)) {
+        foreach (Config\TRUSTED_PROXIES as $proxy) {
+            if (self::checkIp($_SERVER['REMOTE_ADDR'], $proxy)) {
                 return self::getForwardedIp();
             }
         }
+
         return $_SERVER['REMOTE_ADDR'];
     }
 
     /**
      * Test proxy headers and returns the IP if exists. Methodu used by getIp(), therefore
      * the IP is just validated (comes from a trusted proxy).
+     *
      * @return string the detected forwarted IP, if any. Otherwise returns REMOTE_ADDR
      */
-    private static function getForwardedIp() {
+    private static function getForwardedIp()
+    {
         foreach ([
             'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED',
-            'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR','HTTP_FORWARDED'] as $key){
-            if (array_key_exists($key, $_SERVER) === true){
-                foreach (explode(',', $_SERVER[$key]) as $ip){
+            'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', ] as $key) {
+            if (array_key_exists($key, $_SERVER) === true) {
+                foreach (explode(',', $_SERVER[$key]) as $ip) {
                     return trim($ip);
                 }
             }
         }
+
         return $_SERVER['REMOTE_ADDR'];
     }
 

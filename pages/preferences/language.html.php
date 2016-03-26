@@ -16,23 +16,23 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\User;
 use NERDZ\Core\System;
 
 $user = new User();
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
-if(!$user->isLogged())
+if (!$user->isLogged()) {
     die($user->lang('REGISTER'));
+}
 
 $vals = [];
-$longlangs  = System::getAvailableLanguages(1);
+$longlangs = System::getAvailableLanguages(1);
 
 $vals['langs_a'] = [];
 $i = 0;
-foreach($longlangs as $id => $val)
-{
+foreach ($longlangs as $id => $val) {
     $vals['langs_a'][$i]['longlang_n'] = $val;
     $vals['langs_a'][$i]['shortlang_n'] = $id;
     ++$i;

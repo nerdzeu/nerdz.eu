@@ -16,11 +16,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 $user = new NERDZ\Core\User();
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
-if(!$user->isLogged())
+if (!$user->isLogged()) {
     die($user->lang('REGISTER'));
+}
 
 $user->getTPL()->draw('preferences/delete');

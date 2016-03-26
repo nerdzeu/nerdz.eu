@@ -15,9 +15,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-use NERDZ\Core\Trend;
 use NERDZ\Core\Utils;
-use NERDZ\Core\Config;
 use NERDZ\Core\User;
 use NERDZ\Core\Project;
 
@@ -30,13 +28,11 @@ $vals['type_n'] = !preg_match('/^#[a-z][a-z0-9]{0,33}$/i', $q) && isset($_GET['t
         : 'project'
     ) : 'tag';
 
-if($vals['type_n'] == 'tag') {
+if ($vals['type_n'] == 'tag') {
     $vals['where_n'] = 'home';
     $vals['toid_n'] = $vals['to_n'] = $vals['to4link_n'] = '';
-}
-else
-{
-    $prj =  $vals['type_n'] == 'project';
+} else {
+    $prj = $vals['type_n'] == 'project';
 
     $vals['where_n'] = isset($_GET['location'])
         ? (
@@ -50,8 +46,8 @@ else
         ) : 'home';
 
     $vals['toid_n'] = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : false;
-    if($vals['toid_n']) {
-        if($prj) {
+    if ($vals['toid_n']) {
+        if ($prj) {
             $vals['to_n'] = Project::getName($vals['toid_n']);
             $vals['to4link_n'] = Utils::projectLink($vals['to_n']);
         } else {

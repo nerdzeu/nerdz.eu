@@ -16,7 +16,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 use NERDZ\Core\Pms;
-$pms  = new Pms();
+
+$pms = new Pms();
 
 $vals = [];
 $vals['list_a'] = $pms->getList();

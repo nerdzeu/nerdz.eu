@@ -15,16 +15,18 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Comments;
 use NERDZ\Core\User;
+
 $user = new User();
 $message = new Comments();
 
-if(!$user->isLogged() || empty($_GET['message']))
+if (!$user->isLogged() || empty($_GET['message'])) {
     $_GET['message'] = $user->lang('ERROR');
+}
 
 $vals = [];
-$vals['message_n'] = $message->bbcode($message->parseQuote(htmlspecialchars($_GET['message'],ENT_QUOTES,'UTF-8')));
+$vals['message_n'] = $message->bbcode($message->parseQuote(htmlspecialchars($_GET['message'], ENT_QUOTES, 'UTF-8')));
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/preview');

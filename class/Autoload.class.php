@@ -15,11 +15,13 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 namespace NERDZ\Core;
 
-class Autoloader
+class Autoload
 {
-    public static function load($class) {
+    public static function load($class)
+    {
         // base directory for the namespace prefix
         $base_dir = __DIR__;
 
@@ -33,10 +35,16 @@ class Autoloader
         // get the relative class name
         $relative_class = substr($class, $len);
 
+        // if there's a subdir eg: NERDZ\Core\Error\Image -> /class/error/Image.class.php
+        // lowercase directory name
+        if (substr_count($relative_class, '\\') > 1) {
+            $last_pos = strrpos($relative_class, '\\');
+            $relative_class = strtolower(substr($relative_class, 0, $last_pos)).substr($relative_class, $last_pos);
+        }
+
         // replace the namespace prefix with the base directory, replace namespace
-        // separators with directory separators in the relative class name, set to lower case,
-        // append with .class.php
-        $file = $base_dir . strtolower(str_replace('\\', '/', $relative_class)) . '.class.php';
+        // separators with directory separators in the relative class name and append '.class.php'
+        $file = $base_dir.str_replace('\\', '/', $relative_class).'.class.php';
 
         // if the file is readable and exists, require_once it
         if (is_readable($file)) {
@@ -45,7 +53,7 @@ class Autoloader
     }
 }
 
-spl_autoload_register(__NAMESPACE__ . '\\Autoloader::load');
+spl_autoload_register(__NAMESPACE__.'\\Autoload::load');
 
 // Define NERDZ constants
 Config::init();
@@ -55,12 +63,13 @@ Config::init();
 // We use session_set_cookie_params only to set the same domain
 session_set_cookie_params(0, '/', System::getSafeCookieDomainName());
 // Start session
-if(Config\REDIS_HOST !== '' && Config\REDIS_PORT !== '')
+if (Config\REDIS_HOST !== '' && Config\REDIS_PORT !== '') {
     new RedisSessionHandler(Config\REDIS_HOST, Config\REDIS_PORT);
-else
+} else {
     session_start();
+}
 
 // lifetime = 0 (until the browser is closed)
 // path = /, domain = System::getSafeCookieDomainName()
 // secure = false, httponly = true
-setcookie(session_name(),session_id(), 0, '/', System::getSafeCookieDomainName(), false, true);
+setcookie(session_name(), session_id(), 0, '/', System::getSafeCookieDomainName(), false, true);

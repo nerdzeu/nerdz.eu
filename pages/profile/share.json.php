@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Messages;
 use NERDZ\Core\Utils;
 use NERDZ\Core\User;
@@ -24,86 +24,89 @@ use NERDZ\Core\User;
 $user = new User();
 $messages = new Messages();
 
-if(!$user->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('REGISTER')));
+if (!$user->isLogged()) {
+    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('REGISTER')));
+}
 
-if(!NERDZ\Core\Security::refererControl())
-    die(NERDZ\Core\Utils::jsonResponse('error','No SPAM/BOT'));
+if (!NERDZ\Core\Security::refererControl()) {
+    die(NERDZ\Core\Utils::jsonResponse('error', 'No SPAM/BOT'));
+}
 
-$url     = empty($_POST['url'])     ? false : trim($_POST['url']);
+$url = empty($_POST['url'])     ? false : trim($_POST['url']);
 $comment = empty($_POST['comment']) ? false : trim($_POST['comment']);
-$to      = empty($_POST['to'])      ? false : trim($_POST['to']);
+$to = empty($_POST['to'])      ? false : trim($_POST['to']);
 
-if(!$url || !Utils::isValidURL($url))
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('INVALID_URL')));
-
-if($to)
-{
-    if(!User::getUsername($to))
-        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('USER_NOT_FOUND')));
+if (!$url || !Utils::isValidURL($url)) {
+    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('INVALID_URL')));
 }
-else
+
+if ($to) {
+    if (!User::getUsername($to)) {
+        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('USER_NOT_FOUND')));
+    }
+} else {
     $to = $_SESSION['id'];
-
-if($_SESSION['id'] != $to)
-{
-    if($user->hasClosedProfile($to))
-        die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('CLOSED_PROFILE_DESCR')));
 }
 
-$share = function($to,$url,$message = NULL) use($user, $messages)
-{
-    if(!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i',$url))
-        $url = "http://{$url}";
+if ($_SESSION['id'] != $to) {
+    if ($user->hasClosedProfile($to)) {
+        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('CLOSED_PROFILE_DESCR')));
+    }
+}
 
-    if(preg_match('#(.*)youtube.com\/watch\?v=(.{11})#Usim',$url)|| preg_match('#http:\/\/youtu.be\/(.{11})#Usim',$url))
-    {
-        $message = "[youtube]{$url}[/youtube] ".$message;
-        return $messages->add($to,$message);
+$share = function ($to, $url, $message = null) use ($user, $messages) {
+    if (!preg_match('#(^http:\/\/|^https:\/\/|^ftp:\/\/)#i', $url)) {
+        $url = "http://{$url}";
     }
 
-    if(preg_match('#http://sprunge.us/([a-z0-9\.]+)\?(.+?)#i',$url,$res))
-    {
+    if (preg_match('#(.*)youtube.com\/watch\?v=(.{11})#Usim', $url) || preg_match('#http:\/\/youtu.be\/(.{11})#Usim', $url)) {
+        $message = "[youtube]{$url}[/youtube] ".$message;
+
+        return $messages->add($to, $message);
+    }
+
+    if (preg_match('#http://sprunge.us/([a-z0-9\.]+)\?(.+?)#i', $url, $res)) {
         $file = file_get_contents('http://sprunge.us/'.$res[1]);
         $message = "[code={$res[2]}]{$file}[/code]".$message;
-        return $messages->add($to,$message);
+
+        return $messages->add($to, $message);
     }
 
-    $h = @get_headers($url,Db::FETCH_OBJ);
-    if(false === $h)
+    $h = @get_headers($url, Db::FETCH_OBJ);
+    if (false === $h) {
         return false;
+    }
 
-    foreach((array)$h['Content-Type'] as $ct)
-    {
-        if(preg_match('#(image)#i',$ct))
-        {
+    foreach ((array) $h['Content-Type'] as $ct) {
+        if (preg_match('#(image)#i', $ct)) {
             $message = "[img]{$url}[/img]".$message;
-            return $messages->add($to,$message);
+
+            return $messages->add($to, $message);
         }
 
-        if(preg_match('#(htm)#i',$ct))
-        {
+        if (preg_match('#(htm)#i', $ct)) {
             $file = file_get_contents($url);
-            $arr = explode('<img src="',$file);
+            $arr = explode('<img src="', $file);
             $flag = false;
-            if(!empty($arr[0]))
-                foreach($arr as $val)
-                {
-                    $img = trim(strstr($val,'"',true));
-                    $img = str_replace('"','',$img);
-                    if(filter_var($img,FILTER_VALIDATE_URL))
-                    {
+            if (!empty($arr[0])) {
+                foreach ($arr as $val) {
+                    $img = trim(strstr($val, '"', true));
+                    $img = str_replace('"', '', $img);
+                    if (filter_var($img, FILTER_VALIDATE_URL)) {
                         $flag = true;
                         break;
                     }
                 }
+            }
             $message = $flag ? "[url={$url}][img]{$img}[/img][/url]".$message : "[url]{$url}[/url] ".$message;
-            return $messages->add($to,$message);
+
+            return $messages->add($to, $message);
         }
     }
 };
 
-if($share($to,$url,$comment))
-    die(NERDZ\Core\Utils::jsonResponse('ok','OK'));
+if ($share($to, $url, $comment)) {
+    die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
+}
 
-die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));

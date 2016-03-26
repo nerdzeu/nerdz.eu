@@ -16,14 +16,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Notification;
 use NERDZ\Core\User;
 
 $notification = new Notification();
 $user = new User();
 
-if($user->isLogged())
-    die(NERDZ\Core\Utils::jsonResponse('ok',$notification->countPms()));
+if ($user->isLogged()) {
+    die(NERDZ\Core\Utils::jsonResponse('ok', $notification->countPms()));
+}
 
-die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('ERROR')));
+die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));

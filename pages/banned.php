@@ -17,18 +17,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 use NERDZ\Core\Db;
 
-if(!($stmt = Db::query('SELECT u.username, b.user, b.motivation ,EXTRACT(EPOCH FROM "time") AS time FROM "ban" b JOIN "users" u ON u.counter = b.user ORDER BY "time" DESC', Db::FETCH_STMT)))
+if (!($stmt = Db::query('SELECT u.username, b.user, b.motivation ,EXTRACT(EPOCH FROM "time") AS time FROM "ban" b JOIN "users" u ON u.counter = b.user ORDER BY "time" DESC', Db::FETCH_STMT))) {
     echo $user->lang('ERROR');
-else
-{
+} else {
     $i = 0;
     $ret = [];
-    while(($o = $stmt->fetch(PDO::FETCH_OBJ)))
-    {
-        $ret[$i]['id_n']         = $o->user;
-        $ret[$i]['username_n']   = $o->username;
-        $ret[$i]['date_n']       = $user->getDate($o->time);
-        $ret[$i]['time_n']       = $user->getTime($o->time);
+    while (($o = $stmt->fetch(PDO::FETCH_OBJ))) {
+        $ret[$i]['id_n'] = $o->user;
+        $ret[$i]['username_n'] = $o->username;
+        $ret[$i]['date_n'] = $user->getDate($o->time);
+        $ret[$i]['time_n'] = $user->getTime($o->time);
         $ret[$i]['motivation_n'] = $o->motivation;
         ++$i;
     }

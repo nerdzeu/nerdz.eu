@@ -15,19 +15,21 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if(empty($hpid))
+if (empty($hpid)) {
     die('$hpid required');
+}
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
+ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 use NERDZ\Core\Messages;
 
 $prj = isset($prj);
 $messages = new Messages();
-$user->getTPL()->assign($messages->getPost($hpid, ['project' => $prj ]));
+$user->getTPL()->assign($messages->getPost($hpid, ['project' => $prj]));
 
-if(isset($draw))
+if (isset($draw)) {
     $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post');
-else
+} else {
     return $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post', true);
+}

@@ -16,38 +16,36 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 $pages = [
-    '\.' => [ $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'profile.php', 'id' ],
-    ':'  => [ $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'project.php', 'gid' ]
+    '\.' => [$_SERVER['DOCUMENT_ROOT'].'/profile.php', 'id'],
+    ':' => [$_SERVER['DOCUMENT_ROOT'].'/project.php', 'gid'],
 ];
 
-foreach($pages as $separator => $elements)
-{
+foreach ($pages as $separator => $elements) {
     $page = $elements[0];
-    $id   = $elements[1];
+    $id = $elements[1];
 
     if (preg_match("#^/(.+?){$separator}$#", $_SERVER['SCRIPT_NAME'], $matches)) {
-        $_GET = array( $id => $matches[1] );
+        $_GET = array($id => $matches[1]);
+
         return include $page;
-    }
-    else if (preg_match("#^/(.+?){$separator}(\d+)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
-        $_GET = array( $id => $matches[1], 'pid' => $matches[2] );
+    } elseif (preg_match("#^/(.+?){$separator}(\d+)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
+        $_GET = array($id => $matches[1], 'pid' => $matches[2]);
+
         return include $page;
-    }
-    else if (preg_match("#^/(.+?){$separator}(friends|members|followers|following|interactions)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
-        $_GET = array( $id => $matches[1], 'action' => $matches[2] );
+    } elseif (preg_match("#^/(.+?){$separator}(friends|members|followers|following|interactions)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
+        $_GET = array($id => $matches[1], 'action' => $matches[2]);
+
         return include $page;
-    }
-    else if (preg_match("#^/(.+?){$separator}(friends|members|followers|following|interactions)\?(.*)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
-        $_GET = array( $id => $matches[1], 'action' => $matches[2] );
-        $parameters = explode('&',$matches[3]);
-        foreach($parameters as $parameter) {
-            $parameter = explode('=',$parameter);
+    } elseif (preg_match("#^/(.+?){$separator}(friends|members|followers|following|interactions)\?(.*)$#", $_SERVER['SCRIPT_NAME'], $matches)) {
+        $_GET = array($id => $matches[1], 'action' => $matches[2]);
+        $parameters = explode('&', $matches[3]);
+        foreach ($parameters as $parameter) {
+            $parameter = explode('=', $parameter);
             $_GET[$parameter[0]] = $parameter[1];
         }
+
         return include $page;
     }
 }
 
-
 return false;
-

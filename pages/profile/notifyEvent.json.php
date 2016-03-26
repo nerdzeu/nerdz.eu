@@ -15,7 +15,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Notification;
 use NERDZ\Core\Db;
 use NERDZ\Core\Config;
@@ -27,34 +27,33 @@ $user = new Notification();
 
 header("Content-Type: text/event-stream\n\n");
 
-$push = function($event, $status, $message) use ($user) {
+$push = function ($event, $status, $message) use ($user) {
     echo 'event: ', $event, "\n",
-        'data: ',  Utils::toJsonResponse($status,$message), "\n\n";
+        'data: ',  Utils::toJsonResponse($status, $message), "\n\n";
     ob_flush();
     flush();
 };
 
-$dontSendCacheLimiter = function() {
+$dontSendCacheLimiter = function () {
     // http://stackoverflow.com/a/12315542
     ini_set('session.use_only_cookies', false);
     ini_set('session.use_cookies', false);
     ini_set('session.use_trans_sid', false);
     ini_set('session.cache_limiter', null);
 
-    if(Config\REDIS_HOST !== '' && Config\REDIS_PORT !== '') {
+    if (Config\REDIS_HOST !== '' && Config\REDIS_PORT !== '') {
         new RedisSessionHandler(Config\REDIS_HOST, Config\REDIS_PORT);
-    }
-    else
+    } else {
         session_start();
+    }
 };
 
-
-if(!$user->isLogged()) {
+if (!$user->isLogged()) {
     $push('notification', 'error', $user->lang('REGISTER'));
     $push('pm', 'error', $user->lang('REGISTER'));
 } else {
     //outside of the loop, to send first events as fast as possible
-    $notification = $user->count(false,true);
+    $notification = $user->count(false, true);
     $push('notification', 'ok', $notification);
 
     $pm = $user->countPms();
@@ -65,15 +64,15 @@ if(!$user->isLogged()) {
     sleep(5);
     $viewonline = empty($_SESSION['mark_offline']) ? '1' : '0';
 
-    while(1) {
-        $newNotifications = $user->count(false,true);
-        if($newNotifications != $notification) {
+    while (1) {
+        $newNotifications = $user->count(false, true);
+        if ($newNotifications != $notification) {
             $notification = $newNotifications;
             $push('notification', 'ok', $notification);
         }
 
         $newPm = $user->countPms();
-        if($newPm != $pm) {
+        if ($newPm != $pm) {
             $pm = $newPm;
             $push('pm', 'ok', $pm);
         }
@@ -83,43 +82,42 @@ if(!$user->isLogged()) {
                 'UPDATE "users" SET "last" = NOW(), "viewonline" = :on WHERE "counter" = :id',
                     [
                         ':on' => $viewonline,
-                        ':id' => $_SESSION['id']
-                    ]
+                        ':id' => $_SESSION['id'],
+                    ],
                 ], Db::NO_RETURN);
 
-        if(($o = Db::query(
+        if (($o = Db::query(
             [
                 'SELECT "remote_addr","http_user_agent" FROM "users" WHERE "counter" = :id',
                 [
-                    ':id' => $_SESSION['id']
-                ]
-            ], Db::FETCH_OBJ)))
-        {
-            if(empty($o->remote_addr) || empty($_SESSION['remote_addr']) || 
+                    ':id' => $_SESSION['id'],
+                ],
+            ], Db::FETCH_OBJ))) {
+            if (empty($o->remote_addr) || empty($_SESSION['remote_addr']) ||
                 $o->remote_addr != IpUtils::getIp()) {
                 Db::query(
                     [
                         'UPDATE "users" SET "remote_addr" = :addr WHERE "counter" = :id',
                         [
                             ':addr' => IpUtils::getIp(),
-                            ':id'   => $_SESSION['id']
-                        ]
-                    ] ,Db::NO_RETURN);
+                            ':id' => $_SESSION['id'],
+                        ],
+                    ], Db::NO_RETURN);
 
                 $dontSendCacheLimiter();
                 $_SESSION['remote_addr'] = IpUtils::getIp();
                 session_write_close();
             }
 
-            if(empty($o->http_user_agent) || empty($_SESSION['http_user_agent']) || 
+            if (empty($o->http_user_agent) || empty($_SESSION['http_user_agent']) ||
                 $o->http_user_agent != $_SERVER['HTTP_USER_AGENT']) {
                 Db::query(
                     [
                         'UPDATE "users" SET "http_user_agent" = :uag WHERE "counter" = :id',
                         [
-                            ':uag' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'],ENT_QUOTES,'UTF-8'),
-                                ':id'  => $_SESSION['id']
-                            ]
+                            ':uag' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8'),
+                                ':id' => $_SESSION['id'],
+                            ],
                         ], Db::NO_RETURN);
 
                 $dontSendCacheLimiter();
@@ -129,7 +127,5 @@ if(!$user->isLogged()) {
         }
 
         sleep(5);
-
     }//while 1
-
 }// else

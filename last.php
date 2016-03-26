@@ -15,11 +15,12 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Db;
 use NERDZ\Core\Utils;
 
-if(!($o = Db::query('SELECT "username" FROM "users" ORDER BY "counter" DESC',Db::FETCH_OBJ)))
+if (!($o = Db::query('SELECT "username" FROM "users" ORDER BY "counter" DESC', Db::FETCH_OBJ))) {
     die('Db error');
+}
 
 die(header('Location: /'.Utils::userLink($o->username)));

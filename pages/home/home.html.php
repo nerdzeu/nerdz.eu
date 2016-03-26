@@ -15,13 +15,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 $user = new NERDZ\Core\User();
 
-if(!($logged = $user->isLogged()))
+if (!($logged = $user->isLogged())) {
     die($user->lang('REGISTER'));
+}
 
-$prj      = isset($_GET['action']) && $_GET['action'] == 'project' || isset($_POST['type']) && $_POST['type'] == 'project';
+$prj = isset($_GET['action']) && $_GET['action'] == 'project' || isset($_POST['type']) && $_POST['type'] == 'project';
 $truncate = true;
-$path     = 'home';
+$path = 'home';
 require $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.html.php';

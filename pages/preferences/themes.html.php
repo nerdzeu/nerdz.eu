@@ -16,16 +16,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\User;
-use NERDZ\Core\Config;
 use NERDZ\Core\System;
 
 $user = new User();
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
+ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
-if(!$user->isLogged())
+if (!$user->isLogged()) {
     die($user->lang('REGISTER'));
+}
 
 $vals = [];
 
@@ -33,8 +33,7 @@ $vals['themes_a'] = [];
 $i = 0;
 $templates = System::getAvailableTemplates();
 
-foreach($templates as $val)
-{
+foreach ($templates as $val) {
     $vals['themes_a'][$i]['tplno_n'] = $val['number'];
     $vals['themes_a'][$i]['tplname_n'] = $val['name'];
     ++$i;

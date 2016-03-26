@@ -16,13 +16,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Config;
 use NERDZ\Core\User;
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
+
+ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 header('Content-type: application/xml');
-$sitemap = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR .'sitemap.xml');
+$sitemap = file_get_contents(__DIR__.'/data/sitemap.xml');
 
 die(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
     ? str_replace('http://'.Config\SITE_HOST, 'https://'.Config\HTTPS_DOMAIN, $sitemap)

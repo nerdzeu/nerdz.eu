@@ -16,8 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 ob_start('ob_gzhandler');
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-use NERDZ\Core\Db;
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\User;
 use NERDZ\Core\Captcha;
 
@@ -25,10 +24,12 @@ $user = new User();
 $cptcka = new Captcha();
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 
-if(!$captcha)
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('MISSING').': '.$user->lang('CAPTCHA')));
+if (!$captcha) {
+    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('MISSING').': '.$user->lang('CAPTCHA')));
+}
 
-if(!$cptcka->check($captcha))
-    die(NERDZ\Core\Utils::jsonResponse('error',$user->lang('WRONG_CAPTCHA')));
+if (!$cptcka->check($captcha)) {
+    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('WRONG_CAPTCHA')));
+}
 
 die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));

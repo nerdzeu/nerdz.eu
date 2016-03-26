@@ -15,8 +15,10 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 namespace NERDZ\Core;
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'autoload.php';
+
+require_once __DIR__.'/Autoload.class.php';
 use PDO;
 
 class Project
@@ -27,8 +29,8 @@ class Project
     public function __construct($id = null)
     {
         $this->user = new User();
-        if($id !== null) {
-            if(!is_numeric($id)) {
+        if ($id !== null) {
+            if (!is_numeric($id)) {
                 $this->id = $this->getId($id);
             } else {
                 $this->id = intval($id);
@@ -38,12 +40,13 @@ class Project
 
     private function checkId(&$id)
     {
-        if(empty($id)) {
-            if(empty($this->id)) {
+        if (empty($id)) {
+            if (empty($this->id)) {
                 die(__CLASS__.' invalid project ID');
+            } else {
+                $id = $this->id;
             }
-            else $id = $this->id;
-        } else if(!is_numeric($id)) {
+        } elseif (!is_numeric($id)) {
             $id = $this->getId($id);
         }
         $id = intval($id);
@@ -52,32 +55,36 @@ class Project
     public function getObject(&$id = null)
     {
         $this->checkId($id);
+
         return Db::query(
             [
                 'SELECT * FROM "groups" WHERE "counter" = :id',
                 [
-                    ':id' => $id
-                ]
-            ],Db::FETCH_OBJ);
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_OBJ);
     }
 
-    public function getBasicInfo($id = null) {
+    public function getBasicInfo($id = null)
+    {
         $o = $this->getObject($id);
         $ret = [];
-        $ret['name_n']       = $o->name;
-        $ret['name4link_n']  = Utils::projectLink($o->name);
-        $ret['id_n']         = $id;
+        $ret['name_n'] = $o->name;
+        $ret['name4link_n'] = Utils::projectLink($o->name);
+        $ret['id_n'] = $id;
         $ret['canifollow_b'] = !$this->user->isFollowing($id, true);
-        $ret['since_n']      = $this->user->getDate(strtotime($o->creation_time));
+        $ret['since_n'] = $this->user->getDate(strtotime($o->creation_time));
+
         return $ret;
     }
 
     public function getMembersAndOwnerFromHpid($hpid)
     {
-        if(!($info = Db::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid',array(':hpid' => $hpid)),Db::FETCH_OBJ)))
+        if (!($info = Db::query(array('SELECT "to" FROM "groups_posts" WHERE "hpid" = :hpid', array(':hpid' => $hpid)), Db::FETCH_OBJ))) {
             return false;
+        }
 
-        $members   = $this->getMembers($info->to);
+        $members = $this->getMembers($info->to);
         $members[] = $this->getOwner($info->to);
 
         return $members;
@@ -85,45 +92,51 @@ class Project
 
     public function getId($name = null)
     {
-        if($name === null)
+        if ($name === null) {
             return $this->id;
+        }
 
-        if(!($o = Db::query(
+        if (!($o = Db::query(
             [
                 'SELECT "counter" FROM "groups" WHERE LOWER("name") = LOWER(:name)',
                     [
-                        ':name' => htmlspecialchars($name,ENT_QUOTES,'UTF-8')
-                    ]
-                ],Db::FETCH_OBJ)))
-                return 0;
+                        ':name' => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
+                    ],
+                ], Db::FETCH_OBJ))) {
+            return 0;
+        }
+
         return $o->counter;
     }
 
     public function getOwner($id = null)
     {
         $this->checkId($id);
-        if(!($o = Db::query(
+        if (!($o = Db::query(
             [
                 'SELECT "from" as owner FROM "groups_owners" WHERE "to" = :id',
                 [
-                    ':id' => $id
-                ]
-            ],Db::FETCH_OBJ)))
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_OBJ))) {
             return 0;
+        }
+
         return $o->owner;
     }
 
     public function isOpen($id = null)
     {
         $this->checkId($id);
-        if(!($o = Db::query(
+        if (!($o = Db::query(
             [
                 'SELECT "open" FROM "groups" WHERE "counter" = :id',
                 [
-                    ':id' => $id
-                ]
-            ],Db::FETCH_OBJ)))
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_OBJ))) {
             return false;
+        }
 
         return $o->open;
     }
@@ -131,17 +144,19 @@ class Project
     public function getMembers($id = null, $limit = 0)
     {
         $this->checkId($id);
-        if($limit)
+        if ($limit) {
             $limit = Security::limitControl($limit, 20);
+        }
 
-        if(!($stmt = Db::query(
+        if (!($stmt = Db::query(
             [
                 'SELECT "from" FROM "groups_members" WHERE "to" = :id'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
-                    ':id' => $id
-                ]
-            ],Db::FETCH_STMT)))
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_STMT))) {
             return [];
+        }
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -149,17 +164,19 @@ class Project
     public function getFollowers($id = null, $limit = 0)
     {
         $this->checkId($id);
-        if($limit)
+        if ($limit) {
             $limit = Security::limitControl($limit, 20);
+        }
 
-        if(!($stmt = Db::query(
+        if (!($stmt = Db::query(
             [
                 'SELECT "from" FROM "groups_followers" WHERE "to" = :id'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
-                    ':id' => $id
-                ]
-            ],Db::FETCH_STMT)))
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_STMT))) {
             return [];
+        }
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -167,41 +184,47 @@ class Project
     public function getFollowersCount($id = null)
     {
         $this->checkId($id);
-        if(!($o = Db::query(
+        if (!($o = Db::query(
             [
                 'SELECT COUNT("from") AS cc FROM "groups_followers" WHERE "to" = :id',
                 [
-                    ':id' => $id
-                ]
-            ], Db::FETCH_OBJ)))
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_OBJ))) {
             return 0;
+        }
+
         return $o->cc;
     }
 
     public function getMembersCount($id = null)
     {
         $this->checkId($id);
-        if(!($o = Db::query(
+        if (!($o = Db::query(
             [
                 'SELECT COUNT("from") AS cc FROM "groups_members" WHERE "to" = :id',
                 [
-                    ':id' => $id
-                ]
-            ], Db::FETCH_OBJ)))
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_OBJ))) {
             return 0;
+        }
+
         return $o->cc;
     }
 
     public function getInteractions($id, $limit = 0)
     {
-        if(!$this->user->isLogged())
+        if (!$this->user->isLogged()) {
             return [];
+        }
 
-        if($limit)
+        if ($limit) {
             $limit = Security::limitControl($limit, 20);
+        }
 
         $objs = [];
-        if(!($objs = Db::query(
+        if (!($objs = Db::query(
             [
                 'SELECT "type", extract(epoch from time) as time, pid, post_to
                 FROM group_interactions(:me, :id) AS
@@ -209,40 +232,41 @@ class Project
                 ORDER BY f.time DESC'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':me' => $_SESSION['id'],
-                    ':id' => $id
-                ]
-            ],Db::FETCH_OBJ, true)))
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_OBJ, true))) {
             return [];
+        }
 
         $ret = [];
-        for($i=0, $count = count($objs); $i<$count; ++$i) {
-            $ret[$i]['type_n']      = $objs[$i]->type;
-            $ret[$i]['date_n']      = $this->user->getDate($objs[$i]->time);
-            $ret[$i]['time_n']      = $this->user->getTime($objs[$i]->time);
-            $ret[$i]['pid_n']       = $objs[$i]->pid;
-            $ret[$i]['postto_n']    = static::getName($objs[$i]->post_to);
-            $ret[$i]['link_n']      = Utils::projectLink($ret[$i]['postto_n']).$objs[$i]->pid;
+        for ($i = 0, $count = count($objs); $i < $count; ++$i) {
+            $ret[$i]['type_n'] = $objs[$i]->type;
+            $ret[$i]['date_n'] = $this->user->getDate($objs[$i]->time);
+            $ret[$i]['time_n'] = $this->user->getTime($objs[$i]->time);
+            $ret[$i]['pid_n'] = $objs[$i]->pid;
+            $ret[$i]['postto_n'] = static::getName($objs[$i]->post_to);
+            $ret[$i]['link_n'] = Utils::projectLink($ret[$i]['postto_n']).$objs[$i]->pid;
         }
 
         return $ret;
     }
 
-
     public static function getName($id)
     {
-        if(!($o = Db::query(
+        if (!($o = Db::query(
             [
                 'SELECT "name" FROM "groups" WHERE "counter" = :id',
                 [
-                    ':id' => $id
-                ]
-            ],Db::FETCH_OBJ)))
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_OBJ))) {
             return 'WTF: '.$id;
+        }
 
         return $o->name;
     }
 }
 
-if(isset($_GET['gid']) && !is_numeric($_GET['gid']) && is_string($_GET['gid']))
+if (isset($_GET['gid']) && !is_numeric($_GET['gid']) && is_string($_GET['gid'])) {
     $_GET['gid'] = (new Project(trim($_GET['gid'])))->getId();
-
+}
