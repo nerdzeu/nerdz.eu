@@ -24,8 +24,6 @@ class Config
 
     private function __construct()
     {
-        //require_once __DIR__'/config''/Variables.php';
-
         if (!is_array(Config\Variables::$data)) {
             trigger_error('Invalid configuration: missing Config\\Variables::$data variable', E_USER_ERROR);
         }
