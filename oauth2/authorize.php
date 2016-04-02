@@ -24,7 +24,7 @@ $user = new NERDZ\Core\User();
 $tplcfg = $user->getTemplateCfg();
 
 if ($user->isLogged()) {
-    die(header('Location: home.php'));
+    die(header('Location: login.php?'.urlencode($_SERVER['QUERY_STRING'])));
 }
 
 ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
@@ -37,9 +37,9 @@ ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
     <meta name="keywords" content="nerdz, social network, user profile, paste, source code, programming" />
     <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
     <meta name="robots" content="index,follow" />
-    <title><?= NERDZ\Core\Utils::getSiteName(); ?> - Login</title>
+    <title><?= NERDZ\Core\Utils::getSiteName(); ?> - OAuth2 Authorization</title>
 <?php
-$headers = $tplcfg->getTemplateVars('login');
+$headers = $tplcfg->getTemplateVars('authorize');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
@@ -48,7 +48,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
     <div id="body">
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/login.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/oauth2/pages/authorize.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
 ?>
     </div>
