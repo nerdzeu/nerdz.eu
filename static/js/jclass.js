@@ -35,6 +35,9 @@ function N() /* THE FATHER of God (class/object/function)*/
             case "nerdzcrush":
                 iframe = '<div class="nerdzcrush" data-media="'+vid+'#noautoplay,noloop"></div>';
             break;
+            case "imgur":
+                iframe = '<video src="https://i.imgur.com/'+vid+'.webm" controls autoplay></video>';
+            break;
         }
         a.html ('<div style="width:100%; text-align:center"><br />'+iframe+'</div>');
         a.css ('cursor','default');
@@ -1036,6 +1039,39 @@ N.html = function()
 
 N.html = new N.html();
 
+N.html.home = function() {
+    var pp = '/pages/home/';
+ 
+    this.post = function(path, jObj,done)
+    {
+        N.html.post(path,jObj,done);
+    };
+
+    /**
+     * Return the homepage with only posts made by follwed users (10 post), starting from post number: lim
+     * @parameters lim
+     */
+    this.getFollowedPostList = function(lim, done) {
+        this.post(pp + 'home.html.php', {limit: !lim ? '0' : lim+",10", onlyfollowed: '1'}, function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * Return the homepage with only posts made by follwed users (lim posts), starting from post with id = hpid
+     * @parameters lim,hpid, done
+     * hpid = {hpid, type = hpid type [project or profile]}
+     */
+    this.getFollowedPostListBeforeHpid = function(lim, hpid, type, done)
+    {
+        this.post(pp + 'home.html.php',{limit: lim ? lim : "10", onlyfollowed: '1', hpid: hpid, type: type}, function(d) {
+            done(d);
+        });
+    };
+};
+
+N.html.home = new N.html.home();
+
 N.html.profile = function()
 {
     var pp = '/pages/profile/';
@@ -1071,17 +1107,6 @@ N.html.profile = function()
     };
 
     /**
-     * Return the homepage post list (10 post), starting from post number: lim
-     * @parameters lim
-     */
-    this.getHomePostList = function(lim, done)
-    {
-        this.post('/pages/home/home.html.php?action=profile',{limit: !lim ? '0' : lim+",10"}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
      * Return the homepage with sorted by vote, starting from post number: lim
      * @parameters lim, votetype = '+' | '-'
      */
@@ -1110,17 +1135,6 @@ N.html.profile = function()
     this.getByLangHomePostList = function(lim, lang, done)
     {
         this.post('/pages/home/home.html.php?action=profile',{limit: !lim ? '0' : lim+",10", lang: lang}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
-     * Return lim posts, after posts with id = hpid
-     * @parameters lim, hpid
-     */
-    this.getHomePostListBeforeHpid = function(lim, hpid, done)
-    {
-        this.post('/pages/home/home.html.php?action=profile',{limit: lim ? lim : "10",hpid: hpid}, function(d) {
             done(d);
         });
     };
@@ -1248,17 +1262,6 @@ N.html.project = function()
     };
 
     /**
-     * Return the homepage post list (10 post), starting from post number: lim
-     * @parameters: lim
-     */
-    this.getHomePostList = function(lim, done)
-    {
-        this.post('/pages/home/home.html.php?action=project',{limit: !lim ? '0' : lim+",10"}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
      * Return the homepage with sorted by vote, starting from post number: lim
      * @parameters lim, votetype = '+' | '-'
      */
@@ -1287,17 +1290,6 @@ N.html.project = function()
     this.getByLangHomePostList = function(lim, lang, done)
     {
         this.post('/pages/home/home.html.php?action=project',{limit: !lim ? '0' : lim+",10", lang: lang}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
-     * Return the project homepage post list (lim posts), starting from post with id = hpid
-     * @parameters: lim, hpid
-     */
-    this.getHomePostListBeforeHpid = function(lim, hpid, done)
-    {
-        this.post('/pages/home/home.html.php?action=project',{limit: lim ? lim : "10", hpid:hpid}, function(d) {
             done(d);
         });
     };

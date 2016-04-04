@@ -6,7 +6,7 @@ data/error.log
 data/tracking.js
 data/banner.list
 data/sitemap.xml
-class/config/index.php
+class/config/Variables.class.php
 utils/*
 google*
 mobile/*

@@ -1,18 +1,35 @@
 <?php
-if(empty($hpid))
-    die('$hpid required');
+/*
+Copyright (C) 2016 Paolo Galeone <nessuno@nerdz.eu>
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/class/autoload.php';
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+if (empty($hpid)) {
+    die('$hpid required');
+}
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
+ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 use NERDZ\Core\Messages;
 
 $prj = isset($prj);
 $messages = new Messages();
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/vars.php';
-$user->getTPL()->assign($messages->getPost($hpid, ['project' => $prj ]));
+$user->getTPL()->assign($messages->getPost($hpid, ['project' => $prj]));
 
-if(isset($draw))
+if (isset($draw)) {
     $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post');
-else
+} else {
     return $user->getTPL()->draw(($prj ? 'project' : 'profile').'/post', true);
+}
