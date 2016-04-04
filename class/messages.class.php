@@ -366,8 +366,8 @@ class Messages
             $videoCallback = function($m) {
                 $v_url       = html_entity_decode ($m[1], ENT_QUOTES, 'UTF-8');
                 $iframe_code = '';
-                if      (preg_match (static::YOUTUBE_REGEXP,    $v_url, $match))
-                    $iframe_code = '<iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="//www.youtube.com/embed/'.$match[1].'?wmode=opaque"></iframe>';
+                if (preg_match (static::YOUTUBE_REGEXP,    $v_url, $match))
+                    $iframe_code = '<iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="//www.youtube.com/embed/'.$match[1].'?wmode=opaque" allowfullscreen></iframe>';
                 else if (preg_match (static::VIMEO_REGEXP,      $v_url, $match))
                     $iframe_code = '<iframe src="//player.vimeo.com/video/'.$match[1].'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
                 else if (preg_match (static::DMOTION_REGEXP,    $v_url, $match))
