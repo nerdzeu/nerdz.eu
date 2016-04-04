@@ -21,7 +21,7 @@ function N() /* THE FATHER of God (class/object/function)*/
         switch (a.attr ("data-host"))
         {
             case "youtube":
-                iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque"></iframe>';
+                iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque" allowfullscreen></iframe>';
             break;
             case "vimeo":
                 iframe = '<iframe style="margin: auto" src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
