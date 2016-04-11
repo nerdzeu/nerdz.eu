@@ -67,9 +67,9 @@ class Variables
         // Your NERDZ hostname. If you are running NERDZ on your
         // PC, use 'localhost'.
         'SITE_HOST' => 'www.example.com',
-        // The domain used to serve static data. If you are running
+        // The host used to serve static data. If you are running
         // NERDZ on your PC, put an empty string.
-        'STATIC_DOMAIN' => 'static.example.com',
+        'STATIC_HOST' => 'static.example.com',
         // The domain used to serve the mobile version of NERDZ.
         // It is recommended to set this to a subdomain of the root
         // domain from the SITE_HOST variable. This means that if in
@@ -120,18 +120,6 @@ class Variables
         // routed to our trusted public SSL proxy.
         //'CAMO_KEY'                => "THAT-CAMO-KEY",
         //'MEDIA_HOST'              => 'media.somewhere.com'
-        // True if every login request should be sent via HTTPS.
-        // This works via some CORS magic. You need to enable CORS on the HTTP
-        // and mobile domains, and also you need to send the
-        // Access-Control-Allow-Credentials: true header. Otherwise your cookies
-        // won't be saved.
-        // It is set to false by default.
-        //'LOGIN_SSL_ONLY'         => true,
-        // If your SSL certificate is for just one domain (example.com),
-        // you should put the only secure domain name here. Otherwise, we
-        // will assume that you have a wildcard certificate that will work
-        // for every subdomain (*.example.com).
-        //'HTTPS_DOMAIN'           => 'secure.example.com',
         //
         // Proxy configuration
         // If you find yourself behind some sort of proxy - like a load balancer - then

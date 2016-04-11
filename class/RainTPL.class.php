@@ -116,11 +116,7 @@ final class RainTPL
 
     public function __construct()
     {
-        $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/'.(
-                !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'
-                ? 'ssl'
-                : ''
-            ).'tmp/';
+        $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/tmp/';
         $this->base_url = System::getResourceDomain();
     }
 

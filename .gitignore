@@ -1,5 +1,4 @@
 tmp/*
-ssltmp/*
 *.cssmin.css
 *.jsmin.js
 data/error.log

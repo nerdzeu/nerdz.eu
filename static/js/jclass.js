@@ -21,7 +21,7 @@ function N() /* THE FATHER of God (class/object/function)*/
         switch (a.attr ("data-host"))
         {
             case "youtube":
-                iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque" allowfullscreen></iframe>';
+                iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="https://www.youtube.com/embed/'+vid+'?wmode=opaque" allowfullscreen></iframe>';
             break;
             case "vimeo":
                 iframe = '<iframe style="margin: auto" src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
@@ -145,9 +145,9 @@ function N() /* THE FATHER of God (class/object/function)*/
      * Description: returns the array of static stuff in the header.
      */
     this.getStaticData = function() {
-        if (typeof window.Nstatic !== 'object')
+        if (typeof window.N.static !== 'object')
             return {};
-        return window.Nstatic;
+        return window.N.static;
     };
 
     /**
@@ -155,7 +155,7 @@ function N() /* THE FATHER of God (class/object/function)*/
      * Description: returns getStaticData().lang if available
      */
     this.getLangData = function() {
-        if (typeof window.Nstatic === 'object' && typeof window.Nstatic.lang === 'object')
+        if (typeof window.N.static === 'object' && typeof window.N.static.lang === 'object')
             return this.getStaticData().lang;
         return {};
     };
@@ -205,9 +205,7 @@ N.json = function()
     */
     this.login = function(jObj,done)
     {
-        var forceSSL = location.protocol !== 'https:' &&
-            typeof Nssl !== 'undefined' && Nssl.login === true;
-        this.post ((forceSSL ? 'https://' + (Nssl.domain || document.location.host) : '') + '/pages/profile/login.json.php', jObj, function(d) {
+        this.post ('/pages/profile/login.json.php', jObj, function(d) {
             done (d);
         }, true);
     };
@@ -262,8 +260,8 @@ N.json = function()
      */
     this.setTemplateVars = function(jObj, done)
     {
-        N.json.post('/pages/preferences/themes.html.json.php?action=vars',{"vars": jObj["vars"], "tok": jObj["tok"]},function(d) {
-            N.tplVars = jObj["vars"];
+        N.json.post('/pages/preferences/themes.html.json.php?action=vars',{"vars": jObj.vars, "tok": jObj.tok},function(d) {
+            N.tplVars = jObj.vars;
             done(d);
         });
     };

@@ -45,12 +45,9 @@ class Config
 
             'CAMO_KEY' => '',
             'MEDIA_HOST' => '',
+            'STATIC_HOST' => '',
 
-            'HTTPS_DOMAIN' => '',
-            'STATIC_DOMAIN' => '',
-            'LOGIN_SSL_ONLY' => false,
             'MINIFICATION_JS_CMD' => 'uglifyjs %path% -c unused=false',
-
             'POSTGRESQL_HOST' => -1, // null does not work since isset() is a faget
             'POSTGRESQL_DATA_NAME' => -1,
             'POSTGRESQL_USER' => -1,

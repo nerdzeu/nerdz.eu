@@ -46,21 +46,14 @@ class System
         return count($chost) > 1 ? implode('.', $chost) : null;
     }
 
-    public static function isOnHTTPS()
-    {
-        return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-    }
-
     public static function getCurrentHostAddress()
     {
-        return 'http'.(self::isOnHTTPS() ? 's' : '').'://'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] == '80' ? '' : ':'.$_SERVER['SERVER_PORT']).'/';
+        return '//'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] == '80' ? '' : ':'.$_SERVER['SERVER_PORT']).'/';
     }
 
     public static function getResourceDomain()
     {
-        return self::isOnHTTPS()
-            ? 'https://'.Config\HTTPS_DOMAIN
-            : Config\STATIC_DOMAIN;
+        return '//'.Config\STATIC_HOST == '' ? Config\SITE_HOST : Config\STATIC_HOST;
     }
 
     public static function getAvailableLanguages($long = null)

@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 /*
 Copyright (C) 2016 Paolo Galeone <nessuno@nerdz.eu>
@@ -15,9 +16,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-?>
-#!/usr/bin/php
-<?php
+
 if (empty($argv[1]) || empty($argv[2])) {
     die("{$argv[0]} \"<document root>\" \"<base url>\"\n");
 }
@@ -94,4 +93,4 @@ try {
 $urls .= '</urlset>';
 
 file_put_contents(DOCUMENT_ROOT.'data/sitemap.xml', $urls);
-chmod(DOCUMENT_ROOT.'data/sitemap.xml', 0755);
+chmod(DOCUMENT_ROOT.'data/sitemap.xml', 0775);

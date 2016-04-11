@@ -120,25 +120,17 @@ if (!($tracking = Utils::apc_get($trackingCacheKey))) {
 }
 echo $tracking;
 
-/* BEGIN SSL_VARIABLES (used by the JS API) */
-?>
-    var Nssl = {
-        login: <?=Config\LOGIN_SSL_ONLY ? 'true' : 'false'?>,
-        domain: "<?=Config\HTTPS_DOMAIN?>"
-    };
-<?php
-/* END SSL_VARIABLES */
 /* BEGIN NERDZ_VERSION */
 if (isset($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true) {
     unset($headers['js']['staticData']['outputVersion']);
     ?>
-    var Nversion = '<?=System::getVersion()?>';
+    N.version = '<?=System::getVersion()?>';
 <?php
 
 } /* END NERDZ_VERSION */
 /* BEGIN NERDZ_STATIC_DATA */
 ?>
-var Nstatic = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js']['staticData'] : [], JSON_HEX_TAG)?>;
+N.static = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js']['staticData'] : [], JSON_HEX_TAG)?>;
 <?php
 /* END NERDZ_STATIC_DATA */
 /* BEGIN BLACKLIST_STUFF */

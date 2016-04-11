@@ -27,7 +27,7 @@ class Feed extends Messages
     public function __construct()
     {
         parent::__construct();
-        $this->baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://'.Config\HTTPS_DOMAIN : 'http://'.Config\SITE_HOST).'/';
+        $this->baseurl = '//'.Config\SITE_HOST.'/';
     }
 
     public function error($desc)
