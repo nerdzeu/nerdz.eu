@@ -177,7 +177,7 @@ function N() /* THE FATHER of God (class/object/function)*/
     };
 }
 
-N = new N();
+var N = new N();
 
 N.json = function()
 {
@@ -200,12 +200,15 @@ N.json = function()
 
     /**
     * User login
-    * @parameters: { username, password, setcookie, tok[ ,offline] }
+    * @parameters: { username, password, setcookie, tok[ ,offline][, queryString] }
     * offline: if is set don't mark the user as online for this session
+    * queryString: to append an additional query string as get parameters
     */
     this.login = function(jObj,done)
     {
-        this.post ('/pages/profile/login.json.php', jObj, function(d) {
+        var qs = /queryString=([^&|]+)/g.exec(jObj);
+        qs = qs !== null ? '?' + decodeURIComponent(qs[1]) : '';
+        this.post ('/pages/profile/login.json.php' + qs, jObj, function(d) {
             done (d);
         }, true);
     };

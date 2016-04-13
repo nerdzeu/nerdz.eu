@@ -60,6 +60,10 @@ $func = function () use ($user) {
         $commonvars['banners_a'][$ban[1]] = $ban[2];
     }
 
+    // querystring_n contains the current GET query string
+    // usefull to handle OAuth2 Authorization redirect
+    $commonvars['querystring_n'] = isset($_GET) ? urlencode(implode('&', array_map(function ($k, $v) {return "{$k}={$v}";}, array_keys($_GET), array_values($_GET)))) : '';
+
     $user->getTPL()->assign($commonvars);
 };
 

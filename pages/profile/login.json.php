@@ -49,6 +49,18 @@ if (!$username) {
 }
 
 if ($user->login($username, $pass, isset($_POST['setcookie']), isset($_POST['offline']))) {
+    if (isset($_GET['redirect']) && is_string($_GET['redirect'])) {
+        // Handle oauth2/authorize endpoint.
+        // Send a jsonReponse to the client, in order to redirect back to the autorization endpoint
+        if ($_GET['redirect'] == '/oauth2/authorize.php') {
+            header('Content-type: application/json; charset=utf-8');
+            die(NERDZ\Core\Utils::toJsonResponse([
+                'status' => 'ok',
+                'message' => $user->lang('LOGIN_OK'),
+                'redirect' => $_GET['redirect'],
+            ]));
+        }
+    }
     die(NERDZ\Core\Utils::jsonResponse('ok', $user->lang('LOGIN_OK')));
 }
 

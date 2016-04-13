@@ -126,7 +126,7 @@ class Utils
             : $str;
     }
 
-    public static function toJsonResponse($status, $message)
+    public static function toJsonResponse($status, $message = '')
     {
         $ret = is_array($status) ? $status : ['status' => $status, 'message' => $message];
 

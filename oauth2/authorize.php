@@ -23,7 +23,7 @@ use NERDZ\Core\User;
 $user = new NERDZ\Core\User();
 $tplcfg = $user->getTemplateCfg();
 
-if ($user->isLogged()) {
+if (!$user->isLogged()) {
     die(header('Location: login.php?'.urlencode($_SERVER['QUERY_STRING'])));
 }
 
