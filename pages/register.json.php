@@ -27,15 +27,15 @@ $cptcka = new Captcha();
 $captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 
 if (!$captcha) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('MISSING').': '.$user->lang('CAPTCHA')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MISSING').': '.$user->lang('CAPTCHA')));
 }
 
 if (!$cptcka->check($captcha)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('WRONG_CAPTCHA')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('WRONG_CAPTCHA')));
 }
 
 if ($user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ALREADY_LOGGED')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ALREADY_LOGGED')));
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php';
@@ -64,7 +64,7 @@ if ($ret != Db::NO_ERRSTR) {
 }
 
 if (!$user->login($userData['username'], $userData['password'], $setCookie = true)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Login'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Login'));
 }
 
-die(NERDZ\Core\Utils::jsonResponse('ok', $user->lang('LOGIN_OK')));
+die(NERDZ\Core\Utils::JSONResponse('ok', $user->lang('LOGIN_OK')));

@@ -21,16 +21,16 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 $user = new NERDZ\Core\User();
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('REGISTER')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('REGISTER')));
 }
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }
 
 if (!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': token'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': token'));
 }
 
 $user->logout();
-die(NERDZ\Core\Utils::jsonResponse('ok', $user->lang('LOGOUT_OK')));
+die(NERDZ\Core\Utils::JSONResponse('ok', $user->lang('LOGOUT_OK')));

@@ -22,22 +22,22 @@ use NERDZ\Core\User;
 $user = new User();
 
 if ($user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ALREADY_LOGGED')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ALREADY_LOGGED')));
 }
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': referer'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': referer'));
 }
 
 if (!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': token'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': token'));
 }
 
 $username = isset($_POST['username']) ? htmlspecialchars(trim($_POST['username']), ENT_QUOTES, 'UTF-8') : false;
 $pass = isset($_POST['password']) ? $_POST['password'] : false;
 
 if (!$username || !$pass) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('INSERT_USER_PASS')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('INSERT_USER_PASS')));
 }
 
 if (is_numeric($username) || filter_var($username, FILTER_VALIDATE_EMAIL)) {
@@ -45,7 +45,7 @@ if (is_numeric($username) || filter_var($username, FILTER_VALIDATE_EMAIL)) {
 }
 
 if (!$username) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('WRONG_USER_OR_PASSWORD')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('WRONG_USER_OR_PASSWORD')));
 }
 
 if ($user->login($username, $pass, isset($_POST['setcookie']), isset($_POST['offline']))) {
@@ -61,7 +61,7 @@ if ($user->login($username, $pass, isset($_POST['setcookie']), isset($_POST['off
             ]));
         }
     }
-    die(NERDZ\Core\Utils::jsonResponse('ok', $user->lang('LOGIN_OK')));
+    die(NERDZ\Core\Utils::JSONResponse('ok', $user->lang('LOGIN_OK')));
 }
 
-die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('WRONG_USER_OR_PASSWORD')));
+die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('WRONG_USER_OR_PASSWORD')));

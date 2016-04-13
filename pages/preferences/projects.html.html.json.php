@@ -27,17 +27,17 @@ $user = new User();
 $project = new Project();
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('REGISTER')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('REGISTER')));
 }
 
 $id = $_POST['id'] = isset($_POST['id']) && is_numeric($_POST['id']) ? trim($_POST['id']) : false;
 
 if ($_SESSION['id'] != $project->getOwner($id) || !NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }
 
 if (!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': token'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': token'));
 }
 
 switch (isset($_GET['action']) ? strtolower($_GET['action']) : '') {
@@ -45,7 +45,7 @@ case 'del':
     $capt = new Captcha();
 
     if (!($capt->check(isset($_POST['captcha']) ? $_POST['captcha'] : ''))) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': '.$user->lang('CAPTCHA')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': '.$user->lang('CAPTCHA')));
     }
 
     if (Db::NO_ERRNO != Db::query(
@@ -55,7 +55,7 @@ case 'del':
                 ':id' => $id,
             ],
         ], Db::FETCH_ERRNO)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     }
     break;
 
@@ -78,7 +78,7 @@ case 'update':
             $newmem[] = $uid;
             $userMap[$uid] = $username;
         } else {
-            die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Invalid member - '.$v));
+            die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Invalid member - '.$v));
         }
     }
 
@@ -110,7 +110,7 @@ case 'update':
                         ':user' => $val,
                     ],
                 ], Db::FETCH_ERRNO)) {
-                die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'4'));
+                die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'4'));
             }
         }
 
@@ -130,11 +130,11 @@ case 'update':
                 ],
             ], Db::FETCH_ERRNO)
         ) {
-            die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+            die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
         }
         break;
 default:
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     break;
 }
-die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
+die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));

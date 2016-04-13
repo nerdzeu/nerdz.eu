@@ -22,7 +22,7 @@ use NERDZ\Core\FastFetch;
 use NERDZ\Core\FFException;
 use NERDZ\Core\FFErrCode;
 
-function jsonResponse($object)
+function JSONResponse($object)
 {
     header('Content-Type: application/json; charset=utf-8');
     exit(json_encode($object, JSON_UNESCAPED_UNICODE));
@@ -94,4 +94,4 @@ default:
     $response = bakeError($e);
 }
 
-jsonResponse($response);
+JSONResponse($response);

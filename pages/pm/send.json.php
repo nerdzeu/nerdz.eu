@@ -24,19 +24,19 @@ $pms = new Pms();
 $user = new User();
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('REGISTER')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('REGISTER')));
 }
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', 'No SPAM/BOT'));
+    die(NERDZ\Core\Utils::JSONResponse('error', 'No SPAM/BOT'));
 }
 
 if (empty($_POST['to'])) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('SOMETHING_MISS')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('SOMETHING_MISS')));
 }
 
 if (!($toid = $user->getId(trim($_POST['to'])))) { //getId DON'T what htmlspecialchars in parameter
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('USER_NOT_FOUND')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('USER_NOT_FOUND')));
 }
 
 foreach ($_POST as &$val) {

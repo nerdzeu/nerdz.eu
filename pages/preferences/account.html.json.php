@@ -23,15 +23,15 @@ use NERDZ\Core\Db;
 $user = new User();
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': referer'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': referer'));
 }
 
 if (!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': token'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': token'));
 }
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('REGISTER')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('REGISTER')));
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php'; //include $updatedPassword
@@ -62,8 +62,8 @@ if ($ret != Db::NO_ERRSTR) {
 
 if ($updatedPassword && ($cookie = isset($_COOKIE['nerdz_u']))) {
     if (!$user->login(User::getUsername(), $userData['password'], $cookie, $_SESSION['mark_offline'])) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Login'));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Login'));
     }
 }
 
-die(NERDZ\Core\Utils::jsonResponse('error', 'OK'));
+die(NERDZ\Core\Utils::JSONResponse('error', 'OK'));

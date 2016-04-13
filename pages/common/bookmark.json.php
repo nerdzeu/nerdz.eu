@@ -22,13 +22,13 @@ use NERDZ\Core\User;
 $user = new User();
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': referer'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': referer'));
 }
 
 $hpid = isset($_POST['hpid'])  && is_numeric($_POST['hpid'])  ? $_POST['hpid']  : false;
 
 if (!$hpid) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }
 
 $prj = isset($prj);
@@ -41,5 +41,5 @@ case 'del':
     die(NERDZ\Core\Utils::jsonDbResponse($user->unbookmark($hpid, $prj)));
 
 default:
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }

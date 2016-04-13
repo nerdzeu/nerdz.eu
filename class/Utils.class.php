@@ -133,7 +133,7 @@ class Utils
         return json_encode($ret);
     }
 
-    public static function jsonResponse($status, $message = '')
+    public static function JSONResponse($status, $message = '')
     {
         header('Content-type: application/json; charset=utf-8');
 
@@ -145,7 +145,7 @@ class Utils
         $user = new User();
         $res = $user->parseDbMessage($msg, $otherInfo);
 
-        return static::jsonResponse($res[0], $res[1]);
+        return static::JSONResponse($res[0], $res[1]);
     }
 
     public static function getSiteName()

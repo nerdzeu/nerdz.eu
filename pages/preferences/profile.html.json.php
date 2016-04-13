@@ -24,15 +24,15 @@ use NERDZ\Core\User;
 $user = new User();
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': referer'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': referer'));
 }
 
 if (!NERDZ\Core\Security::csrfControl(isset($_POST['tok']) ? $_POST['tok'] : 0)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': token'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': token'));
 }
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('REGISTER')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('REGISTER')));
 }
 
 $userData['biography'] = isset($_POST['biography'])  ? trim($_POST['biography'])               : '';
@@ -56,23 +56,23 @@ $closed = isset($_POST['closed']);
 $flag = true;
 
 if (!empty($userData['website']) && !Utils::isValidURL($userData['website'])) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('WEBSITE').': '.$user->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('WEBSITE').': '.$user->lang('INVALID_URL')));
 }
 
 if (!empty($userData['userscript']) && !Utils::isValidURL($userData['userscript'])) {
-    die(NERDZ\Core\Utils::jsonResponse('error', 'Userscript: '.$user->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::JSONResponse('error', 'Userscript: '.$user->lang('INVALID_URL')));
 }
 
 if (!empty($userData['github']) && !preg_match('#^https?://(www\.)?github\.com/[a-z0-9]+$#i', $userData['github'])) {
-    die(NERDZ\Core\Utils::jsonResponse('error', 'GitHub: '.$user->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::JSONResponse('error', 'GitHub: '.$user->lang('INVALID_URL')));
 }
 
 if (false == ($obj = $user->getObject($_SESSION['id']))) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }
 
 if (!empty($userData['jabber']) && (false == filter_var($userData['jabber'], FILTER_VALIDATE_EMAIL))) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('JABBER').': '.$user->lang('MAIL_NOT_VALID')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('JABBER').': '.$user->lang('MAIL_NOT_VALID')));
 }
 
 if (empty($userData['dateformat'])) {
@@ -85,15 +85,15 @@ if (!empty($userData['facebook']) &&
     !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/([a-z0-9_\-\.]+)#i', $userData['facebook'])
 )
   ) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Facebook URL'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Facebook URL'));
 }
 
 if (!empty($userData['twitter']) && !preg_match('#^https?://twitter.com/([a-z0-9_]+)#i', $userData['twitter'])) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Twitter URL'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Twitter URL'));
 }
 
 if (!empty($userData['steam']) && strlen($userData['steam']) > 35) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Steam'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Steam'));
 }
 
 foreach ($user as &$value) {
@@ -136,7 +136,7 @@ if (
             $par,
         ], Db::FETCH_ERRNO)
     ) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }
 
 if ($closed) {
@@ -150,7 +150,7 @@ if ($closed) {
                 ],
             ], Db::FETCH_ERRNO)
         ) {
-            die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+            die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
         }
     }
 } else {
@@ -162,7 +162,7 @@ if ($closed) {
                 ':counter' => $_SESSION['id'],
             ],
         ], Db::FETCH_ERRNO)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     }
 }
 
@@ -186,11 +186,11 @@ if (isset($_POST['whitelist'])) {
                             ':uid' => $uid,
                         ],
                     ], Db::FETCH_ERRNO)) {
-                die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'1'));
+                die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'1'));
             }
             $newlist[] = $uid;
         } else {
-            die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Invalid user - '.$v));
+            die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Invalid user - '.$v));
         }
     }
     $toremove = [];
@@ -209,9 +209,9 @@ if (isset($_POST['whitelist'])) {
                     ':val' => $val,
                 ],
             ], Db::FETCH_ERRNO)) {
-            die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'4'));
+            die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'4'));
         }
     }
 }
 
-die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
+die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));

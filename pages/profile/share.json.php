@@ -25,11 +25,11 @@ $user = new User();
 $messages = new Messages();
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('REGISTER')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('REGISTER')));
 }
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', 'No SPAM/BOT'));
+    die(NERDZ\Core\Utils::JSONResponse('error', 'No SPAM/BOT'));
 }
 
 $url = empty($_POST['url'])     ? false : trim($_POST['url']);
@@ -37,12 +37,12 @@ $comment = empty($_POST['comment']) ? false : trim($_POST['comment']);
 $to = empty($_POST['to'])      ? false : trim($_POST['to']);
 
 if (!$url || !Utils::isValidURL($url)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('INVALID_URL')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('INVALID_URL')));
 }
 
 if ($to) {
     if (!User::getUsername($to)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('USER_NOT_FOUND')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('USER_NOT_FOUND')));
     }
 } else {
     $to = $_SESSION['id'];
@@ -50,7 +50,7 @@ if ($to) {
 
 if ($_SESSION['id'] != $to) {
     if ($user->hasClosedProfile($to)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('CLOSED_PROFILE_DESCR')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('CLOSED_PROFILE_DESCR')));
     }
 }
 
@@ -106,7 +106,7 @@ $share = function ($to, $url, $message = null) use ($user, $messages) {
 };
 
 if ($share($to, $url, $comment)) {
-    die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
+    die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));
 }
 
-die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));

@@ -25,11 +25,11 @@ $user = new User();
 $prj = isset($prj);
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('REGISTER')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('REGISTER')));
 }
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', 'CSRF'));
+    die(NERDZ\Core\Utils::JSONResponse('error', 'CSRF'));
 }
 
 switch (isset($_GET['action']) ? strtolower($_GET['action']) : '') {
@@ -37,7 +37,7 @@ case 'add':
 
     if (empty($_POST['to'])) {
         if ($prj) {
-            die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'a'));
+            die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'a'));
         } else {
             $_POST['to'] = $_SESSION['id'];
         }
@@ -59,7 +59,7 @@ case 'add':
 case 'del':
 
     if (!isset($_SESSION['delpost']) || empty($_POST['hpid']) || !is_numeric($_POST['hpid']) || ($_SESSION['delpost'] != $_POST['hpid']) || !$messages->delete($_POST['hpid'], $prj)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     }
     unset($_SESSION['delpost']);
     break;
@@ -67,22 +67,22 @@ case 'del':
 case 'delconfirm':
 
     $_SESSION['delpost'] = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : -1;
-    die(NERDZ\Core\Utils::jsonResponse('ok', $user->lang('ARE_YOU_SURE')));
+    die(NERDZ\Core\Utils::JSONResponse('ok', $user->lang('ARE_YOU_SURE')));
     break;
 
 case 'get':
 
     if (empty($_POST['hpid']) || !is_numeric($_POST['hpid']) || !($message = Messages::getMessage($_POST['hpid'], $prj))) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'2'));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'2'));
     }
 
-    die(NERDZ\Core\Utils::jsonResponse('ok', $message));
+    die(NERDZ\Core\Utils::JSONResponse('ok', $message));
     break;
 
 case 'edit':
 
     if (empty($_POST['hpid']) || !is_numeric($_POST['hpid'])) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     }
 
     die(NERDZ\Core\Utils::jsonDbResponse(
@@ -93,8 +93,8 @@ case 'edit':
 
 default:
 
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').' Wrong request'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').' Wrong request'));
     break;
 }
 
-die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
+die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));

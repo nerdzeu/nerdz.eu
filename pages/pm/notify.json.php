@@ -24,7 +24,7 @@ $notification = new Notification();
 $user = new User();
 
 if ($user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('ok', $notification->countPms()));
+    die(NERDZ\Core\Utils::JSONResponse('ok', $notification->countPms()));
 }
 
-die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));

@@ -23,7 +23,7 @@ use NERDZ\Core\User;
 $user = new User();
 
 if (empty($_POST['id']) || !is_numeric($_POST['id'])) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }
 
 $prj = isset($prj);
@@ -36,6 +36,6 @@ case 'add':
     die(NERDZ\Core\Utils::jsonDbResponse($user->follow($_POST['id'], $prj)));
     break;
 default:
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     break;
 }

@@ -22,14 +22,14 @@ use NERDZ\Core\User;
 $user = new User();
 
 if (!NERDZ\Core\Security::refererControl()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': referer'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': referer'));
 }
 
 $from = isset($_POST['from']) && is_numeric($_POST['from']) ? $_POST['from'] : 0; // 0 = full post
 $hpid = isset($_POST['hpid']) && is_numeric($_POST['hpid']) ? $_POST['hpid'] : 0;
 
 if (!$hpid) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }
 
 $prj = isset($prj);
@@ -42,5 +42,5 @@ case 'del':
     die(NERDZ\Core\Utils::jsonDbResponse($user->reNotify(['hpid' => $hpid, 'from' => $from], $prj)));
 
 default:
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }

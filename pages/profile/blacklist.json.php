@@ -24,7 +24,7 @@ use NERDZ\Core\Db;
 $user = new User();
 
 if (!$user->isLogged() || empty($_POST['id']) || !is_numeric($_POST['id'])) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('LOGIN')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('LOGIN')));
 }
 
 switch (isset($_GET['action']) ? strtolower($_GET['action']) : '') {
@@ -37,7 +37,7 @@ case 'del':
                 ':to' => $_POST['id'],
             ],
         ], Db::FETCH_ERRNO)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     }
     break;
 
@@ -53,15 +53,15 @@ case 'add':
                         ':motivation' => $motivation,
                     ],
                 ], Db::FETCH_ERRNO)) {
-            die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR')));
+            die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
         }
     } else {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'1'));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'1'));
     }
     break;
 
 default:
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'2'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'2'));
     break;
 }
-die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
+die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));

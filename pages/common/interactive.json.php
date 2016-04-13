@@ -24,19 +24,19 @@ use NERDZ\Core\Search;
 $search = new Search();
 
 if (!isset($searchMethod) || !method_exists($search, $searchMethod)) {
-    die(NERDZ\Core\Utils::jsonResponse('error', 'No-sense error'));
+    die(NERDZ\Core\Utils::JSONResponse('error', 'No-sense error'));
 }
 
 $user = new User();
 
 if (!$user->isLogged()) {
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('LOGIN')));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('LOGIN')));
 }
 
 $count = isset($_GET['count']) && is_numeric($_GET['count']) ? (int) $_GET['count'] : 10;
 $q = isset($_GET['q']) && is_string($_GET['q']) ? $_GET['q'] : '';
 if ($q === '') {
-    die(NERDZ\Core\Utils::jsonResponse('error', 'Invalid search'));
+    die(NERDZ\Core\Utils::JSONResponse('error', 'Invalid search'));
 }
 
-die(NERDZ\Core\Utils::jsonResponse($search->$searchMethod($q, $count)));
+die(NERDZ\Core\Utils::JSONResponse($search->$searchMethod($q, $count)));

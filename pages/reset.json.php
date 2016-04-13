@@ -36,14 +36,14 @@ $key = isset($_POST['key']) && is_numeric($_POST['key']) ? $_POST['key'] : false
 
 if ($email !== false && $captcha !== false) { // 1st step
     if (!$captcha) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('MISSING').': '.$user->lang('CAPTCHA')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MISSING').': '.$user->lang('CAPTCHA')));
     }
     if (!$cptcka->check($captcha)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('WRONG_CAPTCHA')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('WRONG_CAPTCHA')));
     }
 
     if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('MAIL_NOT_VALID')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MAIL_NOT_VALID')));
     }
 
     if (!($obj = Db::query(
@@ -53,7 +53,7 @@ if ($email !== false && $captcha !== false) { // 1st step
                 ':email' => $email,
             ],
         ], Db::FETCH_OBJ))) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('USER_NOT_FOUND')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('USER_NOT_FOUND')));
     }
 
     $vals = [];
@@ -71,7 +71,7 @@ if ($email !== false && $captcha !== false) { // 1st step
                     ':to' => $obj->counter,
                 ],
             ], Db::FETCH_ERRNO)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'(1): '.$user->lang('TRY_LATER')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'(1): '.$user->lang('TRY_LATER')));
     }
 
     if (!($key = Db::query(
@@ -83,7 +83,7 @@ if ($email !== false && $captcha !== false) { // 1st step
                 ':to' => $obj->counter,
             ],
         ], Db::FETCH_OBJ))) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'(4): '.$user->lang('TRY_LATER')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'(4): '.$user->lang('TRY_LATER')));
     }
 
     $vals['reseturl_n'] = 'http://'.Config\SITE_HOST.'/reset.php?tok='.$token.'&amp;id='.$key->counter;
@@ -102,21 +102,21 @@ if ($email !== false && $captcha !== false) { // 1st step
         $mail->MsgHTML($user->getTPL()->draw("langs/{$user->getLanguage()}/reset-mail", true));
         $mail->AddAddress($email);
         if ($mail->Send()) {
-            die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
+            die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));
         }
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': '.$mail->ErrorInfo));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': '.$mail->ErrorInfo));
     } catch (phpmailerException $e) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': '.$e->errorMessage()."\n contact support@nerdz.eu or retry"));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': '.$e->errorMessage()."\n contact support@nerdz.eu or retry"));
     }
 
-    die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': contact support@nerdz.eu or retry'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': contact support@nerdz.eu or retry'));
 } elseif ($password !== false && $token !== false && $key !== false) {
     //3rd step
     switch (Security::passwordControl($password)) {
     case 'PASSWORD_SHORT':
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('PASSWORD_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_PASS));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('PASSWORD_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_PASS));
     case 'PASSWORD_LONG':
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('PASSWORD_LONG')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('PASSWORD_LONG')));
     }
 
     if (!($obj = Db::query(
@@ -126,11 +126,11 @@ if ($email !== false && $captcha !== false) { // 1st step
                 ':key' => $key,
             ],
         ], Db::FETCH_OBJ))) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'(2): '.$user->lang('TRY_LATER')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'(2): '.$user->lang('TRY_LATER')));
     }
 
     if ($obj->token !== $token) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Token'));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Token'));
     }
 
     if (Db::NO_ERRNO != Db::query(
@@ -141,7 +141,7 @@ if ($email !== false && $captcha !== false) { // 1st step
                 ':key' => $key,
             ],
         ], Db::FETCH_ERRNO)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').'(3): '.$user->lang('TRY_LATER')));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'(3): '.$user->lang('TRY_LATER')));
     }
 
     if (Db::NO_ERRNO != Db::query(
@@ -152,12 +152,12 @@ if ($email !== false && $captcha !== false) { // 1st step
                     ':id' => $obj->to,
                 ],
             ], Db::FETCH_ERRNO)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': retry'));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': retry'));
     }
 
     if (!$user->login($obj->username, $password, $setCookie = true)) {
-        die(NERDZ\Core\Utils::jsonResponse('error', $user->lang('ERROR').': Login'));
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Login'));
     }
 
-    die(NERDZ\Core\Utils::jsonResponse('ok', 'OK'));
+    die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));
 }
