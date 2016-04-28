@@ -27,7 +27,7 @@
         "name": "YouTube"
     },
     {
-        "regex": "#twimg\\.com$#i",
+        "regex": "#\\.twimg\\.com$#i",
         "name": "Twitter"
     },
     {
