@@ -103,7 +103,7 @@ If you think you have found a bug, please open an issue in our repository.
 The database is not working properly. Remember to run the `init_postgres.sh` script from the `setup` directory.
 If it doesn't work, you will need to create the database manually (otherwise open an issue on this repository)
 
-### I got some apc_* errors
+### I got some apcu_* errors
 
 Install `php-apcu` properly, as explained in the `Setup` section.
 

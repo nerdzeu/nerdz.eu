@@ -50,8 +50,8 @@ final class TemplateConfig
 
         $control = false;
 
-        if (!($valuestime = Utils::apc_get($cachevaluestime))) {
-            $valuestime = Utils::apc_set($cachevaluestime, function () use (&$control, $templatepath) {
+        if (!($valuestime = Utils::apcu_get($cachevaluestime))) {
+            $valuestime = Utils::apcu_set($cachevaluestime, function () use (&$control, $templatepath) {
                 $control = true;
 
                 return filemtime($templatepath);
@@ -61,14 +61,14 @@ final class TemplateConfig
         if ($control) {
             $newtime = filemtime($templatepath);
             if ($newtime != $valuestime) {
-                Utils::apc_set($cachename, function () use ($newtime) {
+                Utils::apcu_set($cachename, function () use ($newtime) {
                     return $newtime;
                 }, 3600);
             }
         }
 
-        if (!($ret = Utils::apc_get($cachename))) {
-            $ret = Utils::apc_set($cachename, function () use ($templatepath) {
+        if (!($ret = Utils::apcu_get($cachename))) {
+            $ret = Utils::apcu_set($cachename, function () use ($templatepath) {
                 if (!($txt = file_get_contents($templatepath))) {
                     return [];
                 }

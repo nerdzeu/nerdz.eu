@@ -23,36 +23,30 @@ class Utils
     public static $REGISTER_DB_MESSAGE = ['error', 'REGISTER'];
     public static $ERROR_DB_MESSAGE = ['error', 'ERRROR'];
 
-    public static function apc_getLastModified($key)
+    public static function apcu_getLastModified($key)
     {
-        $cache = apc_cache_info('user');
+        $cache = apcu_cache_info('user');
 
-        if (empty($cache['cache_list'])) {
-            return false;
+        if (isset($cache['start_time'])) {
+            return $cache['start_time'];
         }
 
-        foreach ($cache['cache_list'] as $entry) {
-            if ($entry['info'] != $key) {
-                continue;
-            }
-
-            return $entry['creation_time'];
-        }
+        return 0;
     }
 
-    public static function apc_get($key)
+    public static function apcu_get($key)
     {
-        if (apc_exists($key)) {
-            return unserialize(apc_fetch($key));
+        if (apcu_exists($key)) {
+            return unserialize(apcu_fetch($key));
         }
 
         return;
     }
 
-    public static function apc_set($key, callable $setter, $ttl)
+    public static function apcu_set($key, callable $setter, $ttl)
     {
         $ret = $setter();
-        @apc_store($key, serialize($ret), $ttl);
+        @apcu_store($key, serialize($ret), $ttl);
 
         return $ret;
     }
@@ -73,8 +67,8 @@ class Utils
 
         // Proxy every image that's not in data\trusted-host.json
         $cache = 'nerdz_trusted'.Config\SITE_HOST;
-        if (!($trusted_hosts = self::apc_get($cache))) {
-            $trusted_hosts = self::apc_set($cache, function () {
+        if (!($trusted_hosts = self::apcu_get($cache))) {
+            $trusted_hosts = self::apcu_set($cache, function () {
                 $txt = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/data/trusted-hosts.json');
 
                 return json_decode(preg_replace('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);

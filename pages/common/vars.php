@@ -35,8 +35,8 @@ $func = function () use ($user) {
         $commonvars['myusername_n'] = $commonvars['myusername4link_n'] = $commonvars['mygravatarurl_n'] = '';
     }
     $langKey = 'lang'.NERDZ\Core\Config\SITE_HOST;
-    if (!($commonvars['langs_a'] = NERDZ\Core\Utils::apc_get($langKey))) {
-        $commonvars['langs_a'] = NERDZ\Core\Utils::apc_set($langKey, function () {
+    if (!($commonvars['langs_a'] = NERDZ\Core\Utils::apcu_get($langKey))) {
+        $commonvars['langs_a'] = NERDZ\Core\Utils::apcu_set($langKey, function () {
             $ret = [];
             $i = 0;
             $longlangs = NERDZ\Core\System::getAvailableLanguages(1);

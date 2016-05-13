@@ -26,8 +26,8 @@ $mo = empty($_GET['top']);
 
 $path = Config\SITE_HOST.($mo ? 'r_month.json' : 'rank.json');
 
-if (!($ret = Utils::apc_get($path))) {
-    $ret = Utils::apc_set($path, function () use ($mo) {
+if (!($ret = Utils::apcu_get($path))) {
+    $ret = Utils::apcu_set($path, function () use ($mo) {
 
         $un_ti = ' AND ("time" + INTERVAL \'28 days\') > NOW()';
 
@@ -77,7 +77,7 @@ if (!($ret = Utils::apc_get($path))) {
 
 $vals['list_a'] = $ret;
 $vals['monthly_b'] = !$mo;
-$vals['lastupdate_n'] = $user->getDate(Utils::apc_getLastModified($path));
+$vals['lastupdate_n'] = $user->getDate(Utils::apcu_getLastModified($path));
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/rank');

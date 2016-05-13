@@ -111,8 +111,8 @@ extensions: ["tex2jax.js"],
     <script>
 <?php
 $trackingCacheKey = 'tracking_js'.NERDZ\Core\Config\SITE_HOST;
-if (!($tracking = Utils::apc_get($trackingCacheKey))) {
-    $tracking = Utils::apc_set($trackingCacheKey, function () {
+if (!($tracking = Utils::apcu_get($trackingCacheKey))) {
+    $tracking = Utils::apcu_set($trackingCacheKey, function () {
         $trjs = $_SERVER['DOCUMENT_ROOT'].'/data/tracking.js';
 
         return is_readable($trjs) ? file_get_contents($trjs) : '';

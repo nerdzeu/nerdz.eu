@@ -116,8 +116,8 @@ class User
     {
         // we don't worrie about language file modifications, since this ones shouldn't occur often
         $cache = "language-file-{$this->lang}-{$this->tpl_no}".Config\SITE_HOST;
-        if (!($_LANG = Utils::apc_get($cache))) {
-            $_LANG = Utils::apc_set($cache, function () {
+        if (!($_LANG = Utils::apcu_get($cache))) {
+            $_LANG = Utils::apcu_set($cache, function () {
                 // first load default language file
                 $defaultLang = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/langs/{$this->lang}/default.json"), true);
 

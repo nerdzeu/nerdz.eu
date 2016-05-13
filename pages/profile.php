@@ -95,9 +95,9 @@ if ($enter) {
     list($year, $month, $day) = explode('-', $info->birth_date);
     $vals['birthdate_n'] = $day.'/'.$month.'/'.$year;
 
-    $apc_name = 'userstuff'.$info->counter.Config\SITE_HOST;
-    if (!($stuff = Utils::apc_get($apc_name))) {
-        $stuff = Utils::apc_set($apc_name, function () use ($user, $ida) {
+    $apcu_name = 'userstuff'.$info->counter.Config\SITE_HOST;
+    if (!($stuff = Utils::apcu_get($apcu_name))) {
+        $stuff = Utils::apcu_set($apcu_name, function () use ($user, $ida) {
             if (!($o = Db::query(
                 [
                     'SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',

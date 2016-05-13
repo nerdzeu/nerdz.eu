@@ -726,8 +726,8 @@ class Notification
 
     public function story()
     {
-        if (!($ret = Utils::apc_get($this->cachekey))) {
-            return Utils::apc_set($this->cachekey, function () {
+        if (!($ret = Utils::apcu_get($this->cachekey))) {
+            return Utils::apcu_set($this->cachekey, function () {
                 if (!($o = Db::query(
                     [
                         'SELECT "notify_story" FROM "users" WHERE "counter" = :id',
@@ -787,7 +787,7 @@ class Notification
                 return false;
             }
         }
-        apc_delete($this->cachekey);
+        apcu_delete($this->cachekey);
 
         return true;
     }

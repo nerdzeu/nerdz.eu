@@ -24,8 +24,8 @@ $user = new NERDZ\Core\User();
 $vals = [];
 
 $cache = 'nerdz_stats'.Config\SITE_HOST;
-if (!($ret = Utils::apc_get($cache))) {
-    $ret = Utils::apc_set($cache, function () use ($cache) {
+if (!($ret = Utils::apcu_get($cache))) {
+    $ret = Utils::apcu_set($cache, function () use ($cache) {
         function createArray(&$ret, $query, $position)
         {
             if (!($o = Db::query($query, Db::FETCH_OBJ))) {
@@ -51,8 +51,8 @@ if (!($ret = Utils::apc_get($cache))) {
             createArray($ret, $query, $position);
         }
 
-        if (!($bots = Utils::apc_get($cache.'bots'))) {
-            $bots = Utils::apc_set($cache.'bots', function () {
+        if (!($bots = Utils::apcu_get($cache.'bots'))) {
+            $bots = Utils::apcu_set($cache.'bots', function () {
                 $txt = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/data/bots.json');
 
                 return json_decode(preg_replace('#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t](//).*)#', '', $txt), true);
@@ -88,7 +88,7 @@ $vals['tothiddenusers_n'] = $ret[7];
 $vals['totonlineguests_n'] = $ret[8] - $ret[9];
 $vals['totonlinebots_n'] = $ret[9];
 $vals['bots_a'] = $ret[10];
-$vals['lastupdate_n'] = $user->getDate(Utils::apc_getLastModified($cache));
+$vals['lastupdate_n'] = $user->getDate(Utils::apcu_getLastModified($cache));
 
 $user->getTPL()->assign($vals);
 

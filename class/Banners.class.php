@@ -29,8 +29,8 @@ final class Banners
     {
         $cache = 'bannerarray'.Config\SITE_HOST;
 
-        if (!($this->banners = Utils::apc_get($cache))) {
-            $this->banners = Utils::apc_set($cache, function () {
+        if (!($this->banners = Utils::apcu_get($cache))) {
+            $this->banners = Utils::apcu_set($cache, function () {
                 $path = $_SERVER['DOCUMENT_ROOT'].'/data/banner.list';
                 $banners = [];
 

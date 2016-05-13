@@ -27,8 +27,8 @@ if (!isset($user)) {
 $func = function () use ($user) {
     $vals = [];
     $cache = 'trends'.Config\SITE_HOST;
-    if (!($trends = Utils::apc_get($cache))) {
-        $trends = Utils::apc_set($cache, function () {
+    if (!($trends = Utils::apcu_get($cache))) {
+        $trends = Utils::apcu_set($cache, function () {
             $trend = new Trend();
             $ret = [];
             $ret['popular'] = $trend->getPopular();

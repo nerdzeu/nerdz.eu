@@ -18,9 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NERDZ\Core;
 
-// Log PostgreSQL exceptions, even if they're handled
-define('DEBUG', 1);
-
 use PDO;
 use PDOException;
 
@@ -53,9 +50,9 @@ class Db
 
         // Fetch the IDs for special profiles/projects
         $cache = Config\SITE_HOST.'special-ids';
-        if (!($specialIds = Utils::apc_get($cache))) {
+        if (!($specialIds = Utils::apcu_get($cache))) {
             $me = $this;
-            $specialIds = Utils::apc_set($cache, function () use ($me) {
+            $specialIds = Utils::apcu_set($cache, function () use ($me) {
                 try {
                     $stmt = $this->dbh->query('SELECT * FROM special_users');
                     $userIds = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
@@ -121,9 +118,11 @@ class Db
                 $stmt->execute($query[1]);
             }
         } catch (PDOException $e) {
+            /*
             if (defined('DEBUG')) {
                 static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
             }
+            */
 
             if ($action == static::FETCH_ERRNO) {
                 return $stmt->errorInfo()[1];

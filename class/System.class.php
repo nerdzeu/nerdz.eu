@@ -59,8 +59,8 @@ class System
     public static function getAvailableLanguages($long = null)
     {
         $cache = 'AvailableLanguages'.Config\SITE_HOST;
-        if (!($ret = Utils::apc_get($cache))) {
-            $ret = Utils::apc_set($cache, function () {
+        if (!($ret = Utils::apcu_get($cache))) {
+            $ret = Utils::apcu_set($cache, function () {
                 //on error return en
                 if (!($fp = fopen($_SERVER['DOCUMENT_ROOT'].'/data/languages.csv', 'r'))) {
                     return ['en' => 'English'];
@@ -130,11 +130,11 @@ class System
     {
         $tplListK = Config\SITE_HOST.'tpl-list';
 
-        if (($ret = Utils::apc_get($tplListK))) {
+        if (($ret = Utils::apcu_get($tplListK))) {
             return $ret;
         }
 
-        return Utils::apc_set($tplListK, function () {
+        return Utils::apcu_set($tplListK, function () {
             $root = $_SERVER['DOCUMENT_ROOT'].'/tpl/';
             $templates = array_diff(scandir($root), ['.', '..', 'index.html']);
             $ret = [];
@@ -153,11 +153,11 @@ class System
     {
         $cache = 'NERDZVersion'.Config\SITE_HOST;
 
-        if (($version = Utils::apc_get($cache))) {
+        if (($version = Utils::apcu_get($cache))) {
             return $version;
         }
 
-        return Utils::apc_set($cache, function () {
+        return Utils::apcu_set($cache, function () {
             if (!is_dir($_SERVER['DOCUMENT_ROOT'].'/.git') ||
                 !file_exists($_SERVER['DOCUMENT_ROOT'].'/.git/refs/heads/master')) {
                 return 'null';
