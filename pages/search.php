@@ -20,7 +20,7 @@ use NERDZ\Core\User;
 use NERDZ\Core\Project;
 
 $vals = [];
-$vals['querystring_n'] = $q;
+$vals['searchterm_n'] = $q;
 $vals['type_n'] = !preg_match('/^#[a-z][a-z0-9]{0,33}$/i', $q) && isset($_GET['type'])
     ? (
         $_GET['type'] == 'profile'

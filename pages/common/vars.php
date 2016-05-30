@@ -62,6 +62,7 @@ $func = function () use ($user) {
 
     // querystring_n contains the current GET query string
     // usefull to handle OAuth2 Authorization redirect
+    // and to have the GET querystring parameters urlencoded in a key-value map
     $commonvars['querystring_n'] = isset($_GET) ? urlencode(implode('&', array_map(function ($k, $v) {return "{$k}={$v}";}, array_keys($_GET), array_values($_GET)))) : '';
 
     $user->getTPL()->assign($commonvars);
