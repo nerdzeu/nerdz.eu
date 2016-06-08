@@ -200,14 +200,18 @@ N.json = function()
 
     /**
     * User login
-    * @parameters: { username, password, setcookie, tok[ ,offline][, queryString] }
+    * @parameters: { username, password, setcookie, tok[ ,offline][, query_string] }
     * offline: if is set don't mark the user as online for this session
-    * queryString: to append an additional query string as get parameters
+    * query_string: to append an additional query string as get parameters
     */
     this.login = function(jObj,done)
     {
-        var qs = /queryString=([^&|]+)/g.exec(jObj);
-        qs = qs !== null ? '?' + decodeURIComponent(qs[1]) : '';
+        var qs = /query_string=([^&|]+)/g.exec(jObj);
+        if(qs !== null) {
+            qs = '?' + decodeURIComponent(qs[1]) + '&redirect=' + encodeURIComponent('/oauth2/authorize.php')
+        } else {
+            qs = '';
+        }
         this.post ('/pages/profile/login.json.php' + qs, jObj, function(d) {
             done (d);
         }, true);

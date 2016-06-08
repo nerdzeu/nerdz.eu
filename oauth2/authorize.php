@@ -24,7 +24,7 @@ $user = new NERDZ\Core\User();
 $tplcfg = $user->getTemplateCfg();
 
 if (!$user->isLogged()) {
-    die(header('Location: login.php?'.urlencode($_SERVER['QUERY_STRING'])));
+    die(header('Location: /login.php?'.$_SERVER['QUERY_STRING']));
 }
 
 ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
