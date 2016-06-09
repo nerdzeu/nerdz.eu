@@ -16,26 +16,47 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 use NERDZ\Core\Db;
+use NERDZ\Core\OAuth2;
+use NERDZ\Core\Config;
 
-$client_id = isset($_POST['client_id']) && is_numeric($_POST['client_id']) ? $_POST['client_id']  : false;
-$redirect_uri = isset($_POST['redirect_uri']) ? $_POST['redirect_uri']  : false;
-$response_type = isset($_POST['response_type']) ? $_POST['response_type']  : false;
-$scope = isset($_POST['scope']) ? $_POST['scope']  : false;
+$client_id = isset($_GET['client_id']) && is_numeric($_GET['client_id']) ? trim($_GET['client_id'])  : false;
+$redirect_uri = isset($_GET['redirect_uri']) ? trim($_GET['redirect_uri'])  : false;
+$response_type = isset($_GET['response_type']) ? trim($_GET['response_type'])  : false;
+$scopes = isset($_GET['scope']) ? trim($_GET['scope'])  : false;
 
-if (!$client_id || !$redirect_uri || !$response_type || !$scope) {
-    echo $user->lang('MISSING'), 'client_id, redirect_uri, response_type, scope';
+if (!$client_id || !$redirect_uri || !$response_type || !$scopes) {
+    $vals['error_n'] = "{$user->lang('MISSING')}: client_id, redirect_uri, response_type, scopes";
 } else {
     $vals = [];
-    $vals['client_n'] = Db::Query('SELECT * FROM oauth2_clients WHERE id = :client_id',
+    $client = Db::query(
         [
-            'client_id' => $client_id
+            'SELECT name, redirect_uri FROM oauth2_clients WHERE id = :id',
+            [
+                ':id' => $client_id,
+            ],
         ], Db::FETCH_OBJ);
 
-    if(!$vals['client_n']) {
-        die($user->lang('ERROR'));
+    if (!$client) {
+        $vals['error_n'] = "{$user->lang('ERROR')}: client not found";
+    } else {
+        $vals['scopes_a'] = array_map([$user, 'lang'], OAuth2::getScopes($scopes));
+        if (empty($vals['scopes_a'])) {
+            $vals['error_n'] = "{$user->lang('MISSING')}: valid scopes";
+        } else {
+            if ($client->redirect_uri !== $redirect_uri) {
+                $vals['error_n'] = 'redirect_uri: mismatch';
+            } else {
+                $vals['client_n'] = $client->name;
+                $vals['authorizeurl_n'] = Config\API_URL.'/authorize';
+                $vals['responsetype_n'] = htmlspecialchars($_GET['response_type'], ENT_QUOTES, 'UTF-8');
+                $vals['clientid_n'] = $client_id;
+                $vals['redirecturi_n'] = htmlspecialchars($_GET['redirect_uri'], ENT_QUOTES, 'UTF-8');
+                $vals['scope_n'] = htmlspecialchars($_GET['scope'], ENT_QUOTES, 'UTF-8');
+                $vals['authorized_n'] = $_SESSION['id'];
+                $vals['authorizedcode_n'] = $user->UUID($_SESSION['id']);
+            }
+        }
     }
-
-    $vals['scopes_a'] = [];
-
-    $user->getTPL()->draw('oauth2/authorize');
 }
+$user->getTPL()->assign($vals);
+$user->getTPL()->draw('oauth2/authorize');

@@ -132,6 +132,9 @@ class Variables
         // 'TRUSTED_PROXIES'       => []
         // You can specify a single ip (v4 or v6), you can use CIDR notation, or you can
         // set more than one proxy in any format (even combine ipv4 and ipv6 ips and subnets)
+        // 
+        // API_URL is the URL of the API subdomain
+        // 'API_URL' => 'https://api.nerdz.eu',
     ];
 }
 

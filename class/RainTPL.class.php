@@ -15,7 +15,6 @@
  *  This file is released under GNU AGPL.
  *  Copyright Paolo Galeone, 2016. <nessuno@nerdz.eu>
  */
-
 namespace NERDZ\Core;
 
 require_once __DIR__.'/Autoload.class.php';

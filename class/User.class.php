@@ -987,6 +987,21 @@ class User
             ], Db::FETCH_OBJ);
     }
 
+    public function UUID($id)
+    {
+        if (!($o = Db::query(
+            [
+                "SELECT encode(digest(username || password || email, 'sha1'), 'hex') as sha1_sum FROM users WHERE counter = :id",
+                [
+                    ':id' => $id,
+                ],
+            ], Db::FETCH_OBJ))) {
+            return false;
+        }
+
+        return $o->sha1_sum;
+    }
+
     public function getEmail($id)
     {
         if (!($o = Db::query(

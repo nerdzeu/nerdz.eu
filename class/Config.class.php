@@ -62,6 +62,7 @@ class Config
             'SMTP_USER' => -1,
             'SMTP_PASS' => -1,
             'TRUSTED_PROXIES' => [],
+            'API_URL' => '',
         ];
 
         foreach (Config\Variables::$data as $const_key => $const_val) {
