@@ -78,7 +78,7 @@ foreach ($headers['css'] as $var) {
 /* END STYLESHEETS */
 /* BEGIN JQUERY */
 ?>
-<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="<?php echo $static_domain;?>/static/js/jquery-3.1.0.min.js"></script>
 <script src="<?php echo $static_domain;?>/static/js/pgwmodal.min.js"></script>
 <?php
 /* END JQUERY */
@@ -95,6 +95,7 @@ foreach ($headers['js'] as $var) {
 ?>
 <script src="<?php echo $static_domain;?>/static/js/api.php"></script>
 <script src="<?php echo $static_domain;?>/static/js/nerdzcrush.min.js" async></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 extensions: ["tex2jax.js"],
@@ -106,15 +107,14 @@ extensions: ["tex2jax.js"],
         },
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
-    </script>
-    <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js" async></script>
-    <script>
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js" async></script>
+<script>
 <?php
 $trackingCacheKey = 'tracking_js'.NERDZ\Core\Config\SITE_HOST;
 if (!($tracking = Utils::apcu_get($trackingCacheKey))) {
     $tracking = Utils::apcu_set($trackingCacheKey, function () {
         $trjs = $_SERVER['DOCUMENT_ROOT'].'/data/tracking.js';
-
         return is_readable($trjs) ? file_get_contents($trjs) : '';
     }, 3600);
 }
@@ -147,7 +147,6 @@ if ($logged) {
     N.idiots=<?=json_encode($jsonIdiots)?>,
     N.tplVars=<?=$user->getTemplateVariables()?>;
 <?php
-
 }
 ?>
 </script>
