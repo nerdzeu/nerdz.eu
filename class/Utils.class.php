@@ -53,7 +53,14 @@ class Utils
 
     public static function isValidURL($url)
     {
-        return filter_var($url, FILTER_VALIDATE_URL);
+        // FILTER_VALIDATE_URL is not protocol agnostic
+        if (strpos($url, '//') === 0) {
+            $value = 'http:'.$url;
+        } else {
+            $value = $url;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_URL);
     }
 
     public static function getValidImageURL($url)
