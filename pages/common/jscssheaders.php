@@ -76,7 +76,7 @@ extensions: ["tex2jax.js"],
         "HTML-CSS": { availableFonts: ["TeX"], linebreaks: { automatic: true, width: "container" } }
     });
     </script>
-    <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js" async></script>
+    <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" async></script>
     <script>
 <?php
 $trackingCacheKey = 'tracking_js'.NERDZ\Core\Config\SITE_HOST;
