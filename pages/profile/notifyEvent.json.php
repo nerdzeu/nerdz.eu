@@ -40,12 +40,7 @@ $dontSendCacheLimiter = function () {
     ini_set('session.use_cookies', false);
     ini_set('session.use_trans_sid', false);
     ini_set('session.cache_limiter', null);
-
-    if (Config\REDIS_HOST !== '' && Config\REDIS_PORT !== '') {
-        new RedisSessionHandler(Config\REDIS_HOST, Config\REDIS_PORT);
-    } else {
-        session_start();
-    }
+    session_start();
 };
 
 if (!$user->isLogged()) {

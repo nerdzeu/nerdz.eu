@@ -30,8 +30,6 @@ class Config
 
         $CONSTANTS = [
             'MINIFICATION_ENABLED' => false,
-            'REDIS_HOST' => '',
-            'REDIS_PORT' => '',
 
             'PUSHED_ENABLED' => false,
             'PUSHED_IP6' => true,

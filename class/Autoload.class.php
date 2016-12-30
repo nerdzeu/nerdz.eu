@@ -62,12 +62,10 @@ Config::init();
 // parameters (secure and httponly) after session_start().
 // We use session_set_cookie_params only to set the same domain
 session_set_cookie_params(0, '/', System::getSafeCookieDomainName());
+
 // Start session
-if (Config\REDIS_HOST !== '' && Config\REDIS_PORT !== '') {
-    new RedisSessionHandler(Config\REDIS_HOST, Config\REDIS_PORT);
-} else {
-    session_start();
-}
+session_start();
+
 
 // lifetime = 0 (until the browser is closed)
 // path = /, domain = System::getSafeCookieDomainName()

@@ -92,12 +92,6 @@ class Variables
         // Comment these options if the default commands are okay for you.
         //'MINIFICATION_JS_CMD'  => 'something-js  %path%',
 
-        // Misc configuration
-        // Set host and port if you want to enable Redis session sharing. Disable it
-        // if you don't have predis or a Redis server.
-        // 'REDIS_HOST'          => 'redis.somewhere.com',
-        // 'REDIS_PORT'          => 4545,
-
         // The key used to post issues to GitHub. Get it from your GitHub account.
         // 'ISSUE_GIT_KEY'          => '...',
 
