@@ -389,7 +389,7 @@ final class Browser
                  // well-known, well-used
                  // Special Notes:
                  // (1) Classic Opera must be checked before FireFox due to the odd
-                 //     user agents used in some older versions of Opera and new Opera must be checked 
+                 //     user agents used in some older versions of Opera and new Opera must be checked
                  //     before Chrome due its being a Chromium-based browser.
                  // (2) WebTV is strapped onto Internet Explorer so we must
                  //     check for WebTV before IE

@@ -22,7 +22,8 @@ require_once __DIR__.'/Autoload.class.php';
 
 class Feed extends Messages
 {
-    private $ssl, $baseurl;
+    private $ssl;
+    private $baseurl;
 
     public function __construct()
     {

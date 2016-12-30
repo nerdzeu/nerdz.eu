@@ -19,3 +19,4 @@ composer.lock
 *.jade
 *.less
 .htaccess
+.php_cs.cache

@@ -28,7 +28,6 @@ $path = Config\SITE_HOST.($mo ? 'r_month.json' : 'rank.json');
 
 if (!($ret = Utils::apcu_get($path))) {
     $ret = Utils::apcu_set($path, function () use ($mo) {
-
         $un_ti = ' AND ("time" + INTERVAL \'28 days\') > NOW()';
 
         $res = Db::query(

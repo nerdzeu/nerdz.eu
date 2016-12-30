@@ -53,13 +53,11 @@ if ($uagdata['platform'] == 'Windows' && (float) $uagdata['version'] >= 10) {
 /* BEGIN FAVICON */
 if (User::isOnMobileHost()) {
     ?>
-    <link rel="manifest" href="<?php echo $static_domain;
-    ?>/static/webapp/manifest.json" />
+    <link rel="manifest" href="<?php echo $static_domain; ?>/static/webapp/manifest.json" />
     <?php 
 } else {
     ?>
-    <link rel="icon" type="image/x-icon" href="<?php echo $static_domain;
-    ?>/static/images/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="<?php echo $static_domain; ?>/static/images/favicon.ico" />
 <?php
 
 } /* END FAVICON */
@@ -122,8 +120,7 @@ echo $tracking;
 
 /* BEGIN NERDZ_VERSION */
 if (isset($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true) {
-    unset($headers['js']['staticData']['outputVersion']);
-    ?>
+    unset($headers['js']['staticData']['outputVersion']); ?>
     N.version = '<?=System::getVersion()?>';
 <?php
 
@@ -142,11 +139,11 @@ if ($logged) {
             $blistcss .= ".bluser{$b_id},";
             $jsonIdiots[] = User::getUsername($b_id);
         }
-    }
-    ?>
+    } ?>
     N.idiots=<?=json_encode($jsonIdiots)?>,
     N.tplVars=<?=$user->getTemplateVariables()?>;
 <?php
+
 }
 ?>
 </script>

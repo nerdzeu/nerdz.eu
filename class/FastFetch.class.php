@@ -46,7 +46,7 @@ final class FastFetch
 
     /**
      * Returns all conversations.
-     * 
+     *
      * @return array an object containing the list of conversations.
      *
      * @throws FFException if something wrong happens
@@ -86,12 +86,12 @@ final class FastFetch
 
     /**
      * Fetches $limit Messages starting with the $start-th in the conversation with user $otherId.
-     * 
+     *
      * @param int $otherId
      * @param int $start
      * @param int $limit
      *
-     * @return array an array of objects representing 
+     * @return array an array of objects representing
      *
      * @throws FFException if something wrong happens
      */

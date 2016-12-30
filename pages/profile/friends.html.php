@@ -40,10 +40,10 @@ $dateExtractor = function ($friendId) use ($id, $user) {
                 ':fid' => $friendId,
             ],
         ], Db::FETCH_OBJ);
-     if (!$since) {
-         $since = new StdClass();
-         $since->time = 0;
-     }
+    if (!$since) {
+        $since = new StdClass();
+        $since->time = 0;
+    }
 
     return $user->getDate($since->time);
 };

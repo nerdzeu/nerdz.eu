@@ -162,7 +162,7 @@ class User
                 setcookie('nerdz_id', $_COOKIE['nerdz_id'], time() - 3600, '/', $chost, false, true);
             }
             if (isset($_COOKIE['nerdz_u'])) {
-                setcookie('nerdz_u',  $_COOKIE['nerdz_u'],  time() - 3600, '/', $chost, false, true);
+                setcookie('nerdz_u', $_COOKIE['nerdz_u'], time() - 3600, '/', $chost, false, true);
             }
             session_destroy();
         }
@@ -186,7 +186,7 @@ class User
             $exp_time = time() + 2592000;
             $chost = System::getSafeCookieDomainName();
             setcookie('nerdz_id', $o->counter, $exp_time, '/', $chost, false, true);
-            setcookie('nerdz_u',  $o->auto_login_pwd, $exp_time, '/', $chost, false, true);
+            setcookie('nerdz_u', $o->auto_login_pwd, $exp_time, '/', $chost, false, true);
         }
 
         $_SESSION['logged'] = true;

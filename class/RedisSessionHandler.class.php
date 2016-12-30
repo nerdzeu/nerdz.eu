@@ -37,7 +37,7 @@ Predis\Autoloader::register();
  *
  * @author          deisss
  * @licence         LGPLv3
- * 
+ *
  * @other           Improved version to support namespace and included in NERDZ\Core namespace (Paolo Galeone [ nessuno@nerdz.eu ] )
  * This class is used to store session data with redis, it store in json the session to be used more easily in Node.JS
  */

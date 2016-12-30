@@ -71,9 +71,9 @@ class Db
             }, 86400);
         }
 
-        Config::add('USERS_NEWS',    $specialIds['USER']['GLOBAL_NEWS']);
+        Config::add('USERS_NEWS', $specialIds['USER']['GLOBAL_NEWS']);
         Config::add('DELETED_USERS', $specialIds['USER']['DELETED']);
-        Config::add('ISSUE_BOARD',   $specialIds['PROJECT']['ISSUE']);
+        Config::add('ISSUE_BOARD', $specialIds['PROJECT']['ISSUE']);
         Config::add('PROJECTS_NEWS', $specialIds['PROJECT']['GLOBAL_NEWS']);
     }
 
@@ -118,20 +118,20 @@ class Db
                 $stmt->execute($query[1]);
             }
         } catch (PDOException $e) {
-            /*
             if (defined('DEBUG')) {
                 static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
             }
-            */
 
-            if ($action == static::FETCH_ERRNO) {
+            if ($action == static::FETCH_ERRNO && $stmt !== null) {
                 return $stmt->errorInfo()[1];
             }
-            if ($action == static::FETCH_ERRSTR) {
+            if ($action == static::FETCH_ERRSTR && $stmt !== null) {
                 return $stmt->errorInfo()[2];
             }
 
-            static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
+            if (! defined('DEBUG')) {
+                static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
+            }
 
             return;
         }

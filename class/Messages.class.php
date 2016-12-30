@@ -72,7 +72,7 @@ class Messages
             while ((false !== $start[$key]) && (false !== $end[$key])) {
                 ++$key;
                 $start[$key] = strpos($zzz, $codeType['start'], $end[$key - 1] + $codeType['start_len']);
-                $end[$key] = strpos($zzz, $codeType['end'],  $end[$key - 1] + $codeType['end_len']);
+                $end[$key] = strpos($zzz, $codeType['end'], $end[$key - 1] + $codeType['end_len']);
             }
 
             while ($key > 0) {
@@ -226,7 +226,6 @@ class Messages
             $ret .= '</ol>';
 
             return $ret;
-
         }, $str, 10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+start=&quot;(\-?\d+)&quot;[\s]+type=&quot;(1|a|i)&quot;\](.+?)\[\/list\]#i', function ($m) {
@@ -242,7 +241,6 @@ class Messages
             $ret .= '</ol>';
 
             return $ret;
-
         }, $str, 10);//ok
 
         $str = preg_replace_callback('#\[list[\s]+type=&quot;(1|a|i)&quot;[\s]+start=&quot;(\-?\d+)&quot;\](.+?)\[\/list\]#i', function ($m) {
@@ -258,7 +256,6 @@ class Messages
             $ret .= '</ol>';
 
             return $ret;
-
         }, $str, 10);
 
         // Quote in comments, new version
@@ -363,13 +360,13 @@ class Messages
             $videoCallback = function ($m) {
                 $v_url = html_entity_decode($m[1], ENT_QUOTES, 'UTF-8');
                 $output = [];
-                if (preg_match(static::YOUTUBE_REGEXP,   $v_url, $match)) {
+                if (preg_match(static::YOUTUBE_REGEXP, $v_url, $match)) {
                     $output = ['youtube', $match[1], '//i1.ytimg.com/vi/'.$match[1].'/hqdefault.jpg', 130];
-                } elseif (preg_match(static::VIMEO_REGEXP,     $v_url, $match)) {
+                } elseif (preg_match(static::VIMEO_REGEXP, $v_url, $match)) {
                     $output = ['vimeo', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 130, 'N.vimeoThumbnail(this)'];
-                } elseif (preg_match(static::DMOTION_REGEXP,   $v_url, $match)) {
+                } elseif (preg_match(static::DMOTION_REGEXP, $v_url, $match)) {
                     $output = ['dailymotion', $match[1], 'https://www.dailymotion.com/thumbnail/video/'.$match[1], 100];
-                } elseif (preg_match(static::FACEBOOK_REGEXP,  $v_url, $match)) {
+                } elseif (preg_match(static::FACEBOOK_REGEXP, $v_url, $match)) {
                     $output = ['facebook', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 100, 'N.facebookThumbnail(this)'];
                 } elseif (preg_match(static::NERDZCRUSH_REGEXP, $v_url, $match)) {
                     $output = ['nerdzcrush', $match[1], 'https://media.nerdz.eu/'.$match[1].'.jpg', 130];
@@ -403,13 +400,13 @@ class Messages
             $videoCallback = function ($m) {
                 $v_url = html_entity_decode($m[1], ENT_QUOTES, 'UTF-8');
                 $iframe_code = '';
-                if (preg_match(static::YOUTUBE_REGEXP,    $v_url, $match)) {
+                if (preg_match(static::YOUTUBE_REGEXP, $v_url, $match)) {
                     $iframe_code = '<iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="//www.youtube.com/embed/'.$match[1].'?wmode=opaque" allowfullscreen></iframe>';
-                } elseif (preg_match(static::VIMEO_REGEXP,      $v_url, $match)) {
+                } elseif (preg_match(static::VIMEO_REGEXP, $v_url, $match)) {
                     $iframe_code = '<iframe src="//player.vimeo.com/video/'.$match[1].'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-                } elseif (preg_match(static::DMOTION_REGEXP,    $v_url, $match)) {
+                } elseif (preg_match(static::DMOTION_REGEXP, $v_url, $match)) {
                     $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
-                } elseif (preg_match(static::FACEBOOK_REGEXP,   $v_url, $match)) {
+                } elseif (preg_match(static::FACEBOOK_REGEXP, $v_url, $match)) {
                     $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" frameborder="0"></iframe>';
                 } elseif (preg_match(static::NERDZCRUSH_REGEXP, $v_url, $match)) {
                     $iframe_code = '<div class="nerdzcrush" data-media="'.$match[1].'#noautoplay,noloop"></div>';
@@ -976,7 +973,7 @@ class Messages
         return isset($ret->rev_no) ? $ret->rev_no : 0;
     }
 
-    public function getRevision($hpid, $number,  $project = false)
+    public function getRevision($hpid, $number, $project = false)
     {
         $table = ($project ? 'groups_' : '').'posts_revisions';
 

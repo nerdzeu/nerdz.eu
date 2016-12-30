@@ -424,7 +424,7 @@ class Comments extends Messages
 
             $canremovecomment = array_merge($this->project->getMembersAndOwnerFromHpid($o->hpid), (array) $o->from);
 
-            if ($this->canRemove((array) $o,  $project)) {
+            if ($this->canRemove((array) $o, $project)) {
                 if (
                     Db::NO_ERRNO != Db::query(array('DELETE FROM "groups_comments" WHERE "from" = :from AND "to" = :to AND "time" = TO_TIMESTAMP(:time)', array(':from' => $o->from, ':to' => $o->to, ':time' => $o->time)), Db::FETCH_ERRNO) ||
                     Db::NO_ERRNO != Db::query(array('DELETE FROM "groups_comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)', array(':from' => $o->from, ':hpid' => $o->hpid, ':time' => $o->time)), Db::FETCH_ERRNO)
@@ -511,7 +511,7 @@ class Comments extends Messages
         return isset($ret->rev_no) ? $ret->rev_no : 0;
     }
 
-    public function getRevision($hcid, $number,  $project = false)
+    public function getRevision($hcid, $number, $project = false)
     {
         $table = ($project ? 'groups_' : '').'comments_revisions';
 
@@ -609,7 +609,7 @@ class Comments extends Messages
                 return $username
                     ? '[commentquote=[user]'.$username.'[/user] [small][url=&quot;'.comments::getURLFromCid($m[1], true).'&quot;]→ c'.$m[1].'[/url][/small]]'.comments::getMessage($m[1], true).'[/commentquote]'
                     : '';
-                    }, $message, 1);
+            }, $message, 1);
         }
 
         if ($i == 11) {
@@ -625,7 +625,7 @@ class Comments extends Messages
                 return $username
                     ? '[commentquote=[user]'.$username.'[/user] [small][url=&quot;'.comments::getURLFromCid($m[1]).'&quot;]→ c'.$m[1].'[/url][/small]]'.comments::getMessage($m[1]).'[/commentquote]'
                     : '';
-                    }, $message, 1);
+            }, $message, 1);
         }
 
         if ($i == 11) {

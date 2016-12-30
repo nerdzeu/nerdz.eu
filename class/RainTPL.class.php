@@ -6,7 +6,7 @@
  *  Distributed under GNU/LGPL 3 License.
  *
  *  @version 2.6.4
- *    
+ *
  *     Modified a lots of times by: Paolo Galeone
  *
  *  @note NERDZ is too dynamic => cache removed. Added to NERDZ\Core namespace.
@@ -99,8 +99,8 @@ final class RainTPL
      */
     public $var = [];
 
-    private $tpl = array(),        // variables to keep the template directories and info
-            $cache = true;        // static cache enabled / disabled
+    private $tpl = array();
+    private $cache = true;        // static cache enabled / disabled
 
     private static $config_name_sum = null;   // takes all the config to create the md5 of the file
 
@@ -797,7 +797,7 @@ final class RainTPL
             }
 
             if (null != $e->getTemplateLine() && null != $e->getTag()) {
-                $rows = explode("\n",  htmlspecialchars($this->tpl['source']));
+                $rows = explode("\n", htmlspecialchars($this->tpl['source']));
                 $rows[$e->getTemplateLine()] = '<font color=red>'.$rows[$e->getTemplateLine()].'</font>';
                 $output .= '<h3>template code</h3>'.implode('<br />', $rows).'</pre>';
             }

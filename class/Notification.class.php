@@ -24,7 +24,9 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 
 class Notification
 {
-    private $rag, $cachekey, $user;
+    private $rag;
+    private $cachekey;
+    private $user;
 
     const USER_COMMENT = 'profile_comments';
     const USER_POST = 'new_post_on_profile';

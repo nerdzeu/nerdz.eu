@@ -24,7 +24,8 @@ require_once __DIR__.'/Autoload.class.php';
 
 class Search
 {
-    private $user, $project;
+    private $user;
+    private $project;
 
     public function __construct()
     {
