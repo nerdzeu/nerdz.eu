@@ -46,7 +46,9 @@ class Utils
     public static function apcu_set($key, callable $setter, $ttl)
     {
         $ret = $setter();
-        @apcu_store($key, serialize($ret), $ttl);
+        if (Config\MINIFICATION_ENABLED) {
+            @apcu_store($key, serialize($ret), $ttl);
+        }
 
         return $ret;
     }
