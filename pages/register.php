@@ -14,7 +14,10 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
+use NERDZ\Core\Messages;
+
 $lang = $user->getLanguage();
 $presentation = file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/langs/{$lang}/presentation.txt");
 $presentation = nl2br(htmlspecialchars($presentation, ENT_QUOTES, 'UTF-8'));
@@ -30,6 +33,9 @@ $vals['months_a'] = range(1, 12);
 $vals['days_a'] = range(1, 31);
 
 $vals['timezones_a'] = DateTimeZone::listIdentifiers();
+
+$messages = new Messages();
+$vals['list_a'] = $messages->getLatestMessages();
 
 if (!isset($included)) {
     $user->getTPL()->assign($vals);

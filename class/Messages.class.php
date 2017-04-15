@@ -479,6 +479,35 @@ class Messages
         return $all;
     }
 
+    public function getLatestMessages()
+    {
+        // no login required
+        $query = 'SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "messages" p ORDER BY p.time DESC LIMIT 10';
+
+        if (!($result = Db::query($query, Db::FETCH_STMT))) {
+            return [];
+        }
+
+        $c = 0;
+        $ret = [];
+        while (($row = $result->fetch(PDO::FETCH_OBJ))) {
+            $ret[$c] = $this->getPost($row,
+                [
+                    'inHome' => true,
+                    'project' => $row->type === 0,
+                    'truncate' => true,
+                ]);
+
+            $ret[$c]['news_b'] = $row->type === 0
+                ? $row->to == Config\PROJECTS_NEWS
+                : $row->to == Config\USERS_NEWS;
+
+            ++$c;
+        }
+
+        return $ret;
+    }
+
     public function getHome($options)
     {
         if (!$this->user->isLogged()) {
