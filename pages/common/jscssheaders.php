@@ -66,7 +66,7 @@ foreach($headers['js'] as $var) {
 <script src="<?php echo $static_domain;?>/static/js/nerdzcrush.min.js" async></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
-extensions: ["tex2jax.js"],
+extensions: ["tex2jax.js", "Safe.js"],
     jax: ["input/TeX", "output/HTML-CSS"],
     tex2jax: {
     inlineMath: [ ['[m]','[/m]'] ],
