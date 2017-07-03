@@ -227,6 +227,7 @@
     "REMOVE" : "Rimuovi",
     "RESET_DESCR" : "Completa questo form per resettare la tua password. La tua nuova password ti sarà inviata via email",
     "RESET_YOUR_PASSWORD" : "Reimposta la tua password",
+    "RESET_PASSWORD": "Reset password",
     "RESULTS_FOR" : "Risultati per",
     "SEARCH" : "Cerca",
     "SEND" : "Invia",

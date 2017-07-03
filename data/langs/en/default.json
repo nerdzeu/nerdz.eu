@@ -228,6 +228,7 @@
     "REMOVE" : "Delete",
     "RESET_DESCR" : "Compile this form to reset your password. We will send you an email to your address with your new password",
     "RESET_YOUR_PASSWORD" : "Reset your password",
+    "RESET_PASSWORD": "Reset password",
     "RESULTS_FOR" : "Results for",
     "SEARCH" : "Search",
     "SEND" : "Send",

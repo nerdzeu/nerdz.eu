@@ -96,7 +96,7 @@ foreach ($headers['js'] as $var) {
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
-extensions: ["tex2jax.js"],
+extensions: ["tex2jax.js", "Safe.js"],
     jax: ["input/TeX", "output/HTML-CSS"],
     tex2jax: {
     inlineMath: [ ['[m]','[/m]'] ],
