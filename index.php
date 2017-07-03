@@ -38,6 +38,7 @@ ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
     <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
     <meta name="robots" content="index,follow" />
     <meta name="google-site-verification" content="dRirpMHbSmUiPDrNohR5kmUyUnrii1fkWmTADXmksQY" />
+    <meta name="msvalidate.01" content="1084D9EBDD4D72C5C6A7B5056387DBF3" />
     <title><?= NERDZ\Core\Utils::getSiteName(); ?></title>
 <?php
 $headers = $tplcfg->getTemplateVars('index');
