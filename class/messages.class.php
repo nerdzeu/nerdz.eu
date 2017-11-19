@@ -309,7 +309,7 @@ class Messages
                 $a_height = $truncate ? '80': '240';
                 return "<iframe src='//www.deezer.com/plugins/player?height={$a_height}&type={$a_type}&id={$match[2]}' width='100%' height='{$a_height}' scrolling='no' frameborder='no'></iframe>";
             }
-            else if (filter_var ($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
+            else if (filter_var ($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED) && !preg_match('#\[twitter\]\s*(.+?)\s*\[/twitter\]#i'))
                 return '<audio preload="none" controls src="'.htmlspecialchars ($uri, ENT_QUOTES, 'UTF-8').'"></audio>';
             else
                 return $m[0];
