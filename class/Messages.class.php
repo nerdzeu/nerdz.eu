@@ -317,10 +317,8 @@ class Messages
         }
 
         $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#i', function ($m) use ($truncate) {
-            $uri = strip_tags(html_entity_decode($m[1], ENT_QUOTES, 'UTF-8'));
+            $uri = static::stripTags(strip_tags(html_entity_decode($m[1], ENT_QUOTES, 'UTF-8')));
             if (stripos($uri, 'spotify') !== false) {
-                // TODO: use a single regexp
-
                 if (preg_match('#^(?:spotify:track:[\d\w]+)|(?:spotify:user:[\w\d]+:playlist:[\w\d]+)$#i', $uri)) {
                     $ID = $uri;
                 } elseif (preg_match('#^https?://(?:open|play)\.spotify\.com/track/[\w\d]+$#i', $uri)) {
