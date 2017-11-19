@@ -289,7 +289,7 @@ class Messages
                 </div>',$str,1);
 
         $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#i',function($m) use($truncate) {
-            $uri = strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8'));
+            $uri = static::stripTags(strip_tags(html_entity_decode($m[1],ENT_QUOTES,'UTF-8')));
             if (stripos ($uri, 'spotify') !== false) // TODO: use a single regexp
             {
                 if (preg_match ('#^(?:spotify:track:[\d\w]+)|(?:spotify:user:[\w\d]+:playlist:[\w\d]+)$#i', $uri))
@@ -309,7 +309,7 @@ class Messages
                 $a_height = $truncate ? '80': '240';
                 return "<iframe src='//www.deezer.com/plugins/player?height={$a_height}&type={$a_type}&id={$match[2]}' width='100%' height='{$a_height}' scrolling='no' frameborder='no'></iframe>";
             }
-            else if (filter_var ($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED) && !preg_match('#\[twitter\]\s*(.+?)\s*\[/twitter\]#i'))
+            else if (filter_var ($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED))
                 return '<audio preload="none" controls src="'.htmlspecialchars ($uri, ENT_QUOTES, 'UTF-8').'"></audio>';
             else
                 return $m[0];
