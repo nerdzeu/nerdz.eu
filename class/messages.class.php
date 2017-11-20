@@ -155,12 +155,15 @@ class Messages
         $str = preg_replace('#\[wat\]#i','<span style="font-size:22pt">WAT</span>',$str);
 
         $str = preg_replace_callback('#\[user\](.+?)\[/user\]#i',function($m) {
+            $m[1] = static::stripTags($m[1]);
             return '<a href="/'.Utils::userLink($m[1])."\">{$m[1]}</a>";
         },$str);
         $str = preg_replace_callback('#\[project\](.+?)\[/project\]#i',function($m) {
+            $m[1] = static::stripTags($m[1]);
             return '<a href="/'.Utils::projectLink($m[1])."\">{$m[1]}</a>";
         },$str);
         $str = preg_replace_callback('#\[wiki=([a-z]{2})\](.+?)\[/wiki\]#i',function($m) {
+            $m[2] = static::stripTags($m[2]);
             return '<a href="http://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ','_',html_entity_decode($m[2],ENT_QUOTES,'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
         },$str);
         $str = preg_replace_callback("#(\[math\]|\[m\])(.+?)(\[/math\]|\[/m\])#i",function($m) {
@@ -320,6 +323,7 @@ class Messages
             // with a fixed height (220px - when truncate is true - js trimmer can handle post size
             if(!(is_numeric($m[1]) || Utils::isValidURL($m[1])))
                 return $m[0];
+            $m[1] = static::stripTags($m[1]);
 
             return '<img data-id="'.htmlspecialchars($m[1], ENT_QUOTES, 'UTF-8').'" data-uuid="'.mt_rand().'" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" onload="N.loadTweet(this)"'.($truncate ? ' height="220"' : '').'>';
         },$str,10);
