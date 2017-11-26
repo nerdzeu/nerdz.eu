@@ -38,7 +38,8 @@ class Utils
 
     public static function isValidURL($url)
     {
-        return filter_var($url, FILTER_VALIDATE_URL);
+         return (strpos($url, "http://") === 0 || strpos($url, "https://") === 0) &&
+            filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
     public static function getValidImageURL($url)
