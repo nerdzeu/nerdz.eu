@@ -42,12 +42,15 @@ if ($prj) {
 
 $validFields = ['time'];
 
-NERDZ\Core\Security::setNextAndPrevURLs($myvals, $limit,
+NERDZ\Core\Security::setNextAndPrevURLs(
+    $myvals,
+    $limit,
     [
         'order' => $order,
         'field' => empty($_GET['orderby']) ? '' : $_GET['orderby'],
         'validFields' => $validFields,
-    ]);
+    ]
+);
 
 $user->getTPL()->assign($myvals);
 

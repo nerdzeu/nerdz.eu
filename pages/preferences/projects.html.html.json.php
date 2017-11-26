@@ -54,7 +54,9 @@ case 'del':
             [
                 ':id' => $id,
             ],
-        ], Db::FETCH_ERRNO)) {
+        ],
+        Db::FETCH_ERRNO
+    )) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     }
     break;
@@ -92,7 +94,9 @@ case 'update':
                             ':project' => $id,
                             ':user' => $uid,
                         ],
-                    ], Db::FETCH_ERRSTR);
+                    ],
+                Db::FETCH_ERRSTR
+            );
 
             if ($ret != Db::NO_ERRSTR) {
                 die(NERDZ\Core\Utils::jsonDbResponse($ret, $userMap[$uid]));
@@ -109,7 +113,9 @@ case 'update':
                         ':project' => $id,
                         ':user' => $val,
                     ],
-                ], Db::FETCH_ERRNO)) {
+                ],
+                Db::FETCH_ERRNO
+            )) {
                 die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'4'));
             }
         }
@@ -128,7 +134,9 @@ case 'update':
                     ':visible' => $projectData['visible'],
                     ':id' => $id,
                 ],
-            ], Db::FETCH_ERRNO)
+            ],
+            Db::FETCH_ERRNO
+        )
         ) {
             die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
         }

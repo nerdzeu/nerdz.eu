@@ -50,7 +50,9 @@ if ($gid) {
                         ':pid' => $pid,
                         ':gid' => $gid,
                     ],
-                ], Db::FETCH_OBJ))
+                ],
+                Db::FETCH_OBJ
+            ))
                 || $user->hasInBlacklist($post->from) //fake post not found
             ) {
                 $post = new stdClass();

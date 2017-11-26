@@ -80,7 +80,8 @@ if (empty($userData['dateformat'])) {
 }
 
 if (!empty($userData['facebook']) &&
-    (!preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/people/[^/]+/([a-z0-9_\-]+)#i', $userData['facebook']) &&
+    (
+        !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/people/[^/]+/([a-z0-9_\-]+)#i', $userData['facebook']) &&
     !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/profile\.php\?id\=([0-9]+)#i', $userData['facebook']) &&
     !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/([a-z0-9_\-\.]+)#i', $userData['facebook'])
 )
@@ -134,7 +135,9 @@ if (
             "skype"       = :skype
             WHERE "counter" = :counter',
             $par,
-        ], Db::FETCH_ERRNO)
+        ],
+        Db::FETCH_ERRNO
+    )
     ) {
     die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
 }
@@ -148,7 +151,9 @@ if ($closed) {
                     ':closed' => 'true',
                     ':counter' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_ERRNO)
+            ],
+            Db::FETCH_ERRNO
+        )
         ) {
             die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
         }
@@ -161,7 +166,9 @@ if ($closed) {
                 ':closed' => 'false',
                 ':counter' => $_SESSION['id'],
             ],
-        ], Db::FETCH_ERRNO)) {
+        ],
+        Db::FETCH_ERRNO
+    )) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     }
 }
@@ -185,7 +192,9 @@ if (isset($_POST['whitelist'])) {
                             ':id' => $_SESSION['id'],
                             ':uid' => $uid,
                         ],
-                    ], Db::FETCH_ERRNO)) {
+                    ],
+                Db::FETCH_ERRNO
+            )) {
                 die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'1'));
             }
             $newlist[] = $uid;
@@ -208,7 +217,9 @@ if (isset($_POST['whitelist'])) {
                     ':id' => $_SESSION['id'],
                     ':val' => $val,
                 ],
-            ], Db::FETCH_ERRNO)) {
+            ],
+            Db::FETCH_ERRNO
+        )) {
             die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'4'));
         }
     }

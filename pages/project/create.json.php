@@ -48,7 +48,9 @@ try {
                 ':description' => $projectData['description'],
                 ':name' => $projectData['name'],
             ],
-        ], Db::NO_RETURN);
+        ],
+        Db::NO_RETURN
+    );
 
     $o = Db::query(
         [
@@ -56,7 +58,9 @@ try {
             [
                 ':name' => $projectData['name'],
             ],
-         ], Db::FETCH_OBJ);
+         ],
+        Db::FETCH_OBJ
+    );
 
     Db::query(
         [
@@ -65,7 +69,9 @@ try {
                 ':owner' => $projectData['owner'],
                 ':group' => $o->counter,
             ],
-        ], Db::NO_RETURN);
+        ],
+        Db::NO_RETURN
+    );
 
     Db::getDb()->commit();
 } catch (\PDOException $e) {

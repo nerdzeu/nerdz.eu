@@ -66,7 +66,9 @@ if (!($r = Db::query(
         [
             ':id' => $_SESSION['id'],
         ],
-    ], Db::FETCH_STMT))) {
+    ],
+    Db::FETCH_STMT
+))) {
     die($user->lang('ERROR'));
 }
 

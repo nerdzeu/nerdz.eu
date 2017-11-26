@@ -189,12 +189,14 @@ class System
             $stmt = Db::getDb()->prepare(
                 'INSERT INTO guests(remote_addr, http_user_agent)
                 SELECT :ip, :ua
-                WHERE NOT EXISTS (SELECT 1 FROM guests WHERE remote_addr = :ip)');
+                WHERE NOT EXISTS (SELECT 1 FROM guests WHERE remote_addr = :ip)'
+            );
             $stmt->execute(
                 [
                     ':ip' => IpUtils::getIp(),
                     ':ua' => isset($_SERVER['HTTP_USER_AGENT']) ?  htmlspecialchars($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8') : '',
-                ]);
+                ]
+            );
             Db::getDb()->commit();
         } catch (PDOException $e) {
             Db::dumpException($e);

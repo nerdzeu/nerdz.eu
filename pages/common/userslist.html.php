@@ -55,13 +55,16 @@ $myvals['displayedusers_n'] = count($ret) + $startFrom;
 $myvals['totalusers_n'] = $total;
 $myvals['type_n'] = $type;
 
-NERDZ\Core\Security::setNextAndPrevURLs($myvals, $limit,
+NERDZ\Core\Security::setNextAndPrevURLs(
+    $myvals,
+    $limit,
     [
         'order' => $order,
         'query' => $q,
         'field' => empty($_GET['orderby']) ? '' : $_GET['orderby'],
         'validFields' => $validFields,
-    ]);
+    ]
+);
 
 $user->getTPL()->assign($myvals);
 

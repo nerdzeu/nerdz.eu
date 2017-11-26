@@ -51,7 +51,9 @@ class Comments extends Messages
                         [
                             ':hpid' => $comment['hpid'],
                         ],
-                    ], Db::FETCH_OBJ))) {
+                    ],
+                Db::FETCH_OBJ
+            ))) {
                 return false;
             }
 
@@ -72,7 +74,9 @@ class Comments extends Messages
                 [
                     ':hcid' => $hcid,
                 ],
-            ], Db::FETCH_OBJ)) ||
+            ],
+            Db::FETCH_OBJ
+        )) ||
             !$this->canEdit((array) $obj, $project)
         ) {
             return 'ERROR';
@@ -85,7 +89,9 @@ class Comments extends Messages
                     ':message' => $message,
                     ':hcid' => $hcid,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     private function getArray($res, $hpid, $luck, $project, $blist, $gravurl, $users, $cg, $times, $lkd, $glue)
@@ -257,7 +263,9 @@ class Comments extends Messages
                     [
                         ':hpid' => $hpid,
                     ],
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return 'ERROR';
         }
 
@@ -284,7 +292,9 @@ class Comments extends Messages
                         ':hpid' => $hpid,
                         ':message' => $message,
                     ],
-                ], Db::FETCH_ERRSTR);
+                ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public static function getMessage($hcid, $project = false)
@@ -297,7 +307,9 @@ class Comments extends Messages
                 [
                     ':hcid' => $hcid,
                 ],
-            ], Db::FETCH_OBJ))
+            ],
+            Db::FETCH_OBJ
+        ))
         ) {
             return '(null)';
         }
@@ -340,7 +352,9 @@ class Comments extends Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_OBJ))
+            ],
+            Db::FETCH_OBJ
+        ))
         ) {
             return false;
         }
@@ -352,13 +366,16 @@ class Comments extends Messages
     {
         $table = ($project ? 'groups_' : '').'posts';
         if ($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 ||
-            !($o = Db::query(
+            !(
+                $o = Db::query(
                 [
                     'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
                     [
                         ':hpid' => $hpid,
                     ],
-                ], Db::FETCH_OBJ)
+                ],
+                Db::FETCH_OBJ
+            )
             )
         ) {
             return false;
@@ -377,7 +394,9 @@ class Comments extends Messages
                     [
                         ':hpid' => $hpid,
                     ],
-                ], Db::FETCH_OBJ))) {
+                ],
+            Db::FETCH_OBJ
+        ))) {
             return false;
         }
 
@@ -395,7 +414,9 @@ class Comments extends Messages
                 [
                     ':hcid' => $hcid,
                 ],
-            ], Db::FETCH_OBJ))
+            ],
+            Db::FETCH_OBJ
+        ))
         ) {
             return 'ERROR';
         }
@@ -408,7 +429,9 @@ class Comments extends Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 'ERROR';
         }
 
@@ -491,7 +514,9 @@ class Comments extends Messages
                     ':message' => $oldMsgObj->message."\n\n".$parsedMessage,
                     ':hcid' => $oldMsgObj->hcid,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function getRevisionsNumber($hcid, $project = false)

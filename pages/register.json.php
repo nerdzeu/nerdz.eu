@@ -57,7 +57,9 @@ $ret = Db::query(
                 ':remote_addr' => IpUtils::getIp(),
                 ':http_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8') : '',
           ],
-      ], Db::FETCH_ERRSTR);
+      ],
+    Db::FETCH_ERRSTR
+);
 
 if ($ret != Db::NO_ERRSTR) {
     die(NERDZ\Core\Utils::jsonDbResponse($ret));

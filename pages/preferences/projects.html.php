@@ -41,7 +41,9 @@ if (!($r = Db::query(
         [
             ':id' => $_SESSION['id'],
         ],
-    ], Db::FETCH_STMT))) {
+    ],
+    Db::FETCH_STMT
+))) {
     $vals['myprojects_a'] = [];
 } else {
     $i = 0;

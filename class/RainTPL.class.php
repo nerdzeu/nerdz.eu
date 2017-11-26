@@ -368,7 +368,7 @@ final class RainTPL
                     '?>';
                 }
             }
-             //loop
+            //loop
             elseif (preg_match('/\{loop(?: name){0,1}="\${0,1}([^"]*)"\}/', $html, $code)) {
                 //increase the loop counter
                 ++$loop_level;
@@ -689,40 +689,41 @@ final class RainTPL
                         $params = substr($function_var, $dot_position + 1);
                     } else {
                         //get the function
-                                $function = str_replace('@double_dot@', '::', $function_var);
+                        $function = str_replace('@double_dot@', '::', $function_var);
                         $params = null;
                     }
 
-                            // replace back the @double_dot@ with ::
-                            $function = str_replace('@double_dot@', '::', $function);
+                    // replace back the @double_dot@ with ::
+                    $function = str_replace('@double_dot@', '::', $function);
                     $params = str_replace('@double_dot@', '::', $params);
                 } else {
                     $function = $params = null;
                 }
 
-                    //if it is inside a loop
-                    if ($loop_level) {
-                        //verify the variable name
-                        if ($var_name == 'key') {
-                            $php_var = '$key'.$loop_level;
-                        } elseif ($var_name == 'value') {
-                            $php_var = '$value'.$loop_level.$variable_path;
-                        } elseif ($var_name == 'counter') {
-                            $php_var = '$counter'.$loop_level;
-                        } else {
-                            $php_var = '$'.$var_name.$variable_path;
-                        }
+                //if it is inside a loop
+                if ($loop_level) {
+                    //verify the variable name
+                    if ($var_name == 'key') {
+                        $php_var = '$key'.$loop_level;
+                    } elseif ($var_name == 'value') {
+                        $php_var = '$value'.$loop_level.$variable_path;
+                    } elseif ($var_name == 'counter') {
+                        $php_var = '$counter'.$loop_level;
                     } else {
                         $php_var = '$'.$var_name.$variable_path;
                     }
+                } else {
+                    $php_var = '$'.$var_name.$variable_path;
+                }
 
-                    // compile the variable for php
-                    if (isset($function)) {
-                        $php_var = $php_left_delimiter.(!$is_init_variable && $echo ? 'echo ' : null).($params ? "( {$function}( {$php_var}, {$params} ) )" : "{$function}( {$php_var} )").$php_right_delimiter;
-                    } else {
-                        $arith = '(\s*(\+|\-|\*|\/|%)\s*[a-z0-9]*)?';
-                        $php_var = $php_left_delimiter.
-                            (!$is_init_variable && $echo
+                // compile the variable for php
+                if (isset($function)) {
+                    $php_var = $php_left_delimiter.(!$is_init_variable && $echo ? 'echo ' : null).($params ? "( {$function}( {$php_var}, {$params} ) )" : "{$function}( {$php_var} )").$php_right_delimiter;
+                } else {
+                    $arith = '(\s*(\+|\-|\*|\/|%)\s*[a-z0-9]*)?';
+                    $php_var = $php_left_delimiter.
+                            (
+                                !$is_init_variable && $echo
                             ? 'echo '.
                             (
                                 preg_match('#\_[n|b]$|\_a(\[.+?\])?'.$arith.'$|key[0-9]+'.$arith.'$|value[0-9]+(\[.+?\])?'.$arith.'$|counter[0-9]+'.$arith.'$#i', "$php_var$extra_var") ? //match loop variables, template variable [ boolean: _b, array: _a, nerdz values n]
@@ -735,7 +736,7 @@ final class RainTPL
                             )
                             : $php_var.$extra_var
                         ).$php_right_delimiter;
-                    }
+                }
 
                 $html = str_replace($tag, $php_var, $html);
             }
@@ -782,7 +783,8 @@ final class RainTPL
             throw $e;
         }
 
-        $output = sprintf('<h2>Exception: %s</h2><h3>%s</h3><p>template: %s</p>',
+        $output = sprintf(
+            '<h2>Exception: %s</h2><h3>%s</h3><p>template: %s</p>',
             get_class($e),
             $e->getMessage(),
             $e->getTemplateFile()
@@ -802,8 +804,10 @@ final class RainTPL
                 $output .= '<h3>template code</h3>'.implode('<br />', $rows).'</pre>';
             }
         }
-        $output .= sprintf('<h3>trace</h3><p>In %s on line %d</p><pre>%s</pre>',
-            $e->getFile(), $e->getLine(),
+        $output .= sprintf(
+            '<h3>trace</h3><p>In %s on line %d</p><pre>%s</pre>',
+            $e->getFile(),
+            $e->getLine(),
             nl2br(htmlspecialchars($e->getTraceAsString()))
         );
 

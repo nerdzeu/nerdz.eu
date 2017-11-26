@@ -52,5 +52,6 @@ die(is_object($rev) ?
         [
             'datetime' => $user->getDate($rev->time).' '.$user->getTime($rev->time),
             'message' => $message->bbcode($rev->message),
-        ]) :
+        ]
+    ) :
         NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));

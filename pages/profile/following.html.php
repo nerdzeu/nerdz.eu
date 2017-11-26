@@ -36,7 +36,9 @@ $dateExtractor = function ($friendId) use ($id, $user) {
                 ':id' => $profileId,
                 ':fid' => $friendId,
             ],
-        ], Db::FETCH_OBJ);
+        ],
+        Db::FETCH_OBJ
+    );
     if (!$since) {
         $since = new StdClass();
         $since->time = 0;

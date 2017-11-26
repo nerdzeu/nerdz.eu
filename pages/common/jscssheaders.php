@@ -38,7 +38,6 @@ if (User::isOnMobileHost()) {
     ?>
 	<meta name="theme-color" content="#1D1B1B">
 <?php
-
 } /* END MOBILE_META_TAGS */
 $static_domain = System::getResourceDomain();
 /* BEGIN WINDOWS_META_TAGS */
@@ -48,19 +47,17 @@ if ($uagdata['platform'] == 'Windows' && (float) $uagdata['version'] >= 10) {
     <meta name="msapplication-TileColor" content="#1D1B1B" /> 
     <meta name="msapplication-TileImage" content="/static/images/winicon.png" />
 <?php
-
 } /* END WINDOWS_META_TAGS */
 /* BEGIN FAVICON */
 if (User::isOnMobileHost()) {
     ?>
     <link rel="manifest" href="<?php echo $static_domain; ?>/static/webapp/manifest.json" />
-    <?php 
+    <?php
 } else {
-    ?>
+        ?>
     <link rel="icon" type="image/x-icon" href="<?php echo $static_domain; ?>/static/images/favicon.ico" />
 <?php
-
-} /* END FAVICON */
+    } /* END FAVICON */
 ?>
 <link rel="image_src" href="<?php echo $static_domain;?>/static/images/N.png">
 <link rel="stylesheet" type="text/css" href="<?php echo $static_domain;?>/static/css/pgwmodal.min.css" />
@@ -123,7 +120,6 @@ if (isset($headers['js']['staticData']['outputVersion']) && $headers['js']['stat
     unset($headers['js']['staticData']['outputVersion']); ?>
     N.version = '<?=System::getVersion()?>';
 <?php
-
 } /* END NERDZ_VERSION */
 /* BEGIN NERDZ_STATIC_DATA */
 ?>
@@ -143,7 +139,6 @@ if ($logged) {
     N.idiots=<?=json_encode($jsonIdiots)?>,
     N.tplVars=<?=$user->getTemplateVariables()?>;
 <?php
-
 }
 ?>
 </script>

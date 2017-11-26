@@ -153,7 +153,9 @@ class Feed extends Messages
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ)) || $p->private)) {
+            ],
+            Db::FETCH_OBJ
+        )) || $p->private)) {
             return $this->error('Private profile OR undefined error');
         }
 
@@ -190,7 +192,9 @@ class Feed extends Messages
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return $this->error('Undefined error');
         }
 

@@ -36,7 +36,9 @@ case 'del':
                 ':me' => $_SESSION['id'],
                 ':to' => $_POST['id'],
             ],
-        ], Db::FETCH_ERRNO)) {
+        ],
+        Db::FETCH_ERRNO
+    )) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
     }
     break;
@@ -52,7 +54,9 @@ case 'add':
                         ':to' => $_POST['id'],
                         ':motivation' => $motivation,
                     ],
-                ], Db::FETCH_ERRNO)) {
+                ],
+            Db::FETCH_ERRNO
+        )) {
             die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
         }
     } else {

@@ -54,7 +54,9 @@ if ((isset($id) || isset($gid)) && isset($pid)) {
                     ':pid' => $pid,
                     ':new' => $new,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+        Db::FETCH_OBJ
+    ))) {
         die('Error');
     }
 } elseif (isset($pcid) || isset($gcid)) {
@@ -65,7 +67,9 @@ if ((isset($id) || isset($gid)) && isset($pid)) {
                 [
                     ':hcid' => $new,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+        Db::FETCH_OBJ
+    ))) {
         die('error');
     }
 } else {

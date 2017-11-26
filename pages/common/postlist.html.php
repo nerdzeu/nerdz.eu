@@ -71,7 +71,8 @@ $vals['list_a'] = $messages->$method(
         $onlyfollowed   ? ['onlyfollowed' => $onlyfollowed]  : [],
         $lang           ? ['lang' => $lang]          : [],
         $search         ? ['search' => $search]        : []
-    ));
+    )
+);
 
 if (empty($vals['list_a']) || (!$logged && $beforeHpid)) {
     die('');

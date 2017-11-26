@@ -34,7 +34,9 @@ if (!$client_id || !$redirect_uri || !$response_type || !$scopes) {
             [
                 ':id' => $client_id,
             ],
-        ], Db::FETCH_OBJ);
+        ],
+        Db::FETCH_OBJ
+    );
 
     if (!$client) {
         $vals['error_n'] = "{$user->lang('ERROR')}: client not found";

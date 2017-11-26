@@ -62,7 +62,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'vars') {
                     ':theme' => $theme,
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_ERRNO)) {
+            ],
+        Db::FETCH_ERRNO
+    )) {
         die(NERDZ\Core\Utils::JSONResponse('error', 'Update: '.$user->lang('ERROR')));
     }
 

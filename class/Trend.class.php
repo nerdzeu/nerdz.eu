@@ -39,7 +39,10 @@ class Trend
                 from posts_classification group by lower(tag)
             ) as tbl
             on lower(tbl.tag) = lower(t.tag) and tbl.maxtime = t.time
-            order by time desc limit 10', Db::FETCH_OBJ, true))) {
+            order by time desc limit 10',
+            Db::FETCH_OBJ,
+            true
+        ))) {
             return $ret;
         }
 
@@ -61,7 +64,10 @@ class Trend
                         'select count(*) as cc, lower(tag) as tag
                         from posts_classification
                         group by lower(tag)
-                        order by cc desc limit 10', Db::FETCH_OBJ, true))) {
+                        order by cc desc limit 10',
+            Db::FETCH_OBJ,
+            true
+        ))) {
             return $ret;
         }
 

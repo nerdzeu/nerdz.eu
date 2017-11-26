@@ -146,14 +146,18 @@ class Security
                 [
                     ':user' => $id,
                 ],
-            ], Db::FETCH_OBJ)) ||
+            ],
+            Db::FETCH_OBJ
+        )) ||
             Db::NO_ERRNO != Db::query(
                 [
                     'UPDATE "profiles" SET "pushregtime" = NOW() WHERE "counter" = :user',
                     [
                         ':user' => $id,
                     ],
-                ], Db::FETCH_ERRNO)
+                ],
+                Db::FETCH_ERRNO
+            )
             ) {
             return false;
         }

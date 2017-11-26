@@ -33,7 +33,9 @@ if (!($o = Db::query(
         [
             ':id' => $_SESSION['id'],
         ],
-    ], Db::FETCH_OBJ))) {
+    ],
+    Db::FETCH_OBJ
+))) {
     die($user->lang('ERROR'));
 }
 

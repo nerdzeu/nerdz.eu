@@ -51,7 +51,9 @@ if ($motivation) {
                 ':motivation' => $motivation,
                 ':counter' => $_SESSION['id'],
             ],
-        ], Db::NO_RETURN);
+        ],
+        Db::NO_RETURN
+    );
 }
 
 $user->logout();

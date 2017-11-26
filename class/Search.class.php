@@ -56,7 +56,9 @@ class Search
                 [
                     ':contains' => "%{$contains}%",
                 ],
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return [];
         }
 
@@ -120,7 +122,9 @@ class Search
                     [':tag' => $tag],
                     $hpid ? [':hpid' => $hpid] : []
                 ),
-            ], Db::FETCH_STMT))
+            ],
+            Db::FETCH_STMT
+        ))
         ) {
             return [];
         }
@@ -128,11 +132,13 @@ class Search
         $c = 0;
         $ret = [];
         while (($row = $result->fetch(PDO::FETCH_OBJ))) {
-            $ret[$c] = $this->messages->getPost($row,
+            $ret[$c] = $this->messages->getPost(
+                $row,
                 [
                     'project' => $row->group,
                     'truncate' => true,
-                ]);
+                ]
+            );
             ++$c;
         }
         $this->log($tag);

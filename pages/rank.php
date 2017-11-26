@@ -35,7 +35,9 @@ if (!($ret = Utils::apcu_get($path))) {
             FROM "comments"
             WHERE "from" <> (SELECT counter FROM special_users WHERE role = \'DELETED\')'.(!$mo ? $un_ti : '').
             ' GROUP BY "from"
-            ORDER BY cc DESC LIMIT 100', Db::FETCH_STMT);
+            ORDER BY cc DESC LIMIT 100',
+            Db::FETCH_STMT
+        );
 
         $rank = [];
 
@@ -46,7 +48,9 @@ if (!($ret = Utils::apcu_get($path))) {
                     [
                         ':from' => $o->from,
                     ],
-                ], Db::FETCH_OBJ);
+                ],
+                Db::FETCH_OBJ
+            );
 
             $us = User::getUsername($o->from);
             $n = $o->cc + $gc->cc;

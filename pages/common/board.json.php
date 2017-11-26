@@ -52,7 +52,9 @@ case 'add':
                 'issue' => !empty($_POST['issue']),
                 'project' => $prj,
                 'language' => !empty($_POST['language']) ? $_POST['language'] : false,
-            ]))
+            ]
+        )
+    )
         );
     break;
 

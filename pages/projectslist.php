@@ -53,13 +53,16 @@ if (($r = Db::query($query, Db::FETCH_STMT))) {
     }
 }
 
-\NERDZ\Core\Security::setNextAndPrevURLs($vals, $limit,
+\NERDZ\Core\Security::setNextAndPrevURLs(
+    $vals,
+    $limit,
     [
         'order' => $order,
         'query' => $q,
         'field' => empty($_GET['orderby']) ? '' : $_GET['orderby'],
         'validFields' => $validFields,
-    ]);
+    ]
+);
 
 $user->getTPL()->assign($vals);
 $user->getTPL()->draw('base/projectslist');

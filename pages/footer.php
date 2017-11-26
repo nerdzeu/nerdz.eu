@@ -36,7 +36,6 @@ if (in_array($_SERVER['SCRIPT_NAME'], array('/profile.php', '/project.php'))) {
  })();
 </script>
 <?php
-
 } // end G+ js (only in profiles and projects)
 ?>
 <script>
@@ -61,5 +60,5 @@ if (!isset($_COOKIE['stupid_and_useless_cookielaw'])) {
         document.cookie = "stupid_and_useless_cookielaw=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/; domain=<?php echo System::getSafeCookieDomainName() ?>";
     });
     </script>
-<?php 
+<?php
 } ?>

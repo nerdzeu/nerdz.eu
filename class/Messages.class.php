@@ -76,8 +76,11 @@ class Messages
             }
 
             while ($key > 0) {
-                $codes[] = substr($str, $start[$i] + $codeType['start_len'],
-                    $end[$i] - $start[$i] - $codeType['start_len']);
+                $codes[] = substr(
+                    $str,
+                    $start[$i] + $codeType['start_len'],
+                    $end[$i] - $start[$i] - $codeType['start_len']
+                );
                 ++$i;
                 --$key;
             }
@@ -302,21 +305,29 @@ class Messages
         }
 
         while (preg_match('#\[spoiler\](.+?)\[/spoiler\]#i', $str)) {
-            $str = preg_replace('#\[spoiler\](.+?)\[/spoiler]#i',
+            $str = preg_replace(
+                '#\[spoiler\](.+?)\[/spoiler]#i',
                 '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">SPOILER:</span>
                 <div style="display:none"><hr /></div>
                 <div style="display:none; margin-left:3%;overflow:hidden">$1</div>
-                </div>', $str, 1);
+                </div>',
+                $str,
+                1
+            );
         }
 
         while (preg_match('#\[spoiler=(.+?)\](.+?)\[/spoiler\]#i', $str)) {
-            $str = preg_replace('#\[spoiler=(.+?)\](.+?)\[/spoiler]#i',
+            $str = preg_replace(
+                '#\[spoiler=(.+?)\](.+?)\[/spoiler]#i',
                 '<div class="spoiler" onclick="var c = $(this).children(\'div\'); c.toggle(\'fast\'); c.on(\'click\',function(e) {e.stopPropagation();});">
                 <span style="font-weight: bold; cursor:pointer">$1:</span>
                 <div style="display:none"><hr /></div>
                 <div style="display:none; margin-left:3%;overflow:hidden">$2</div>
-                </div>', $str, 1);
+                </div>',
+                $str,
+                1
+            );
         }
 
         $str = preg_replace_callback('#\[music\]\s*(.+?)\s*\[/music\]#i', function ($m) use ($truncate) {
@@ -456,7 +467,9 @@ class Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_OBJ))
+            ],
+            Db::FETCH_OBJ
+        ))
         ) {
             return '';
         }
@@ -467,13 +480,17 @@ class Messages
     public static function getTags($hpid, $project = false)
     {
         $field = ($project ? 'g' : 'u').'_hpid';
-        if (!is_numeric($hpid) || !($all = Db::query(
+        if (!is_numeric($hpid) || !(
+            $all = Db::query(
             [
                 "SELECT tag FROM posts_classification WHERE {$field} = :hpid",
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_OBJ, $all = true)
+            ],
+            Db::FETCH_OBJ,
+            $all = true
+        )
         )) {
             return [];
         }
@@ -493,12 +510,14 @@ class Messages
         $c = 0;
         $ret = [];
         while (($row = $result->fetch(PDO::FETCH_OBJ))) {
-            $ret[$c] = $this->getPost($row,
+            $ret[$c] = $this->getPost(
+                $row,
                 [
                     'inHome' => true,
                     'project' => $row->type === 0,
                     'truncate' => true,
-                ]);
+                ]
+            );
 
             $ret[$c]['news_b'] = $row->type === 0
                 ? $row->to == Config\PROJECTS_NEWS
@@ -584,7 +603,9 @@ class Messages
                     $search          ? [':like' => '%'.str_replace('%', '\%', $search).'%'] : []
                 ),
 
-            ], Db::FETCH_STMT))
+            ],
+            Db::FETCH_STMT
+        ))
         ) {
             return [];
         }
@@ -592,12 +613,14 @@ class Messages
         $c = 0;
         $ret = [];
         while (($row = $result->fetch(PDO::FETCH_OBJ))) {
-            $ret[$c] = $this->getPost($row,
+            $ret[$c] = $this->getPost(
+                $row,
                 [
                     'inHome' => true,
                     'project' => $row->type === 0,
                     'truncate' => $truncate,
-                ]);
+                ]
+            );
 
             $ret[$c]['news_b'] = $row->type === 0
                 ? $row->to == Config\PROJECTS_NEWS
@@ -686,7 +709,9 @@ class Messages
                     $search          ? [':like' => '%'.str_replace('%', '\%', $search).'%'] : []
                 ),
 
-            ], Db::FETCH_STMT))
+            ],
+            Db::FETCH_STMT
+        ))
         ) {
             return [];
         }
@@ -694,11 +719,13 @@ class Messages
         $c = 0;
         $ret = [];
         while (($row = $result->fetch(PDO::FETCH_OBJ))) {
-            $ret[$c] = $this->getPost($row,
+            $ret[$c] = $this->getPost(
+                $row,
                 [
                     'project' => $project,
                     'truncate' => $truncate,
-                ]);
+                ]
+            );
             ++$c;
         }
 
@@ -733,7 +760,9 @@ class Messages
                     ':news' => $news ? 'true' : 'false',
                     ':language' => $language,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
 
         if ($retStr != Db::NO_ERRSTR) {
             return $retStr;
@@ -745,7 +774,9 @@ class Messages
             $client->authenticate(Config\ISSUE_GIT_KEY, null, \Github\client::AUTH_URL_TOKEN);
             $message = static::stripTags($message);
             try {
-                $client->api('issue')->create('nerdzeu', 'nerdz.eu',
+                $client->api('issue')->create(
+                    'nerdzeu',
+                    'nerdz.eu',
                     [
                         'title' => substr($message, 0, 128),
                         'body' => User::getUsername().': '.$message,
@@ -770,7 +801,9 @@ class Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_OBJ)) ||
+            ],
+            Db::FETCH_OBJ
+        )) ||
             !$this->canClose(['from' => $obj->from, 'to' => $obj->to], $project)
         ) {
             return 'ERROR';
@@ -782,7 +815,9 @@ class Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function close($hpid, $project = false)
@@ -795,7 +830,9 @@ class Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_OBJ)) ||
+            ],
+            Db::FETCH_OBJ
+        )) ||
             !$this->canClose(['from' => $obj->from, 'to' => $obj->to], $project)
         ) {
             return 'ERROR';
@@ -807,7 +844,9 @@ class Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function delete($hpid, $project = true)
@@ -820,7 +859,9 @@ class Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 'ERROR';
         }
 
@@ -831,7 +872,9 @@ class Messages
                     [
                         ':hpid' => $hpid,
                     ],
-                ], Db::FETCH_ERRNO);
+                ],
+                Db::FETCH_ERRNO
+            );
     }
 
     public function edit($hpid, $message, $project = false)
@@ -845,7 +888,9 @@ class Messages
                 [
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_OBJ)) ||
+            ],
+            Db::FETCH_OBJ
+        )) ||
             !$this->canEdit(['from' => $obj->from, 'to' => $obj->to], $project)
         ) {
             return 'ERROR';
@@ -858,7 +903,9 @@ class Messages
                     ':message' => $message,
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function canClose($post, $project = false)
@@ -879,10 +926,13 @@ class Messages
     {
         return $this->user->isLogged() && (
             $project
-            ? in_array($_SESSION['id'], array_merge(
+            ? in_array(
+                $_SESSION['id'],
+                array_merge(
                 (array) $this->project->getMembers($post['to']),
                 (array) $this->project->getOwner($post['to']),
-                (array) $post['from'])
+                (array) $post['from']
+            )
             )
             : in_array($_SESSION['id'], [$post['to'], $post['from']])
         );
@@ -905,67 +955,231 @@ class Messages
                         ':hpid' => $post['hpid'],
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::ROW_COUNT) > 0
+                ],
+                Db::ROW_COUNT
+            ) > 0
             );
     }
 
     public static function stripTags($message)
     {
-        return str_replace('[', '', str_ireplace('[url=&quot;', '',
-            str_ireplace('[url=', '',
-            str_replace('&quot;]', ' ',
-            str_replace(']', ' ',
-            str_ireplace('[url]', '',
-            str_ireplace('[twitter]', '',
-            str_ireplace('[/twitter]', '',
-            str_ireplace('[video]', '',
-            str_ireplace('[/video]', '',
-            str_ireplace('[music]', '',
-            str_ireplace('[/music]', '',
-            str_ireplace('[img]', '',
-            str_ireplace('[/img]', '',
-            str_ireplace('[/url]', '',
-            str_ireplace('[youtube]', '',
-            str_ireplace('[/youtube]', '',
-            str_ireplace('[yt]', '',
-            str_ireplace('[/yt]', '',
-            str_ireplace('[i]', '',
-            str_ireplace('[/i]', '',
-            str_ireplace('[b]', '',
-            str_ireplace('[/b]', '',
-            str_ireplace('[code=', '',
-            str_ireplace('[c=', '',
-            str_ireplace('[/c]', '',
-            str_ireplace('[/code]', '',
-            str_ireplace('[cur]', '',
-            str_ireplace('[/cur]', '',
-            str_ireplace('[list]', '',
-            str_ireplace('[/list]', '',
-            str_ireplace('[gist]', '',
-            str_replace('[*]', '',
-            str_ireplace('[quote]', '',
-            str_ireplace('[user]', '',
-            str_ireplace('[/user]', '',
-            str_ireplace('[project]', '',
-            str_ireplace('[/project]', '',
-            str_ireplace('[spoiler]', '',
-            str_ireplace('[spoiler=', '',
-            str_ireplace('[/spoiler]', '',
-            str_ireplace('[small]', '',
-            str_ireplace('[/small]', '',
-            str_ireplace('[m]', '',
-            str_ireplace('[/m]', '',
-            str_ireplace('[math]', '',
-            str_ireplace('[/math]', '',
-            str_ireplace('[wiki=', '',
-            str_ireplace('[/wiki]', '',
-            str_ireplace('[u]', '',
-            str_ireplace('[big]', '',
-            str_ireplace('[/u]', '',
-            str_ireplace('[/big]', '',
-            str_ireplace('[hr]', '',
-            str_ireplace('[wat]', '',
-            str_ireplace('[quote=', '', $message))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+        return str_replace('[', '', str_ireplace(
+            '[url=&quot;',
+            '',
+            str_ireplace(
+                '[url=',
+                '',
+            str_replace(
+                '&quot;]',
+                ' ',
+            str_replace(
+                ']',
+                ' ',
+            str_ireplace(
+                '[url]',
+                '',
+            str_ireplace(
+                '[twitter]',
+                '',
+            str_ireplace(
+                '[/twitter]',
+                '',
+            str_ireplace(
+                '[video]',
+                '',
+            str_ireplace(
+                '[/video]',
+                '',
+            str_ireplace(
+                '[music]',
+                '',
+            str_ireplace(
+                '[/music]',
+                '',
+            str_ireplace(
+                '[img]',
+                '',
+            str_ireplace(
+                '[/img]',
+                '',
+            str_ireplace(
+                '[/url]',
+                '',
+            str_ireplace(
+                '[youtube]',
+                '',
+            str_ireplace(
+                '[/youtube]',
+                '',
+            str_ireplace(
+                '[yt]',
+                '',
+            str_ireplace(
+                '[/yt]',
+                '',
+            str_ireplace(
+                '[i]',
+                '',
+            str_ireplace(
+                '[/i]',
+                '',
+            str_ireplace(
+                '[b]',
+                '',
+            str_ireplace(
+                '[/b]',
+                '',
+            str_ireplace(
+                '[code=',
+                '',
+            str_ireplace(
+                '[c=',
+                '',
+            str_ireplace(
+                '[/c]',
+                '',
+            str_ireplace(
+                '[/code]',
+                '',
+            str_ireplace(
+                '[cur]',
+                '',
+            str_ireplace(
+                '[/cur]',
+                '',
+            str_ireplace(
+                '[list]',
+                '',
+            str_ireplace(
+                '[/list]',
+                '',
+            str_ireplace(
+                '[gist]',
+                '',
+            str_replace(
+                '[*]',
+                '',
+            str_ireplace(
+                '[quote]',
+                '',
+            str_ireplace(
+                '[user]',
+                '',
+            str_ireplace(
+                '[/user]',
+                '',
+            str_ireplace(
+                '[project]',
+                '',
+            str_ireplace(
+                '[/project]',
+                '',
+            str_ireplace(
+                '[spoiler]',
+                '',
+            str_ireplace(
+                '[spoiler=',
+                '',
+            str_ireplace(
+                '[/spoiler]',
+                '',
+            str_ireplace(
+                '[small]',
+                '',
+            str_ireplace(
+                '[/small]',
+                '',
+            str_ireplace(
+                '[m]',
+                '',
+            str_ireplace(
+                '[/m]',
+                '',
+            str_ireplace(
+                '[math]',
+                '',
+            str_ireplace(
+                '[/math]',
+                '',
+            str_ireplace(
+                '[wiki=',
+                '',
+            str_ireplace(
+                '[/wiki]',
+                '',
+            str_ireplace(
+                '[u]',
+                '',
+            str_ireplace(
+                '[big]',
+                '',
+            str_ireplace(
+                '[/u]',
+                '',
+            str_ireplace(
+                '[/big]',
+                '',
+            str_ireplace(
+                '[hr]',
+                '',
+            str_ireplace(
+                '[wat]',
+                '',
+            str_ireplace('[quote=', '', $message)
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+            )
+        ));
     }
 
     public function getThumbs($hpid, $project = false)
@@ -1097,23 +1311,42 @@ class Messages
             }
 
             if ($tag == 'c') { // short
-                $str = str_ireplace("[c={$lang}]{$totalcode}[/c]",
+                $str = str_ireplace(
+                    "[c={$lang}]{$totalcode}[/c]",
                     '<span class="nerdz-code-wrapper" title="'.$lang.'"><code class="prettyprint lang-'.$lang.'" style="border:0px; word-wrap: break-word">'.
-                    str_replace("\n", '<br />',
-                        str_replace(' ', '&nbsp;',
-                        str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $totalcode))).'</code></span>', $str);
+                    str_replace(
+                        "\n",
+                        '<br />',
+                        str_replace(
+                            ' ',
+                            '&nbsp;',
+                        str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $totalcode)
+                        )
+                    ).'</code></span>',
+                    $str
+                );
             } else { // long
-                $str = str_ireplace("[code={$lang}]{$totalcode}[/code]",
+                $str = str_ireplace(
+                    "[code={$lang}]{$totalcode}[/code]",
                     '<div class="nerdz-code-wrapper">
-                    <div class="nerdz-code-title">'.$lang.':'.(empty($codeurl)
+                    <div class="nerdz-code-title">'.$lang.':'.(
+                        empty($codeurl)
                     ? ''
                     : '<a href="'.$codeurl.'" onclick="window.open(this.href); return false" class="nerdz-code-text-version">'.
                     $this->user->lang('TEXT_VERSION').'</a>'
                 ).
                 '</div><code class="prettyprint lang-'.$lang.'" style="border:0px; overflow-x:auto; word-wrap: normal; display:block">'.
-                str_replace("\n", '<br />',
-                    str_replace(' ', '&nbsp;',
-                    str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $totalcode))).'</code></div>', $str);
+                str_replace(
+                    "\n",
+                    '<br />',
+                    str_replace(
+                        ' ',
+                        '&nbsp;',
+                    str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $totalcode)
+                    )
+                ).'</code></div>',
+                    $str
+                );
                 ++$i;
             }
         }
@@ -1145,7 +1378,9 @@ class Messages
                     [
                         ':hpid' => $dbPost,
                     ],
-                ], Db::FETCH_OBJ))
+                ],
+                Db::FETCH_OBJ
+            ))
             ) {
                 return new \StdClass();
             }
@@ -1227,7 +1462,9 @@ class Messages
                         ':hpid' => $hpid,
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::FETCH_OBJ))
+                ],
+                Db::FETCH_OBJ
+            ))
             ) {
                 return 0;
             }
@@ -1238,7 +1475,9 @@ class Messages
                     [
                         ':hpid' => $hpid,
                     ],
-                ], Db::FETCH_OBJ))
+                ],
+                Db::FETCH_OBJ
+            ))
             ) {
                 return 0;
             }

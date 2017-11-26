@@ -54,7 +54,9 @@ $ret = Db::query(
         'UPDATE users SET "timezone" = :timezone, "name" = :name,
         "surname" = :surname,"email" = :email,"gender" = :gender, "birth_date" = :date
         '.($updatedPassword ? ', "password" = crypt(:password, gen_salt(\'bf\', 7))' : '').' WHERE counter = :id', $params,
-    ], Db::FETCH_ERRSTR);
+    ],
+    Db::FETCH_ERRSTR
+);
 
 if ($ret != Db::NO_ERRSTR) {
     die(NERDZ\Core\Utils::jsonDbResponse($ret));

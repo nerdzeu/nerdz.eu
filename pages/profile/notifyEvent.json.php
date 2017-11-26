@@ -79,7 +79,9 @@ if (!$user->isLogged()) {
                         ':on' => $viewonline,
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+            Db::NO_RETURN
+        );
 
         if (($o = Db::query(
             [
@@ -87,7 +89,9 @@ if (!$user->isLogged()) {
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             if (empty($o->remote_addr) || empty($_SESSION['remote_addr']) ||
                 $o->remote_addr != IpUtils::getIp()) {
                 Db::query(
@@ -97,7 +101,9 @@ if (!$user->isLogged()) {
                             ':addr' => IpUtils::getIp(),
                             ':id' => $_SESSION['id'],
                         ],
-                    ], Db::NO_RETURN);
+                    ],
+                    Db::NO_RETURN
+                );
 
                 $dontSendCacheLimiter();
                 $_SESSION['remote_addr'] = IpUtils::getIp();
@@ -113,7 +119,9 @@ if (!$user->isLogged()) {
                             ':uag' => htmlspecialchars($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8'),
                                 ':id' => $_SESSION['id'],
                             ],
-                        ], Db::NO_RETURN);
+                        ],
+                    Db::NO_RETURN
+                );
 
                 $dontSendCacheLimiter();
                 $_SESSION['http_user_agent'] = $_SERVER['HTTP_USER_AGENT'];

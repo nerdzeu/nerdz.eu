@@ -52,7 +52,9 @@ if ($email !== false && $captcha !== false) { // 1st step
             [
                 ':email' => $email,
             ],
-        ], Db::FETCH_OBJ))) {
+        ],
+        Db::FETCH_OBJ
+    ))) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('USER_NOT_FOUND')));
     }
 
@@ -70,7 +72,9 @@ if ($email !== false && $captcha !== false) { // 1st step
                     ':token' => $token,
                     ':to' => $obj->counter,
                 ],
-            ], Db::FETCH_ERRNO)) {
+            ],
+        Db::FETCH_ERRNO
+    )) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'(1): '.$user->lang('TRY_LATER')));
     }
 
@@ -82,7 +86,9 @@ if ($email !== false && $captcha !== false) { // 1st step
                 ':token' => $token,
                 ':to' => $obj->counter,
             ],
-        ], Db::FETCH_OBJ))) {
+        ],
+        Db::FETCH_OBJ
+    ))) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'(4): '.$user->lang('TRY_LATER')));
     }
 
@@ -125,7 +131,9 @@ if ($email !== false && $captcha !== false) { // 1st step
             [
                 ':key' => $key,
             ],
-        ], Db::FETCH_OBJ))) {
+        ],
+        Db::FETCH_OBJ
+    ))) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'(2): '.$user->lang('TRY_LATER')));
     }
 
@@ -140,7 +148,9 @@ if ($email !== false && $captcha !== false) { // 1st step
                 ':to' => $obj->to,
                 ':key' => $key,
             ],
-        ], Db::FETCH_ERRNO)) {
+        ],
+        Db::FETCH_ERRNO
+    )) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').'(3): '.$user->lang('TRY_LATER')));
     }
 
@@ -151,7 +161,9 @@ if ($email !== false && $captcha !== false) { // 1st step
                     ':pass' => $password,
                     ':id' => $obj->to,
                 ],
-            ], Db::FETCH_ERRNO)) {
+            ],
+        Db::FETCH_ERRNO
+    )) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': retry'));
     }
 

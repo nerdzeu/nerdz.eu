@@ -62,7 +62,9 @@ class Project
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ);
+            ],
+            Db::FETCH_OBJ
+        );
     }
 
     public function getBasicInfo($id = null)
@@ -102,7 +104,9 @@ class Project
                     [
                         ':name' => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
                     ],
-                ], Db::FETCH_OBJ))) {
+                ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -118,7 +122,9 @@ class Project
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -134,7 +140,9 @@ class Project
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return false;
         }
 
@@ -154,7 +162,9 @@ class Project
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return [];
         }
 
@@ -174,7 +184,9 @@ class Project
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return [];
         }
 
@@ -190,7 +202,9 @@ class Project
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -206,7 +220,9 @@ class Project
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -234,7 +250,10 @@ class Project
                     ':me' => $_SESSION['id'],
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ, true))) {
+            ],
+            Db::FETCH_OBJ,
+            true
+        ))) {
             return [];
         }
 
@@ -259,7 +278,9 @@ class Project
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 'WTF: '.$id;
         }
 

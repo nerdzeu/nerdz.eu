@@ -62,7 +62,8 @@ class Utils
             $value = $url;
         }
 
-        return filter_var($value, FILTER_VALIDATE_URL);
+        return (strpos($value, "http://") === 0 || strpos($value, "https://") === 0) &&
+            filter_var($value, FILTER_VALIDATE_URL) !== false;
     }
 
     public static function getValidImageURL($url)

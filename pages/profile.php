@@ -68,7 +68,9 @@ if ($enter) {
         [
             'SELECT EXTRACT(EPOCH FROM "registration_time") AS registration_time from "users" WHERE "counter" = :id',
                 $ida,
-            ], Db::FETCH_OBJ))) {
+            ],
+        Db::FETCH_OBJ
+    ))) {
         die($user->lang('ERROR'));
     }
 
@@ -98,22 +100,28 @@ if ($enter) {
     $apcu_name = 'userstuff'.$info->counter.Config\SITE_HOST;
     if (!($stuff = Utils::apcu_get($apcu_name))) {
         $stuff = Utils::apcu_set($apcu_name, function () use ($user, $ida) {
-            if (!($o = Db::query(
+            if (!(
+                $o = Db::query(
                 [
                     'SELECT COUNT("hcid") AS cc FROM "comments" WHERE "from" = :id',
                         $ida,
-                    ], Db::FETCH_OBJ)
+                    ],
+                Db::FETCH_OBJ
+            )
                 )) {
                 die($user->lang('ERROR'));
             }
 
             $n = $o->cc;
 
-            if (!($o = Db::query(
+            if (!(
+                $o = Db::query(
                 [
                     'SELECT COUNT("hcid") AS cc FROM "groups_comments" WHERE "from" = :id',
                         $ida,
-                    ], Db::FETCH_OBJ)
+                    ],
+                Db::FETCH_OBJ
+            )
                 )) {
                 die($user->lang('ERROR'));
             }
@@ -131,11 +139,14 @@ if ($enter) {
     $vals['stupidstuffless_n'] = $stuff['less'];
     $vals['totalcomments_n'] = $stuff['n'];
 
-    if (!($o = Db::query(
+    if (!(
+        $o = Db::query(
         [
             'SELECT EXTRACT(EPOCH FROM "last") AS last from "users" WHERE "counter" = :id',
                 $ida,
-            ], Db::FETCH_OBJ)
+            ],
+        Db::FETCH_OBJ
+    )
         )) {
         die($user->lang('ERROR'));
     }
@@ -178,14 +189,17 @@ if ($enter) {
 
     $vals['interests_a'] = $user->getInterests($info->counter);
 
-    if (!($r = Db::query(
+    if (!(
+        $r = Db::query(
         [
             'SELECT "name"
             FROM "groups" g INNER JOIN "groups_owners" go
             ON go."to" = g.counter
             WHERE go."from" = :id',
             $ida,
-        ], Db::FETCH_STMT)
+        ],
+        Db::FETCH_STMT
+    )
     )) {
         die($user->lang('ERROR'));
     }
@@ -200,11 +214,14 @@ if ($enter) {
     }
     usort($vals['ownerof_a'], '\\NERDZ\\Core\\Utils::sortByUsername');
 
-    if (!($r = Db::query(
+    if (!(
+        $r = Db::query(
         [
             'SELECT "name" FROM "groups" INNER JOIN "groups_members" ON "groups"."counter" = "groups_members"."to" WHERE "from" = :id',
             $ida,
-        ], Db::FETCH_STMT)
+        ],
+        Db::FETCH_STMT
+    )
     )) {
         die($user->lang('ERROR'));
     }
@@ -220,11 +237,14 @@ if ($enter) {
 
     usort($vals['memberof_a'], '\\NERDZ\\Core\\Utils::sortByUsername');
 
-    if (!($r = Db::query(
+    if (!(
+        $r = Db::query(
         [
             'SELECT "name" FROM "groups" INNER JOIN "groups_followers" ON "groups"."counter" = "groups_followers"."to" WHERE "from" = :id',
             $ida,
-        ], Db::FETCH_STMT)
+        ],
+        Db::FETCH_STMT
+    )
     )) {
         die($user->lang('ERROR'));
     }
@@ -256,14 +276,17 @@ if ($enter) {
             //fake post not found [ same trick in the header ]
 
             $user->getTPL()->draw('profile/postnotfound');
-        } elseif (!($post = Db::query(
+        } elseif (!(
+            $post = Db::query(
             [
                 'SELECT "hpid" FROM "posts" WHERE "pid" = :pid AND "to" = :id',
                 array_merge(
                     [':pid' => $pid],
                     $ida
                 ),
-            ], Db::FETCH_OBJ)
+            ],
+            Db::FETCH_OBJ
+        )
         )) {
             $user->getTPL()->draw('profile/postnotfound');
         } else {

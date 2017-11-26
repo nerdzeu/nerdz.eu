@@ -69,7 +69,9 @@ if (($info->private && !$vals['logged_b']) ||
                 [
                     ':id' => $info->counter,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             die($user->lang('ERROR'));
         }
 
@@ -137,7 +139,9 @@ if (($info->private && !$vals['logged_b']) ||
                         ':pid' => $pid,
                         ':gid' => $gid,
                     ],
-                ], Db::FETCH_OBJ))
+                ],
+                Db::FETCH_OBJ
+            ))
                 || $user->hasInBlacklist($post->from) // fake post not found
             ) {
                 $user->getTPL()->draw('project/postnotfound');

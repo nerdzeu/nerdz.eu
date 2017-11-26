@@ -57,7 +57,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -129,7 +131,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -144,7 +148,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::FETCH_OBJ))) {
+                ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -163,7 +169,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -178,7 +186,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::FETCH_OBJ))) {
+                ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -193,7 +203,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::FETCH_OBJ))) {
+                ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -210,7 +222,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -225,7 +239,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -240,7 +256,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -255,7 +273,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -380,7 +400,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT);
+            ],
+            Db::FETCH_STMT
+        );
 
         while (($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
             [
@@ -388,13 +410,17 @@ class Notification
                 [
                     ':hpid' => $o->hpid,
                 ],
-            ], Db::FETCH_OBJ))
+            ],
+            Db::FETCH_OBJ
+        ))
         ) {
             $ret[$i++] = $this->get(
                 [
                     'row' => $o,
                     'post' => $p,
-                ], static::USER_COMMENT);
+                ],
+                static::USER_COMMENT
+            );
         }
 
         if ($del) {
@@ -404,7 +430,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -422,23 +450,30 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT);
+            ],
+            Db::FETCH_STMT
+        );
 
         $to = User::getUsername($_SESSION['id']);
 
-        while (($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
+        while (($o = $result->fetch(PDO::FETCH_OBJ)) && (
+            $p = Db::query(
             [
                 'SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',
                 [
                     ':hpid' => $o->hpid,
                 ],
-            ], Db::FETCH_OBJ)
+            ],
+            Db::FETCH_OBJ
+        )
         )) {
             $ret[$i++] = $this->get(
                 [
                     'row' => $o,
                     'post' => $p,
-                ], static::USER_POST);
+                ],
+                static::USER_POST
+            );
         }
 
         if ($del) {
@@ -448,7 +483,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -469,7 +506,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT);
+            ],
+            Db::FETCH_STMT
+        );
 
         while (($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
             [
@@ -477,13 +516,17 @@ class Notification
                 [
                     ':hpid' => $o->hpid,
                 ],
-            ], Db::FETCH_OBJ))
+            ],
+            Db::FETCH_OBJ
+        ))
         ) {
             $ret[$i++] = $this->get(
                 [
                     'row' => $o,
                     'post' => $p,
-                ], static::PROJECT_COMMENT);
+                ],
+                static::PROJECT_COMMENT
+            );
         }
 
         if ($del) {
@@ -493,7 +536,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -511,21 +556,28 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT);
+            ],
+            Db::FETCH_STMT
+        );
 
-        while (($o = $result->fetch(PDO::FETCH_OBJ)) && ($p = Db::query(
+        while (($o = $result->fetch(PDO::FETCH_OBJ)) && (
+            $p = Db::query(
             [
                 'SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',
                 [
                     ':hpid' => $o->hpid,
                 ],
-            ], Db::FETCH_OBJ)
+            ],
+            Db::FETCH_OBJ
+        )
         )) {
             $ret[$i++] = $this->get(
                 [
                     'row' => $o,
                     'post' => $p,
-                ], static::PROJECT_POST);
+                ],
+                static::PROJECT_POST
+            );
         }
 
         if ($del) {
@@ -535,7 +587,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -551,13 +605,17 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::FETCH_STMT);
+                ],
+            Db::FETCH_STMT
+        );
 
         while (($o = $result->fetch(PDO::FETCH_OBJ))) {
             $ret[$i++] = $this->get(
                 [
                     'row' => $o,
-                ], static::USER_FOLLOW);
+                ],
+                static::USER_FOLLOW
+            );
         }
 
         if ($del) {
@@ -567,7 +625,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -585,13 +645,17 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT);
+            ],
+            Db::FETCH_STMT
+        );
 
         while (($o = $result->fetch(PDO::FETCH_OBJ))) {
             $ret[$i++] = $this->get(
                 [
                     'row' => $o,
-                ], static::PROJECT_FOLLOW);
+                ],
+                static::PROJECT_FOLLOW
+            );
         }
 
         if ($del) {
@@ -603,7 +667,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -619,13 +685,17 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT);
+            ],
+            Db::FETCH_STMT
+        );
 
         while (($o = $result->fetch(PDO::FETCH_OBJ))) {
             $ret[$i++] = $this->get(
                 [
                     'row' => $o,
-                ], static::PROJECT_MEMBER);
+                ],
+                static::PROJECT_MEMBER
+            );
         }
 
         if ($del) {
@@ -635,7 +705,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -651,13 +723,17 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT);
+            ],
+            Db::FETCH_STMT
+        );
 
         while (($o = $result->fetch(PDO::FETCH_OBJ))) {
             $ret[$i++] = $this->get(
                 [
                     'row' => $o,
-                ], static::PROJECT_OWNER);
+                ],
+                static::PROJECT_OWNER
+            );
         }
 
         if ($del) {
@@ -667,7 +743,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -683,7 +761,9 @@ class Notification
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT);
+            ],
+            Db::FETCH_STMT
+        );
 
         while ($o = $result->fetch(PDO::FETCH_OBJ)) {
             if (empty($o->g_hpid)) {
@@ -702,14 +782,18 @@ class Notification
                     [
                         ':hpid' => $o->$field,
                     ],
-                ], Db::FETCH_OBJ))) {
+                ],
+                Db::FETCH_OBJ
+            ))) {
                 $o->hpid = $o->$field;
 
                 $ret[$i++] = $this->get(
                     [
                         'row' => $o,
                         'post' => $p,
-                    ], $type);
+                    ],
+                    $type
+                );
             }
         }
 
@@ -720,7 +804,9 @@ class Notification
                     [
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::NO_RETURN);
+                ],
+                Db::NO_RETURN
+            );
         }
 
         return $ret;
@@ -736,7 +822,9 @@ class Notification
                         [
                             ':id' => $_SESSION['id'],
                         ],
-                    ], Db::FETCH_OBJ))
+                    ],
+                    Db::FETCH_OBJ
+                ))
                 ) {
                     return [];
                 }
@@ -759,7 +847,9 @@ class Notification
                         ':story' => json_encode($new),
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::FETCH_ERRNO)) {
+                ],
+                Db::FETCH_ERRNO
+            )) {
                 return false;
             }
         } else {
@@ -785,7 +875,9 @@ class Notification
                         ':story' => json_encode($old),
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::FETCH_ERRNO)) {
+                ],
+                Db::FETCH_ERRNO
+            )) {
                 return false;
             }
         }

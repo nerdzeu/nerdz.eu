@@ -41,7 +41,9 @@ final class Pms extends Messages
                         ':to' => $to,
                         ':message' => $message,
                     ],
-                ], Db::FETCH_ERRSTR);
+                ],
+            Db::FETCH_ERRSTR
+        );
 
         $wentWell = $retVal == Db::NO_ERRSTR;
 
@@ -79,7 +81,9 @@ final class Pms extends Messages
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return false;
         }
 
@@ -145,7 +149,9 @@ final class Pms extends Messages
                             ':from' => $from,
                             ':to' => $to,
                         ],
-                    ], Db::FETCH_ERRNO);
+                    ],
+                Db::FETCH_ERRNO
+            );
     }
 
     public function readConversation($from, $to, $afterPmId = null, $num = null, $start = 0)
@@ -170,7 +176,9 @@ final class Pms extends Messages
         if ($afterPmId && empty($ret)) {
             if (!($res = Db::query(
                 array('SELECT "from","to",EXTRACT(EPOCH FROM "time") AS time,"pmid" FROM "pms" WHERE "pmid" = ? AND (("from" = ? AND "to" = ?) OR ("from" = ? AND "to" = ?)) ORDER BY "pmid" ASC', array($afterPmId, $from, $to, $to, $from),
-            ), Db::FETCH_STMT))) {
+            ),
+                Db::FETCH_STMT
+            ))) {
                 return $ret;
             }
             $ret = $res->fetchAll(PDO::FETCH_FUNC, array($this, 'read'));
@@ -183,7 +191,9 @@ final class Pms extends Messages
                     ':from' => $from,
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::NO_RETURN);
+            ],
+            Db::NO_RETURN
+        );
 
         return $ret;
     }
@@ -197,7 +207,9 @@ final class Pms extends Messages
                         ':from' => $from,
                         ':to' => $to,
                     ],
-                ], Db::FETCH_OBJ))) {
+                ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -216,7 +228,8 @@ final class Pms extends Messages
                             ':me' => $_SESSION['id'],
                             ':other' => $otherId,
                         ],
-                    ], Db::FETCH_OBJ
+                    ],
+                Db::FETCH_OBJ
                 );
 
             if (isset($res->message)) {

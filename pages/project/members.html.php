@@ -37,7 +37,9 @@ $dateExtractor = function ($memberId) use ($gid, $user) {
                 ':id' => $projectId,
                 ':fid' => $memberId,
             ],
-        ], Db::FETCH_OBJ);
+        ],
+        Db::FETCH_OBJ
+    );
     if (!$since) {
         $since = new StdClass();
         $since->time = 0;

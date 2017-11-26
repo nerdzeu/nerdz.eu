@@ -32,7 +32,9 @@ if (!$token || !$id) {
                 ':id' => $id,
                 ':token' => $token,
             ],
-        ], Db::FETCH_OBJ))) {
+        ],
+        Db::FETCH_OBJ
+    ))) {
         echo 'Invalid request';
     } else {
         $vals = [];

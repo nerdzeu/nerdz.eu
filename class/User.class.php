@@ -75,7 +75,9 @@ class User
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ)->variables;
+            ],
+            Db::FETCH_OBJ
+        )->variables;
 
         return $variables == '' ? '{}' : $variables;
     }
@@ -92,7 +94,9 @@ class User
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_OBJ)->o);
+            ],
+            Db::FETCH_OBJ
+        )->o);
 
         $field = $this->getTemplate();
         $fullVariables->$field = $obj;
@@ -104,7 +108,9 @@ class User
                     ':id' => $_SESSION['id'],
                     ':variables' => json_encode($fullVariables, JSON_FORCE_OBJECT),
                 ],
-            ], Db::FETCH_ERRNO);
+            ],
+            Db::FETCH_ERRNO
+        );
     }
 
     public function getTemplateCfg()
@@ -178,7 +184,9 @@ class User
                     ':user' => $username,
                     ':pass' => $pass,
                 ],
-            ], Db::FETCH_OBJ)) || ($autologinPassword ? $pass !== $o->auto_login_pwd : !$o->logged_in)) {
+            ],
+            Db::FETCH_OBJ
+        )) || ($autologinPassword ? $pass !== $o->auto_login_pwd : !$o->logged_in)) {
             return false;
         }
 
@@ -204,7 +212,9 @@ class User
                 [
                     ':ip' => IpUtils::getIP(),
                 ],
-            ], Db::NO_RETURN);
+            ],
+            Db::NO_RETURN
+        );
 
         return true;
     }
@@ -217,7 +227,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return false;
         }
 
@@ -237,7 +249,9 @@ class User
                     ':lang' => $lang,
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_ERRNO) == Db::NO_ERRNO;
+            ],
+            Db::FETCH_ERRNO
+        ) == Db::NO_ERRNO;
     }
 
     public function setLanguage($lang)
@@ -253,7 +267,9 @@ class User
                     ':lang' => $lang,
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_ERRNO) == Db::NO_ERRNO;
+            ],
+            Db::FETCH_ERRNO
+        ) == Db::NO_ERRNO;
     }
 
     public function getBasicInfo($id = null)
@@ -304,7 +320,9 @@ class User
                         [
                             ':id' => $id,
                         ],
-                    ], Db::FETCH_OBJ))) {
+                    ],
+                    Db::FETCH_OBJ
+                ))) {
                     return System::getBrowserLanguage();
                 }
 
@@ -325,7 +343,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return System::getBrowserLanguage();
         }
 
@@ -348,7 +368,9 @@ class User
                         [
                             ':id' => $id,
                         ],
-                    ], Db::FETCH_OBJ))) {
+                    ],
+                    Db::FETCH_OBJ
+                ))) {
                     return System::getBrowserLanguage();
                 }
 
@@ -369,7 +391,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return System::getBrowserLanguage();
         }
 
@@ -397,7 +421,10 @@ class User
                     ':me' => $_SESSION['id'],
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ, true))) {
+            ],
+            Db::FETCH_OBJ,
+            true
+        ))) {
             return [];
         }
 
@@ -432,7 +459,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return [];
         }
 
@@ -454,7 +483,9 @@ class User
                         ':id' => $id,
                     ]
                 ),
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return [];
         }
 
@@ -469,7 +500,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -488,7 +521,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return [];
         }
 
@@ -503,7 +538,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -527,7 +564,9 @@ class User
                     [
                         ':id' => $id,
                     ],
-                ], Db::FETCH_STMT))) {
+                ],
+            Db::FETCH_STMT
+        ))) {
             return [];
         }
 
@@ -545,7 +584,9 @@ class User
                     on f.to = e.from', [
                         ':id' => $id,
                     ],
-                ], Db::FETCH_OBJ))) {
+                ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -554,7 +595,8 @@ class User
 
     public function getInterests($id)
     {
-        if (!($stmt = Db::query(
+        if (!(
+            $stmt = Db::query(
             [
                 'SELECT "value"
                 FROM "interests" i INNER JOIN "users" u
@@ -563,7 +605,9 @@ class User
                 ORDER BY value', [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_STMT)
+            ],
+            Db::FETCH_STMT
+        )
         )) {
             return [];
         }
@@ -588,7 +632,9 @@ class User
                         ':id' => $id,
                         ':me' => $_SESSION['id'],
                     ],
-                ], Db::FETCH_ERRSTR);
+                ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function defollow($id, $prj = false)
@@ -608,7 +654,9 @@ class User
                             ':id' => $id,
                             ':me' => $_SESSION['id'],
                         ],
-                    ], Db::FETCH_ERRSTR);
+                    ],
+                    Db::FETCH_ERRSTR
+                );
             }
         }
 
@@ -621,7 +669,9 @@ class User
                     ':id' => $id,
                     ':me' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function bookmark($hpid, $prj = false)
@@ -641,7 +691,9 @@ class User
                         ':from' => $_SESSION['id'],
                         ':hpid' => $hpid,
                     ],
-                ], Db::FETCH_ERRSTR);
+                ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function unbookmark($hpid, $prj = false)
@@ -659,7 +711,9 @@ class User
                     ':from' => $_SESSION['id'],
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function addInterest($interest)
@@ -674,7 +728,9 @@ class User
                     ':from' => $_SESSION['id'],
                     ':value' => htmlspecialchars($interest, ENT_QUOTES, 'UTF-8'),
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function deleteInterest($interest)
@@ -690,7 +746,9 @@ class User
                     ':from' => $_SESSION['id'],
                     ':value' => $interest,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function dontNotify($options = [], $prj = false)
@@ -721,7 +779,9 @@ class User
                             ':to' => $_SESSION['id'],
                             ':hpid' => $hpid,
                         ],
-                    ], Db::FETCH_ERRSTR);
+                    ],
+                Db::FETCH_ERRSTR
+            );
         }
 
         $table .= 'posts_no_notify';
@@ -735,7 +795,9 @@ class User
                         ':user' => $_SESSION['id'],
                         ':hpid' => $hpid,
                     ],
-                ], Db::FETCH_ERRSTR);
+                ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function reNotify($options = [], $prj = false)
@@ -764,7 +826,9 @@ class User
                         ':to' => $_SESSION['id'],
                         ':hpid' => $hpid,
                     ],
-                ], Db::FETCH_ERRSTR);
+                ],
+                Db::FETCH_ERRSTR
+            );
         }
 
         $table .= 'posts_no_notify';
@@ -776,7 +840,9 @@ class User
                     ':hpid' => $hpid,
                     ':user' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function lurk($hpid, $prj = false)
@@ -796,7 +862,9 @@ class User
                         ':from' => $_SESSION['id'],
                         ':hpid' => $hpid,
                     ],
-                ], Db::FETCH_ERRSTR);
+                ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function unlurk($hpid, $prj = false)
@@ -814,7 +882,9 @@ class User
                     ':from' => $_SESSION['id'],
                     ':hpid' => $hpid,
                 ],
-            ], Db::FETCH_ERRSTR);
+            ],
+            Db::FETCH_ERRSTR
+        );
     }
 
     public function isOnline($id)
@@ -826,7 +896,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return false;
         }
 
@@ -841,7 +913,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return false;
         }
 
@@ -856,7 +930,9 @@ class User
                 [
                     ':id' => $_SESSION['id'],
                 ],
-            ], Db::FETCH_STMT)))) {
+            ],
+            Db::FETCH_STMT
+        )))) {
             return [];
         }
 
@@ -876,7 +952,9 @@ class User
                     ':from' => $_SESSION['id'],
                     ':other' => $other,
                 ],
-            ], Db::ROW_COUNT);
+            ],
+            Db::ROW_COUNT
+        );
     }
 
     public function isFollowing($id, $project = false)
@@ -894,7 +972,9 @@ class User
                     ':from' => $_SESSION['id'],
                     ':other' => $id,
                 ],
-            ], Db::ROW_COUNT);
+            ],
+            Db::ROW_COUNT
+        );
     }
 
     public function hasLocked($post, $project = false)
@@ -910,7 +990,9 @@ class User
                         ':hpid' => $post['hpid'],
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::ROW_COUNT) > 0
+                ],
+                Db::ROW_COUNT
+            ) > 0
             ;
     }
 
@@ -927,7 +1009,9 @@ class User
                         ':hpid' => $post['hpid'],
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::ROW_COUNT) > 0
+                ],
+                Db::ROW_COUNT
+            ) > 0
             ;
     }
 
@@ -944,7 +1028,9 @@ class User
                         ':hpid' => $post['hpid'],
                         ':id' => $_SESSION['id'],
                     ],
-                ], Db::ROW_COUNT) > 0
+                ],
+                Db::ROW_COUNT
+            ) > 0
             ;
     }
 
@@ -956,7 +1042,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_STMT))) {
+            ],
+            Db::FETCH_STMT
+        ))) {
             return false;
         }
 
@@ -984,7 +1072,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ);
+            ],
+            Db::FETCH_OBJ
+        );
     }
 
     public function UUID($id)
@@ -995,7 +1085,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return false;
         }
 
@@ -1010,7 +1102,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return false;
         }
 
@@ -1034,7 +1128,9 @@ class User
                 [
                     ':username' => htmlspecialchars($username, ENT_QUOTES, 'UTF-8'),
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -1057,7 +1153,9 @@ class User
                 AS c", [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 0;
         }
 
@@ -1080,7 +1178,9 @@ class User
                         [
                             ':id' => $_SESSION['id'],
                         ],
-                    ], Db::FETCH_OBJ))) {
+                    ],
+                    Db::FETCH_OBJ
+                ))) {
                     return false;
                 }
 
@@ -1098,7 +1198,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return '1';
         }
 
@@ -1125,7 +1227,9 @@ class User
                         [
                             ':id' => $_SESSION['id'],
                         ],
-                    ], Db::FETCH_OBJ))) {
+                    ],
+                    Db::FETCH_OBJ
+                ))) {
                     return false;
                 }
 
@@ -1143,7 +1247,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return '0';
         }
 
@@ -1170,7 +1276,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return 'UTC';
         }
 
@@ -1206,7 +1314,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return $default;
         }
 
@@ -1273,7 +1383,9 @@ class User
                 [
                     ':id' => $_COOKIE['nerdz_id'],
                 ],
-            ], Db::FETCH_OBJ)) && $obj->auto_login_pwd === $_COOKIE['nerdz_u']
+            ],
+            Db::FETCH_OBJ
+        )) && $obj->auto_login_pwd === $_COOKIE['nerdz_u']
         ) {
             return $this->login($obj->username, $obj->auto_login_pwd, true, false, $autologinPassword = true);
         }
@@ -1347,7 +1459,9 @@ class User
                 [
                     ':id' => $id,
                 ],
-            ], Db::FETCH_OBJ))) {
+            ],
+            Db::FETCH_OBJ
+        ))) {
             return false;
         }
 
