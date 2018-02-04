@@ -18,6 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $lang = $user->getLanguage();
 
 $vals = [];
-$vals['informations_n'] = file_get_contents("{$_SERVER['DOCUMENT_ROOT']}/tpl/{$user->getTemplate()}/langs/{$lang}/informations.html");
+$vals['information_n'] = file_get_contents("{$_SERVER['DOCUMENT_ROOT']}/tpl/{$user->getTemplate()}/langs/{$lang}/information.html");
 $user->getTPL()->assign($vals);
-$user->getTPL()->draw('base/informations');
+$user->getTPL()->draw('base/information');

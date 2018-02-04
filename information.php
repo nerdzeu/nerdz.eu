@@ -29,7 +29,7 @@ ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
     <meta name="description" content="NERDZ is a mix between a social network and a forum. You can share your code, enjoy information technology, talk about nerd stuff and more. Join in!" />
     <title><?=$user->lang('INFORMATIONS');?> - <?=NERDZ\Core\Utils::getSiteName(); ?></title>
 <?php
-$headers = $tplcfg->getTemplateVars('informations');
+$headers = $tplcfg->getTemplateVars('information');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
@@ -38,7 +38,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
     <div id="body">
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/pages/informations.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/information.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
 ?>
     </div>

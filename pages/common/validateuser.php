@@ -27,11 +27,10 @@ $user = new User();
 $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 
 $userData = [];
-$userData['name'] = isset($_POST['name'])     ? trim($_POST['name'], $l)     : false;
-$userData['surname'] = isset($_POST['surname'])  ? trim($_POST['surname'], $l)  : false;
-$userData['email'] = isset($_POST['email'])    ? trim($_POST['email'], $l)    : false;
-$userData['timezone'] = isset($_POST['timezone']) ? trim($_POST['timezone'], $l) : false;
 if ($user->isLogged()) {
+    $userData['name'] = isset($_POST['name'])     ? trim($_POST['name'], $l)     : false;
+    $userData['surname'] = isset($_POST['surname'])  ? trim($_POST['surname'], $l)  : false;
+    $userData['gender'] = isset($_POST['gender']) && is_numeric($_POST['gender']) && $_POST['gender'] > 0 && $_POST['gender'] <= 2      ? $_POST['gender'] : false;
     $updatedPassword = false;
     if (empty($_POST['password'])) {
         if (!(
@@ -58,7 +57,8 @@ if ($user->isLogged()) {
     $userData['username'] = isset($_POST['username']) ? trim($_POST['username'], $l) : false;
 }
 
-$userData['gender'] = isset($_POST['gender']) && is_numeric($_POST['gender']) && $_POST['gender'] > 0 && $_POST['gender'] <= 2      ? $_POST['gender'] : false;
+$userData['timezone'] = isset($_POST['timezone']) ? trim($_POST['timezone'], $l) : false;
+$userData['email'] = isset($_POST['email'])    ? trim($_POST['email'], $l)    : false;
 $birth['birth_day'] = isset($_POST['birth_day'])    && is_numeric($_POST['birth_day'])   && $_POST['birth_day']  > 0 ? $_POST['birth_day']             : false;
 $birth['birth_month'] = isset($_POST['birth_month'])  && is_numeric($_POST['birth_month']) && $_POST['birth_month'] > 0 ? $_POST['birth_month']           : false;
 $birth['birth_year'] = isset($_POST['birth_year'])   && is_numeric($_POST['birth_year'])  && $_POST['birth_year'] > 0 ? $_POST['birth_year']            : false;
@@ -170,16 +170,21 @@ case 'PASSWORD_LONG':
     }
 }
 
-if (mb_strlen($userData['name'], 'UTF-8') < Config\MIN_LENGTH_NAME) {
-    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('NAME_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_NAME));
-}
-
-if (mb_strlen($userData['surname'], 'UTF-8') < Config\MIN_LENGTH_SURNAME) {
-    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('SURNAME_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_SURNAME));
-}
-
 if (false === filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
     die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MAIL_NOT_VALID')));
+}
+if (isset($userData['email'][350])) {
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MAIL_NOT_VALID')));
+}
+
+if($user->isLogged()) {
+    if (mb_strlen($userData['name'], 'UTF-8') < Config\MIN_LENGTH_NAME) {
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('NAME_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_NAME));
+    }
+
+    if (mb_strlen($userData['surname'], 'UTF-8') < Config\MIN_LENGTH_SURNAME) {
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('SURNAME_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_SURNAME));
+    }
 }
 
 foreach ($userData as $id => $value) {
@@ -195,16 +200,17 @@ if (!$user->isLogged() && mb_strlen($userData['username'], 'UTF-8') >= 90) { //U
     die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('USERNAME_LONG')));
 }
 
-if (isset($userData['email'][350])) {
-    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MAIL_NOT_VALID')));
-}
+if ($user->isLogged()) {
 
-if (isset($userData['name'][60])) {
-    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('NAME_LONG')));
-}
+    if (isset($userData['name'][60])) {
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('NAME_LONG')));
+    }
 
-if (isset($userData['surname'][60])) {
-    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('SURNAME_LONG')));
+    if (isset($userData['surname'][60])) {
+        die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('SURNAME_LONG')));
+    }
+
+    $userData['gender'] = intval($userData['gender']) == 1 ? 'true' : 'false'; //true = male, false = woman
 }
 
 if (!in_array($userData['timezone'], DateTimeZone::listIdentifiers())) {
@@ -216,7 +222,5 @@ if (!checkdate($birth['birth_month'], $birth['birth_day'], $birth['birth_year'])
 }
 
 $birth['date'] = $birth['birth_year'].'/'.$birth['birth_month'].'/'.$birth['birth_day'];
-
-$userData['gender'] = intval($userData['gender']) == 1 ? 'true' : 'false'; //true = male, false = woman
 
 // if here, user fields are ok

@@ -20,7 +20,7 @@ use NERDZ\Core\Messages;
 
 $lang = $user->getLanguage();
 $presentation = file_get_contents($_SERVER['DOCUMENT_ROOT']."/data/langs/{$lang}/presentation.txt");
-$presentation = nl2br(htmlspecialchars($presentation, ENT_QUOTES, 'UTF-8'));
+$presentation = htmlspecialchars($presentation, ENT_QUOTES, 'UTF-8');
 
 $vals = [];
 $vals['presentation_n'] = $presentation;
