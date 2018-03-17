@@ -19,7 +19,7 @@ namespace NERDZ\Core;
 
 require_once __DIR__.'/Autoload.class.php';
 
-final class RainTPL
+class RainTPL
 {
     /**
      * Template directory.
@@ -33,7 +33,7 @@ final class RainTPL
      *
      * @var string
      */
-    private $cache_dir = '';
+    protected $cache_dir = '';
 
     /**
      * Template base URL. RainTPL will add this URL to the relative paths of element selected in $path_replace_list.
@@ -116,6 +116,9 @@ final class RainTPL
     public function __construct()
     {
         $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/tmp/';
+        if (!is_dir($this->cache_dir)) {
+            mkdir($this->cache_dir, 0755, true);
+        }
         $this->base_url = System::getResourceDomain();
     }
 

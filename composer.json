@@ -9,7 +9,8 @@
         "predis/predis": "dev-master",
         "phpmailer/phpmailer": "dev-master",
         "cerdic/css-tidy": "dev-master",
-        "mcilloni/pushed": "dev-master"
+        "mcilloni/pushed": "dev-master",
+        "voku/html-min": "dev-master"
     },
     "license": "AGPL-3.0",
     "authors": [

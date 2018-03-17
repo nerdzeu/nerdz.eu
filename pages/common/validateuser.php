@@ -177,7 +177,7 @@ if (isset($userData['email'][350])) {
     die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MAIL_NOT_VALID')));
 }
 
-if($user->isLogged()) {
+if ($user->isLogged()) {
     if (mb_strlen($userData['name'], 'UTF-8') < Config\MIN_LENGTH_NAME) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('NAME_SHORT')."\n".$user->lang('MIN_LENGTH').': '.Config\MIN_LENGTH_NAME));
     }
@@ -201,7 +201,6 @@ if (!$user->isLogged() && mb_strlen($userData['username'], 'UTF-8') >= 90) { //U
 }
 
 if ($user->isLogged()) {
-
     if (isset($userData['name'][60])) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('NAME_LONG')));
     }

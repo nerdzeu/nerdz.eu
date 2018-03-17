@@ -53,7 +53,7 @@ class System
 
     public static function getResourceDomain()
     {
-        return '//'.Config\STATIC_HOST == '' ? Config\SITE_HOST : Config\STATIC_HOST;
+        return '//'.(Config\STATIC_HOST == '' ? Config\SITE_HOST : Config\STATIC_HOST);
     }
 
     public static function getAvailableLanguages($long = null)

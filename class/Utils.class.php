@@ -14,9 +14,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 namespace NERDZ\Core;
+
+require_once __DIR__.'/Autoload.class.php';
+require_once __DIR__.'/vendor/autoload.php';
+use voku\helper\HtmlMin;
 
 class Utils
 {
@@ -125,9 +129,11 @@ class Utils
 
     public static function minifyHTML($str)
     {
-        return Config\MINIFICATION_ENABLED
-            ? preg_replace('#>\s+<#', '> <', preg_replace('#^\s+|\s+$|\n#m', '', $str))
-            : $str;
+        if (Config\MINIFICATION_ENABLED) {
+            $htmlMin = new HtmlMin();
+            return $htmlMin->minify($str);
+        }
+        return $str;
     }
 
     public static function toJsonResponse($status, $message = '')

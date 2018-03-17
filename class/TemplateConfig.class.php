@@ -27,7 +27,7 @@ namespace NERDZ\Core;
 
 require_once __DIR__.'/Autoload.class.php';
 
-final class TemplateConfig
+final class TemplateConfig extends RainTPL
 {
     private $tpl_no;
     private $lang;
@@ -40,6 +40,7 @@ final class TemplateConfig
         $this->tpl = $this->user->getTPL();
         $this->lang = $this->user->getBoardLanguage();
         $this->tpl_no = $this->tpl->getActualTemplateNumber();
+        parent::__construct();
     }
 
     public function getTemplateVars($page = null)
@@ -198,7 +199,7 @@ final class TemplateConfig
                 return;
             }
 
-            $userfiletime = $_SERVER['DOCUMENT_ROOT'].'/tmp/'.md5($path).$this->tpl_no.$id;
+            $userfiletime = $this->cache_dir.'/'.md5($path).$this->tpl_no.$id;
             $ext = "min.{$id}";
 
             $updateTime = 0;

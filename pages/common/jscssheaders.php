@@ -131,7 +131,7 @@ N.static = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js']['
 if ($logged) {
     $jsonIdiots = [];
     if (($blist = $user->getBlacklist())) {
-        $blistcss = '<style type="text/css">';
+        $blistcss = '<style>';
         foreach ($blist as $b_id) {
             $blistcss .= ".bluser{$b_id},";
             $jsonIdiots[] = User::getUsername($b_id);
