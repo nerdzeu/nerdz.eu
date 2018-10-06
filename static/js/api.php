@@ -14,7 +14,9 @@ $updateTime = 0;
 
 if(!file_exists ($tmpFileTime) ||
     intval(file_get_contents($tmpFileTime)) < ($updateTime = filemtime($filename))) {
-    $content = Minification::minifyJs($filename);
+    $content = Config\MINIFICATION_ENABLED
+        ? Minification::minifyJs ($filename)
+        : file_get_contents($filename);
     file_put_contents($tmpFile, $content);
     file_put_contents($tmpFileTime, $updateTime);
     chmod($tmpFile, 0775);
