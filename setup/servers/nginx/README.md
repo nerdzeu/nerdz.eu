@@ -16,26 +16,11 @@ cp -R conf.d/* /etc/nginx/conf.d/
 ln -s /etc/nginx/sites-available/nerdz.eu.conf /etc/nginx/sites-enabled/nerdz.eu.conf
 ```
 
-Adjust as needed. (change the `user` parameter of `nginx.conf` in order to run nginx with the correct permissions - update the paths - update the ssl certificate location).
+Adjust as needed:
 
-### Production
-
-In production, ensure your directory hierarchy looks like this:
-
-```
-/
-└── srv
-    └── www
-        └── nginx
-            └── vhosts
-                └── nerdz.eu
-                    ├── logs
-                    ├── certs
-                    │   ├── nerdz.crt
-                    │   └── nerdz.key
-                    └── work
-                       └── ... nerdz tree
-```
+1. change the `user` parameter of `nginx.conf` in order to run nginx with the correct permissions
+2. update the paths (the configuration works using the user `nessuno` and a directory for each domain and subdomain in its home)
+3. ...
 
 ### Development
 
@@ -43,7 +28,7 @@ In development use the following to quickly adjust the configuration:
 
 ```sh
 # adjust server root
-sed -i 's#/srv/www/nginx/vhosts/nerdz.eu/work/#/var/www/html/#g' nerdz.eu.conf
+# do it manually, change the `root` directive witht eh correct path
 # disable ssl: DO IT MANUALLY - remove the redirects from nerdz.eu.conf
 # fix the server name
 sed -i 's/nerdz\.eu/localhost/g' nerdz.eu.conf

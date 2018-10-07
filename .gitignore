@@ -21,3 +21,7 @@ composer.lock
 *.jade
 *.less
 .htaccess
+.well-known/
+data/mobile-error.log
+data/static-error.log
+data/www-error.log
