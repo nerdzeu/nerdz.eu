@@ -151,8 +151,8 @@ final class FastFetch
                 'SELECT counter FROM users WHERE LOWER(username) = LOWER(:user)',
                     [':user' => $userName],
                 ],
-                Db::FETCH_OBJ
-            );
+            Db::FETCH_OBJ
+        );
 
         if (!is_object($idObj)) {
             throw new FFException(FFErrCode::USER_NOT_FOUND);

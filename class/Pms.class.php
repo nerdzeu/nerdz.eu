@@ -230,7 +230,7 @@ final class Pms extends Messages
                         ],
                     ],
                 Db::FETCH_OBJ
-                );
+            );
 
             if (isset($res->message)) {
                 $ret = $res;

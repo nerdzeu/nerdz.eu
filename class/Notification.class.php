@@ -320,15 +320,15 @@ class Notification
         case 'all':
             $ret = array_merge(
                 $this->getUserComments($del),
-                    $this->getUserPosts($del),
-                    $this->getProjectComments($del),
-                    $this->getProjectPosts($del),
-                    $this->getUserFollowers($del),
-                    $this->getProjectFollowers($del),
-                    $this->getProjectMember($del),
-                    $this->getProjectOwner($del),
-                    $this->getMentions($del)
-                );
+                $this->getUserPosts($del),
+                $this->getProjectComments($del),
+                $this->getProjectPosts($del),
+                $this->getUserFollowers($del),
+                $this->getProjectFollowers($del),
+                $this->getProjectMember($del),
+                $this->getProjectOwner($del),
+                $this->getMentions($del)
+            );
             break;
         }
         usort($ret, array(__CLASS__, 'echoSort'));
@@ -458,14 +458,14 @@ class Notification
 
         while (($o = $result->fetch(PDO::FETCH_OBJ)) && (
             $p = Db::query(
-            [
+                [
                 'SELECT "from","to","pid" FROM "posts" WHERE "hpid" = :hpid',
                 [
                     ':hpid' => $o->hpid,
                 ],
             ],
-            Db::FETCH_OBJ
-        )
+                Db::FETCH_OBJ
+            )
         )) {
             $ret[$i++] = $this->get(
                 [
@@ -562,14 +562,14 @@ class Notification
 
         while (($o = $result->fetch(PDO::FETCH_OBJ)) && (
             $p = Db::query(
-            [
+                [
                 'SELECT "from","to","pid" FROM "groups_posts" WHERE "hpid" = :hpid',
                 [
                     ':hpid' => $o->hpid,
                 ],
             ],
-            Db::FETCH_OBJ
-        )
+                Db::FETCH_OBJ
+            )
         )) {
             $ret[$i++] = $this->get(
                 [

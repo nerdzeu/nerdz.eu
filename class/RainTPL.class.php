@@ -738,7 +738,7 @@ class RainTPL
                                 "\$user->lang('".strtoupper(ltrim("$php_var$extra_var", '$'))."')"
                             )
                             : $php_var.$extra_var
-                        ).$php_right_delimiter;
+                            ).$php_right_delimiter;
                 }
 
                 $html = str_replace($tag, $php_var, $html);

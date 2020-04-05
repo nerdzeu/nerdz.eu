@@ -482,15 +482,15 @@ class Messages
         $field = ($project ? 'g' : 'u').'_hpid';
         if (!is_numeric($hpid) || !(
             $all = Db::query(
-            [
+                [
                 "SELECT tag FROM posts_classification WHERE {$field} = :hpid",
                 [
                     ':hpid' => $hpid,
                 ],
             ],
-            Db::FETCH_OBJ,
-            $all = true
-        )
+                Db::FETCH_OBJ,
+                $all = true
+            )
         )) {
             return [];
         }
@@ -929,10 +929,10 @@ class Messages
             ? in_array(
                 $_SESSION['id'],
                 array_merge(
-                (array) $this->project->getMembers($post['to']),
-                (array) $this->project->getOwner($post['to']),
-                (array) $post['from']
-            )
+                    (array) $this->project->getMembers($post['to']),
+                    (array) $this->project->getOwner($post['to']),
+                    (array) $post['from']
+                )
             )
             : in_array($_SESSION['id'], [$post['to'], $post['from']])
         );
@@ -958,7 +958,7 @@ class Messages
                 ],
                 Db::ROW_COUNT
             ) > 0
-            );
+        );
     }
 
     public static function stripTags($message)
@@ -969,163 +969,163 @@ class Messages
             str_ireplace(
                 '[url=',
                 '',
-            str_replace(
+                str_replace(
                 '&quot;]',
                 ' ',
-            str_replace(
+                str_replace(
                 ']',
                 ' ',
-            str_ireplace(
+                str_ireplace(
                 '[url]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[twitter]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/twitter]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[video]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/video]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[music]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/music]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[img]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/img]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/url]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[youtube]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/youtube]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[yt]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/yt]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[i]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/i]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[b]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/b]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[code=',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[c=',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/c]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/code]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[cur]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/cur]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[list]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/list]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[gist]',
                 '',
-            str_replace(
+                str_replace(
                 '[*]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[quote]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[user]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/user]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[project]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/project]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[spoiler]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[spoiler=',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/spoiler]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[small]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/small]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[m]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/m]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[math]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/math]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[wiki=',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/wiki]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[u]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[big]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/u]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[/big]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[hr]',
                 '',
-            str_ireplace(
+                str_ireplace(
                 '[wat]',
                 '',
-            str_ireplace('[quote=', '', $message)
+                str_ireplace('[quote=', '', $message)
             )
             )
             )
@@ -1320,7 +1320,7 @@ class Messages
                         str_replace(
                             ' ',
                             '&nbsp;',
-                        str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $totalcode)
+                            str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $totalcode)
                         )
                     ).'</code></span>',
                     $str
@@ -1334,7 +1334,7 @@ class Messages
                     ? ''
                     : '<a href="'.$codeurl.'" onclick="window.open(this.href); return false" class="nerdz-code-text-version">'.
                     $this->user->lang('TEXT_VERSION').'</a>'
-                ).
+                    ).
                 '</div><code class="prettyprint lang-'.$lang.'" style="border:0px; overflow-x:auto; word-wrap: normal; display:block">'.
                 str_replace(
                     "\n",
@@ -1342,7 +1342,7 @@ class Messages
                     str_replace(
                         ' ',
                         '&nbsp;',
-                    str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $totalcode)
+                        str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $totalcode)
                     )
                 ).'</code></div>',
                     $str

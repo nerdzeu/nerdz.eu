@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </header>
         <br />
         <h1 style="text-align: center; color: #ffffff">
-<?php 
+<?php
 echo $motivation;
 ?>
     </h1>

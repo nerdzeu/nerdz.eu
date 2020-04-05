@@ -61,7 +61,7 @@ class Trend
     {
         $ret = [];
         if (!($trends = Db::query(
-                        'select count(*) as cc, lower(tag) as tag
+            'select count(*) as cc, lower(tag) as tag
                         from posts_classification
                         group by lower(tag)
                         order by cc desc limit 10',

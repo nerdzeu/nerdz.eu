@@ -64,10 +64,6 @@ Troubleshooting
 
 Instead of NERDZ you got a 'KABOOM' page? We're here for you.
 
-### I really got a 'KABOOM' page!
-
-Please, get out of Iran and try again.
-
 ### I am a lazy user which still has not migrated to PostgreSQL and I can't find instructions
 
 Here you are. To run our migration script, you need [Groovy](http://groovy.codehaus.org/), the [MySQL Java Connector](https://dev.mysql.com/downloads/connector/j/) and the [PostgreSQL JDBCv4](http://jdbc.postgresql.org/download.html) driver.

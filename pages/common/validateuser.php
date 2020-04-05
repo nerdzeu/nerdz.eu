@@ -35,14 +35,14 @@ if ($user->isLogged()) {
     if (empty($_POST['password'])) {
         if (!(
             $obj = Db::query(
-            [
+                [
                 'SELECT "password" FROM "users" WHERE counter = :id',
                 [
                     ':id' => $_SESSION['id'],
                 ],
             ],
-            Db::FETCH_OBJ
-        )
+                Db::FETCH_OBJ
+            )
         )) {
             die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR')));
         }

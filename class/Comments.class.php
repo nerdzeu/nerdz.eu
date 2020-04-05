@@ -41,12 +41,12 @@ class Comments extends Messages
 
         if ($project) {
             $canremoveusers = array_merge(
-                    $this->project->getMembersAndOwnerFromHpid($comment['hpid']),
-                    (array) $comment['from']
-                );
+                $this->project->getMembersAndOwnerFromHpid($comment['hpid']),
+                (array) $comment['from']
+            );
         } else {
             if (!($owner = Db::query(
-                    [
+                [
                         'SELECT "to" FROM "posts" WHERE "hpid" = :hpid',
                         [
                             ':hpid' => $comment['hpid'],
@@ -201,7 +201,7 @@ class Comments extends Messages
                                 ':id' => $_SESSION['id'],
                             ],
                         ]
-                    );
+                );
 
         if (!($res = Db::query($queryArr, Db::FETCH_STMT))) {
             return false;
@@ -368,14 +368,14 @@ class Comments extends Messages
         if ($num > 10 || $cycle > 200 || $num <= 0 || $cycle < 0 ||
             !(
                 $o = Db::query(
-                [
+                    [
                     'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
                     [
                         ':hpid' => $hpid,
                     ],
                 ],
-                Db::FETCH_OBJ
-            )
+                    Db::FETCH_OBJ
+                )
             )
         ) {
             return false;
@@ -389,7 +389,7 @@ class Comments extends Messages
         $table = ($project ? 'groups_' : '').'posts';
 
         if (!($o = Db::query(
-                [
+            [
                     'SELECT "to","pid","from" FROM "'.$table.'" WHERE "hpid" = :hpid',
                     [
                         ':hpid' => $hpid,
@@ -478,7 +478,7 @@ class Comments extends Messages
 
         if ($this->canRemove((array) $o, $project)) {
             $ok = (
-            Db::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid', array(':hcid' => $hcid)), Db::FETCH_ERRNO) == Db::NO_ERRNO
+                Db::query(array('DELETE FROM "comments" WHERE "hcid" = :hcid', array(':hcid' => $hcid)), Db::FETCH_ERRNO) == Db::NO_ERRNO
             &&
             Db::query(array('DELETE FROM "comments_notify" WHERE "from" = :from AND "hpid" = :hpid AND "time" = TO_TIMESTAMP(:time)', array(':from' => $o->from, ':hpid' => $o->hpid, ':time' => $o->time)), Db::FETCH_ERRNO)  == Db::NO_ERRNO
             );
@@ -530,8 +530,8 @@ class Comments extends Messages
                         ':hcid' => $hcid,
                     ],
                 ],
-                Db::FETCH_OBJ
-            );
+            Db::FETCH_OBJ
+        );
 
         return isset($ret->rev_no) ? $ret->rev_no : 0;
     }
@@ -549,8 +549,8 @@ class Comments extends Messages
                         ':number' => $number,
                     ],
                 ],
-                Db::FETCH_OBJ
-            );
+            Db::FETCH_OBJ
+        );
     }
 
     public function getThumbs($hcid, $project = false)
@@ -565,8 +565,8 @@ class Comments extends Messages
                     ],
 
                 ],
-                Db::FETCH_OBJ
-            );
+            Db::FETCH_OBJ
+        );
 
         if (isset($ret->sum)) {
             return $ret->sum;
@@ -619,8 +619,8 @@ class Comments extends Messages
                         ':vote' => (int) $vote,
                     ],
                 ],
-                Db::FETCH_ERRSTR
-            );
+            Db::FETCH_ERRSTR
+        );
     }
 
     public static function parseQuote($message)

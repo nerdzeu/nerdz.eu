@@ -46,7 +46,7 @@ class Config
             'STATIC_HOST' => '',
 
             'MINIFICATION_JS_CMD' => 'uglifyjs %path% -c unused=false',
-            'POSTGRESQL_HOST' => -1, // null does not work since isset() is a faget
+            'POSTGRESQL_HOST' => -1,
             'POSTGRESQL_DATA_NAME' => -1,
             'POSTGRESQL_USER' => -1,
             'POSTGRESQL_PASS' => -1,

@@ -84,7 +84,7 @@ if (!empty($userData['facebook']) &&
         !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/people/[^/]+/([a-z0-9_\-]+)#i', $userData['facebook']) &&
     !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/profile\.php\?id\=([0-9]+)#i', $userData['facebook']) &&
     !preg_match('#^https?://(([a-z]{2}\-[a-z]{2})|www)\.facebook\.com/([a-z0-9_\-\.]+)#i', $userData['facebook'])
-)
+    )
   ) {
     die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': Facebook URL'));
 }

@@ -56,7 +56,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'vars') {
     $column = (Config\MOBILE_HOST == $_SERVER['HTTP_HOST'] ? 'mobile_' : '').'template';
 
     if (Db::NO_ERRNO != Db::query(
-            [
+        [
                 'UPDATE "profiles" SET "'.$column.'" = :theme WHERE "counter" = :id',
                 [
                     ':theme' => $theme,

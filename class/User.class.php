@@ -597,7 +597,7 @@ class User
     {
         if (!(
             $stmt = Db::query(
-            [
+                [
                 'SELECT "value"
                 FROM "interests" i INNER JOIN "users" u
                 ON u.counter = i.from
@@ -606,8 +606,8 @@ class User
                     ':id' => $id,
                 ],
             ],
-            Db::FETCH_STMT
-        )
+                Db::FETCH_STMT
+            )
         )) {
             return [];
         }
