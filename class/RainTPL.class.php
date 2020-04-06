@@ -268,7 +268,6 @@ class RainTPL
 
         //write compiled file
         file_put_contents($compiled_filename, $template_compiled);
-        chmod($compiled_filename, 0775);
     }
 
     /**

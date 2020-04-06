@@ -32,8 +32,6 @@ if (!file_exists($tmpFileTime) ||
     $content = Minification::minifyJs($filename);
     file_put_contents($tmpFile, $content);
     file_put_contents($tmpFileTime, $updateTime);
-    chmod($tmpFile, 0775);
-    chmod($tmpFileTime, 0775);
 }
 
 $content = file_get_contents($tmpFile);

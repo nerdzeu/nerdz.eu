@@ -58,8 +58,6 @@ if (!$out) { // don't cache empty responses, may be temporary errors
 }
 
 file_put_contents($cache_file, $out);
-chmod($cache_file, CACHE_FILE_PERMS);
-
 echo $out;
 
 function generate_error($msg, $code)

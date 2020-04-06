@@ -93,4 +93,3 @@ try {
 $urls .= '</urlset>';
 
 file_put_contents(DOCUMENT_ROOT.'data/sitemap.xml', $urls);
-chmod(DOCUMENT_ROOT.'data/sitemap.xml', 0775);

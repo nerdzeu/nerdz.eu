@@ -51,12 +51,7 @@ final class Minification
 
     public static function minifyTemplateFile($mTimeFile, $fileToMinify, $targetMinifiedFile, $ext)
     {
-        if (file_put_contents($targetMinifiedFile, ($ext == 'js' ? static::minifyJs($fileToMinify) : static::minifyCss($fileToMinify))) !== false) {
-            chmod($targetMinifiedFile, 0775);
-        }
-
-        if (file_put_contents($mTimeFile, filemtime($fileToMinify)) !== false) {
-            chmod($mTimeFile, 0775);
-        }
+        file_put_contents($targetMinifiedFile, ($ext == 'js' ? static::minifyJs($fileToMinify) : static::minifyCss($fileToMinify)));
+        file_put_contents($mTimeFile, filemtime($fileToMinify));
     }
 }

@@ -176,7 +176,6 @@ class System
     {
         $path = $_SERVER['DOCUMENT_ROOT'].'/data/error.log';
         file_put_contents($path, date('d-m-Y H:i').": {$string}\n", FILE_APPEND);
-        chmod($path, 0755);
     }
 
     public static function upsertGuest()
