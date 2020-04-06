@@ -24,9 +24,12 @@ class Config
 
     private function __construct()
     {
-        if (!is_array(Config\Variables::$data)) {
-            trigger_error('Invalid configuration: missing Config\\Variables::$data variable', E_USER_ERROR);
+        $config = file_get_contents("config.json");
+
+        if (!$config) {
+            trigger_error("Can't find config.json in server document root.", E_USER_ERROR);
         }
+        $config = json_decode($config);
 
         $CONSTANTS = [
             'MINIFICATION_ENABLED' => false,
@@ -63,7 +66,7 @@ class Config
             'API_URL' => '',
         ];
 
-        foreach (Config\Variables::$data as $const_key => $const_val) {
+        foreach ($config as $const_key => $const_val) {
             if (!isset($CONSTANTS[$const_key])) {
                 trigger_error('Unknown constant: '.$const_key, E_USER_ERROR);
             }
