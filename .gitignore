@@ -20,3 +20,5 @@ composer.lock
 *.less
 .htaccess
 .php_cs.cache
+tags
+config.json
