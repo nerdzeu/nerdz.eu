@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace NERDZ\Core;
 
 require_once __DIR__.'/Autoload.class.php';
+require_once __DIR__.'/vendor/autoload.php';
+use MatthiasMullie\Minify;
 
 final class Minification
 {
@@ -29,24 +31,14 @@ final class Minification
 
     public static function minifyJs($path)
     {
-        return shell_exec(str_ireplace(static::PATH_VAR, $path, Config\MINIFICATION_JS_CMD));
+        $minifier = new Minify\JS($path);
+        return $minifier->minify();
     }
 
     public static function minifyCss($path)
     {
-        require_once __DIR__.'/vendor/autoload.php';
-        $css = new \csstidy();
-        $css->set_cfg('allow_html_in_templates', false);
-        $css->set_cfg('compress_colors', true);
-        $css->set_cfg('compress_font-weight', true);
-        $css->set_cfg('remove_last_', true);
-        $css->set_cfg('remove_bslash', true);
-        $css->set_cfg('template', 'highest');
-        $css->set_cfg('preserve_css', true);
-        $css->set_cfg('silent', true);
-        $css->parse(file_get_contents($path));
-
-        return $css->print->plain();
+        $minifier = new Minify\CSS($path);
+        return $minifier->minify();
     }
 
     public static function minifyTemplateFile($mTimeFile, $fileToMinify, $targetMinifiedFile, $ext)
