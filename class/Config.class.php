@@ -24,7 +24,7 @@ class Config
 
     private function __construct()
     {
-        $config = file_get_contents("config.json");
+        $config = file_get_contents($_SERVER["DOCUMENT_ROOT"]."/config.json");
 
         if (!$config) {
             trigger_error("Can't find config.json in server document root.", E_USER_ERROR);
