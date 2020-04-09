@@ -14,15 +14,15 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/*
- * Classe per la creazione e il controllo di un semplice captcha
  */
-
 namespace NERDZ\Core;
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 
+/**
+ * Simple captcha implementation. It handles the generation and the display as
+ * image.
+ */
 final class Captcha
 {
     private function generate()
@@ -40,6 +40,7 @@ final class Captcha
         $red = rand(200, 255);
         $green = rand(200, 250);
         $blue = rand(200, 200);
+
         $image = imagecreate(90, 30);
         $background_color = imagecolorallocate($image, 0, 0, 0);
         $textcolor = imagecolorallocate($image, $red, $green, $blue);
@@ -49,7 +50,7 @@ final class Captcha
             $y1 = rand(1, 25);
             $x2 = $x1 + 4;
             $y2 = $y1 + 4;
-            $color = imagecolorallocate($image, ~$green, ~$blue, ~$red);
+            $color = imagecolorallocate($image, $green, $blue, $red);
             imageline($image, $x1, $y1, $x2, $y2, $color);
         }
         imagepng($image);
