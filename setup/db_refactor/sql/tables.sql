@@ -238,6 +238,7 @@ ALTER TABLE "groups_notify" RENAME COLUMN "group" TO "from";
 
 -- fix table layout and indexes
 ALTER TABLE profiles ADD COLUMN "closed" BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE users DROP COLUMN "gender";
 ALTER TABLE users ADD CONSTRAINT uniqueMail UNIQUE(email);
 ALTER TABLE users ADD CONSTRAINT uniqueUsername UNIQUE(username);
 
