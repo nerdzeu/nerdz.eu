@@ -217,6 +217,7 @@ CREATE TABLE posts_notify(
     "to" int8 not null references users(counter) on delete cascade,
     "hpid" int8 not null references posts(hpid) on delete cascade,
     time timestamp(0) WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    to_notify boolean not null default true;
     primary key("from", "to", hpid)
 );
 
@@ -648,6 +649,12 @@ update "groups_followers" SET "to_notify" = false;
 -- add notification field when owner add a member
 ALTER TABLE "groups_members" ADD COLUMN "to_notify" BOOLEAN NOT NULL DEFAULT TRUE;
 UPDATE "groups_members" SET "to_notify" = FALSE;
+
+-- add to_notify fields to every notification table
+ALTER TABLE "comments_notify" ADD COLUMN "to_notify" BOOLEAN NOT NULL DEFAULT TRUE; UPDATE "comments_notify" SET "to_notify" = FALSE;
+ALTER TABLE "groups_comments_notify" ADD COLUMN "to_notify" BOOLEAN NOT NULL DEFAULT TRUE; UPDATE "groups_comments_notify" SET "to_notify" = FALSE;
+ALTER TABLE "groups_notify" ADD COLUMN "to_notify" BOOLEAN NOT NULL DEFAULT TRUE; UPDATE "groups_notify" SET "to_notify" = FALSE;
+
 
 -- empty notify_story
 UPDATE "users" SET "notify_story" = NULL;
