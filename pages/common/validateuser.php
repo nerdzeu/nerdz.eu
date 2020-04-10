@@ -30,7 +30,6 @@ $userData = [];
 if ($user->isLogged()) {
     $userData['name'] = isset($_POST['name'])     ? trim($_POST['name'], $l)     : false;
     $userData['surname'] = isset($_POST['surname'])  ? trim($_POST['surname'], $l)  : false;
-    $userData['gender'] = isset($_POST['gender']) && is_numeric($_POST['gender']) && $_POST['gender'] > 0 && $_POST['gender'] <= 2      ? $_POST['gender'] : false;
     $updatedPassword = false;
     if (empty($_POST['password'])) {
         if (!(
@@ -85,9 +84,6 @@ if (!$user_flag || !$birth_flag) {
                     break;
                 case 'password':
                     $msg .= $user->lang('PASSWORD');
-                    break;
-                case 'gender':
-                    $msg .= $user->lang('GENDER');
                     break;
                 case 'email':
                     $msg .= $user->lang('EMAIL');
@@ -208,8 +204,6 @@ if ($user->isLogged()) {
     if (isset($userData['surname'][60])) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('SURNAME_LONG')));
     }
-
-    $userData['gender'] = intval($userData['gender']) == 1 ? 'true' : 'false'; //true = male, false = woman
 }
 
 if (!in_array($userData['timezone'], DateTimeZone::listIdentifiers())) {

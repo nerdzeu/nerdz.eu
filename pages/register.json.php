@@ -42,15 +42,14 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/validateuser.php';
 
 $ret = Db::query(
     [
-        'INSERT INTO users ("username","password","name","surname","email","gender","birth_date","lang","board_lang","timezone","remote_addr", "http_user_agent")
-        VALUES (:username, crypt(:password, gen_salt(\'bf\', 7)) , :name, :surname, :email, :gender, :date, :lang, :lang, :timezone, :remote_addr, :http_user_agent)',
+        'INSERT INTO users ("username","password","name","surname","email","birth_date","lang","board_lang","timezone","remote_addr", "http_user_agent")
+        VALUES (:username, crypt(:password, gen_salt(\'bf\', 7)) , :name, :surname, :email, :date, :lang, :lang, :timezone, :remote_addr, :http_user_agent)',
             [
                 ':username' => $userData['username'],
                 ':password' => $userData['password'],
                 ':name' => $userData['name'] ?: '',
                 ':surname' => $userData['surname'] ?: '',
                 ':email' => $userData['email'],
-                ':gender' => $userData['gender'],
                 ':timezone' => $userData['timezone'],
                 ':date' => $birth['date'],
                 ':lang' => $user->getLanguage(),

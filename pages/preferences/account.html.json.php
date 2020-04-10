@@ -40,7 +40,6 @@ $params = [
     ':name' => $userData['name'],
     ':surname' => $userData['surname'],
     ':email' => $userData['email'],
-    ':gender' => $userData['gender'],
     ':date' => $birth['date'],
     ':id' => $_SESSION['id'],
 ];
@@ -52,7 +51,7 @@ if ($updatedPassword) {
 $ret = Db::query(
     [
         'UPDATE users SET "timezone" = :timezone, "name" = :name,
-        "surname" = :surname,"email" = :email,"gender" = :gender, "birth_date" = :date
+        "surname" = :surname,"email" = :email, "birth_date" = :date
         '.($updatedPassword ? ', "password" = crypt(:password, gen_salt(\'bf\', 7))' : '').' WHERE counter = :id', $params,
     ],
     Db::FETCH_ERRSTR

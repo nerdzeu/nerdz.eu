@@ -169,8 +169,6 @@ if ($enter) {
 
     $vals['useragent_a'] = (new Browser($info->http_user_agent))->getArray();
 
-    $vals['gender_n'] = $user->lang($info->gender == 1 ? 'MALE' : 'FEMALE');
-
     $vals['karmaposts_n'] = $user->getKarma('post', $info->counter);
     $vals['karmacomments_n'] = $user->getKarma('comment', $info->counter);
 

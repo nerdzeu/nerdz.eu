@@ -35,7 +35,6 @@ $vals['username_n'] = $obj->username;
 $vals['name_n'] = $obj->name;
 $vals['surname_n'] = $obj->surname;
 $vals['timezone_n'] = $obj->timezone;
-$vals['ismale_b'] = $obj->gender == 1;
 $vals['email_n'] = $obj->email;
 $now = date('o');
 $vals['years_a'] = array_reverse(range($now - 100, $now - 1));
