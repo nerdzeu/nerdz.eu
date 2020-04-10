@@ -119,19 +119,14 @@ class Db
                 $stmt->execute($query[1]);
             }
         } catch (PDOException $e) {
-            if (defined('DEBUG')) {
-                static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
-            }
+
+            static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
 
             if ($action == static::FETCH_ERRNO && $stmt !== null) {
                 return $stmt->errorInfo()[1];
             }
             if ($action == static::FETCH_ERRSTR && $stmt !== null) {
                 return $stmt->errorInfo()[2];
-            }
-
-            if (! defined('DEBUG')) {
-                static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
             }
 
             return;
