@@ -50,7 +50,8 @@ $rev = $message->getRevision($id, $revNo, isset($prj));
 die(is_object($rev) ?
     NERDZ\Core\Utils::JSONResponse(
         [
-            'datetime' => $user->getDate($rev->time).' '.$user->getTime($rev->time),
+            'date' => $user->getDate($rev->time),
+            'time' => $user->getTime($rev->time),
             'message' => $message->bbcode($rev->message),
         ]
     ) :
