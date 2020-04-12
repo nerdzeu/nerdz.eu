@@ -27,9 +27,9 @@ $user = new User();
 $l = "\x00\t\n\r\x0B \x7F\x81\x8D\x8F\x90\x9D\xA0\xAD";
 
 $userData = [];
+$userData['name'] = isset($_POST['name'])     ? trim($_POST['name'], $l)     : false;
+$userData['surname'] = isset($_POST['surname'])  ? trim($_POST['surname'], $l)  : false;
 if ($user->isLogged()) {
-    $userData['name'] = isset($_POST['name'])     ? trim($_POST['name'], $l)     : false;
-    $userData['surname'] = isset($_POST['surname'])  ? trim($_POST['surname'], $l)  : false;
     $updatedPassword = false;
     if (empty($_POST['password'])) {
         if (!(
