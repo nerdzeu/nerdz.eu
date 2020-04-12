@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NERDZ\Core;
 
+error_reporting(E_ALL);
+
 class Config
 {
     private static $instance;
