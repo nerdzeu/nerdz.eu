@@ -888,6 +888,6 @@ class Notification
 
     private static function echoSort($a, $b) //callback
     {
-        return $a['timestamp_n'] == $b['timestamp_n'] ? 0 : $a['timestamp_n'] > $b['timestamp_n'] ? -1 : 1;
+        return $a['timestamp_n'] == $b['timestamp_n'] ? 0 : ($a['timestamp_n'] > $b['timestamp_n'] ? -1 : 1);
     }
 }
