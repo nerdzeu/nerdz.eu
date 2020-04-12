@@ -45,8 +45,6 @@ if (isset($_POST['onlyfollowed'])) {
     $onlyfollowed = false;
 }
 
-$vote = isset($_POST['vote']) && is_string($_POST['vote']) ? trim($_POST['vote']) : false;
-
 //search
 $specific = isset($_GET['specific']);
 $action = isset($_GET['action']) && $_GET['action'] === 'profile' ? 'profile' : 'project';
