@@ -90,7 +90,6 @@ foreach ($headers['js'] as $var) {
 ?>
 <script src="<?php echo $static_domain;?>/static/js/api.php"></script>
 <script src="<?php echo $static_domain;?>/static/js/nerdzcrush.min.js" async></script>
-<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 extensions: ["tex2jax.js", "Safe.js"],

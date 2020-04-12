@@ -20,7 +20,7 @@ if (!isset($prj, $path)) {
     die('$prj, $path required');
 }
 
-ob_start('ob_gzhandler');
+
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 
