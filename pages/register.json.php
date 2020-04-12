@@ -47,8 +47,8 @@ $ret = Db::query(
             [
                 ':username' => $userData['username'],
                 ':password' => $userData['password'],
-                ':name' => $userData['name'] ?: '',
-                ':surname' => $userData['surname'] ?: '',
+                ':name' => $userData['name'],
+                ':surname' => $userData['surname'],
                 ':email' => $userData['email'],
                 ':timezone' => $userData['timezone'],
                 ':date' => $birth['date'],
