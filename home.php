@@ -32,7 +32,6 @@ $headers = $tplcfg->getTemplateVars('home');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
-    <?php ob_flush(); ?>
 <body>
     <div id="body">
 <?php
