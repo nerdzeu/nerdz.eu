@@ -138,7 +138,11 @@ class Messages
                     return '<b>'.$this->user->lang('INVALID_URL').'</b>';
                 }
             }
-            $url = preg_match('#^(?:https?|ftp):\/\/#i', $m[1]) ? $m[1] : 'http://'.$m[1];
+            $url = $m[1];
+            $url_info = parse_url($url);
+            if(!$url_info) {
+                return '<b>'.$this->user->lang('INVALID_URL').'</b>';
+            }
             $host = parse_url($url)['host'];
             $local = Utils::endsWith($host, System::getSafeCookieDomainName());
             $url = Messages::stripTags($url);
