@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (C) 2016 Paolo Galeone <nessuno@nerdz.eu>
+Copyright (C) 2010-2020 Paolo Galeone <nessuno@nerdz.eu>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -73,7 +73,7 @@ foreach ($headers['css'] as $var) {
 /* END STYLESHEETS */
 /* BEGIN JQUERY */
 ?>
-<script src="<?php echo $static_domain;?>/static/js/jquery-3.1.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
 <script src="<?php echo $static_domain;?>/static/js/pgwmodal.min.js"></script>
 <?php
 /* END JQUERY */
