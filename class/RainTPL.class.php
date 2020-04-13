@@ -109,7 +109,7 @@ class RainTPL
     // NERDZ common header for every compiled file
     private static $common_header = '<?php '.
                     'require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/Autoload.class.php\';'.
-                    'require $_SERVER[\'DOCUMENT_ROOT\'].\'/pages/common/vars.php\';'.
+                    'require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/pages/common/vars.php\';'.
                     'if(!isset($user)) die("user not set");'.
                     'extract($user->getTPL()->var, EXTR_OVERWRITE);';
 

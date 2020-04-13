@@ -148,15 +148,15 @@ if (($info->private && !$vals['logged_b']) ||
             } else {
                 // required by singlepost
                 $hpid = $post->hpid;
-                $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';
+                $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/singlepost.html.php';
                 $found = true;
             }
         } elseif ($vals['followers_b']) {
-            $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/followers.html.php';
+            $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/followers.html.php';
         } elseif ($vals['interactions_b']) {
-            $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/interactions.html.php';
+            $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/interactions.html.php';
         } elseif ($vals['members_b']) {
-            $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/project/members.html.php';
+            $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/members.html.php';
         }
 
         if (($vals['singlepost_b'] && $found) || (!$vals['singlepost_b'])) {

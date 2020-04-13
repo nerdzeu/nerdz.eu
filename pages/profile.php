@@ -290,17 +290,17 @@ if ($enter) {
         } else {
             // required for singlepost
             $hpid = $post->hpid;
-            $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/singlepost.html.php';
+            $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/singlepost.html.php';
             $found = true;
         }
     } elseif ($vals['friends_b']) {
-        $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/friends.html.php';
+        $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/friends.html.php';
     } elseif ($vals['following_b']) {
-        $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/following.html.php';
+        $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/following.html.php';
     } elseif ($vals['followers_b']) {
-        $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/followers.html.php';
+        $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/followers.html.php';
     } elseif ($vals['interactions_b']) {
-        $vals['post_n'] = require $_SERVER['DOCUMENT_ROOT'].'/pages/profile/interactions.html.php';
+        $vals['post_n'] = require_once $_SERVER['DOCUMENT_ROOT'].'/pages/profile/interactions.html.php';
     }
 
     if (($vals['singlepost_b'] && $found) || !$vals['singlepost_b']) {

@@ -50,4 +50,4 @@ $dateExtractor = function ($friendId) use ($id, $user) {
     return $user->getDate($since->time);
 };
 
-return require $_SERVER['DOCUMENT_ROOT'].'/pages/common/userslist.html.php';
+return require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/userslist.html.php';

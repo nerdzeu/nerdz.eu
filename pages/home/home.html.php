@@ -25,4 +25,4 @@ if (!($logged = $user->isLogged())) {
 $prj = isset($_GET['action']) && $_GET['action'] == 'project' || isset($_POST['type']) && $_POST['type'] == 'project';
 $truncate = true;
 $path = 'home';
-require $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.html.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/postlist.html.php';

@@ -17,4 +17,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 $prj = true;
 
-return require $_SERVER['DOCUMENT_ROOT'].'/pages/common/singlepost.html.php';
+return require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/singlepost.html.php';

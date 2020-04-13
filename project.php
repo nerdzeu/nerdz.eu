@@ -122,7 +122,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
 if(!$found) {
     if($user->isLogged()) {
-        require($_SERVER['DOCUMENT_ROOT'].'/pages/project/create.php');
+        require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/create.php';
     }
 } else {
     require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project.php';
