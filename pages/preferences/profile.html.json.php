@@ -176,12 +176,12 @@ if ($closed) {
 $_SESSION['dateformat'] = $userData['dateformat'];
 
 $userData['interests'] = isset($_POST['interests'])     ? trim($_POST['interests'])            : '';
-if(isset($userData["interests"])) {
+if (isset($userData["interests"])) {
     $old = $user->getInterests($_SESSION['id']);
     $new = [];
-    foreach(explode("\n", $userData["interests"]) as $val){
+    foreach (explode("\n", $userData["interests"]) as $val) {
         $value = htmlspecialchars(trim($val), ENT_QUOTES, 'UTF-8');
-        if(!empty($value)) {
+        if (!empty($value)) {
             $new[] = $value;
         }
     }
@@ -189,10 +189,10 @@ if(isset($userData["interests"])) {
     $removed = array_diff($old, $new);
     $added = array_diff($new, $old);
 
-    foreach($removed as $interest) {
+    foreach ($removed as $interest) {
         $user->deleteInterest($interest);
     }
-    foreach($added as $interest) {
+    foreach ($added as $interest) {
         $user->addInterest($interest);
     }
 }

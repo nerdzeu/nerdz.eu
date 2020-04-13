@@ -46,9 +46,10 @@ class System
         return count($chost) > 1 ? implode('.', $chost) : null;
     }
 
-    public static function getScheme() {
+    public static function getScheme()
+    {
         $scheme = "http";
-        if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
             $scheme = "https";
         }
         return $scheme;
@@ -57,7 +58,7 @@ class System
     public static function getCurrentHostAddress()
     {
         $port = "";
-        if($_SERVER['SERVER_PORT'] != 443 || $_SERVER['SERVER_PORT'] != 80) {
+        if ($_SERVER['SERVER_PORT'] != 443 || $_SERVER['SERVER_PORT'] != 80) {
             $port = $_SERVER['SERVER_PORT'];
         }
         $scheme = self::getScheme();

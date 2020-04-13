@@ -119,7 +119,6 @@ class Db
                 $stmt->execute($query[1]);
             }
         } catch (PDOException $e) {
-
             static::dumpException($e, $_SERVER['REQUEST_URI'].', '.$e->getTraceAsString());
 
             if ($action == static::FETCH_ERRNO && $stmt !== null) {

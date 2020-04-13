@@ -17,22 +17,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
-
-use NERDZ\Core\Pms;
 use NERDZ\Core\User;
 
 $user = new User();
-
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
+$tplcfg = $user->getTemplateCfg();
 
 if (!$user->isLogged()) {
-    die($user->lang('REGISTER'));
+    die(header("Location: /"));
 }
 
-$pms  = new Pms();
-
-$vals = [];
-$vals['list_a'] = $pms->getList();
-
-$user->getTPL()->assign($vals);
-$user->getTPL()->draw('pm/inbox');
+?>
+    <!DOCTYPE html>
+    <html lang="<?php echo $user->getBoardLanguage();?>">
+    <head>
+    <title>Create a new application</title>
+<?php
+$headers = $tplcfg->getTemplateVars('application');
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
+?>
+    </head>
+<body>
+    <div id="body">
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/application/create.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/pages/footer.php';
+?>
+    </div>
+    </body>
+    </html>

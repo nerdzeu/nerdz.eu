@@ -17,22 +17,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
-
-use NERDZ\Core\Pms;
 use NERDZ\Core\User;
+use NERDZ\Core\Captcha;
+use NERDZ\Core\Db;
 
 $user = new User();
 
-ob_start(array('NERDZ\\Core\\Utils','minifyHTML'));
-
 if (!$user->isLogged()) {
-    die($user->lang('REGISTER'));
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('REGISTER')));
 }
 
-$pms  = new Pms();
+$cptcka = new Captcha();
 
-$vals = [];
-$vals['list_a'] = $pms->getList();
+$captcha = isset($_POST['captcha']) ? $_POST['captcha'] : false;
 
-$user->getTPL()->assign($vals);
-$user->getTPL()->draw('pm/inbox');
+if (!$captcha) {
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MISSING')."\n".$user->lang('CAPTCHA')));
+}
+if (!$cptcka->check($captcha)) {
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('WRONG_CAPTCHA')));
+}
+
+// TODO
+
+die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));

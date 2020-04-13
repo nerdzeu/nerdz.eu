@@ -19,8 +19,6 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Pms;
 use NERDZ\Core\User;
 
-
-
 $user = new User();
 
 if (!$user->isLogged()) {

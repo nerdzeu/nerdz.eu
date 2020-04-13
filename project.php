@@ -120,8 +120,8 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
     <div id="body">
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/header.php';
-if(!$found) {
-    if($user->isLogged()) {
+if (!$found) {
+    if ($user->isLogged()) {
         require_once $_SERVER['DOCUMENT_ROOT'].'/pages/project/create.php';
     }
 } else {
