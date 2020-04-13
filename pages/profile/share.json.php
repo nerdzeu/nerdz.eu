@@ -72,7 +72,7 @@ $share = function ($to, $url, $message = null) use ($user, $messages) {
         return $messages->add($to, $message);
     }
 
-    $h = @get_headers($url, Db::FETCH_OBJ);
+    $h = get_headers($url, Db::FETCH_OBJ);
     if (false === $h) {
         return false;
     }
