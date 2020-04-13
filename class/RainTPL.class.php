@@ -171,12 +171,12 @@ class RainTPL
         $user = new User();
         if (!$return_string) {
             extract($this->var, EXTR_OVERWRITE);
-            include $this->tpl['compiled_filename'];
+            require_once $this->tpl['compiled_filename'];
             unset($this->tpl);
         } else {
             ob_start();
             extract($this->var);
-            include $this->tpl['compiled_filename'];
+            require_once $this->tpl['compiled_filename'];
             $raintpl_contents = ob_get_clean();
             unset($this->tpl);
 
