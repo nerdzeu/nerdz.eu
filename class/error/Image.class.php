@@ -29,8 +29,6 @@ final class Image
     public function __construct($langindex)
     {
         $this->user = new User();
-
-        ob_clean();
         header('Content-Type: image/png');
         $red = rand(100, 255);
         $green = rand(100, 250);

@@ -122,7 +122,7 @@ function N() /* THE FATHER of God (class/object/function)*/
     };
 
     this.imgErr = function (obj) {
-        $(obj).attr ("src", "/static/images/onErrorImg.php");
+        $(obj).unbind("error").attr("src", "/static/images/onErrorImg.php");
     };
 
     this.imgLoad = function(obj) {
@@ -135,8 +135,9 @@ function N() /* THE FATHER of God (class/object/function)*/
         else
         {
             var m = (117 - $obj.height()) / 2;
-            if (m > 1)
+            if (m > 1) {
                 $obj.css ("margin-top", m);
+            }
         }
     };
 
