@@ -5,11 +5,12 @@
     "name": "nerdzeu/nerdz.eu",
     "description": "A mix between a forum and a social network",
     "require": {
-        "knplabs/github-api": "1.3.*@dev",
+        "knplabs/github-api": "^2.13@dev",
         "phpmailer/phpmailer": "dev-master",
         "mcilloni/pushed": "dev-master",
         "voku/html-min": "dev-master",
-        "matthiasmullie/minify": "dev-master"
+        "matthiasmullie/minify": "dev-master",
+        "php-http/guzzle6-adapter": "^1.1"
     },
     "license": "AGPL-3.0",
     "authors": [
