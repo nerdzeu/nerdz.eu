@@ -50,10 +50,7 @@ class Utils
     public static function apcu_set($key, callable $setter, $ttl)
     {
         $ret = $setter();
-        if (Config\MINIFICATION_ENABLED) {
-            @apcu_store($key, serialize($ret), $ttl);
-        }
-
+        apcu_store($key, serialize($ret), $ttl);
         return $ret;
     }
 
@@ -129,11 +126,8 @@ class Utils
 
     public static function minifyHTML($str)
     {
-        if (Config\MINIFICATION_ENABLED) {
-            $htmlMin = new HtmlMin();
-            return $htmlMin->minify($str);
-        }
-        return $str;
+        $htmlMin = new HtmlMin();
+        return $htmlMin->minify($str);
     }
 
     public static function toJsonResponse($status, $message = '')

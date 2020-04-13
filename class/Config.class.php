@@ -34,8 +34,6 @@ class Config
         $config = json_decode($config);
 
         $CONSTANTS = [
-            'MINIFICATION_ENABLED' => false,
-
             'PUSHED_ENABLED' => false,
             'PUSHED_IP6' => true,
             'PUSHED_PORT' => 5667,
@@ -50,7 +48,6 @@ class Config
             'MEDIA_HOST' => '',
             'STATIC_HOST' => '',
 
-            'MINIFICATION_JS_CMD' => 'uglifyjs %path% -c unused=false',
             'POSTGRESQL_HOST' => -1,
             'POSTGRESQL_DATA_NAME' => -1,
             'POSTGRESQL_USER' => -1,

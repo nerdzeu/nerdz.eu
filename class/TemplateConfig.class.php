@@ -194,10 +194,6 @@ final class TemplateConfig extends RainTPL
 
                 return;
             }
-            if (!Config\MINIFICATION_ENABLED) {
-                $path .= '?'.filemtime($userfile); //force cache refresh if file is changed
-                return;
-            }
 
             $userfiletime = $this->cache_dir.'/'.md5($path).$this->tpl_no.$id;
             $ext = "min.{$id}";

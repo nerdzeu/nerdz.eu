@@ -15,9 +15,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-// Used for minification of JS/CSS files. Also used to minify
-// template files by templatecfg.class
-// constants.inc.php: for MINIFICATION_*_CMD
 
 namespace NERDZ\Core;
 
@@ -27,8 +24,6 @@ use MatthiasMullie\Minify;
 
 final class Minification
 {
-    const PATH_VAR = '%path%';
-
     public static function minifyJs($path)
     {
         $minifier = new Minify\JS($path);

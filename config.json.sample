@@ -17,7 +17,6 @@
     "SITE_HOST": "www.example.com",
     "STATIC_HOST": "static.example.com",
     "MOBILE_HOST": "mobile.example.com",
-    "MINIFICATION_ENABLED": false,
     "ISSUE_GIT_KEY": "...",
     "PUSHED_ENABLED": false,
     "PUSHED_IP6": false,
