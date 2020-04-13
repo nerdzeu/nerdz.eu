@@ -28,7 +28,7 @@ class Feed extends Messages
     public function __construct()
     {
         parent::__construct();
-        $this->baseurl = '//'.Config\SITE_HOST.'/';
+        $this->baseurl = System::getScheme().'://'.Config\SITE_HOST.'/';
     }
 
     public function error($desc)

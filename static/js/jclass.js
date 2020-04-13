@@ -24,10 +24,10 @@ function N() /* THE FATHER of God (class/object/function)*/
                 iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="https://www.youtube.com/embed/'+vid+'?wmode=opaque" allowfullscreen></iframe>';
             break;
             case "vimeo":
-                iframe = '<iframe style="margin: auto" src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                iframe = '<iframe style="margin: auto" src="https://player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             break;
             case "dailymotion":
-                iframe = '<iframe style="margin: auto" frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
+                iframe = '<iframe style="margin: auto" frameborder="0" width="480" height="270" src="https://www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
             break;
             case "facebook":
                 iframe = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='+vid+'" frameborder="0"></iframe>';

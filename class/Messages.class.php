@@ -187,7 +187,7 @@ class Messages
         }, $str);
         $str = preg_replace_callback('#\[wiki=([a-z]{2})\](.+?)\[/wiki\]#i', function ($m) {
             $m[2] = static::stripTags($m[2]);
-            return '<a href="http://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ', '_', html_entity_decode($m[2], ENT_QUOTES, 'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
+            return '<a href="https://'.$m[1].'.wikipedia.org/wiki/'.urlencode(str_replace(' ', '_', html_entity_decode($m[2], ENT_QUOTES, 'UTF-8')))."\" onclick=\"window.open(this.href); return false\">{$m[2]} @Wikipedia - {$m[1]}</a>";
         }, $str);
         $str = preg_replace_callback("#(\[math\]|\[m\])(.+?)(\[/math\]|\[/m\])#i", function ($m) {
             return $m[1].strip_tags($m[2]).$m[3];
@@ -354,7 +354,7 @@ class Messages
                 $a_type = $match[1].($match[1] == 'track' ? 's' : '');
                 $a_height = $truncate ? '80' : '240';
 
-                return "<iframe src='//www.deezer.com/plugins/player?height={$a_height}&type={$a_type}&id={$match[2]}' width='100%' height='{$a_height}' scrolling='no' frameborder='no'></iframe>";
+                return "<iframe src='https://www.deezer.com/plugins/player?height={$a_height}&type={$a_type}&id={$match[2]}' width='100%' height='{$a_height}' scrolling='no' frameborder='no'></iframe>";
             } elseif (filter_var($uri, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
                 return '<audio preload="none" controls src="'.htmlspecialchars($uri, ENT_QUOTES, 'UTF-8').'"></audio>';
             } else {
@@ -378,7 +378,7 @@ class Messages
                 $v_url = html_entity_decode($m[1], ENT_QUOTES, 'UTF-8');
                 $output = [];
                 if (preg_match(static::YOUTUBE_REGEXP, $v_url, $match)) {
-                    $output = ['youtube', $match[1], '//i1.ytimg.com/vi/'.$match[1].'/hqdefault.jpg', 130];
+                    $output = ['youtube', $match[1], 'https://i1.ytimg.com/vi/'.$match[1].'/hqdefault.jpg', 130];
                 } elseif (preg_match(static::VIMEO_REGEXP, $v_url, $match)) {
                     $output = ['vimeo', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 130, 'N.vimeoThumbnail(this)'];
                 } elseif (preg_match(static::DMOTION_REGEXP, $v_url, $match)) {
@@ -418,11 +418,11 @@ class Messages
                 $v_url = html_entity_decode($m[1], ENT_QUOTES, 'UTF-8');
                 $iframe_code = '';
                 if (preg_match(static::YOUTUBE_REGEXP, $v_url, $match)) {
-                    $iframe_code = '<iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="//www.youtube.com/embed/'.$match[1].'?wmode=opaque" allowfullscreen></iframe>';
+                    $iframe_code = '<iframe title="YouTube video" style="width:560px; height:340px; border:0px; margin: auto;" src="https://www.youtube.com/embed/'.$match[1].'?wmode=opaque" allowfullscreen></iframe>';
                 } elseif (preg_match(static::VIMEO_REGEXP, $v_url, $match)) {
-                    $iframe_code = '<iframe src="//player.vimeo.com/video/'.$match[1].'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                    $iframe_code = '<iframe src="https://player.vimeo.com/video/'.$match[1].'?badge=0&amp;color=ffffff" width="500" height="281" style="margin: auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
                 } elseif (preg_match(static::DMOTION_REGEXP, $v_url, $match)) {
-                    $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="//www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
+                    $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="https://www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
                 } elseif (preg_match(static::FACEBOOK_REGEXP, $v_url, $match)) {
                     $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" frameborder="0"></iframe>';
                 } elseif (preg_match(static::NERDZCRUSH_REGEXP, $v_url, $match)) {

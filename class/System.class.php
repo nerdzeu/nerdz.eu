@@ -46,14 +46,27 @@ class System
         return count($chost) > 1 ? implode('.', $chost) : null;
     }
 
+    public static function getScheme() {
+        $scheme = "http";
+        if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+            $scheme = "https";
+        }
+        return $scheme;
+    }
+
     public static function getCurrentHostAddress()
     {
-        return '//'.$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] == '80' ? '' : ':'.$_SERVER['SERVER_PORT']).'/';
+        $port = "";
+        if($_SERVER['SERVER_PORT'] != 443 || $_SERVER['SERVER_PORT'] != 80) {
+            $port = $_SERVER['SERVER_PORT'];
+        }
+        $scheme = self::getScheme();
+        return "${scheme}://{$_SERVER['SERVER_NAME']}".($port ? ":${port}" : '').'/';
     }
 
     public static function getResourceDomain()
     {
-        return '//'.(Config\STATIC_HOST == '' ? Config\SITE_HOST : Config\STATIC_HOST);
+        return self::getScheme().'://'.(empty(Config\STATIC_HOST) ? Config\SITE_HOST : Config\STATIC_HOST);
     }
 
     public static function getAvailableLanguages($long = null)

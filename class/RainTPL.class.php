@@ -115,7 +115,9 @@ class RainTPL
 
     public function __construct()
     {
-        $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/tmp/';
+        $this->cache_dir = $_SERVER['DOCUMENT_ROOT'].'/'.(
+            System::getScheme() == 'https' ? 'ssl' : '').'tmp/';
+
         if (!is_dir($this->cache_dir)) {
             mkdir($this->cache_dir, 0755, true);
         }
