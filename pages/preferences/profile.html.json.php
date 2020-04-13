@@ -36,17 +36,17 @@ if (!$user->isLogged()) {
 }
 
 $userData['biography'] = isset($_POST['biography'])  ? trim($_POST['biography'])               : '';
-$userData['quotes'] = isset($_POST['quotes'])     ? trim($_POST['quotes'])                  : '';
-$userData['website'] = isset($_POST['website'])    ? strip_tags(trim($_POST['website']))     : '';
-$userData['jabber'] = isset($_POST['jabber'])     ? trim($_POST['jabber'])                  : '';
-$userData['yahoo'] = isset($_POST['yahoo'])      ? trim($_POST['yahoo'])                   : '';
-$userData['facebook'] = isset($_POST['facebook'])   ? trim($_POST['facebook'])                : '';
-$userData['twitter'] = isset($_POST['twitter'])    ? trim($_POST['twitter'])                 : '';
-$userData['steam'] = isset($_POST['steam'])      ? trim($_POST['steam'])                   : '';
-$userData['skype'] = isset($_POST['skype'])      ? trim($_POST['skype'])                   : '';
-$userData['github'] = isset($_POST['github'])     ? trim($_POST['github'])                  : '';
-$userData['userscript'] = isset($_POST['userscript']) ? strip_tags(trim($_POST['userscript']))  : '';
-$userData['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])              : '';
+$userData['quotes'] = isset($_POST['quotes'])     ? trim($_POST['quotes'])                     : '';
+$userData['website'] = isset($_POST['website'])    ? strip_tags(trim($_POST['website']))       : '';
+$userData['jabber'] = isset($_POST['jabber'])     ? trim($_POST['jabber'])                     : '';
+$userData['yahoo'] = isset($_POST['yahoo'])      ? trim($_POST['yahoo'])                       : '';
+$userData['facebook'] = isset($_POST['facebook'])   ? trim($_POST['facebook'])                 : '';
+$userData['twitter'] = isset($_POST['twitter'])    ? trim($_POST['twitter'])                   : '';
+$userData['steam'] = isset($_POST['steam'])      ? trim($_POST['steam'])                       : '';
+$userData['skype'] = isset($_POST['skype'])      ? trim($_POST['skype'])                       : '';
+$userData['github'] = isset($_POST['github'])     ? trim($_POST['github'])                     : '';
+$userData['userscript'] = isset($_POST['userscript']) ? strip_tags(trim($_POST['userscript'])) : '';
+$userData['dateformat'] = isset($_POST['dateformat']) ? trim($_POST['dateformat'])             : '';
 
 foreach ($userData as $key => $val) {
     $userData[$key] = trim(htmlspecialchars($val, ENT_QUOTES, 'UTF-8'));
@@ -174,6 +174,28 @@ if ($closed) {
 }
 
 $_SESSION['dateformat'] = $userData['dateformat'];
+
+$userData['interests'] = isset($_POST['interests'])     ? trim($_POST['interests'])            : '';
+if(isset($userData["interests"])) {
+    $old = $user->getInterests($_SESSION['id']);
+    $new = [];
+    foreach(explode("\n", $userData["interests"]) as $val){
+        $value = htmlspecialchars(trim($val), ENT_QUOTES, 'UTF-8');
+        if(!empty($value)) {
+            $new[] = $value;
+        }
+    }
+
+    $removed = array_diff($old, $new);
+    $added = array_diff($new, $old);
+
+    foreach($removed as $interest) {
+        $user->deleteInterest($interest);
+    }
+    foreach($added as $interest) {
+        $user->addInterest($interest);
+    }
+}
 
 if (isset($_POST['whitelist'])) {
     $oldlist = $user->getWhitelist($_SESSION['id']);
