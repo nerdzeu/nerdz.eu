@@ -263,6 +263,17 @@ N.json = function()
     };
 
     /**
+     * Create a new application
+     * @paramters: {name, description, redirect_uri, scope (array), captcha}
+     */
+    this.createApplication = function(jObj,done)
+    {
+        N.json.post('/pages/application/create.json.php',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
      * Set template variables
      * @parameters: {vars: designer defined object, tok}
      */

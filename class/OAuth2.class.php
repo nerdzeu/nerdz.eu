@@ -39,6 +39,17 @@ class OAuth2
     ];
     const PERMISSIONS = ['READ', 'WRITE'];
 
+    public static function isValidScope(string $scope) : bool
+    {
+        $parts = explode(':', $scope);
+        if (count($parts) != 2) {
+            return false;
+        }
+        $name = strtoupper($parts[0]);
+        $rw = strtoupper($parts[1]);
+        return in_array($name, self::SCOPES) && in_array($rw, self::PERMISSIONS);
+    }
+
     public static function getScopes(string $scopesString) : array
     {
         $ret = [];
