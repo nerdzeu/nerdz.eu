@@ -844,7 +844,7 @@ class Notification
                 [
                     'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
-                        ':story' => json_encode($new),
+                        ':story' => json_encode($new, JSON_FORCE_OBJECT),
                         ':id' => $_SESSION['id'],
                     ],
                 ],
@@ -872,7 +872,7 @@ class Notification
                 [
                     'UPDATE "users" SET "notify_story" = :story WHERE "counter" = :id',
                     [
-                        ':story' => json_encode($old),
+                        ':story' => json_encode($old, JSON_FORCE_OBJECT),
                         ':id' => $_SESSION['id'],
                     ],
                 ],
