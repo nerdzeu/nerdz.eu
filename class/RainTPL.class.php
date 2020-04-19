@@ -107,11 +107,13 @@ class RainTPL
     const CACHE_EXPIRE_TIME = 1800; // default cache expire time
 
     // NERDZ common header for every compiled file
+    // NOTE: /pages/common/vars.php is the only file that IS NOT included with require_once
+    // since it can be included multiple time and must be re-evaluated every time.
     private static $common_header = '<?php '.
                     'require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/class/Autoload.class.php\';'.
-                    'require_once $_SERVER[\'DOCUMENT_ROOT\'].\'/pages/common/vars.php\';'.
+                    'require $_SERVER[\'DOCUMENT_ROOT\'].\'/pages/common/vars.php\';'.
                     'if(!isset($user)) die("user not set");'.
-                    'extract($user->getTPL()->var, EXTR_OVERWRITE);';
+                    'extract($user->getTPL()->var, EXTR_OVERWRITE|EXTR_REFS);';
 
     public function __construct()
     {
@@ -171,12 +173,12 @@ class RainTPL
         // Cache is off and return_string is false, Rain just echo the template
         $user = new User();
         if (!$return_string) {
-            extract($this->var, EXTR_OVERWRITE);
+            extract($this->var, EXTR_OVERWRITE|EXTR_REFS);
             require_once $this->tpl['compiled_filename'];
             unset($this->tpl);
         } else {
             ob_start();
-            extract($this->var);
+            extract($this->var, EXTR_OVERWRITE|EXTR_REFS);
             require_once $this->tpl['compiled_filename'];
             $raintpl_contents = ob_get_clean();
             unset($this->tpl);
@@ -357,7 +359,6 @@ class RainTPL
                     'if( $cache = $user->getTPL()->cache( $template = basename("'.$include_var.'") ) )'.
                     '    echo $cache;'.
                     'else{ '.
-                    '$tpl_dir_temp = static::$tpl_dir;'.
                     '$user->getTPL()->assign( $this->var );'.
                     (!$loop_level ? null : '$user->getTPL()->assign( "key", $key'.$loop_level.' ); $user->getTPL()->assign( "value", $value'.$loop_level.' );').
                     '$user->getTPL()->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1, 1) != "/" ? "/" : "" ) . $template );'.
@@ -366,7 +367,6 @@ class RainTPL
                 } else {
                     //dynamic include
                     $compiled_code .= static::$common_header.
-                    '$tpl_dir_temp = static::$tpl_dir;'.
                     '$user->getTPL()->assign( $this->var );'.
                     (!$loop_level ? '' : '$user->getTPL()->assign( "key", $key'.$loop_level.' ); $user->getTPL()->assign( "value", $value'.$loop_level.' );').
                     '$user->getTPL()->draw( dirname("'.$include_var.'") . ( substr("'.$include_var.'",-1,1) != "/" ? "/" : "" ) . basename("'.$include_var.'") );'.
