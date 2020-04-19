@@ -35,7 +35,8 @@ $vals = [];
 
 if (!($r = Db::query(
     [
-        'SELECT c.id, c.name, c.secret, c.redirect_uri, c.user_id
+        'SELECT
+        c.id, c.name, c.secret, c.redirect_uri, c.user_id, c.description, c.scope
         FROM oauth2_clients c
         WHERE c.user_id = :id',
         [
@@ -52,6 +53,8 @@ if (!($r = Db::query(
         $vals['myapplications_a'][$i]['secret_n'] = $o->secret;
         $vals['myapplications_a'][$i]['redirecturi_n'] = $o->redirect_uri;
         $vals['myapplications_a'][$i]['id_n'] = $o->id;
+        $vals['myapplications_a'][$i]['description_n'] = $o->description;
+        $vals['myapplications_a'][$i]['scope_n'] = $o->scope;
         ++$i;
     }
 }
