@@ -30,7 +30,7 @@ if (!$client_id || !$redirect_uri || !$response_type || !$scopes) {
     $vals = [];
     $client = Db::query(
         [
-            'SELECT name, redirect_uri FROM oauth2_clients WHERE id = :id',
+            'SELECT name, redirect_uri, description FROM oauth2_clients WHERE id = :id',
             [
                 ':id' => $client_id,
             ],
@@ -49,7 +49,8 @@ if (!$client_id || !$redirect_uri || !$response_type || !$scopes) {
                 $vals['error_n'] = 'redirect_uri: mismatch';
             } else {
                 $vals['client_n'] = $client->name;
-                $vals['authorizeurl_n'] = Config\API_URL.'/authorize';
+                $vals['description_n'] = $client->name;
+                $vals['authorizeurl_n'] = Config\API_URL.'/v1/oauth2/authorize';
                 $vals['responsetype_n'] = htmlspecialchars($_GET['response_type'], ENT_QUOTES, 'UTF-8');
                 $vals['clientid_n'] = $client_id;
                 $vals['redirecturi_n'] = htmlspecialchars($_GET['redirect_uri'], ENT_QUOTES, 'UTF-8');
