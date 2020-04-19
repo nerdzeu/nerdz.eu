@@ -21,6 +21,7 @@ use NERDZ\Core\User;
 use NERDZ\Core\Captcha;
 use NERDZ\Core\Db;
 use NERDZ\Core\OAuth2;
+use NERDZ\Core\Utils;
 
 $user = new User();
 
@@ -59,6 +60,10 @@ if (empty($_POST['name']) || !is_string($_POST['name'])) { //always required
 
 if (empty($_POST['redirect_uri']) || !is_string($_POST['redirect_uri'])) { //always required
     die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('MUST_COMPLETE_FORM')."\n\n".$user->lang('MISSING').":\nRedirect URI"));
+}
+
+if (!empty($_POST['redirect_uri']) && !Utils::isValidURL($_POST['redirect_uri'])) {
+    die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': invalid redirect uri'));
 }
 
 
@@ -107,7 +112,7 @@ $ret = Db::query(
 );
 
 if ($ret) {
-    die(NERDZ\Core\Utils::JSONResponse('ok', ["client_id" => $ret->id, "secret" => $ret->secret]));
+    die(NERDZ\Core\Utils::JSONResponse('ok', "Going to settings to manage your application..."));
 }
 
 die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR'). ": maybe duplicated name"));
