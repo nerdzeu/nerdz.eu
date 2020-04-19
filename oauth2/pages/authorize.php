@@ -23,6 +23,7 @@ $client_id = isset($_GET['client_id']) && is_numeric($_GET['client_id']) ? trim(
 $redirect_uri = isset($_GET['redirect_uri']) ? trim($_GET['redirect_uri'])  : false;
 $response_type = isset($_GET['response_type']) ? trim($_GET['response_type'])  : false;
 $scopes = isset($_GET['scope']) ? trim($_GET['scope'])  : false;
+$state = isset($_GET['state']) ? trim($_GET['state'])  : false;
 
 if (!$client_id || !$redirect_uri || !$response_type || !$scopes) {
     $vals['error_n'] = "{$user->lang('MISSING')}: client_id, redirect_uri, response_type, scopes";
@@ -55,6 +56,7 @@ if (!$client_id || !$redirect_uri || !$response_type || !$scopes) {
                 $vals['clientid_n'] = $client_id;
                 $vals['redirecturi_n'] = htmlspecialchars($_GET['redirect_uri'], ENT_QUOTES, 'UTF-8');
                 $vals['scope_n'] = htmlspecialchars($_GET['scope'], ENT_QUOTES, 'UTF-8');
+                $vals['state_n'] = htmlspecialchars($_GET['state'], ENT_QUOTES, 'UTF-8');
                 $vals['authorized_n'] = $_SESSION['id'];
                 $vals['authorizedcode_n'] = $user->UUID($_SESSION['id']);
             }
