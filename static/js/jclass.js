@@ -21,19 +21,22 @@ function N() /* THE FATHER of God (class/object/function)*/
         switch (a.attr ("data-host"))
         {
             case "youtube":
-                iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="http'+('https:' == document.location.protocol ? 's' : '')+'://www.youtube.com/embed/'+vid+'?wmode=opaque" allowfullscreen></iframe>';
+                iframe = '<iframe style="border:0px;width:560px; height:340px; margin: auto" title="YouTube video" style="width:460px; height:340px" src="https://www.youtube.com/embed/'+vid+'?wmode=opaque" allowfullscreen></iframe>';
             break;
             case "vimeo":
-                iframe = '<iframe style="margin: auto" src="//player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+                iframe = '<iframe style="margin: auto" src="https://player.vimeo.com/video/'+vid+'?badge=0&amp;color=ffffff" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
             break;
             case "dailymotion":
-                iframe = '<iframe style="margin: auto" frameborder="0" width="480" height="270" src="//www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
+                iframe = '<iframe style="margin: auto" frameborder="0" width="480" height="270" src="https://www.dailymotion.com/embed/video/'+vid+'" allowfullscreen></iframe>';
             break;
             case "facebook":
                 iframe = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='+vid+'" frameborder="0"></iframe>';
             break;
             case "nerdzcrush":
                 iframe = '<div class="nerdzcrush" data-media="'+vid+'#noautoplay,noloop"></div>';
+            break;
+            case "imgur":
+                iframe = '<video src="https://i.imgur.com/'+vid+'.webm" controls autoplay></video>';
             break;
         }
         a.html ('<div style="width:100%; text-align:center"><br />'+iframe+'</div>');
@@ -119,7 +122,7 @@ function N() /* THE FATHER of God (class/object/function)*/
     };
 
     this.imgErr = function (obj) {
-        $(obj).attr ("src", "/static/images/onErrorImg.php");
+        $(obj).unbind("error").attr("src", "/static/images/onErrorImg.php");
     };
 
     this.imgLoad = function(obj) {
@@ -132,8 +135,9 @@ function N() /* THE FATHER of God (class/object/function)*/
         else
         {
             var m = (117 - $obj.height()) / 2;
-            if (m > 1)
+            if (m > 1) {
                 $obj.css ("margin-top", m);
+            }
         }
     };
 
@@ -142,9 +146,9 @@ function N() /* THE FATHER of God (class/object/function)*/
      * Description: returns the array of static stuff in the header.
      */
     this.getStaticData = function() {
-        if (typeof window.Nstatic !== 'object')
+        if (typeof window.N.static !== 'object')
             return {};
-        return window.Nstatic;
+        return window.N.static;
     };
 
     /**
@@ -152,7 +156,7 @@ function N() /* THE FATHER of God (class/object/function)*/
      * Description: returns getStaticData().lang if available
      */
     this.getLangData = function() {
-        if (typeof window.Nstatic === 'object' && typeof window.Nstatic.lang === 'object')
+        if (typeof window.N.static === 'object' && typeof window.N.static.lang === 'object')
             return this.getStaticData().lang;
         return {};
     };
@@ -174,7 +178,7 @@ function N() /* THE FATHER of God (class/object/function)*/
     };
 }
 
-N = new N();
+var N = new N();
 
 N.json = function()
 {
@@ -197,14 +201,19 @@ N.json = function()
 
     /**
     * User login
-    * @parameters: { username, password, setcookie, tok[ ,offline] }
+    * @parameters: { username, password, setcookie, tok[ ,offline][, query_string] }
     * offline: if is set don't mark the user as online for this session
+    * query_string: to append an additional query string as get parameters
     */
     this.login = function(jObj,done)
     {
-        var forceSSL = location.protocol !== 'https:' &&
-            typeof Nssl !== 'undefined' && Nssl.login === true;
-        this.post ((forceSSL ? 'https://' + (Nssl.domain || document.location.host) : '') + '/pages/profile/login.json.php', jObj, function(d) {
+        var qs = /query_string=([^&|]+)/g.exec(jObj);
+        if(qs !== null) {
+            qs = '?' + decodeURIComponent(qs[1]) + '&redirect=' + encodeURIComponent('/oauth2/authorize.php')
+        } else {
+            qs = '';
+        }
+        this.post ('/pages/profile/login.json.php' + qs, jObj, function(d) {
             done (d);
         }, true);
     };
@@ -254,13 +263,24 @@ N.json = function()
     };
 
     /**
+     * Create a new application
+     * @paramters: {name, description, redirect_uri, scope (array), captcha}
+     */
+    this.createApplication = function(jObj,done)
+    {
+        N.json.post('/pages/application/create.json.php',jObj,function(d) {
+            done(d);
+        });
+    };
+
+    /**
      * Set template variables
      * @parameters: {vars: designer defined object, tok}
      */
     this.setTemplateVars = function(jObj, done)
     {
-        N.json.post('/pages/preferences/themes.html.json.php?action=vars',{"vars": jObj["vars"], "tok": jObj["tok"]},function(d) {
-            N.tplVars = jObj["vars"];
+        N.json.post('/pages/preferences/themes.html.json.php?action=vars',{"vars": jObj.vars, "tok": jObj.tok},function(d) {
+            N.tplVars = jObj.vars;
             done(d);
         });
     };
@@ -1036,6 +1056,39 @@ N.html = function()
 
 N.html = new N.html();
 
+N.html.home = function() {
+    var pp = '/pages/home/';
+ 
+    this.post = function(path, jObj,done)
+    {
+        N.html.post(path,jObj,done);
+    };
+
+    /**
+     * Return the homepage with only posts made by follwed users (10 post), starting from post number: lim
+     * @parameters lim
+     */
+    this.getFollowedPostList = function(lim, done) {
+        this.post(pp + 'home.html.php', {limit: !lim ? '0' : lim+",10", onlyfollowed: '1'}, function(d) {
+            done(d);
+        });
+    };
+
+    /**
+     * Return the homepage with only posts made by follwed users (lim posts), starting from post with id = hpid
+     * @parameters lim,hpid, done
+     * hpid = {hpid, type = hpid type [project or profile]}
+     */
+    this.getFollowedPostListBeforeHpid = function(lim, hpid, type, done)
+    {
+        this.post(pp + 'home.html.php',{limit: lim ? lim : "10", onlyfollowed: '1', hpid: hpid, type: type}, function(d) {
+            done(d);
+        });
+    };
+};
+
+N.html.home = new N.html.home();
+
 N.html.profile = function()
 {
     var pp = '/pages/profile/';
@@ -1070,27 +1123,6 @@ N.html.profile = function()
         });
     };
 
-    /**
-     * Return the homepage post list (10 post), starting from post number: lim
-     * @parameters lim
-     */
-    this.getHomePostList = function(lim, done)
-    {
-        this.post('/pages/home/home.html.php?action=profile',{limit: !lim ? '0' : lim+",10"}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
-     * Return the homepage with sorted by vote, starting from post number: lim
-     * @parameters lim, votetype = '+' | '-'
-     */
-    this.getByVoteHomePostList = function(lim, vote, done)
-    {
-        this.post('/pages/home/home.html.php?action=profile', {limit: !lim ? '0' : lim+",10", vote: vote}, function(d) {
-            done(d);
-        });
-    };
 
     /**
      * Return the homepage with only posts made by follwed users (10 post), starting from post number: lim
@@ -1110,28 +1142,6 @@ N.html.profile = function()
     this.getByLangHomePostList = function(lim, lang, done)
     {
         this.post('/pages/home/home.html.php?action=profile',{limit: !lim ? '0' : lim+",10", lang: lang}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
-     * Return lim posts, after posts with id = hpid
-     * @parameters lim, hpid
-     */
-    this.getHomePostListBeforeHpid = function(lim, hpid, done)
-    {
-        this.post('/pages/home/home.html.php?action=profile',{limit: lim ? lim : "10",hpid: hpid}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
-     * Return the homepage with sorted by vote, starting from post with id = hpid
-     * @parameters lim, votetype = '+' | '-'
-     */
-    this.getByVoteHomePostListBeforeHpid = function(lim, vote, hpid, done)
-    {
-        this.post('/pages/home/home.html.php?action=profile', {limit: lim ? lim : "10", vote: vote, hpid: hpid}, function(d) {
             done(d);
         });
     };
@@ -1248,28 +1258,6 @@ N.html.project = function()
     };
 
     /**
-     * Return the homepage post list (10 post), starting from post number: lim
-     * @parameters: lim
-     */
-    this.getHomePostList = function(lim, done)
-    {
-        this.post('/pages/home/home.html.php?action=project',{limit: !lim ? '0' : lim+",10"}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
-     * Return the homepage with sorted by vote, starting from post number: lim
-     * @parameters lim, votetype = '+' | '-'
-     */
-    this.getByVoteHomePostList = function(lim, vote, done)
-    {
-        this.post('/pages/home/home.html.php?action=project', {limit: !lim ? '0' : lim+",10", vote: vote}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
      * Return the homepage with only posts made by follwed users (10 post), starting from post number: lim
      * @parameters lim
      */
@@ -1287,28 +1275,6 @@ N.html.project = function()
     this.getByLangHomePostList = function(lim, lang, done)
     {
         this.post('/pages/home/home.html.php?action=project',{limit: !lim ? '0' : lim+",10", lang: lang}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
-     * Return the project homepage post list (lim posts), starting from post with id = hpid
-     * @parameters: lim, hpid
-     */
-    this.getHomePostListBeforeHpid = function(lim, hpid, done)
-    {
-        this.post('/pages/home/home.html.php?action=project',{limit: lim ? lim : "10", hpid:hpid}, function(d) {
-            done(d);
-        });
-    };
-
-    /**
-     * Return the homepage with sorted by vote, starting from post with id = hpid
-     * @parameters lim, votetype = '+' | '-'
-     */
-    this.getByVoteHomePostListBeforeHpid = function(lim, vote, hpid, done)
-    {
-        this.post('/pages/home/home.html.php?action=project', {limit: lim ? lim : '10', vote: vote, hpid: hpid}, function(d) {
             done(d);
         });
     };

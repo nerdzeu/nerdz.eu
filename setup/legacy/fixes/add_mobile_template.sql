@@ -1,5 +1,0 @@
-BEGIN;
-
-ALTER TABLE profiles ADD COLUMN mobile_template int2 NOT NULL DEFAULT 1;
-
-COMMIT;

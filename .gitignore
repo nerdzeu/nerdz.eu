@@ -7,7 +7,7 @@ data/error.log
 data/tracking.js
 data/banner.list
 data/sitemap.xml
-class/config/index.php
+class/config/Variables.class.php
 utils/*
 google*
 mobile/*
@@ -25,3 +25,6 @@ composer.lock
 data/mobile-error.log
 data/static-error.log
 data/www-error.log
+.php_cs.cache
+tags
+config.json
