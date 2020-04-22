@@ -1,5 +1,0 @@
-#service.format.code <- the real file doesn't support comment, this is the syntax explaination
-#every banner must be in a single line. No empty lines are allowed
-#Example:
-adsense.120x600.<iframe code ... ></iframe>
-juiceadv.300x250.<iframe seamless src="..." properties ..></iframe>
