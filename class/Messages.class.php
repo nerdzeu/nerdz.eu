@@ -697,7 +697,8 @@ class Messages
             $glue .= ') ';
         }
 
-        $query = 'with blist as (select "to" from blacklist where "from" = '.$_SESSION['id'].') SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.
+        $user_id = $this->user->isLogged() ? $_SESSION['id'] : 0;
+        $query = 'with blist as (select "to" from blacklist where "from" = '.$user_id.') SELECT p.*, EXTRACT(EPOCH FROM p."time") AS time FROM "'.
                 $table.'" p '.$join.' WHERE '.
                 $glue.
                 ' ORDER BY p.time DESC'.
