@@ -1164,10 +1164,11 @@ class User
 
     public function getMobileTemplate($id = null)
     {
+        $default_template = '0';
         $logged = $this->isLogged();
 
         if (!$id && !$logged) {
-            return '1';
+            return $default_template;
         } //default
 
         if (!$id && $logged) {
@@ -1181,7 +1182,7 @@ class User
                     ],
                     Db::FETCH_OBJ
                 ))) {
-                    return false;
+                    return $default_template;
                 }
 
                 $_SESSION['template'] = $o->mobile_template;
@@ -1201,7 +1202,7 @@ class User
             ],
             Db::FETCH_OBJ
         ))) {
-            return '1';
+            return $default_template;
         }
 
         return $o->mobile_template;
