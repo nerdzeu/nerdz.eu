@@ -98,12 +98,13 @@ if ($email !== false && $captcha !== false) { // 1st step
     try {
         $mail = new PHPMailer\PHPMailer\PHPMailer();
         $mail->IsSMTP();
+        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
         $mail->SMTPAuth = true;
         $mail->Port = Config\SMTP_PORT;
         $mail->Host = Config\SMTP_SERVER;
         $mail->Username = Config\SMTP_USER;
         $mail->Password = Config\SMTP_PASS;
-        $mail->SMTPSecure = 'ssl';
+        $mail->SMTPDebug = PHPMailer\PHPMailer\SMTP::DEBUG_OFF;
 
         $mail->SetFrom(Config\SMTP_USER, Config\SITE_NAME);
         $mail->Subject = $user->lang('RESET_YOUR_PASSWORD');
