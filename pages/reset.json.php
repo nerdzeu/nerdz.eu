@@ -96,12 +96,15 @@ if ($email !== false && $captcha !== false) { // 1st step
 
     require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
     try {
-        $mail = new PHPMailer();
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
         $mail->IsSMTP();
         $mail->SMTPAuth = true;
-        $mail->Host = 'tls://'.trim(Config\SMTP_SERVER).':'.trim(Config\SMTP_PORT);
+        $mail->Port = Config\SMTP_PORT;
+        $mail->Host = Config\SMTP_SERVER;
         $mail->Username = Config\SMTP_USER;
         $mail->Password = Config\SMTP_PASS;
+        $mail->SMTPSecure = 'ssl';
+
         $mail->SetFrom(Config\SMTP_USER, Config\SITE_NAME);
         $mail->Subject = $user->lang('RESET_YOUR_PASSWORD');
         $user->getTPL()->assign($vals);
@@ -111,7 +114,7 @@ if ($email !== false && $captcha !== false) { // 1st step
             die(NERDZ\Core\Utils::JSONResponse('ok', 'OK'));
         }
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': '.$mail->ErrorInfo));
-    } catch (phpmailerException $e) {
+    } catch (PHPMailer\PHPMailer\Exception $e) {
         die(NERDZ\Core\Utils::JSONResponse('error', $user->lang('ERROR').': '.$e->errorMessage()."\n contact support@nerdz.eu or retry"));
     }
 
