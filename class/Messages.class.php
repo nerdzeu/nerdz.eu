@@ -776,7 +776,7 @@ class Messages
         if ($project && $issue && $to == Config\ISSUE_BOARD) {
             require_once $_SERVER['DOCUMENT_ROOT'].'/class/vendor/autoload.php';
             $client = new \Github\Client();
-            $client->authenticate(Config\ISSUE_GIT_KEY, null, \Github\client::AUTH_URL_TOKEN);
+            $client->authenticate(Config\ISSUE_GIT_KEY, null, \Github\client::AUTH_HTTP_TOKEN);
             $message = static::stripTags($message);
             try {
                 $client->api('issue')->create(
