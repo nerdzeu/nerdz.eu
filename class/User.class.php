@@ -165,10 +165,12 @@ class User
         if ($this->isLogged()) {
             $chost = System::getSafeCookieDomainName();
             if (isset($_COOKIE['nerdz_id'])) {
-                setcookie('nerdz_id', $_COOKIE['nerdz_id'], time() - 3600, '/', $chost, false, true);
+                setcookie('nerdz_id', '', time() - 3600, '/', $chost, false, true);
+                unset($_COOKIE['nerdz_id']);
             }
             if (isset($_COOKIE['nerdz_u'])) {
-                setcookie('nerdz_u', $_COOKIE['nerdz_u'], time() - 3600, '/', $chost, false, true);
+                setcookie('nerdz_u', '', time() - 3600, '/', $chost, false, true);
+                unset($_COOKIE['nerdz_u']);
             }
             session_destroy();
         }
@@ -178,7 +180,7 @@ class User
     {
         if (!($o = Db::query(
             [
-                'SELECT login(:user, :pass) AS logged_in, counter, username, encode(digest(password,\'MD5\'), \'HEX\') as auto_login_pwd
+                'SELECT login(:user, :pass) AS logged_in, counter, username, encode(digest("password",\'MD5\'), \'HEX\') as auto_login_pwd
                 FROM users
                 WHERE LOWER(username) = LOWER(:user)', [
                     ':user' => $username,
@@ -1380,7 +1382,7 @@ class User
 
         if (($obj = Db::query(
             [
-                'SELECT "username", encode(digest(password,\'MD5\'), \'HEX\') as auto_login_pwd FROM "users" WHERE "counter" = :id',
+                'SELECT "username", encode(digest("password",\'MD5\'), \'HEX\') as auto_login_pwd FROM "users" WHERE "counter" = :id',
                 [
                     ':id' => $_COOKIE['nerdz_id'],
                 ],

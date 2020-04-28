@@ -186,16 +186,13 @@ N.json = function()
     this.project = function(){};
     this.profile = function(){};
 
-    this.post = function(path,param,done,_corsCookies)
+    this.post = function(path,param,done)
     {
         $.ajax({
             type: 'POST',
             url: path,
             data: param,
-            dataType: 'json',
-            xhrFields: {
-                withCredentials: _corsCookies === true ? true : false
-            }
+            dataType: 'json'
         }).done(function(data) { done(data); });
     };
 
@@ -214,8 +211,8 @@ N.json = function()
             qs = '';
         }
         this.post ('/pages/profile/login.json.php' + qs, jObj, function(d) {
-            done (d);
-        }, true);
+            done(d);
+        });
     };
 
     /**
