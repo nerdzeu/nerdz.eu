@@ -205,7 +205,8 @@ N.json = function()
     this.login = function(jObj,done)
     {
         var qs = /query_string=([^&|]+)/g.exec(jObj);
-        if(qs !== null) {
+        // OAuth2 parameter check
+        if(qs !== null && qs[1].includes("client_id") && qs[1].includes("response_type")) {
             qs = '?' + decodeURIComponent(qs[1]) + '&redirect=' + encodeURIComponent('/oauth2/authorize.php')
         } else {
             qs = '';
