@@ -113,13 +113,6 @@ if (!($tracking = Utils::apcu_get($trackingCacheKey))) {
     }, 3600);
 }
 echo $tracking;
-
-/* BEGIN NERDZ_VERSION */
-if (isset($headers['js']['staticData']['outputVersion']) && $headers['js']['staticData']['outputVersion'] === true) {
-    unset($headers['js']['staticData']['outputVersion']); ?>
-    N.version = '<?=System::getVersion()?>';
-<?php
-} /* END NERDZ_VERSION */
 /* BEGIN NERDZ_STATIC_DATA */
 ?>
 N.static = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js']['staticData'] : [], JSON_HEX_TAG)?>;
