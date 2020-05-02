@@ -417,7 +417,7 @@ class User
             [
                 'SELECT "type", "from", "to", extract(epoch from time) as time, pid, post_to
                 FROM user_interactions(:me, :id) AS
-                f("type" text, "from" int8, "to" int8, "time" timestamp with time zone, pid int8, post_to int8)
+                f("type" text, "from" int8, "to" int8, "time" timestamp without time zone, pid int8, post_to int8)
                 ORDER BY f.time DESC'.($limit !== 0 ? " LIMIT {$limit}" : ''),
                 [
                     ':me' => $_SESSION['id'],
