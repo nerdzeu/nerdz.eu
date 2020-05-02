@@ -259,7 +259,7 @@ class Project
 
         $ret = [];
         for ($i = 0, $count = count($objs); $i < $count; ++$i) {
-            if($objs[$i]->type !== 'groups_owners') {
+            if ($objs[$i]->type !== 'groups_owners') {
                 $ret[$i]['type_n'] = $objs[$i]->type;
                 $ret[$i]['date_n'] = $this->user->getDate($objs[$i]->time);
                 $ret[$i]['time_n'] = $this->user->getTime($objs[$i]->time);
