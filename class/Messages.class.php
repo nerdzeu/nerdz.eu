@@ -140,12 +140,12 @@ class Messages
             }
             $url = $m[1];
             $url_info = parse_url($url);
-            if(!$url_info) {
+            if (!$url_info) {
                 return '<b>'.$this->user->lang('INVALID_URL').'</b>';
             }
             $host = parse_url($url)['host'];
             $local = Utils::endsWith($host, System::getSafeCookieDomainName());
-            $url = Messages::stripTags($url);
+            $url = static::stripTags($url);
             if (!$local) {
                 $url = html_entity_decode($url, ENT_QUOTES, 'UTF-8');
                 $url = '/out.php?url='.urlencode($url).'&hmac='.Utils::getHMAC($url, Config\CAMO_KEY);
@@ -968,223 +968,27 @@ class Messages
 
     public static function stripTags($message)
     {
-        return str_replace('[', '', str_ireplace(
-            '[url=&quot;',
-            '',
-            str_ireplace(
-                '[url=',
-                '',
-                str_replace(
-                '&quot;]',
-                ' ',
-                str_replace(
-                ']',
-                ' ',
-                str_ireplace(
-                '[url]',
-                '',
-                str_ireplace(
-                '[twitter]',
-                '',
-                str_ireplace(
-                '[/twitter]',
-                '',
-                str_ireplace(
-                '[video]',
-                '',
-                str_ireplace(
-                '[/video]',
-                '',
-                str_ireplace(
-                '[music]',
-                '',
-                str_ireplace(
-                '[/music]',
-                '',
-                str_ireplace(
-                '[img]',
-                '',
-                str_ireplace(
-                '[/img]',
-                '',
-                str_ireplace(
-                '[/url]',
-                '',
-                str_ireplace(
-                '[youtube]',
-                '',
-                str_ireplace(
-                '[/youtube]',
-                '',
-                str_ireplace(
-                '[yt]',
-                '',
-                str_ireplace(
-                '[/yt]',
-                '',
-                str_ireplace(
-                '[i]',
-                '',
-                str_ireplace(
-                '[/i]',
-                '',
-                str_ireplace(
-                '[b]',
-                '',
-                str_ireplace(
-                '[/b]',
-                '',
-                str_ireplace(
-                '[code=',
-                '',
-                str_ireplace(
-                '[c=',
-                '',
-                str_ireplace(
-                '[/c]',
-                '',
-                str_ireplace(
-                '[/code]',
-                '',
-                str_ireplace(
-                '[cur]',
-                '',
-                str_ireplace(
-                '[/cur]',
-                '',
-                str_ireplace(
-                '[list]',
-                '',
-                str_ireplace(
-                '[/list]',
-                '',
-                str_ireplace(
-                '[gist]',
-                '',
-                str_replace(
-                '[*]',
-                '',
-                str_ireplace(
-                '[quote]',
-                '',
-                str_ireplace(
-                '[user]',
-                '',
-                str_ireplace(
-                '[/user]',
-                '',
-                str_ireplace(
-                '[project]',
-                '',
-                str_ireplace(
-                '[/project]',
-                '',
-                str_ireplace(
-                '[spoiler]',
-                '',
-                str_ireplace(
-                '[spoiler=',
-                '',
-                str_ireplace(
-                '[/spoiler]',
-                '',
-                str_ireplace(
-                '[small]',
-                '',
-                str_ireplace(
-                '[/small]',
-                '',
-                str_ireplace(
-                '[m]',
-                '',
-                str_ireplace(
-                '[/m]',
-                '',
-                str_ireplace(
-                '[math]',
-                '',
-                str_ireplace(
-                '[/math]',
-                '',
-                str_ireplace(
-                '[wiki=',
-                '',
-                str_ireplace(
-                '[/wiki]',
-                '',
-                str_ireplace(
-                '[u]',
-                '',
-                str_ireplace(
-                '[big]',
-                '',
-                str_ireplace(
-                '[/u]',
-                '',
-                str_ireplace(
-                '[/big]',
-                '',
-                str_ireplace(
-                '[hr]',
-                '',
-                str_ireplace(
-                '[wat]',
-                '',
-                str_ireplace('[quote=', '', $message)
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-            )
-        ));
+        $cache = "bbcodes".Config\SITE_HOST;
+
+        if (!($bbcodes = Utils::apcu_get($cache))) {
+            $bbcodes = Utils::apcu_set($cache, function () {
+                return json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT'].'/data/bbcode.json'));
+            }, 3600);
+        }
+        // bbcodes dict["name"] = [array, of, open, close, tags]
+
+        foreach ($bbcodes as $tags) {
+            foreach ($tags as $tag) {
+                if (strpos($tag, ']') === false) {
+
+                    //$message = preg_replace('/' + preg_quote($tag, '/') + '[^\]]*]/i', '', $message);
+                    $message = preg_replace('/'.preg_quote($tag, '/').'[^\]]+?]/i', '', $message);
+                } else {
+                    $message = str_ireplace($tag, '', $message);
+                }
+            }
+        }
+        return $message;
     }
 
     public function getThumbs($hpid, $project = false)

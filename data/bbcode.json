@@ -1,0 +1,103 @@
+{
+    "url": [
+        "[url]",
+        "[url=",
+        "[/url]"
+    ],
+    "twitter": [
+        "[twitter]",
+        "[/twitter]"
+    ],
+    "video": [
+        "[video]",
+        "[/video]"
+    ],
+    "music": [
+        "[music]",
+        "[/music]"
+    ],
+    "img": [
+        "[img]",
+        "[/img]"
+    ],
+    "del": [
+        "[del]",
+        "[/del]"
+    ],
+    "youtube": [
+        "[youtube]",
+        "[/youtube]",
+        "[yt]",
+        "[/yt]"
+    ],
+    "italic": [
+        "[i]",
+        "[cur]",
+        "[/cur]",
+        "[/i]"
+    ],
+    "bold": [
+        "[b]",
+        "[/b]"
+    ],
+    "code": [
+        "[code=",
+        "[c=",
+        "[/c]",
+        "[/code]"
+    ],
+    "list": [
+        "[list]",
+        "[/list]",
+        "[*]"
+    ],
+    "gist": [
+        "[gist]"
+    ],
+    "quote": [
+        "[quote]",
+        "[quote=",
+        "[/quote]"
+    ],
+    "user": [
+        "[user]",
+        "[/user]"
+    ],
+    "project": [
+        "[project]",
+        "[/project]"
+    ],
+    "spoiler": [
+        "[spoiler]",
+        "[spoiler=",
+        "[/spoiler]"
+    ],
+    "small": [
+        "[small]",
+        "[/small]"
+    ],
+    "math": [
+        "[m]",
+        "[/m]",
+        "[math]",
+        "[/math]"
+    ],
+    "wiki": [
+        "[wiki=",
+        "[/wiki]"
+    ],
+    "underline": [
+        "[u]",
+        "[/u]"
+    ],
+    "big": [
+        "[big]",
+        "[/big]"
+    ],
+    "hr": [
+        "[hr]"
+    ],
+    "wat": [
+        "[wat]"
+    ]
+}
