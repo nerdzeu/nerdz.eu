@@ -7,7 +7,6 @@
     "require": {
         "knplabs/github-api": "^2.13@dev",
         "phpmailer/phpmailer": "dev-master",
-        "mcilloni/pushed": "dev-master",
         "voku/html-min": "dev-master",
         "matthiasmullie/minify": "dev-master",
         "php-http/guzzle6-adapter": "^1.1"

@@ -34,10 +34,6 @@ class Config
         $config = json_decode($config);
 
         $CONSTANTS = [
-            'PUSHED_ENABLED' => false,
-            'PUSHED_IP6' => true,
-            'PUSHED_PORT' => 5667,
-
             'MIN_LENGTH_USER' => 2,
             'MIN_LENGTH_PASS' => 6,
             'MIN_LENGTH_NAME' => 2,

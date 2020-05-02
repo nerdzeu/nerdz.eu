@@ -21,8 +21,6 @@ namespace NERDZ\Core;
 require_once __DIR__.'/Autoload.class.php';
 require_once __DIR__.'/vendor/autoload.php';
 use PDO;
-use MCilloni\Pushed\Pushed;
-use MCilloni\Pushed\PushedException;
 
 final class Pms extends Messages
 {
@@ -33,7 +31,7 @@ final class Pms extends Messages
 
     public function send($to, $message)
     {
-        $retVal = Db::query(
+        return Db::query(
             [
                 'INSERT INTO "pms" ("from","to","message") VALUES (:id,:to,:message)',
                     [
@@ -44,28 +42,6 @@ final class Pms extends Messages
                 ],
             Db::FETCH_ERRSTR
         );
-
-        $wentWell = $retVal == Db::NO_ERRSTR;
-
-        if ($wentWell && $this->user->wantsPush($to) && Config\PUSHED_ENABLED) {
-            try {
-                $pushed = Pushed::connectIp(Config\PUSHED_PORT, Config\PUSHED_IP6);
-
-                $msg = json_encode(
-                    [
-                        'messageFrom' => html_entity_decode(User::getUsername(), ENT_QUOTES, 'UTF-8'),
-                        'messageFromId' => (string) $this->user->getId(),
-                        'messageBody' => substr(html_entity_decode($message, ENT_QUOTES, 'UTF-8'), 0, 2000),
-                    ]
-                ); //truncate to 2000 chars because of possibile service limitations
-
-                $pushed->push($to, $msg);
-            } catch (PushedException $e) {
-                Db::dumpException($e);
-            }
-        }
-
-        return $retVal;
     }
 
     public function getList()
