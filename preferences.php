@@ -21,6 +21,9 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 $user = new NERDZ\Core\User();
 $tplcfg = $user->getTemplateCfg();
 
+if (!$user->isLogged()) {
+    die(header('Location: index.php'));
+}
 ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 ?>
     <!DOCTYPE html>
