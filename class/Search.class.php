@@ -65,7 +65,7 @@ class Search
         $elements = $stmt->fetchAll(PDO::FETCH_COLUMN);
         $ret = [];
         foreach ($elements as $u) {
-            $ret[] = $fetcher->getBasicInfo($u);
+            $ret[] = $fetcher->getBasicInfo(html_entity_decode($u, ENT_QUOTES, 'UTF-8'));
         }
 
         return $ret;
