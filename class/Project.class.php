@@ -242,7 +242,7 @@ class Project
         $objs = [];
         if (!($objs = Db::query(
             [
-                'SELECT "type", extract(epoch from time) as time, pid, post_to
+                'SELECT "type", extract(epoch from time) as time, pid
                 FROM group_interactions(:me, :id) AS
                 f("type" text, "time" timestamp without time zone, pid int8, post_to int8)
                 ORDER BY f.time DESC'.($limit !== 0 ? " LIMIT {$limit}" : ''),
@@ -256,17 +256,16 @@ class Project
         ))) {
             return [];
         }
-
+        $name = static::getName($id);
+        $link =  Utils::projectLink($name);
         $ret = [];
         for ($i = 0, $count = count($objs); $i < $count; ++$i) {
-            if ($objs[$i]->type !== 'groups_owners') {
-                $ret[$i]['type_n'] = $objs[$i]->type;
-                $ret[$i]['date_n'] = $this->user->getDate($objs[$i]->time);
-                $ret[$i]['time_n'] = $this->user->getTime($objs[$i]->time);
-                $ret[$i]['pid_n'] = $objs[$i]->pid;
-                $ret[$i]['postto_n'] = static::getName($objs[$i]->post_to);
-                $ret[$i]['link_n'] = Utils::projectLink($ret[$i]['postto_n']).$objs[$i]->pid;
-            }
+            $ret[$i]['type_n'] = $objs[$i]->type;
+            $ret[$i]['date_n'] = $this->user->getDate($objs[$i]->time);
+            $ret[$i]['time_n'] = $this->user->getTime($objs[$i]->time);
+            $ret[$i]['pid_n'] = $objs[$i]->pid;
+            $ret[$i]['postto_n'] = $name;
+            $ret[$i]['link_n'] = $link.($objs[$i]->pid ?$objs[$i]->pid : '');
         }
 
         return $ret;
@@ -283,7 +282,7 @@ class Project
             ],
             Db::FETCH_OBJ
         ))) {
-            return 'WTF: '.$id;
+            return false;
         }
 
         return $o->name;
