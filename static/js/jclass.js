@@ -134,9 +134,24 @@ function N() /* THE FATHER of God (class/object/function)*/
         }
         else
         {
-            var m = (117 - $obj.height()) / 2;
-            if (m > 1) {
-                $obj.css ("margin-top", m);
+            var dad = $obj.parent();
+            // "boxed" image
+            if (dad.hasClass("img_frame")) {
+                var post = dad.parent();
+                var w = $obj[0].naturalWidth, h = $obj[0].naturalHeight;
+
+                if (w < post.width() && h < 400) {
+                    $obj.prev().remove();
+                    dad[0].onclick = null;
+                    dad.removeClass("img_frame").addClass("img_frame_extended");
+                    $obj.css('max-width', '100%');
+                } else {
+                    // center into the box
+                    var m = (117 - $obj.height()) / 2;
+                    if (m > 1) {
+                        $obj.css ("margin-top", m);
+                    }
+                }
             }
         }
     };
