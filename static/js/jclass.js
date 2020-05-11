@@ -140,7 +140,7 @@ function N() /* THE FATHER of God (class/object/function)*/
                 var post = dad.parent();
                 var w = $obj[0].naturalWidth, h = $obj[0].naturalHeight;
 
-                if (w < post.width() && h < 400) {
+                if (w < post.width() && h < 512) {
                     $obj.prev().remove();
                     dad[0].onclick = null;
                     dad.removeClass("img_frame").addClass("img_frame_extended");
