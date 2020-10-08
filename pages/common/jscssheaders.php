@@ -103,7 +103,6 @@ extensions: ["tex2jax.js", "Safe.js"],
     });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML" async></script>
-    <script>
 <?php
 $trackingCacheKey = 'tracking_js'.NERDZ\Core\Config\SITE_HOST;
 if (!($tracking = Utils::apcu_get($trackingCacheKey))) {
@@ -115,6 +114,7 @@ if (!($tracking = Utils::apcu_get($trackingCacheKey))) {
 echo $tracking;
 /* BEGIN NERDZ_STATIC_DATA */
 ?>
+<script>
 N.static = <?=json_encode(isset($headers['js']['staticData']) ? $headers['js']['staticData'] : [], JSON_HEX_TAG)?>;
 <?php
 /* END NERDZ_STATIC_DATA */
