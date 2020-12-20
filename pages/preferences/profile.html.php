@@ -42,7 +42,7 @@ foreach ($vals['quotes_a'] as &$val) {
 
 $vals['website_n'] = $obj->website;
 $vals['jabber_n'] = $obj->jabber;
-$vals['yahoo_n'] = $obj->yahoo;
+$vals['telegram_n'] = $obj->telegram;
 $vals['facebook_n'] = $obj->facebook;
 $vals['twitter_n'] = $obj->twitter;
 $vals['steam_n'] = $obj->steam;

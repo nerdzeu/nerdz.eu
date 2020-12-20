@@ -259,7 +259,7 @@ if ($enter) {
     usort($vals['userof_a'], '\\NERDZ\\Core\\Utils::sortByUsername');
 
     $vals['github_n'] = $info->github;
-    $vals['yahoo_n'] = $vals['logged_b'] ? $info->yahoo    : '';
+    $vals['telegram_n'] = $vals['logged_b'] ? $info->telegram    : '';
     $vals['jabber_n'] = $vals['logged_b'] ? $info->jabber   : '';
     $vals['skype_n'] = $vals['logged_b'] ? $info->skype    : '';
     $vals['steam_n'] = $vals['logged_b'] ? $info->steam    : '';
