@@ -29,7 +29,6 @@ class Messages
     const VIMEO_REGEXP = '#^https?://(?:www\.)?vimeo\.com.+?(\d+).*$#i';
     const DMOTION_REGEXP = '#^https?://(?:www\.)?(?:dai\.ly/|dailymotion\.com/(?:.+?video=|(?:video|hub)/))([a-z0-9]+)#i';
     const FACEBOOK_REGEXP = '#^https?://(?:www\.)?facebook\.com/(?:(?:photo|video)\.php(?:\?v=|\?.+?&v=)|[a-z0-9._-]+/videos/)(\d+)/?#i';
-    const NERDZCRUSH_REGEXP = '#^https?://(?:cdn\.)?media\.nerdz\.eu/([a-z0-9_-]{12})(?:|\.[a-z0-9]{2,4})#i';
     const IMGUR_REGEXP = '#^https?://(?:www\.)?(?:i\.)?imgur\.com/([a-z0-9_-]+)\.(?:gifv|webm)$#i';
     const HASHTAG_MAXLEN = 44;
 
@@ -385,8 +384,6 @@ class Messages
                     $output = ['dailymotion', $match[1], 'https://www.dailymotion.com/thumbnail/video/'.$match[1], 100];
                 } elseif (preg_match(static::FACEBOOK_REGEXP, $v_url, $match)) {
                     $output = ['facebook', $match[1], 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 100, 'N.facebookThumbnail(this)'];
-                } elseif (preg_match(static::NERDZCRUSH_REGEXP, $v_url, $match)) {
-                    $output = ['nerdzcrush', $match[1], 'https://media.nerdz.eu/'.$match[1].'.jpg', 130];
                 } elseif (preg_match(static::IMGUR_REGEXP, $v_url, $match)) {
                     $output = ['imgur', $match[1], 'https://i.imgur.com/'.$match[1].'b.gifv', 130];
                 } else {
@@ -425,8 +422,6 @@ class Messages
                     $iframe_code = '<iframe frameborder="0" style="margin: auto" width="480" height="270" src="https://www.dailymotion.com/embed/video/'.$match[1].'" allowfullscreen></iframe>';
                 } elseif (preg_match(static::FACEBOOK_REGEXP, $v_url, $match)) {
                     $iframe_code = '<iframe style="margin: auto" src="https://www.facebook.com/video/embed?video_id='.$match[1].'" frameborder="0"></iframe>';
-                } elseif (preg_match(static::NERDZCRUSH_REGEXP, $v_url, $match)) {
-                    $iframe_code = '<div class="nerdzcrush" data-media="'.$match[1].'#noautoplay,noloop"></div>';
                 } elseif (preg_match(static::IMGUR_REGEXP, $v_url, $match)) {
                     $iframe_code = '<video src="https://i.imgur.com/'.$match[1].'.webm" controls></video>';
                 } else {
