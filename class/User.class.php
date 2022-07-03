@@ -1332,7 +1332,7 @@ class User
     {
         $timezone = $this->getTimezone($this->isLogged() ? $_SESSION['id'] : 0);
         $date = new \DateTime();
-        $date->setTimestamp($timestamp);
+        $date->setTimestamp(intval($timestamp));
         $date->setTimeZone(new \DateTimezone($timezone));
 
         return $date->format('H:i');
@@ -1343,7 +1343,7 @@ class User
         $timezone = $this->getTimezone($this->isLogged() ? $_SESSION['id'] : 0);
 
         $date = new \DateTime();
-        $date->setTimestamp($timestamp);
+        $date->setTimestamp(intval($timestamp));
         $date->setTimeZone(new \DateTimezone($timezone));
 
         $today = new \DateTime('now');
