@@ -829,7 +829,7 @@ class Notification
                     return [];
                 }
 
-                return json_decode($o->notify_story, true);
+                return $o->notify_story ? json_decode($o->notify_story, true) : [];
             }, 300);
         }
 
