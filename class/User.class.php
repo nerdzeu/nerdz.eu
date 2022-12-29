@@ -1359,10 +1359,6 @@ class User
             return $this->lang('TODAY');
         }
 
-        if ($tmp == $yesterday->format($format4compare)) {
-            return $this->lang('YESTERDAY');
-        }
-
         return $date->format($this->getDateFormat($this->isLogged() ? $_SESSION['id'] : 0));
     }
 
