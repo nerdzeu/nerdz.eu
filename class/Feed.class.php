@@ -68,7 +68,7 @@ class Feed extends Messages
             <title>{$from} =&gt; {$to} - {$post['pid_n']}</title>
             <description><![CDATA[".$this->getValidFeedMessage($post['message_n'])."]]></description>
             <link>{$url}</link>
-            <pubDate>".date('r', $post['timestamp_n'])."</pubDate>
+            <pubDate>".date('r', intval($post['timestamp_n']))."</pubDate>
             <guid>{$url}</guid>
             </item>";
     }
@@ -84,7 +84,7 @@ class Feed extends Messages
             <title>{$from} =&gt; {$to} - {$post['pid_n']}</title>
             <description><![CDATA[".$this->getValidFeedMessage($post['message_n'])."]]></description>
             <link>{$url}</link>
-            <pubDate>".date('r', $post['timestamp_n'])."</pubDate>
+            <pubDate>".date('r', intval($post['timestamp_n']))."</pubDate>
             <guid>{$url}</guid>
             </item>";
     }
