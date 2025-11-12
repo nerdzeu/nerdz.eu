@@ -48,10 +48,7 @@ class System
 
     public static function getScheme()
     {
-        $scheme = "http";
-        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-            $scheme = "https";
-        }
+        $scheme = "https";
         return $scheme;
     }
 

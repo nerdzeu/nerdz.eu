@@ -1,6 +1,9 @@
 {
     "config": {
-        "vendor-dir": "./class/vendor/"
+        "vendor-dir": "./class/vendor/",
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "name": "nerdzeu/nerdz.eu",
     "description": "A mix between a forum and a social network",
