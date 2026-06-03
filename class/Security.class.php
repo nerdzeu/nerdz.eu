@@ -90,7 +90,7 @@ class Security
         return '';
     }
 
-    public static function setNextAndPrevURLs(array &$vals, $limit, array $options = null)
+    public static function setNextAndPrevURLs(array &$vals, $limit, ?array $options = null)
     {
         extract((array) $options);
         $order = !empty($order) ? $order : false;

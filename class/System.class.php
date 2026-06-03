@@ -59,7 +59,7 @@ class System
             $port = $_SERVER['SERVER_PORT'];
         }
         $scheme = self::getScheme();
-        return "${scheme}://{$_SERVER['SERVER_NAME']}".($port ? ":${port}" : '').'/';
+        return "{$scheme}://{$_SERVER['SERVER_NAME']}".($port ? ":{$port}" : '').'/';
     }
 
     public static function getResourceDomain()
@@ -78,7 +78,7 @@ class System
                 }
 
                 $ret = [];
-                while (false !== ($row = fgetcsv($fp))) {
+                while (false !== ($row = fgetcsv($fp, 0, ',', '"', '\\'))) {
                     $ret[$row[0]] = htmlspecialchars($row[1], ENT_QUOTES, 'UTF-8');
                 }
 
