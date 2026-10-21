@@ -27,7 +27,7 @@ if ($user->isLogged()) {
     die(header('Location: home.php'));
 }
 
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 ?>
     <!DOCTYPE html>
@@ -43,7 +43,7 @@ $headers = $tplcfg->getTemplateVars('login');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
-    <?php ob_flush(); ?>
+    <?php //ob_flush(); ?>
 <body>
     <div id="body">
 <?php

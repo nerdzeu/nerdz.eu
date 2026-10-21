@@ -20,7 +20,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Db;
 
 $user = new NERDZ\Core\User();
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 if (!$user->isLogged()) {
     die($user->lang('REGISTER'));

@@ -21,7 +21,7 @@ use NERDZ\Core\User;
 use NERDZ\Core\System;
 
 $user = new User();
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 if (!$user->isLogged()) {
     die($user->lang('REGISTER'));

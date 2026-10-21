@@ -20,7 +20,7 @@ if (empty($hpid)) {
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 use NERDZ\Core\Messages;
 

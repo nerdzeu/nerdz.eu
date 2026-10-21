@@ -57,7 +57,7 @@ if ($id) {
     die(header('Location: /index.php'));
 }
 
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 $a = explode(' ', $messages->parseNews(Messages::stripTags(str_replace("\n", ' ', $post->message))));
 
@@ -117,7 +117,7 @@ $headers = $tplcfg->getTemplateVars('profile');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
-    <?php ob_flush(); ?>
+    <?php //ob_flush(); ?>
 <body>
     <div id="body">
 <?php

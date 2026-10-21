@@ -20,7 +20,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Notification;
 use NERDZ\Core\User;
 
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 $user = new User();
 $notification = new Notification(); // group notification by default

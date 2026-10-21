@@ -30,7 +30,7 @@ header("Content-Type: text/event-stream\n\n");
 $push = function ($event, $status, $message) use ($user) {
     echo 'event: ', $event, "\n",
         'data: ',  Utils::toJsonResponse($status, $message), "\n\n";
-    ob_flush();
+    //ob_flush();
     flush();
 };
 

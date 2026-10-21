@@ -21,7 +21,7 @@ use NERDZ\Core\User;
 use NERDZ\Core\Db;
 
 $user = new User();
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 if (!NERDZ\Core\Security::refererControl()) {
     die($user->lang('ERROR'));

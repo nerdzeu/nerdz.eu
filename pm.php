@@ -24,7 +24,7 @@ $tplcfg = $user->getTemplateCfg();
 if (!$user->isLogged()) {
     die(header('Location: index.php'));
 }
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 ?>
     <!DOCTYPE html>
     <html lang="<?php echo $user->getBoardLanguage();?>">
@@ -37,7 +37,7 @@ $headers = $tplcfg->getTemplateVars('pm');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
-    <?php ob_flush(); ?>
+    <?php //ob_flush(); ?>
 <body>
     <div id="body">
 <?php

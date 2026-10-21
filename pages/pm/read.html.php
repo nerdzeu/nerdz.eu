@@ -20,7 +20,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 use NERDZ\Core\Pms;
 use NERDZ\Core\User;
 
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 $pms = new Pms();
 $user = new User();

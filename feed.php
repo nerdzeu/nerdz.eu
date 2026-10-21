@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 
 
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 header('Content-type: application/rss+xml');
 
 $feed = new NERDZ\Core\Feed();

@@ -22,7 +22,7 @@ use NERDZ\Core\User;
 
 $user = new User();
 $project = new Project();
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 $id = isset($_POST['id']) && is_numeric($_POST['id']) ? $_POST['id'] : false;
 

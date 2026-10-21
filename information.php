@@ -21,7 +21,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 $user = new NERDZ\Core\User();
 $tplcfg = $user->getTemplateCfg();
 
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 ?>
     <!DOCTYPE html>
     <html lang="<?php echo $user->getBoardLanguage();?>">
@@ -33,7 +33,7 @@ $headers = $tplcfg->getTemplateVars('information');
 require_once $_SERVER['DOCUMENT_ROOT'].'/pages/common/jscssheaders.php';
 ?>
     </head>
-    <?php ob_flush(); ?>
+    <?php //ob_flush(); ?>
 <body>
     <div id="body">
 <?php

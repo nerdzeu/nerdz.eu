@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 use NERDZ\Core\Comments;
 use NERDZ\Core\Messages;

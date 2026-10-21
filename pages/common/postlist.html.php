@@ -24,7 +24,7 @@ if (!isset($prj, $path)) {
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/class/Autoload.class.php';
 
-ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
+//ob_start(array('NERDZ\\Core\\Utils', 'minifyHTML'));
 
 $user = new NERDZ\Core\User();
 $messages = new NERDZ\Core\Messages();
